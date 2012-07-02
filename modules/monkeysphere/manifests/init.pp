@@ -20,7 +20,7 @@
 # Class for monkeysphere management
 #
 
-class m_monkeysphere ($keyserver = "keys.mayfirst.org" ) {
+class monkeysphere ($keyserver = "pgp.mit.edu" ) {
   # The needed packages
   package { monkeysphere: ensure => installed, }
 
@@ -29,32 +29,32 @@ class m_monkeysphere ($keyserver = "keys.mayfirst.org" ) {
     mode => 644,
     ensure => present,
     require => Package['monkeysphere'],
-    content => template("mayfirst/monkeysphere/monkeysphere.conf.erb"),
+    content => template("monkeysphere/monkeysphere.conf.erb"),
   }
   file { "monkeysphere_host_conf":
     path => "/etc/monkeysphere/monkeysphere-host.conf",
     mode => 644,
     ensure => present,
     require => Package['monkeysphere'],
-    content => template("mayfirst/monkeysphere/monkeysphere-host.conf.erb"),
+    content => template("monkeysphere/monkeysphere-host.conf.erb"),
   }
   file { "monkeysphere_authentication_conf":
     path => "/etc/monkeysphere/monkeysphere-authentication.conf",
     mode => 644,
     ensure => present,
     require => Package['monkeysphere'],
-    content => template("mayfirst/monkeysphere/monkeysphere-authentication.conf.erb"),
+    content => template("monkeysphere/monkeysphere-authentication.conf.erb"),
   }
-  file { "mf-subkey-exists":
-    path => "/usr/local/sbin/mf-subkey-exists",
+  file { "ms-subkey-exists":
+    path => "/usr/local/sbin/ms-subkey-exists",
     mode => 755,
     ensure => present,
-    source => "puppet:///modules/mayfirst/monkeysphere/mf-subkey-exists",
+    source => "puppet:///modules/monkeysphere/ms-subkey-exists",
   }
   
 }
 
-define m_monkeysphere::import_key ( $scheme = 'ssh://', $port = '', $path = '/etc/ssh/ssh_host_rsa_key', $hostname = $::fqdn ) {
+define monkeysphere::import_key ( $scheme = 'ssh://', $port = '', $path = '/etc/ssh/ssh_host_rsa_key', $hostname = $::fqdn ) {
 
   # if we're getting a port number, prefix with a colon so it's valid
   $prefixed_port = $port ? {
@@ -72,7 +72,7 @@ define m_monkeysphere::import_key ( $scheme = 'ssh://', $port = '', $path = '/et
   
 }
 
-define m_monkeysphere::publish_server_keys {
+define monkeysphere::publish_server_keys {
   exec { "monkeysphere-host-publish-keys":
     command => "monkeysphere-host publish-keys",
     environment => "MONKEYSPHERE_PROMPT=false",
@@ -81,7 +81,7 @@ define m_monkeysphere::publish_server_keys {
 }
 
 # add certifiers
-define m_monkeysphere::add_id_certifier( $keyid ) {
+define monkeysphere::add_id_certifier( $keyid ) {
   exec { "monkeysphere-authentication add-id-certifier $keyid && monkeysphere-authentication update-users":
 	  environment => "MONKEYSPHERE_PROMPT=false",
 	  require => [ Package["monkeysphere"], File["monkeysphere_authentication_conf"] ],
@@ -89,7 +89,7 @@ define m_monkeysphere::add_id_certifier( $keyid ) {
   }
 }
 
-define m_monkeysphere::authorized_user_ids( $user_ids,  $dest_dir = '/root/.monkeysphere', $dest_file = 'authorized_user_ids', $group = '', $ensure = 'present') {
+define monkeysphere::authorized_user_ids( $user_ids,  $dest_dir = '/root/.monkeysphere', $dest_file = 'authorized_user_ids', $group = '', $ensure = 'present') {
   $user = $title
   $calculated_group = $group ? {
     '' => $user,
@@ -109,7 +109,7 @@ define m_monkeysphere::authorized_user_ids( $user_ids,  $dest_dir = '/root/.monk
       owner => $user,
       group => $calculated_group,
       mode => 644,
-      content => template('mayfirst/monkeysphere/authorized_user_ids.erb'),
+      content => template('monkeysphere/authorized_user_ids.erb'),
       ensure => $ensure,
       require => File[$dest_dir] 
   }
@@ -125,49 +125,23 @@ define m_monkeysphere::authorized_user_ids( $user_ids,  $dest_dir = '/root/.monk
 # in the monkeysphere. This is intended to be the same as generated a
 # password-less ssh key. Depends on gpg module and gpg::private_key 
 #
-define m_monkeysphere::auth_capable_user ( $passphrase, $pseudo_random = false ) { 
+define monkeysphere::auth_capable_user ( $passphrase, $pseudo_random = false ) { 
 
   $user = $title
 
-  $gen_subkey = "printf '$passphrase\n' | monkeysphere gen-subkey"
-  case $pseudo_random {
-    false: {
-      $command = $gen_subkey
-      $require = [ Package["monkeysphere"], Exec["gpg-pem2openpgp-$user" ] ]
-    }
-    true: {
-      # temporarily configure gpg to use quick random
-      exec { "gpg-use-quick-random":  
-        command => "printf 'quick-random\n' >> ~/.gnupg/gpg.conf",
-        user => $user,
-        unless => [ '/usr/local/sbin/mf-subkey-exists || grep ^quick-random ~/.gnupg/gpg.conf' ]
-      }
-      # ensure this setting is removed when we're done
-      exec { "gpg-dont-use-quick-random":  
-        command => "sed 's/^quick-random/#quick-random/' -i ~/.gnupg/gpg.conf",
-        user => $user,
-        require => Exec["monkeysphere-gen-subkey-$user"],
-        unless => "grep ^#quick-random ~/.gnupg/gpg.conf"
-      }
-
-      $command = "$gen_subkey"
-      $require = [ Package["monkeysphere"], Exec["gpg-pem2openpgp-$user" ], Exec["gpg-use-quick-random"] ]
-    }
-  }
-  
   # handle auth subkey
   exec { "monkeysphere-gen-subkey-$user":
-    command => $command,
-    require => $require,
+    command => "printf '$passphrase\n' | monkeysphere gen-subkey",
+    require => [ Package["monkeysphere"], Exec["gpg-pem2openpgp-$user" ] ],
     user => $user,
-    unless => "/usr/local/sbin/mf-subkey-exists" 
+    unless => "/usr/local/sbin/ms-subkey-exists" 
   }
 
 }
 
 # use runit to maintain - FIXME - only works for root user now
 # fixme - you must have runit installed
-define m_monkeysphere::ssh_agent( $passphrase, $ensure = 'running' ) {
+define monkeysphere::ssh_agent( $passphrase, $ensure = 'running' ) {
   # protected directory to store the ssh-agent socket
   file { "/root/.ssh-agent-socket":
     ensure => "directory",
@@ -183,7 +157,7 @@ define m_monkeysphere::ssh_agent( $passphrase, $ensure = 'running' ) {
   file { "/etc/sv/ssh-agent-root/run":
     ensure => present,
     mode => 755,
-    content => template("mayfirst/monkeysphere/ssh-agent-root.erb"),
+    content => template("monkeysphere/ssh-agent-root.erb"),
     owner => "root",
     require => [  File[ "/etc/sv/ssh-agent-root" ] ]
   } 
