@@ -20,6 +20,8 @@
 # Class for monkeysphere management
 #
 
+import "sshd.pp"
+
 class monkeysphere ($keyserver = "pgp.mit.edu" ) {
   # The needed packages
   package { monkeysphere: ensure => installed, }

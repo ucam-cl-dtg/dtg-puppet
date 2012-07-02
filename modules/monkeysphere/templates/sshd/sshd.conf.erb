@@ -1,0 +1,211 @@
+# This file is managed by Puppet, all local modifications will be overwritten
+#
+# Package generated configuration file
+# See the sshd(8) manpage for details
+
+<%- unless head_additional_options.to_s.empty? then %>
+<%= head_additional_options %>
+<%- end %>
+
+# What ports, IPs and protocols we listen for
+<%- ports.each do |port| -%>
+<%- if port.to_s == 'off' then -%>
+#Port -- disabled by puppet
+<% else -%>
+Port <%= port %>
+<% end -%>
+<%- end -%>
+
+# Use these options to restrict which interfaces/protocols sshd will bind to
+<% for address in listen_address -%>
+ListenAddress <%= address %>
+<% end -%>
+Protocol 2
+# HostKeys for protocol version 2
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_dsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+#Privilege Separation is turned on for security
+UsePrivilegeSeparation yes
+
+# Lifetime and size of ephemeral version 1 server key
+KeyRegenerationInterval 3600
+ServerKeyBits 768
+
+# Logging
+SyslogFacility AUTH
+LogLevel INFO
+
+# Authentication:
+<%- unless login_grace_time.to_s.empty? then -%>
+LoginGraceTime <%= login_grace_time -%> 
+<%- else -%>
+LoginGraceTime 600 
+<%- end -%>
+
+<%- unless permit_root_login.to_s.empty? then -%>
+PermitRootLogin <%= permit_root_login -%>
+<%- else -%>
+#PermitRootLogin without-password
+<%- end -%>
+
+<%- if strict_modes.to_s == 'yes' then -%>
+StrictModes yes
+<%- else -%>
+StrictModes no
+<%- end -%>
+
+<%- if rsa_authentication.to_s == 'yes' then -%>
+RSAAuthentication yes
+<%- else -%>
+RSAAuthentication no
+<%- end -%>
+
+<%- if pubkey_authentication.to_s == 'yes' then -%>
+PubkeyAuthentication yes
+<%- else -%>
+PubkeyAuthentication no
+<%- end -%>
+
+<%- unless authorized_keys_file.to_s.empty? then -%>
+AuthorizedKeysFile <%= authorized_keys_file %>
+<%- else -%>
+AuthorizedKeysFile %h/.ssh/authorized_keys
+<%- end -%>
+
+# Don't read the user's ~/.rhosts and ~/.shosts files
+<%- if ignore_rhosts.to_s == 'yes' then -%>
+IgnoreRhosts yes
+<%- else -%>
+IgnoreRhosts no
+<% end -%>
+# For this to work you will also need host keys in /etc/ssh_known_hosts
+<%- if rhosts_rsa_authentication.to_s == 'yes' then -%>
+RhostsRSAAuthentication yes
+<%- else -%>
+RhostsRSAAuthentication no
+<% end -%>
+# similar for protocol version 2
+<%- if hostbased_authentication.to_s == 'yes' then -%>
+HostbasedAuthentication yes
+<%- else -%>
+HostbasedAuthentication no
+<% end -%>
+# Uncomment if you don't trust ~/.ssh/known_hosts for RhostsRSAAuthentication
+#IgnoreUserKnownHosts yes
+
+# To enable empty passwords, change to yes (NOT RECOMMENDED)
+<%- if permit_empty_passwords.to_s == 'yes' then -%>
+PermitEmptyPasswords yes
+<% else -%>
+PermitEmptyPasswords no
+<% end -%>
+
+# Change to yes to enable challenge-response passwords (beware issues with
+# some PAM modules and threads)
+<%- if challenge_response_authentication.to_s == 'yes' then -%>
+ChallengeResponseAuthentication yes
+<%- else -%>
+ChallengeResponseAuthentication no
+<%- end -%>
+
+# To disable tunneled clear text passwords, change to no here!
+<%- if password_authentication.to_s == 'yes' then -%>
+PasswordAuthentication yes
+<%- else -%>
+PasswordAuthentication no
+<%- end -%>
+
+# Kerberos options
+<%- if kerberos_authentication.to_s == 'yes' then -%>
+KerberosAuthentication yes
+<%- else -%>
+KerberosAuthentication no
+<%- end -%>
+<%- if kerberos_orlocalpasswd.to_s == 'yes' then -%>
+KerberosOrLocalPasswd yes
+<%- else -%>
+KerberosOrLocalPasswd no
+<%- end -%>
+<%- if kerberos_ticketcleanup.to_s == 'yes' then -%>
+KerberosTicketCleanup yes
+<%- else -%>
+KerberosTicketCleanup no
+<%- end -%>
+
+# GSSAPI options
+<%- if gssapi_authentication.to_s == 'yes' then -%>
+GSSAPIAuthentication yes
+<%- else -%>
+GSSAPIAuthentication no
+<%- end -%>
+<%- if gssapi_authentication.to_s == 'yes' then -%>
+GSSAPICleanupCredentials yes
+<%- else -%>
+GSSAPICleanupCredentials yes
+<%- end -%>
+
+<%- if x11_forwarding.to_s == 'yes' then -%>
+X11Forwarding yes
+<%- else -%>
+X11Forwarding no
+<%- end -%>
+X11DisplayOffset 10
+PrintMotd no
+PrintLastLog yes
+TCPKeepAlive yes
+
+#UseLogin no
+
+<%- if max_startups != "" then -%>
+MaxStartups <%= max_startups -%>
+<%- end -%>
+
+#Banner /etc/issue.net
+
+# Allow client to pass locale environment variables
+AcceptEnv LANG LC_*
+
+<%- if sftp_subsystem.to_s.empty? then %>
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+<%- else %>
+Subsystem      sftp    <%= sftp_subsystem %>
+<%- end %>
+
+# Set this to 'yes' to enable PAM authentication, account processing,
+# and session processing. If this is enabled, PAM authentication will
+# be allowed through the ChallengeResponseAuthentication and
+# PasswordAuthentication.  Depending on your PAM configuration,
+# PAM authentication via ChallengeResponseAuthentication may bypass
+# the setting of "PermitRootLogin without-password".
+# If you just want the PAM account and session checks to run without
+# PAM authentication, then enable this but set PasswordAuthentication
+# and ChallengeResponseAuthentication to 'no'.
+<%- if use_pam.to_s == 'yes' then -%>
+UsePAM yes
+<%- else -%>
+UsePAM no
+<%- end -%>
+
+<%- if tcp_forwarding.to_s == 'yes' then -%>
+AllowTcpForwarding yes
+<%- else -%>
+AllowTcpForwarding no
+<%- end -%>
+
+<%- if agent_forwarding.to_s == 'yes' then -%>
+AllowAgentForwarding yes
+<%- else -%>
+AllowAgentForwarding no
+<%- end -%>
+
+<%- unless allowed_users.to_s.empty? then -%>
+AllowUsers <%= allowed_users -%>
+<%- end -%>
+<%- unless allowed_groups.to_s.empty? then %>
+AllowGroups <%= allowed_groups %>
+<%- end %>
+
+<%- unless tail_additional_options.to_s.empty? then %>
+<%= tail_additional_options %>
+<%- end %>
