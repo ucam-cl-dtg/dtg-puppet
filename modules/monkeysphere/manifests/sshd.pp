@@ -65,7 +65,7 @@ class sshd (
 
   file { 'sshd_config':
     path => '/etc/ssh/sshd_config',
-    content => $template("monkeysphere/sshd/sshd.conf.erb")
+    content => template("monkeysphere/sshd/sshd.conf.erb"),
     notify => Service[sshd],
     require => Package[openssh],
     owner => root, group => 0, mode => 600;
