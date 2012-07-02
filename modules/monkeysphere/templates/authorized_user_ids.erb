@@ -1,0 +1,6 @@
+# This file is maintained by puppet, changes will be overwritten
+<% if user_ids.is_a? String -%>
+<%= user_ids %>
+<% elsif user_ids.is_a? Array -%>
+<%= user_ids.map { |i| "#{i}" }.join("\n") %>
+<% end -%>

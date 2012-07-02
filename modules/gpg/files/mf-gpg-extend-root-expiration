@@ -1,0 +1,19 @@
+#!/bin/bash
+
+password=monkeys
+extend=1y
+keyid=$(gpg --list-secret-key --with-colons --fixed-list-mode | grep ^sec | cut -d: -f5 )
+temp=$(mktemp)
+ret=0
+
+echo "$password" > "$temp"
+printf "${extend}\ny\nsave\n" |  \
+	gpg --no-tty --command-fd 0 --status-fd 2 --passphrase-fd 3 \
+	--edit-key $keyid expire 3< "$temp"
+
+# if the command above fails, save exit code so we return with that
+# exit code, rather than return successfully because removing the temp
+# file was successful
+ret="$?"
+rm "$temp" || exit 1
+exit "$ret"

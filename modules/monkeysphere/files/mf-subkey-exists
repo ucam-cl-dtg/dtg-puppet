@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# return true if the authentication subkey exists 
+gpg --list-secret-key --with-colons | grep ^sec >/dev/null && gpg --list-key --with-colons $(gpg --list-secret-key --with-colons | grep ^sec | cut -d: -f5) | grep ^sub | cut -d: -f12 | grep a >/dev/null

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+days=30
+expire=$(gpg --list-secret-key --with-colons --fixed-list-mode | grep ^sec | cut -d: -f7 )
+now=$(date +%s)
+
+diff=$(( $expire - $now ))
+seconds=$(( 60 * 60 * 24 * $days ))
+
+if [ "$diff" -lt "$seconds" ]; then
+	exit 0
+fi
+exit 1
