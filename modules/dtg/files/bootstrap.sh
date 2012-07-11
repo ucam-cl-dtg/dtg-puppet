@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Abort if something goes wrong
+set -e
+
 # Install puppet
 echo "Installing puppet-common and git-core"
 apt-get -y install puppet-common git-core
