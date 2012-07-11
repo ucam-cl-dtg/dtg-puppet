@@ -1,7 +1,7 @@
 class minimal {
 
   # Packages which should be installed on all servers
-  $packagelist = ["vim",]
+  $packagelist = ["vim", "screen",]
   package {
     $packagelist:
       ensure => installed
