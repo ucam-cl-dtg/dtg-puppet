@@ -32,21 +32,21 @@ target="$admin_bare_repo/hooks/post-update"
 printf "echo ---- Pulling changes into /etc/puppet -----\n\n" > "$target"
 printf "cd /etc/puppet\n" >> "$target"
 printf "unset GIT_DIR\n" >> "$target"
-printf "git pull bare  master\n\n" >> "$target"
+printf "git pull --recurse-submodules=yes bare  master\n" >> "$target"
+printf "git submodule update\n\n" >> "$target"
 printf "echo ---- Applying new recipes ----\n\n" >> "$target"
 printf "puppet apply --modulepath modules manifests/site.pp" >> "$target"
 
 chmod 775 hooks/post-update
-# Fetch the current contents of the repository
-git fetch git://github.com/ucam-cl-dtg/dtg-puppet.git
 
 # add  as a remote to real puppet repo
 cd /etc/puppet
 git remote add bare "$admin_bare_repo"
 
+# Pull the current contents of the repository
+git pull --recurse-submodules=yes git://github.com/ucam-cl-dtg/dtg-puppet.git
+git submodule update
+
 # Pull in the current contents
-git pull bare master
+git push --set-upstream bare master
 
-echo "Applying configuration"
-
-puppet apply --modulepath modules manifests/site.pp
