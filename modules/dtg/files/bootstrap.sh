@@ -31,12 +31,19 @@ printf "cd /etc/puppet\n" >> "$target"
 printf "unset GIT_DIR\n" >> "$target"
 printf "git pull bare  master\n\n" >> "$target"
 printf "echo ---- Applying new recipes ----\n\n" >> "$target"
-printf "/usr/local/sbin/freepuppet-run" >> "$target"
+printf "puppet apply --modulepath modules manifests/site.pp" >> "$target"
 
 chmod 775 hooks/post-update
+# Fetch the current contents of the repository
+git fetch git://github.com/ucam-cl-dtg/dtg-puppet.git
 
 # add  as a remote to real puppet repo
 cd /etc/puppet
 git remote add bare "$admin_bare_repo"
 
-echo "Git repositories configured."
+# Pull in the current contents
+git pull bare master
+
+echo "Applying configuration"
+
+puppet apply --modulepath modules manifests/site.pp
