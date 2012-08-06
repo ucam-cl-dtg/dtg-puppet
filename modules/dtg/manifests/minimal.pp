@@ -11,8 +11,9 @@ class minimal {
 
   class { "etckeeper": }
   class { "ntp": servers => $ntp_servers, autoupdate => true, }
-  class { "ekeyd::client": host => 'entropy.dtg.cl.cam.ac.uk', port => '7776', }
-  class { "gpg": }
+  # Get entropy then do gpg and then monkeysphere
+  class { "ekeyd::client": host => 'entropy.dtg.cl.cam.ac.uk', port => '7776', } ->
+  class { "gpg": } ->
   class { "monkeysphere": }
   # create hourly cron job to update users authorized_user_id files
   $ms_min = random_number(60) 
