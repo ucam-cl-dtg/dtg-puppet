@@ -7,3 +7,6 @@
 [submodule "modules/etckeeper"]
 	path = modules/etckeeper
 	url = git://github.com/thomasvandoren/puppet-etckeeper.git
+[submodule "modules/ekeyd"]
+	path = modules/ekeyd
+	url = git://github.com/ucam-cl-dtg/puppet-ekeyd.git
