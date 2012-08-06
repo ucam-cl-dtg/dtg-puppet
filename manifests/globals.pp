@@ -1,3 +1,4 @@
+Exec { path => '/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin' }
 $ntp_servers = [ 'server ntp2.csx.cam.ac.uk',
                  'server ntp1.csx.cam.ac.uk',
                  'server ntp1.retrosnub.co.uk',
