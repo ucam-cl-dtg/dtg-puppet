@@ -10,7 +10,6 @@ The copyright status of this code needs clarifying, it would probably have to be
 
 TODO
 ----
-* Use cam.ac.uk ubuntu mirror
 * Install security updates automatically
 * Setup nagios and munin
 * Work out why egd is not being correctly ordered before gpg and monkeysphere

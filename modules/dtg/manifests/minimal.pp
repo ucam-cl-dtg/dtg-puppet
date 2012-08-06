@@ -1,5 +1,15 @@
 class minimal {
 
+  # Manage apt sources lists - TODO(drt24) this probably wants to be factored out
+  #  Use puppet to manage sources.list but allow manual stuff inside sources.list.d
+  class { 'apt': purge_sources_list => true }
+  # Include main repository
+  class { 'apt::source': location => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/', repos => 'main restricted universe multiverse'}
+  # Security updates
+  class { 'apt::source': location => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/', release => "${::lsbdistcodename}-security", repos => 'main restricted universe multiverse'}
+  # Bugfix updates
+  class { 'apt::source': location => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/', release => "${::lsbdistcodename}-updates", repos => 'main restricted universe multiverse'}
+
   # Packages which should be installed on all servers
   $packagelist = ["vim", "screen",]
   package {
