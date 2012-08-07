@@ -7,7 +7,7 @@ $ntp_servers = [ 'ntp2.csx.cam.ac.uk',
                  'ntp1c.cl.cam.ac.uk', ]
 # Admin user ids to be given root on the nodes via monkeysphere
 $ms_admin_user_ids = [
-  "Daniel Thomas <drt24@cam.ac.uk>"
+  "Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>"
 ]
 # Keyserver with the public keys to use for monkeysphere
 $ms_keyserver = 'keys.gnupg.net'
