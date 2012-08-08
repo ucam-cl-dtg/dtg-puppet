@@ -34,6 +34,8 @@ class minimal {
   }
   # ensure our ssh key is imported into the monkeysphere
   monkeysphere::import_key { "main": }
+  # Add the certifiers who sign the users
+  class { "ms_id_certifiers": }
   monkeysphere::authorized_user_ids { "root":
     user_ids => $ms_admin_user_ids
   }
