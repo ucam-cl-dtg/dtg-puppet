@@ -85,7 +85,7 @@ define gpg::publish_user_key ( $keyserver = '' ){
 }
 
 # set ownertrust for a given key
-define m_gpg::owner_trust( $fingerprint, $user = 'root', $level = 6, $keyserver = '', $homedir = "/root" ) {
+define gpg::owner_trust( $fingerprint, $user = 'root', $level = 6, $keyserver = '', $homedir = "/root" ) {
   $keyserver_arg = $keyserver ? {
     '' => '',
     default => "--keyserver $keyserver"
