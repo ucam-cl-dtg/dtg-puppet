@@ -1,7 +1,13 @@
 class minimal {
 
+  # Set up the repositories, get some entropy then do everything else
+  stage {'entropy': before => Stage['main'] }
+  stage {'repos': before => Stage['entropy'] }
   # Manage apt sources lists
-  class { 'aptrepository': repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/' }
+  class { 'aptrepository':
+    repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
+    stage => 'repos'
+  }
 
   # Packages which should be installed on all servers
   $packagelist = ["vim", "screen",]
@@ -15,7 +21,13 @@ class minimal {
   class { "etckeeper": }
   class { "ntp": servers => $ntp_servers, autoupdate => true, }
   # Get entropy then do gpg and then monkeysphere
-  class { "ekeyd::client": host => 'entropy.dtg.cl.cam.ac.uk', port => '7776', } -> class { "gpg": } -> class { "monkeysphere": }
+  class { "ekeyd::client":
+    host => 'entropy.dtg.cl.cam.ac.uk',
+    port => '7776',
+    stage => 'entropy',
+  }
+  class { "gpg": }
+  class { "monkeysphere": }
   # create hourly cron job to update users authorized_user_id files
   $ms_min = random_number(60) 
   file { "/etc/cron.d/monkeysphere":
