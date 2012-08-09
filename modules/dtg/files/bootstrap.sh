@@ -39,6 +39,11 @@ printf "puppet apply --verbose --modulepath modules manifests/site.pp" >> "$targ
 
 chmod 775 hooks/post-update
 
+# Ensure sensible permissions for bare repository
+chmod -R g+u .
+chgrp -R adm .
+find . -type d -print0 | xargs -0 chmod g+s
+
 # add  as a remote to real puppet repo
 cd /etc/puppet
 git remote add bare "$admin_bare_repo"
@@ -47,6 +52,11 @@ git remote add bare "$admin_bare_repo"
 git pull --recurse-submodules=yes git://github.com/ucam-cl-dtg/dtg-puppet.git
 git submodule init
 git submodule update
+
+# Ensure sensible permissions for checked out repository
+chmod -R g+u .
+chgrp -R adm .
+find . -type d -print0 | xargs -0 chmod g+s
 
 # Pull in the current contents
 git push --set-upstream bare master
