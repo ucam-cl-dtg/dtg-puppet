@@ -32,4 +32,14 @@ class minimal {
   monkeysphere::authorized_user_ids { "root":
     user_ids => $ms_admin_user_ids
   }
+  # Create the admin users
+  class { "admin_users": }
+  # Allow admin users to push puppet config
+  group { "adm": ensure => present }
+  sudoers::allowed_command{ "puppet":
+    command          => '/usr/bin/puppet',
+    group            => 'adm',
+    require_password => false,
+    comment          => 'Allow members of the admin group to use puppet as root without requiring a password - so that they can update the puppet repositories and hence trigger the hooks',
+  }
 }
