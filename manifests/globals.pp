@@ -11,7 +11,11 @@ class ms_id_certifiers {
 }
 # Admin users to be given an account on all machines
 class admin_users {
-    dtg::add_user { 'drt24': email => "Daniel Thomas <drt24@cam.ac.uk>", groups => [ 'adm' ] }
+    dtg::add_user { 'drt24':
+        email  => 'Daniel Thomas <drt24@cam.ac.uk>',
+        groups => [ 'adm' ],
+        keys   => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
+    }
 }
 # Admin user ids to be given root on the nodes via monkeysphere
 $ms_admin_user_ids = [
