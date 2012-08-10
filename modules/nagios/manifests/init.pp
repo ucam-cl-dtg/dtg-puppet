@@ -148,6 +148,13 @@ class nagios_server {
     require => User["nagios-collector"],
   }
 
+  file { '/home/nagios-collector/.monkeysphere/authorized_user_ids':
+    ensure => file,
+    owner  => 'nagios-collector',
+    group  => 'nagios-collector',
+    require => User["nagios-collector"],
+  }
+
   # Setup apache
   class { "apache": }
   apache::site { "monitor.conf":
@@ -242,5 +249,6 @@ define nagios_monitor (
   file_line { $host:
     path => "/home/nagios-collector/.monkeysphere/authorized_user_ids",
     line => "root@${host}.${org_domain}",
+    require => File["/home/nagios-collector/.monkeysphere/authorized_user_ids"],
   }
 } 
