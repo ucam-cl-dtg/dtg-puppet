@@ -1,0 +1,55 @@
+#!/bin/bash
+# check disk usage file that is collected in the directory: 
+# /home/nagios-collector/server-status-reports
+# We expect to check a file that is the output of the df command
+# on the given host
+
+base=/home/nagios-collector/server-status-reports
+#base=/home/jamie
+# tolerate files up to two hours old (df usage should be copied hourly)
+grace=$(( 3600 * 2 ))
+# hard coded limits (fixme: should be passable as parameters)
+warning=74
+critical=89
+
+if [ -z "$1" ]
+then
+  printf "UNKNOWN: No hostname given.\n"
+  exit 3
+fi
+hostname=$1
+
+# ensure file exists
+target="${base}/${hostname}.df.txt"
+
+if [ ! -f "$target" ]; then
+  printf "UNKNOWN: %s not found.\n" $target
+  exit 3
+fi
+
+# ensure file is not stale
+now_ts=$(date +%s)
+file_ts=$(date -d "$(stat -c %y $target)" +%s)
+diff=$(( $now_ts - $file_ts ))
+if [ "$diff" -gt "$grace" ]; then
+  printf "UNKNOWN: %s is more than 2 hours old.\n" $target
+  exit 3
+fi
+
+critical_fs=$(cat "$target" | tr -d '%' | awk '/\//{ if ($5 > 89) { print $5 " " $1 " " $6 }}')
+
+if [ -n "$critical_fs" ]; then
+    # if there is more than on file system, we'll only get the last one
+    printf "CRITICAL: %s\n" "$critical_fs"
+    exit 2
+fi
+warning_fs=$(cat "$target" |tr -d '%' | awk '/\//{ if ($5 > 74) { print $5 " " $1 " " $6 }}')
+
+if [ -n "$warning_fs" ]; then
+    # if there is more than on file system, we'll only get the last one
+    printf "WARNING: %s\n" "$warning_fs"
+    exit 1
+fi
+ 
+printf "All filesystems at ${warning}%% or below\n"
+exit 0

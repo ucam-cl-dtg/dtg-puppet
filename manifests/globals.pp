@@ -1,4 +1,9 @@
+# Global configuration settings
+
 Exec { path => '/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin' }
+
+$org_domain = 'dtg.cl.cam.ac.uk'
+
 $ntp_servers = [ 'ntp2.csx.cam.ac.uk',
                  'ntp1.csx.cam.ac.uk',
                  'ntp1.retrosnub.co.uk',
@@ -23,3 +28,11 @@ $ms_admin_user_ids = [
 ]
 # Keyserver with the public keys to use for monkeysphere
 $ms_keyserver = 'keys.gnupg.net'
+
+# Nagios config
+$nagios_server = "monitor.$org_domain"
+$nagios_ssl = false
+$nagios_from_emailaddress = "dtg-code@cl.cam.ac.uk"
+$nagios_alert_emailaddress = $nagios_from_emailaddress
+$nagios_org_name = "Digitial Technology Group"
+$nagios_org_url = "http://www.cl.cam.ac.uk/research/dtg/"

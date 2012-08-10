@@ -1,0 +1,7 @@
+define service{
+  hostgroup_name        <%= service_hostgroup_name %> 
+  service_description   <%= service_description %>
+  check_command         <%= service_check_command %>
+  use                   <%= service_use %>
+  notification_interval <%= service_notification_interval %>
+}

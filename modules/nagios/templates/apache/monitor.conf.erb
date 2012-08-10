@@ -1,0 +1,20 @@
+<VirtualHost *:443>
+  ServerName <%= nagios_server %>
+  DocumentRoot /usr/share/nagios3/htdocs
+<%- if nagios_ssl then -%>
+  SSLEngine On
+  SSLCertificateFile /etc/ssl/<%=nagios_server%>.crt
+  SSLCertificateKeyFile /etc/ssl/private/<%=nagios_server%>.pem
+  SSLCertificateChainFile /etc/ssl/private/<%=nagios_server%>.pem
+<%- end -%>
+
+  ScriptAlias /cgi-bin /usr/lib/cgi-bin
+
+  Alias /stylesheets /etc/nagios3/stylesheets
+  Alias /nagios3/stylesheets /etc/nagios3/stylesheets
+  Alias /rss /var/www/nagios
+  <DirectoryMatch (/usr/share/nagios3/htdocs|/usr/lib/cgi-bin/nagios3)>
+    Options FollowSymLinks
+    DirectoryIndex index.php
+  </DirectoryMatch>
+</VirtualHost>

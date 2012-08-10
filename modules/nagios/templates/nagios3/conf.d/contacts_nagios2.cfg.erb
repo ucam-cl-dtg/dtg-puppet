@@ -1,0 +1,30 @@
+# HEADER: This file is managed by puppet.
+define contact {
+	service_notification_period    24x7
+	service_notification_options   c,r
+	contact_name                   server-email-alerts
+	host_notification_options      d,r
+	alias                          Server Email Alerts
+	host_notification_period       24x7
+	service_notification_commands  notify-service-by-email
+	host_notification_commands     notify-host-by-email
+	email                          <%= nagios_alert_emailaddress %>
+}
+
+define contact {
+	service_notification_period    24x7
+	service_notification_options   w,u,c,r
+	contact_name                   server-rss-alerts
+	host_notification_options      d,r
+	alias                          Server RSS Alerts
+	host_notification_period       24x7
+	service_notification_commands  notify-service-by-rss
+	host_notification_commands     notify-host-by-rss
+}
+
+define contactgroup {
+	contactgroup_name              admins
+	members                        server-email-alerts,server-rss-alerts
+	alias                          Admins
+}
+

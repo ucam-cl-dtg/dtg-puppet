@@ -1,0 +1,17 @@
+define contact {
+  contact_name                    <%= contact_name %>
+  alias                           <%= contact_alias %> 
+  service_notification_period     <%= service_notification_period %> 
+  service_notification_options    <%= service_notification_options %>
+  service_notification_commands   <%= service_notification_commands %>
+  host_notification_period        <%= host_notification_period %>
+  host_notification_options       <%= host_notification_options %>
+  host_notification_commands      <%= host_notification_commands %>
+<% if pager != "" -%>
+  pager                           <%= pager %>
+<% end -%>
+<% if email != "" -%>
+  email                           <%= email %>
+<% end -%>
+
+}

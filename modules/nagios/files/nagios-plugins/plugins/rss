@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+use XML::RSS;
+
+my $title = @ARGV[0];
+my $link = @ARGV[1];
+my $description = @ARGV[2];
+my $target = "/var/www/nagios/all.xml";
+my $max_items = "50";
+
+ # insert an item into an RSS file and removes the oldest item if
+ # there are already $max_items items
+ my $rss = new XML::RSS;
+ $rss->parsefile($target);
+ pop(@{$rss->{'items'}}) if (@{$rss->{'items'}} == $max_items);
+ $rss->add_item(title => $title,
+                link  => $link,
+		description => $description,
+                mode  => 'insert'
+                );
+
+ $rss->save($target);
+
+#By Scott Sugar ssugar@proserveit.com
