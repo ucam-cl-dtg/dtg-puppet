@@ -148,11 +148,17 @@ class nagios_server {
     require => User["nagios-collector"],
   }
 
+  file { '/home/nagios-collector/.monkeysphere/':
+    ensure => directory,
+    owner  => 'nagios-collector',
+    group  => 'nagios-collector',
+    require => User["nagios-collector"],
+  }
+
   file { '/home/nagios-collector/.monkeysphere/authorized_user_ids':
     ensure => file,
     owner  => 'nagios-collector',
     group  => 'nagios-collector',
-    require => User["nagios-collector"],
   }
 
   # Setup apache
