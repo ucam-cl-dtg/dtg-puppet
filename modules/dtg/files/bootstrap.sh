@@ -35,7 +35,7 @@ printf "echo ---- Pulling changes into /etc/puppet -----\n\n" > "$target"
 printf "cd /etc/puppet\n" >> "$target"
 printf "unset GIT_DIR\n" >> "$target"
 printf "git pull --recurse-submodules=yes bare  master\n" >> "$target"
-printf "git submodule update\n\n" >> "$target"
+printf "git submodule update --init\n\n" >> "$target"
 printf "echo ---- Applying new recipes ----\n\n" >> "$target"
 printf "sudo puppet apply --verbose --modulepath modules manifests/site.pp" >> "$target"
 
@@ -52,8 +52,7 @@ git remote add bare "$admin_bare_repo"
 
 # Pull the current contents of the repository
 git pull --recurse-submodules=yes git://github.com/ucam-cl-dtg/dtg-puppet.git
-git submodule init
-git submodule update
+git submodule update --init
 
 # Ensure sensible permissions for checked out repository
 chmod -R g+u .
