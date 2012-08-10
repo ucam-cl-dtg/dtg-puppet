@@ -12,4 +12,3 @@ TODO
 ----
 * Install security updates automatically
 * Setup nagios and munin
-* Work out why egd is not being correctly ordered before gpg and monkeysphere
