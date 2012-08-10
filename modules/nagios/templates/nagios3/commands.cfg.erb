@@ -50,13 +50,6 @@ define command{
 	}
 
 
-# 'check_mysql' command definition, provided by /usr/share/nagios-plugins/templates-standard/mysql.cfg
-# as part of the nagios-plugins package
-define command{
-  command_name    check_mysql
-  command_line    /usr/lib/nagios/plugins/check_mysql -H '$HOSTADDRESS$'
-}
-
 define command{
   command_name    check-df
   command_line    /usr/local/share/nagios/plugins/nagios-check-df '$HOSTNAME$'
