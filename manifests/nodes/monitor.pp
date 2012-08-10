@@ -3,7 +3,7 @@ node "monitor.dtg.cl.cam.ac.uk" {
   class {'nagios_server':}
   nagios_monitor {'monitor':
     parents  => '',
-    addresss => "monitor.dtg.cl.cam.ac.uk",
+    address => "monitor.dtg.cl.cam.ac.uk",
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
 }
