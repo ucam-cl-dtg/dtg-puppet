@@ -13,6 +13,8 @@ apt-get -y install puppet-common git-core
 # repo (allowing you to re-push after git commit --amend)
 
 echo "Setting up git repositories"
+git config --global core.sharedRepository group
+
 # remove /etc/puppet as installed by puppet
 rm -rf /etc/puppet
 
