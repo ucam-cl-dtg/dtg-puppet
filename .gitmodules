@@ -16,3 +16,9 @@
 [submodule "modules/sudoers"]
 	path = modules/sudoers
 	url = git://github.com/phinze/puppet-sudoers.git
+[submodule "modules/apache"]
+	path = modules/apache
+	url = git://github.com/ucam-cl-dtg/puppet-apache.git
+[submodule "modules/common"]
+	path = modules/common
+	url = git://github.com/puppet-modules/puppet-common.git
