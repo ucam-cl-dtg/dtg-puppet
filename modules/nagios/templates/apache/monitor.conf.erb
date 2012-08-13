@@ -1,4 +1,4 @@
-<VirtualHost *:443>
+<VirtualHost <% if nagios_ssl -%> *:443 <% else -%> *:80 <% end -%> >
   ServerName <%= nagios_server %>
   DocumentRoot /usr/share/nagios3/htdocs
 <%- if nagios_ssl then -%>
