@@ -9,6 +9,11 @@ class munin::gatherer(
     ensure => installed
   }
 
+  file { '/etc/munin/munin-conf.d/':
+    ensure => directory,
+    require => Package['munin'],
+  }
+
   apache::site { "munin.conf": 
     content => template("munin/munin.erb")
   }
@@ -20,8 +25,9 @@ class munin::gatherer(
 define munin::gatherer::configure_node () {
   $munin_node_host = $title
   file { "/etc/munin/munin-conf.d/$munin_node_host":
-    ensure => present,
-    content => template("munin/node.erb")
+    ensure  => present,
+    content => template("munin/node.erb"),
+    require => File["/etc/munin/munin-conf.d/"],
   }
 }
 
