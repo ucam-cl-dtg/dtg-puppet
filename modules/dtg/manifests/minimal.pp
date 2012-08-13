@@ -65,5 +65,9 @@ class minimal {
     require_password => false,
     comment          => 'Allow members of the admin group to use puppet as root without requiring a password - so that they can update the puppet repositories and hence trigger the hooks',
   }
+  class { 'dtg::unattendedupgrades':
+    unattended_upgrade_notify_emailaddress => $::unattended_upgrade_notify_emailaddress,
+    require => Class['exim::satellite'],
+  }
 
 }
