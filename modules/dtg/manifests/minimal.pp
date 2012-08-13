@@ -26,8 +26,17 @@ class minimal {
     port => '7776',
     stage => 'entropy',
   }
+
+  # Make it possible to send email (if correct from address is used)
+  class { 'exim::satellite':
+    smarthost   => 'mail-serv.cl.cam.ac.uk',
+    mail_domain => 'cl.cam.ac.uk',
+  }
+
   class { "gpg": }
-  class { "monkeysphere": }
+  class { "monkeysphere":
+    require => Class['exim::satellite'],
+  }
   # create hourly cron job to update users authorized_user_id files
   $ms_min = random_number(60) 
   file { "/etc/cron.d/monkeysphere":
@@ -45,7 +54,9 @@ class minimal {
     user_ids => $ms_admin_user_ids
   }
   # Create the admin users
-  class { "admin_users": }
+  class { "admin_users":
+    require => Class['exim::satellite'],
+  }
   # Allow admin users to push puppet config
   group { "adm": ensure => present }
   sudoers::allowed_command{ "puppet":
@@ -55,9 +66,4 @@ class minimal {
     comment          => 'Allow members of the admin group to use puppet as root without requiring a password - so that they can update the puppet repositories and hence trigger the hooks',
   }
 
-  # Make it possible to send email (if correct from address is used)
-  class { 'exim::satellite':
-    smarthost   => 'mail-serv.cl.cam.ac.uk',
-    mail_domain => 'cl.cam.ac.uk',
-  }
 }
