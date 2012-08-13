@@ -254,7 +254,7 @@ define nagios_monitor (
   # ensure this host is in authorized_user_ids
   file_line { $host:
     path => "/home/nagios-collector/.monkeysphere/authorized_user_ids",
-    line => "root@${host}.${org_domain}",
+    line => "root@${host}.${::org_domain}",
     require => File["/home/nagios-collector/.monkeysphere/authorized_user_ids"],
   }
 } 
