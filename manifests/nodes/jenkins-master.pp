@@ -5,7 +5,7 @@ if ( $::fqdn == $::nagios_server ) {
   nagios_monitor { 'jenkins-master':
     parents    => '',
     address    => 'jenkins-master.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers', 'httpd-servers' ],
+    hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
 }
 if ( $::fqdn == $::munin_server ) {
