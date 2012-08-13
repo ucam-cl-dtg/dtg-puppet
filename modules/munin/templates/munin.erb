@@ -1,0 +1,52 @@
+<VirtualHost <%= listen_ip %><% if munin_ssl -%>:443<% else -%>:80<% end -%>>
+  ServerName <%= server_name %>
+  Alias /munin /var/cache/munin/www
+  DocumentRoot /var/cache/munin/www
+  <% if munin_ssl %>
+  <% if has_variable?("tls_cert_file") then %>
+    SSLEngine On
+    SSLCertificateFile <%= tls_cert_file %>
+    <% if has_variable?("tls_cert_chain_file") then %>
+      SSLCertificateChainFile <%= tls_cert_chain_file %> 
+    <% end %>
+    SSLCertificateKeyFile <%= tls_key_file %> 
+  <% end %>
+  <% end %>
+  <Directory /var/cache/munin/www>
+    Options None
+
+    # This file can be used as a .htaccess file, or a part of your apache
+    # config file.
+    #
+    # For the .htaccess file option to work the munin www directory
+    # (/var/cache/munin/www) must have "AllowOverride all" or something 
+    # close to that set.
+    #
+
+    # AuthUserFile /etc/munin/munin-htpasswd
+    # AuthName "Munin"
+    # AuthType Basic
+    # require valid-user
+
+    # This next part requires mod_expires to be enabled.
+    #
+    
+    # Set the default expiration time for files to 5 minutes 10 seconds from
+    # their creation (modification) time.  There are probably new files by
+    # that time. 
+    #
+
+    <IfModule mod_expires.c>
+        ExpiresActive On
+      ExpiresDefault M310
+    </IfModule>
+
+  </Directory> 
+</VirtualHost>
+<% if munin_ssl -%>
+<VirtualHost <%= listen_ip %>:80>
+  ServerName <%= server_name %>
+  RewriteEngine On
+  RewriteRule . https://<%= server_name %>
+</VirtualHost>
+<% end -%>

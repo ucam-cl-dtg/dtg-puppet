@@ -36,3 +36,6 @@ $nagios_from_emailaddress = "dtg-code@cl.cam.ac.uk"
 $nagios_alert_emailaddress = $nagios_from_emailaddress
 $nagios_org_name = "Digitial Technology Group"
 $nagios_org_url = "http://www.cl.cam.ac.uk/research/dtg/"
+#Munin config
+$munin_ssl = false
+$munin_server = "monitor.$org_domain"

@@ -8,3 +8,6 @@ if ( $::fqdn == $::nagios_server ) {
     hostgroups => [ 'ssh-servers'],
   }
 }
+if ( $::fqdn == $::munin_server ) {
+  munin::gatherer::configure_node { 'test-puppet': }
+}
