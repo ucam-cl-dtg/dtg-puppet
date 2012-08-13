@@ -163,8 +163,8 @@ class nagios_server {
 
   # Setup apache
   class { "apache": }
-  apache::site { "monitor.conf":
-    content => template("nagios/apache/monitor.conf.erb")
+  apache::site { "nagios.conf":
+    content => template("nagios/apache/nagios.conf.erb")
   }
   if $nagios_ssl {
     #TODO(drt24) support for cert management
