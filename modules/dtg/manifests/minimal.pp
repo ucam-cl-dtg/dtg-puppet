@@ -70,7 +70,7 @@ class minimal {
     require => Class['exim::satellite'],
   }
   class { 'munin::node':
-    node_allow_ips => [ escapeRegexp($::munin_server_ip) ],
+    node_allow_ips => [ escapeRegexp($::munin_server_ip), '^127\.0\.0\.1$' ],
   }
 
 }
