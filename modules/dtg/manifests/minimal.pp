@@ -69,5 +69,8 @@ class minimal {
     unattended_upgrade_notify_emailaddress => $::unattended_upgrade_notify_emailaddress,
     require => Class['exim::satellite'],
   }
+  class { 'munin::node':
+    node_allow_ip => escapeRegexp($::munin_server_ip),
+  }
 
 }
