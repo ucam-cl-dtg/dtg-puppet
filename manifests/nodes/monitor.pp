@@ -1,5 +1,5 @@
 node "monitor.dtg.cl.cam.ac.uk" {
-  include minimal
+  include monitor
   class {'nagios_server':}
   class {'munin::gatherer':
     server_name => $::munin_server
