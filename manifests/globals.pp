@@ -30,7 +30,7 @@ $ms_admin_user_ids = [
 $ms_keyserver = 'keys.gnupg.net'
 
 # Nagios config
-$nagios_server = "monitor.$org_domain"
+$nagios_server = "nagios.$org_domain"
 $nagios_ssl = false
 $nagios_from_emailaddress = "dtg-code@cl.cam.ac.uk"
 $nagios_alert_emailaddress = $nagios_from_emailaddress
@@ -39,7 +39,7 @@ $nagios_org_url = "http://www.cl.cam.ac.uk/research/dtg/"
 
 #Munin config
 $munin_ssl = false
-$munin_server = "monitor.$org_domain"
+$munin_server = "munin.$org_domain"
 
 # Unattended upgrade config
 $unattended_upgrade_notify_emailaddress = "dtg-code@cl.cam.ac.uk"
