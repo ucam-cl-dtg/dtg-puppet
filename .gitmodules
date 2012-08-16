@@ -25,3 +25,6 @@
 [submodule "modules/stunnel"]
 	path = modules/stunnel
 	url = git://github.com/ucam-cl-dtg/blendedbyus-stunnel.git
+[submodule "modules/sysctl"]
+	path = modules/sysctl
+	url = git://git.puppet.immerda.ch/module-sysctl.git
