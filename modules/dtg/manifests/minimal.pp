@@ -1,12 +1,16 @@
-class minimal {
+class minimal ($manageapt = true) {
 
   # Set up the repositories, get some entropy then do everything else
+  #  entropy needs to start being provided before it is consumed
   stage {'entropy': before => Stage['main'] }
-  stage {'repos': before => Stage['entropy'] }
+  stage {'entropy-host': before => Stage['entropy'] }
+  stage {'repos': before => Stage['entropy-host'] }
   # Manage apt sources lists
-  class { 'aptrepository':
-    repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
-    stage => 'repos'
+  if $manageapt {
+    class { 'aptrepository':
+      repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
+      stage => 'repos'
+    }
   }
 
   # Packages which should be installed on all servers
@@ -21,10 +25,12 @@ class minimal {
   class { "etckeeper": }
   class { "ntp": servers => $ntp_servers, autoupdate => true, }
   # Get entropy then do gpg and then monkeysphere
-  class { "ekeyd::client":
-    host => 'entropy.dtg.cl.cam.ac.uk',
-    port => '7776',
+  class { 'dtg::entropy': stage => 'entropy-host' }
+  class { 'dtg::entropy::client':
+    cafile  => '/usr/local/share/ssl/cafile',
+    host_address => 'entropy.dtg.cl.cam.ac.uk',
     stage => 'entropy',
+    require => File['/usr/local/share/ssl/cafile'],
   }
 
   # Make it possible to send email (if correct from address is used)
