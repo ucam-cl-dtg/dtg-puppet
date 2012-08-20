@@ -58,6 +58,8 @@ git submodule update --init
 chmod -R g+u .
 chgrp -R adm .
 find . -type d -print0 | xargs -0 chmod g+s
+chmod -R g+u .git # otherwise not necessarily covered
+chgrp -R adm .git
 
 # Pull in the current contents
 git push --set-upstream bare master
