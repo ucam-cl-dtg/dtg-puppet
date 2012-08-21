@@ -30,6 +30,7 @@ $ms_admin_user_ids = [
 $ms_keyserver = 'keys.gnupg.net'
 
 # Nagios config
+$nagios_machine_fqdn = "monitor.${org_domain}"
 $nagios_server = "nagios.$org_domain"
 $nagios_ssl = false
 $nagios_from_emailaddress = "dtg-code@cl.cam.ac.uk"
@@ -39,6 +40,7 @@ $nagios_org_url = "http://www.cl.cam.ac.uk/research/dtg/"
 
 #Munin config
 $munin_ssl = false
+$munin_machine_fqdn = $nagios_machine_fqdn
 $munin_server = "munin.$org_domain"
 $munin_server_ip_array = dnsLookup($munin_server)
 $munin_server_ip = $munin_server_ip_array[0]

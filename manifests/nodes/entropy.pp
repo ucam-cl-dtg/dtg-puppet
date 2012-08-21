@@ -8,13 +8,13 @@ node 'entropy.dtg.cl.cam.ac.uk' {
     stage       => 'entropy-host'
   }
 }
-if ( $::fqdn == $::nagios_server ) {
+if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios_monitor { 'entropy':
     parents    => '',
     address    => 'entropy.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers'],
   }
 }
-if ( $::fqdn == $::munin_server ) {
+if ( $::fqdn == $::munin_machine_fqdn ) {
   munin::gatherer::configure_node { 'entropy': }
 }
