@@ -11,7 +11,7 @@ if ( $::fqdn == $::nagios_machine_fqdn ) {
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
   nagios_monitor { 'maven':
-    parents    => '',
+    parents    => 'code',
     address    => 'dtg-maven.cl.cam.ac.uk',
     hostgroups => [ 'http-servers' ],
     include_standard_hostgroups => false,
