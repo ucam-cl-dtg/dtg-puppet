@@ -39,11 +39,14 @@ class dtg::entropy::host ($certificate, $private_key, $ca, $crl = false){
     cafile      => $ca,
     crlfile     => $crl,
     chroot      => '/var/lib/stunnel4/egd-host',
+    pid         => '/egd-host.pid',
+    output      => '/egd-host.log',
     user        => 'egd-host',
     group       => 'egd-host',
     services    => {'egd-host' => {accept => '7776'}},
     connect     => '777',
     client      => false,
+    protocol    => false,
     require     => User['egd-host'],
   }
   class { 'ekeyd':
@@ -72,16 +75,19 @@ class dtg::entropy::client ($cafile, $host_address, $host_port = '7776', $local_
   stunnel::tun { 'egd-client':
     cafile      => $cafile,
     chroot      => '/var/lib/stunnel4/egd-client',
+    pid         => '/egd-client.pid',
+    output      => '/egd-client.log',
     user        => 'egd-client',
     group       => 'egd-client',
     services    => { 'egd-client' => {accept => $local_port}},
     connect     => "${host_address}:${host_port}",
     client      => true,
     verify      => 3,
+    protocol    => false,
     require     => User['egd-client'],
   }
   class { 'ekeyd::client':
     host => 'localhost',
-    port => '7776',
+    port => '7777',
   }
 }
