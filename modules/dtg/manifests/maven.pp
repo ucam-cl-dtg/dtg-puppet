@@ -14,9 +14,12 @@ class dtg::maven::nexus (
   $download_url = "${mirror_url}${download_file}"
   $download_to = "/srv/nexus/${download_file}"
   $nexus_dir = "/srv/nexus/nexus-${version}"
-  group {'nexus':}
+  group {'nexus':
+    ensure => present,
+  }
   user {'nexus':
-    gid => 'nexus',
+    gid    => 'nexus',
+    ensure => present,
   }
   file {'/local/data/nexus':
     ensure => directory,
