@@ -14,7 +14,7 @@ class minimal ($manageapt = true) {
   }
 
   # Packages which should be installed on all servers
-  $packagelist = ['vim', 'screen', 'fail2ban']
+  $packagelist = ['vim', 'screen', 'fail2ban', 'curl', 'tar']
   package {
     $packagelist:
       ensure => installed
