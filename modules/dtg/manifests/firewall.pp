@@ -24,6 +24,8 @@ class dtg::firewall {
 #  resources { "firewall":
 #    purge => true
 #  }
+  class {'dtg::firewall::pre':}->
+  class {'dtg::firewall::post':}
 }
 
 # The first rules which do the accepting
