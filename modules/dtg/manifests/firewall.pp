@@ -1,6 +1,12 @@
 #iptables firewalling for nodes
 # Default setup
 class dtg::firewall {
+  file { '/etc/iptables/':
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
   exec { 'persist-firewall':
     command => '/sbin/iptables-save > /etc/iptables/rules.v4',
     refreshonly => true,
