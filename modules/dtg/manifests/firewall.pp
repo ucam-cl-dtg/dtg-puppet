@@ -1,15 +1,14 @@
 #iptables firewalling for nodes
 # Default setup
 class dtg::firewall {
-  file { '/etc/iptables/':
-    ensure => directory,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
-  }
   exec { 'persist-firewall':
-    command => '/sbin/iptables-save > /etc/iptables/rules.v4',
+    command => '/sbin/iptables-save > /etc/iptables.rules',
     refreshonly => true,
+  }
+  file_line { 'restore iptables':
+    ensure => present,
+    line   => 'pre-up iptables-restore < /etc/iptables.rules',
+    path   => '/etc/network/interfaces',
   }
   # These defaults ensure that the persistence command is executed after 
   # every change to the firewall, and that pre & post classes are run in the
