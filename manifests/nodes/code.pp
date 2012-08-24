@@ -3,6 +3,7 @@ node 'code.dtg.cl.cam.ac.uk' {
   class {'apache': }
   class {'dtg::apache::raven': }
   class {'dtg::maven': }
+  class {'dtg::firewall::publichttp':}
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios_monitor { 'code':

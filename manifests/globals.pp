@@ -47,3 +47,6 @@ $munin_server_ip = $munin_server_ip_array[0]
 
 # Unattended upgrade config
 $unattended_upgrade_notify_emailaddress = "dtg-code@cl.cam.ac.uk"
+
+#Firewall config
+$local_subnet = '128.232.0.0/16'

@@ -84,5 +84,6 @@ class minimal ($manageapt = true) {
   class { 'munin::node':
     node_allow_ips => [ escapeRegexp($::munin_server_ip), '^127\.0\.0\.1$' ],
   }
-
+  # Include default firewall rules
+  class { 'dtg::firewall': }
 }

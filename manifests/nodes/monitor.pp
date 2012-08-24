@@ -21,4 +21,5 @@ node "monitor.dtg.cl.cam.ac.uk" {
     hostgroups => [ 'http-servers' ],
     include_standard_hostgroups => false,
   }
+  class {'dtg::firewall::privatehttp':}
 }
