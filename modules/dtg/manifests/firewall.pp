@@ -89,6 +89,16 @@ class dtg::firewall::entropy {
     source  => $::local_subnet,
   }
 }
+class dtg::firewall::80to8080 {
+  firewall { '020 redirect 80 to 8080':
+    dport   => '80',
+    table   => 'nat',
+    chain   => 'PREROUTING',
+    jump    => 'REDIRECT',
+    iniface => 'eth0',
+    toports => '8080',
+  }
+}
 # The last rule which does the dropping
 class dtg::firewall::post {
   firewall { '999 drop all':

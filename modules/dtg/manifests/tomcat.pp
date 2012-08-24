@@ -23,4 +23,5 @@ class dtg::tomcat::raven inherits dtg::tomcat {
     group  => $tomcat,
     require => Package[$tomcat]
   }
+  # TODO(drt24) Install the required jars
 }

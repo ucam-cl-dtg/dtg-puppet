@@ -1,6 +1,7 @@
 node 'jenkins-master.dtg.cl.cam.ac.uk' {
   include minimal
-  class { 'dtg::tomcat::raven': }
+  class { 'dtg::jenkins': }
+  class { 'dtg::firewall::publichttp': }
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios_monitor { 'jenkins-master':
