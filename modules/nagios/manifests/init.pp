@@ -110,6 +110,7 @@ class nagios_server {
 
   file { "$nagios_base_dir/conf.d/nodes": 
     ensure => directory,
+    recurse => true, # so that nodes get deleted if deconfigured
     require => Package["nagios3"]
   }
 
