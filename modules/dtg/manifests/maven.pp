@@ -1,6 +1,7 @@
 class dtg::maven {
   # Proxy from apache to nexus
   apache::module {'proxy':} ->
+  apache::module {'proxy_http':} ->
   apache::site {'maven':
     source => 'puppet:///modules/dtg/apache/maven.conf',
   }
