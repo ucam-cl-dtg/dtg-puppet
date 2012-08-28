@@ -92,7 +92,7 @@ class dtg::maven::nexus (
   # Start nexus if not already running
   exec {'nexus_start':
     unless    => 'ps x -U nexus | grep java | grep -v grep',
-    command   => '/srv/nexus/nexus/bin/nexus',
+    command   => '/srv/nexus/nexus/bin/nexus start',
     user      => 'nexus',
     logoutput => 'on_failure',
     require   => File['/srv/nexus/nexus/'],
