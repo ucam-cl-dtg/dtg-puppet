@@ -89,12 +89,13 @@ class dtg::maven::nexus (
     special => 'reboot',
     require => File['/srv/nexus/nexus/'],
   }
+  package{'default-jre': ensure => present}
   # Start nexus if not already running
   exec {'nexus_start':
     unless    => 'ps x -U nexus | grep java | grep -v grep',
     command   => '/srv/nexus/nexus/bin/nexus start',
     user      => 'nexus',
     logoutput => 'on_failure',
-    require   => File['/srv/nexus/nexus/'],
+    require   => [File['/srv/nexus/nexus/'], Package['default-jre']],
   }
 }
