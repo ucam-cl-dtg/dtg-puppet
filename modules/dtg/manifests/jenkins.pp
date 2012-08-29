@@ -11,7 +11,7 @@ class dtg::jenkins {
   $jenkins_job_packages = ['inkscape','openjdk-7-jdk','reprepro','git-buildpackage', 'build-essential', 'cowbuilder', 'cowdancer', 'debootstrap','devscripts','pbuilder', 'octave', 'octave-octgpr', 'mysql-common','maven']
   package { $jenkins_job_packages:
     ensure => installed,
-  }->
+  }
   #packages required by jenkins
   package {['jenkins-tomcat','jenkins-cli']:
     ensure => installed,
