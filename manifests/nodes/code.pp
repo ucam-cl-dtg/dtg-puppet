@@ -1,7 +1,7 @@
 node 'code.dtg.cl.cam.ac.uk' {
   include minimal
   class {'apache': }
-  class {'dtg::apache::raven': }
+  class {'dtg::apache::raven': server_description => 'DTG Code Server'}
   class {'dtg::maven': }
   class {'dtg::firewall::publichttp':}
 }
