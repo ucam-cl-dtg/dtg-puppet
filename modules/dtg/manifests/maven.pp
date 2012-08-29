@@ -6,6 +6,7 @@ class dtg::maven {
     source => 'puppet:///modules/dtg/apache/maven.conf',
   }
   class {'dtg::maven::nexus':}
+  #TODO(drt24) need to persuade it not to redirect to localhost:8081
 }
 # This will set up nexus listening on port 8081
 class dtg::maven::nexus (
@@ -81,6 +82,14 @@ class dtg::maven::nexus (
     ensure => link,
     target => $nexus_dir,
     require => Exec['nexus_extract'],
+  }
+  file {'/srv/nexus/nexus/conf/nexus.properties':
+    ensure => file,
+    source => 'puppet:///modules/dtg/nexus/conf/nexus.properties',
+    owner  => 'nexus',
+    group  => 'nexus',
+    mode   => '0744',
+    require => File['/srv/nexus/nexus/'],
   }
   # Start nexus on reboot
   cron {'nexus':
