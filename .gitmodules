@@ -31,3 +31,9 @@
 [submodule "modules/firewall"]
 	path = modules/firewall
 	url = git://github.com/puppetlabs/puppetlabs-firewall.git
+[submodule "modules/wget"]
+	path = modules/wget
+	url = git://github.com/maestrodev/puppet-wget.git
+[submodule "modules/sonar"]
+	path = modules/sonar
+	url = git://github.com/maestrodev/puppet-sonar.git
