@@ -23,5 +23,37 @@ class dtg::tomcat::raven inherits dtg::tomcat {
     group  => $tomcat,
     require => Package[$tomcat]
   }
-  # TODO(drt24) Install the required jars
+  package{'libucamwebauth-java':
+    ensure => installed,
+  }
+  package{ 'libucamwebauth-tomcat-java':
+    ensure => installed,
+  }
+  $tomcatlib = "/usr/share/${tomcat}/lib/"
+  file {"${tomcatlib}/webauth.jar":
+    ensure => link,
+    target => '/usr/share/java/ucamwebauth.jar',
+    require => Package['libucamwebauth-java'],
+  }
+  file {"${tomcatlib}/webauth-tomcat.jar":
+    ensure => link,
+    target => '/usr/share/java/ucamwebauth-tomcat.jar',
+    require => Package['libucamwebauth-tomcat-java'],
+  }
+  package{'libcommons-logging-java':
+    ensure => installed,
+  }
+  file {"${tomcatlib}/commons-logging.jar":
+    ensure => link,
+    target => '/usr/share/java/commons-logging.jar',
+    require => Package['libcommons-logging-java'],
+  }
+  package{'libcommons-codec-java':
+    ensure => installed,
+  }
+  file {"${tomcatlib}/commons-codec.jar":
+    ensure => link,
+    target => '/usr/share/java/commons-codec.jar',
+    require => Package['libcommons-codec-java'],
+  }
 }
