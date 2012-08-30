@@ -36,4 +36,4 @@
 	url = git://github.com/maestrodev/puppet-wget.git
 [submodule "modules/sonar"]
 	path = modules/sonar
-	url = git://github.com/maestrodev/puppet-sonar.git
+	url = git://github.com/ucam-cl-dtg/puppet-sonar.git
