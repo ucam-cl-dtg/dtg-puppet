@@ -89,7 +89,7 @@ class dtg::firewall::entropy {
     source  => $::local_subnet,
   }
 }
-class dtg::firewall::80to8080 {
+class dtg::firewall::80to8080 ($private = true){
   firewall { '020 redirect 80 to 8080':
     dport   => '80',
     table   => 'nat',
@@ -97,6 +97,15 @@ class dtg::firewall::80to8080 {
     jump    => 'REDIRECT',
     iniface => 'eth0',
     toports => '8080',
+  }
+  firewall { '020 accept on 8080':
+    proto   => 'tcp',
+    dport   => '8080',
+    action  => 'accept',
+    source  => $private ? {
+      true  => $::local_subnet,
+      false => undef,
+    }
   }
 }
 # The last rule which does the dropping
