@@ -1,4 +1,5 @@
 class dtg::jenkins {
+  class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::80to8080':}
   class {'dtg::tomcat::raven':}
   class {'dtg::jenkins::repos': stage => 'repos'}

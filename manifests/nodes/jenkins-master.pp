@@ -1,7 +1,7 @@
 node 'jenkins-master.dtg.cl.cam.ac.uk' {
   include minimal
   class { 'dtg::jenkins': }
-  class { 'dtg::firewall::publichttp': }
+  class { 'sonar': version => '3.2'}
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios_monitor { 'jenkins-master':
