@@ -61,9 +61,11 @@ class minimal ($manageapt = true) {
   }
   monkeysphere::auth_capable_user {'root':
     passphrase => $::ms_gpg_passphrase,
+    require    => Gpg::Private_key['root'],
   }
   monkeysphere::ssh_agent { 'root':
     passphrase => $::ms_gpg_passphrase,
+    require    => Monkeysphere::Auth_capable_user['root'],
   }
   # Add the certifiers who sign the users
   class { "ms_id_certifiers": }
