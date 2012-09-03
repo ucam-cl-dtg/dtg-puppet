@@ -14,7 +14,7 @@ class minimal ($manageapt = true) {
   }
 
   # Packages which should be installed on all servers
-  $packagelist = ['vim', 'screen', 'fail2ban', 'curl', 'tar']
+  $packagelist = ['vim', 'screen', 'fail2ban', 'curl', 'tar', 'runit']
   package {
     $packagelist:
       ensure => installed
@@ -54,6 +54,17 @@ class minimal ($manageapt = true) {
   }
   # ensure our ssh key is imported into the monkeysphere
   monkeysphere::import_key { "main": }
+  monkeysphere::publish_server_keys { 'main':}
+  gpg::private_key {'root':
+    homedir => '/root',
+    passphrase => $::ms_gpg_passphrase,
+  }
+  monkeysphere::auth_capable_user {'root':
+    passphrase => $::ms_gpg_passphrase,
+  }
+  monkeysphere::ssh_agent { 'root':
+    passphrase => $::ms_gpg_passphrase,
+  }
   # Add the certifiers who sign the users
   class { "ms_id_certifiers": }
   monkeysphere::authorized_user_ids { "root":
