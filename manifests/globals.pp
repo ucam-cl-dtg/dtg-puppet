@@ -1,6 +1,9 @@
 # Global configuration settings
 
-Exec { path => '/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin' }
+Exec {
+  path      => '/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin',
+  logoutput => 'on_failure',
+}
 
 $org_domain = 'dtg.cl.cam.ac.uk'
 
