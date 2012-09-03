@@ -127,16 +127,22 @@ define monkeysphere::authorized_user_ids( $user_ids,  $dest_dir = '/root/.monkey
 # in the monkeysphere. This is intended to be the same as generated a
 # password-less ssh key. Depends on gpg module and gpg::private_key 
 #
-define monkeysphere::auth_capable_user ( $passphrase, $pseudo_random = false ) { 
+define monkeysphere::auth_capable_user ( $passphrase, $pseudo_random = false, $home = '') { 
 
   $user = $title
+  if $home == '' {
+    $real_home = "/home/${user}"
+  } else {
+    $real_home = $home
+  }
 
   # handle auth subkey
   exec { "monkeysphere-gen-subkey-$user":
-    command => "printf '$passphrase\n' | monkeysphere gen-subkey",
-    require => [ Package["monkeysphere"], Exec["gpg-pem2openpgp-$user" ] ],
-    user => $user,
-    unless => "/usr/local/sbin/ms-subkey-exists" 
+    command     => "printf '$passphrase\n' | monkeysphere gen-subkey",
+    require     => [ Package["monkeysphere"], Exec["gpg-pem2openpgp-$user" ] ],
+    user        => $user,
+    environment => ["HOME=${real_home}"],#otherwise HOME not set
+    unless      => "/usr/local/sbin/ms-subkey-exists",
   }
 
 }

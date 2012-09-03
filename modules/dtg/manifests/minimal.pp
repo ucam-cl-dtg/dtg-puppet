@@ -61,6 +61,7 @@ class minimal ($manageapt = true) {
   }
   monkeysphere::auth_capable_user {'root':
     passphrase => $::ms_gpg_passphrase,
+    home       => '/root',
     require    => Gpg::Private_key['root'],
   }
   monkeysphere::ssh_agent { 'root':
