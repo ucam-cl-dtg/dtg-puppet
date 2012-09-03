@@ -4,6 +4,7 @@ node 'code.dtg.cl.cam.ac.uk' {
   class {'dtg::apache::raven': server_description => 'DTG Code Server'}
   class {'dtg::maven': }
   class {'dtg::firewall::publichttp':}
+  class {'dtg::git':}
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios_monitor { 'code':
