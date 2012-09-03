@@ -31,7 +31,7 @@ $ms_admin_user_ids = [
 ]
 # Keyserver with the public keys to use for monkeysphere
 $ms_keyserver = 'keys.gnupg.net'
-$ms_gpg_passphrase = 'not a secret passprhase - we rely on unix user protection'
+$ms_gpg_passphrase = 'not a secret passphrase - we rely on unix user protection'
 
 # Nagios config
 $nagios_machine_fqdn = "monitor.${org_domain}"
