@@ -8,7 +8,8 @@ class dtg::git {
     ensure  => present,
     home    => '/srv/git/',
     gid     => 'git',
-    comment => 'Git Version Control'
+    comment => 'Git Version Control',
+    shell   => '/bin/bash',
   }
   file {'/local/data/git':
     ensure => directory,
@@ -20,8 +21,17 @@ class dtg::git {
     ensure => link,
     target => '/local/data/git/',
   }
-
-
+  # Bootstrap admin key
+  file {'/srv/git/drt24.pub':
+    ensure => file,
+    source => 'puppet:///modules/dtg/ssh/drt24.pub',
+  }
+  exec {'setup-gitolite':
+    command => 'sudo -H -u git -g -git gl-setup drt24.pub',
+    cwd     => '/srv/git/',
+    creates => '/srv/git/repositories/',
+  }
+  #TODO(drt24) setup backups and restore from backups
 }
 class dtg::git::labhq {
   $packages = ['ruby']
