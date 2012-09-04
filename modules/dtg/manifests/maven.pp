@@ -6,7 +6,6 @@ class dtg::maven {
     source => 'puppet:///modules/dtg/apache/maven.conf',
   }
   class {'dtg::maven::nexus':}
-  #TODO(drt24) need to persuade it not to redirect to localhost:8081
 }
 # This will set up nexus listening on port 8081
 class dtg::maven::nexus (
