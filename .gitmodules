@@ -37,3 +37,6 @@
 [submodule "modules/sonar"]
 	path = modules/sonar
 	url = git://github.com/ucam-cl-dtg/puppet-sonar.git
+[submodule "modules/vcsrepo"]
+	path = modules/vcsrepo
+	url = git://github.com/openstack-ci/puppet-vcsrepo.git
