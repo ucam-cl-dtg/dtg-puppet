@@ -26,18 +26,6 @@ define dtg::add_user ( $email, $groups = '', $keys = undef) {
         require => [ User[$username], Group[$username] ],
     }
 
-    # Required in the setuserpassword script
-    package { 'apg' : ensure => installed }
-
-    file { "/usr/local/sbin/setuserpassword":
-        ensure  => file,
-        mode    => 755,
-        owner   => root,
-        group   => root,
-        source  => "puppet:///modules/dtg/sbin/setuserpassword",
-        require => Package['apg'],
-    }
-
     exec { "setuserpassword $username":
          refreshonly     => true,
          subscribe       => User[$username],

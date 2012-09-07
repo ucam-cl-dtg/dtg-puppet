@@ -14,7 +14,7 @@ class minimal ($manageapt = true) {
   }
 
   # Packages which should be installed on all servers
-  $packagelist = ['vim', 'screen', 'fail2ban', 'curl', 'tar', 'runit']
+  $packagelist = ['vim', 'screen', 'fail2ban', 'curl', 'tar', 'runit', 'apg']
   package {
     $packagelist:
       ensure => installed
@@ -72,6 +72,14 @@ class minimal ($manageapt = true) {
   class { "ms_id_certifiers": }
   monkeysphere::authorized_user_ids { "root":
     user_ids => $ms_admin_user_ids
+  }
+  file { "/usr/local/sbin/setuserpassword":
+    ensure  => file,
+    mode    => 755,
+    owner   => root,
+    group   => root,
+    source  => "puppet:///modules/dtg/sbin/setuserpassword",
+    require => Package['apg'],
   }
   # Create the admin users
   class { "admin_users":
