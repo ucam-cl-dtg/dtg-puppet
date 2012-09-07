@@ -26,7 +26,7 @@ class admin_users {
         groups => [ 'adm' ],
         keys   => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
     }
-    dtg::add_user { 'ls525':
+    dtg::add_user { 'lc525':
         email  => 'Lucian Carata <lc525@cam.ac.uk>',
         groups => ['adm'],
         keys   => 'Lucian Carata <lc525@cam.ac.uk>',
