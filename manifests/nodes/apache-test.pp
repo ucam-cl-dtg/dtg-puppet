@@ -2,7 +2,7 @@ node 'apache-test.dtg.cl.cam.ac.uk' {
   include minimal
   class {'apache': }
   class { 'dtg::apache::raven': server_description => "James apache raven",}
-  
+  class {'dtg::firewall::publichttp':}
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios_monitor { 'apache-test':
