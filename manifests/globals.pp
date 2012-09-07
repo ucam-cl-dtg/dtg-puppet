@@ -7,6 +7,8 @@ Exec {
 
 $org_domain = 'dtg.cl.cam.ac.uk'
 
+$from_address = 'dtg-code@cl.cam.ac.uk'
+
 $ntp_servers = [ 'ntp2.csx.cam.ac.uk',
                  'ntp1.csx.cam.ac.uk',
                  'ntp1.retrosnub.co.uk',
@@ -47,7 +49,7 @@ $ms_gpg_passphrase = 'not a secret passphrase - we rely on unix user protection'
 $nagios_machine_fqdn = "monitor.${org_domain}"
 $nagios_server = "nagios.$org_domain"
 $nagios_ssl = false
-$nagios_from_emailaddress = "dtg-code@cl.cam.ac.uk"
+$nagios_from_emailaddress = $from_address
 $nagios_alert_emailaddress = $nagios_from_emailaddress
 $nagios_org_name = "Digitial Technology Group"
 $nagios_org_url = "http://www.cl.cam.ac.uk/research/dtg/"
@@ -60,7 +62,7 @@ $munin_server_ip_array = dnsLookup($munin_server)
 $munin_server_ip = $munin_server_ip_array[0]
 
 # Unattended upgrade config
-$unattended_upgrade_notify_emailaddress = "dtg-code@cl.cam.ac.uk"
+$unattended_upgrade_notify_emailaddress = $from_address
 
 #Firewall config
 $local_subnet = '128.232.0.0/16'
