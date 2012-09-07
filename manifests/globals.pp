@@ -36,6 +36,11 @@ class admin_users {
         groups => ['adm'],
         keys   => 'James Snee <jas250@cam.ac.uk>',
     }
+    dtg::add_user { 'acr31':
+        email  => 'Andrew Rice <acr31@cam.ac.uk>',
+        groups => ['adm'],
+        keys   => 'Andrew Rice <acr31@cam.ac.uk>',
+    }
 }
 # Admin user ids to be given root on the nodes via monkeysphere
 $ms_admin_user_ids = [
