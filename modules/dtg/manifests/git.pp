@@ -1,6 +1,7 @@
 class dtg::git {
-  $packages = ['gitolite']
-  package {$packages :
+  # Setup gitolite package
+  $gitolitepackages = ['gitolite']
+  package {$gitolitepackages :
     ensure => installed,
   }
   group {'git': ensure => present,}
@@ -15,35 +16,139 @@ class dtg::git {
     ensure => directory,
     owner  => 'git',
     group  => 'git',
-    mode   => '0755',
+    mode   => '2755',
   }
   file {'/srv/git/':
     ensure => link,
     target => '/local/data/git/',
   }
-  # Bootstrap admin key
-  file {'/srv/git/drt24.pub':
-    ensure => file,
-    source => 'puppet:///modules/dtg/ssh/drt24.pub',
-  }
-  exec {'setup-gitolite':
-    command => 'sudo -H -u git -g -git gl-setup drt24.pub',
-    cwd     => '/srv/git/',
-    creates => '/srv/git/repositories/',
-  }
   #TODO(drt24) setup backups and restore from backups
-}
-class dtg::git::labhq {
-  $packages = ['ruby']
-  package {$packages :
+  # Setup gitlab
+  $gitlabpackages = ['ruby','rubygems','bundler','python-pygments','libicu-dev']
+  package {$gitlabpackages :
     ensure => installed,
   }
   group {'gitlab':}
   user {'gitlab':
     gid      => 'gitlab',
     groups   => 'git',
-    comment  => 'gitlab system',
+    comment  => 'Gitlab System',
+    home     => '/srv/gitlab/',
     password => '!',#disable login
   }
-  
+  file {'/local/data/gitlab':
+    ensure => directory,
+    owner  => 'gitlab',
+    group  => 'gitlab',
+    mode   => '2755',
+  }
+  file {'/srv/gitlab/':
+    ensure => link,
+    target => '/local/data/gitlab/',
+  }
+  file {'/srv/gitlab/.ssh/':
+    ensure => directory,
+    owner  => 'gitlab',
+    group  => 'gitlab',
+    mode   => '0700',
+  }
+  exec {'gen-gitlab-sshkey':
+    command => 'sudo -H -u gitlab -g gitlab ssh-keygen -q -N "" -t rsa -f /srv/gitlab/.ssh/id_rsa',
+    creates => '/srv/gitlab/.ssh/id_rsa',
+    require => File['/srv/gitlab/.ssh/'],
+  }
+  # Setup gitolite
+  # Bootstrap admin key
+#  file {'/srv/git/drt24.pub':
+#    ensure => file,
+#    source => 'puppet:///modules/dtg/ssh/drt24.pub',
+#  }
+  file {'/srv/git/gitlab.pub':
+    ensure => file,
+    source => 'file:///srv/gitlab/.ssh/id_rsa.pub',
+    owner  => 'gitlab',
+    group  => 'git',
+    mode   => '0744',
+  }
+  file {'/usr/share/gitolite/conf/example.gitolite.rc':
+    ensure => file,
+    source => 'puppet:///modules/dtg/example.gitolite.rc',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+  }
+  exec {'setup-gitolite':
+    command => 'sudo -H -u git -g git gl-setup gitlab.pub',
+    cwd     => '/srv/git/',
+    creates => '/srv/git/repositories/',
+    require => File['/srv/git/gitlab.pub', '/usr/share/gitolite/conf/example.gitolite.rc'],
+  }
+  # Install gitlab
+  package {'charlock_holmes':
+    ensure   => 'latest',
+    provider => 'gem',
+  }
+  vcsrepo {'/srv/gitlab/gitlab/':
+    ensure   => latest,
+    provider => 'git',
+    source   => 'git://github.com/gitlabhq/gitlabhq.git',
+    revision => 'stable',
+    owner    => 'gitlab',
+    group    => 'gitlab',
+  }
+  file {'/srv/gitlab/gitlab/tmp/':
+    ensure => directory,
+    owner  => 'gitlab',
+    group  => 'gitlab',
+    require => Vcsrepo['/srv/gitlab/gitlab/'],
+  }
+  $gitlab_from_address = $::from_address
+  file {'/srv/gitlab/gitlab/config/gitlab.yml':
+    ensure  => file,
+    content => template('dtg/gitlab/gitlab.yml.erb'),
+  }
+  # setup database stuff
+  class { 'mysql::server':
+    config_hash => { 'root_password' => 'mysql-password' }
+  }
+  class { 'mysql': }
+  $gitlabpassword = "gitlabpassword"#TODO(drt24) generate this automatically without overwriting on every run
+  mysql::db { 'gitlabhq_production':
+    user     => 'gitlab',
+    password => 'gitlab',
+    host     => 'localhost',
+    grant    => ['all'],
+    require  => Class['mysql::server'],
+  }
+  file { '/var/backups/mysql/':
+    ensure => directory,
+  }
+  class { 'mysql::backup':
+    backupuser     => 'mysqlbackup',
+    backuppassword => 'mysqlbackup',
+    backupdir      => '/var/backups/mysql/',
+  }
+  file {'/srv/gitlab/gitlab/config/database.yml':
+    ensure  => file,
+    content => template('dtg/gitlab/database.yml.erb'),
+    owner   => 'gitlab',
+    group   => 'gitlab',
+  }
+  exec {'install bundle':
+    command => 'sudo -u gitlab -g gitlab -H bundle install --without development test --deployment'
+    unless  => 'false',#TODO(drt24)
+    cwd     => '/srv/gitlab/gitlab/',
+  }
+  exec {'setup database':
+    command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production'
+    unless  => 'false',#TODO(drt24)
+    cwd     => '/srv/gitlab/gitlab/',
+  }
+  file {'/usr/share/gitolite/hooks/common/post-receive':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+    source => 'file:///srv/gitlab/gitlab/lib/hooks/post-receive'
+  }
 }
