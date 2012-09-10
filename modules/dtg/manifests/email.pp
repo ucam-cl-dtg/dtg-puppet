@@ -19,11 +19,4 @@ class dtg::email {
     changes => ['ins MAILTO after SHELL', 'set MAILTO dtg-infra@cl.cam.ac.uk'],
     onlyif  => 'get MAILTO != dtg-infra@cl.cam.ac.uk',
   }
-  augeas {'rootanacrontabmailto':
-    incl    => '/etc/anacrontab',
-    lens    => 'Cron.lns',
-    changes => ['ins MAILTO after SHELL', 'set MAILTO dtg-infra@cl.cam.ac.uk'],
-    onlyif  => 'get MAILTO != dtg-infra@cl.cam.ac.uk',
-    requires => Package['anacron'],
-  }
 }
