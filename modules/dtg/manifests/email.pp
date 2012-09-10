@@ -24,5 +24,6 @@ class dtg::email {
     lens    => 'Cron.lns',
     changes => ['ins MAILTO after SHELL', 'set MAILTO dtg-infra@cl.cam.ac.uk'],
     onlyif  => 'get MAILTO != dtg-infra@cl.cam.ac.uk',
+    requires => Package['anacron'],
   }
 }
