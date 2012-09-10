@@ -34,14 +34,11 @@ class minimal ($manageapt = true) {
   }
 
   # Make it possible to send email (if correct from address is used)
-  class { 'exim::satellite':
-    smarthost   => 'mail-serv.cl.cam.ac.uk',
-    mail_domain => 'cl.cam.ac.uk',
-  }
+  class { 'dtg::email': }
 
   class { "gpg": }
   class { "monkeysphere":
-    require => Class['exim::satellite'],
+    require => Class['dtg::email'],
   }
   # create hourly cron job to update users authorized_user_id files
   $ms_min = random_number(60) 
@@ -83,7 +80,7 @@ class minimal ($manageapt = true) {
   }
   # Create the admin users
   class { "admin_users":
-    require => Class['exim::satellite'],
+    require => Class['dtg::email'],
   }
   # Allow admin users to push puppet config
   group { "adm": ensure => present }
@@ -101,7 +98,7 @@ class minimal ($manageapt = true) {
   }
   class { 'dtg::unattendedupgrades':
     unattended_upgrade_notify_emailaddress => $::unattended_upgrade_notify_emailaddress,
-    require => Class['exim::satellite'],
+    require => Class['dtg::email'],
   }
   class { 'munin::node':
     node_allow_ips => [ escapeRegexp($::munin_server_ip), '^127\.0\.0\.1$' ],

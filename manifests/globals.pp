@@ -7,7 +7,7 @@ Exec {
 
 $org_domain = 'dtg.cl.cam.ac.uk'
 
-$from_address = 'dtg-code@cl.cam.ac.uk'
+$from_address = 'dtg-infra@cl.cam.ac.uk'
 
 $ntp_servers = [ 'ntp2.csx.cam.ac.uk',
                  'ntp1.csx.cam.ac.uk',
