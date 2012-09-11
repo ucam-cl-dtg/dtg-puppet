@@ -24,7 +24,7 @@ class dtg::git {
   }
   #TODO(drt24) setup backups and restore from backups
   # Setup gitlab
-  $gitlabpackages = ['ruby','rubygems','bundler','python-pygments','libicu-dev']
+  $gitlabpackages = ['ruby','rubygems','ruby-bundler','python-pygments','libicu-dev']
   package {$gitlabpackages :
     ensure => installed,
   }
@@ -76,6 +76,7 @@ class dtg::git {
     owner  => 'root',
     group  => 'root',
     mode   => '0644',
+    require => Package['gitolite'],
   }
   exec {'setup-gitolite':
     command => 'sudo -H -u git -g git gl-setup gitlab.pub',
@@ -87,6 +88,7 @@ class dtg::git {
   package {'charlock_holmes':
     ensure   => 'latest',
     provider => 'gem',
+    require  => Package['rubygems'],
   }
   vcsrepo {'/srv/gitlab/gitlab/':
     ensure   => latest,
@@ -95,6 +97,7 @@ class dtg::git {
     revision => 'stable',
     owner    => 'gitlab',
     group    => 'gitlab',
+    require  => File['/srv/gitlab/'],
   }
   file {'/srv/gitlab/gitlab/tmp/':
     ensure => directory,
@@ -106,6 +109,7 @@ class dtg::git {
   file {'/srv/gitlab/gitlab/config/gitlab.yml':
     ensure  => file,
     content => template('dtg/gitlab/gitlab.yml.erb'),
+    require => Vcsrepo['/srv/gitlab/gitlab/'],
   }
   # setup database stuff
   class { 'mysql::server':
@@ -130,22 +134,32 @@ class dtg::git {
     content => template('dtg/gitlab/database.yml.erb'),
     owner   => 'gitlab',
     group   => 'gitlab',
+    require => Vcsrepo['/srv/gitlab/gitlab/'],
   }
   exec {'install bundle':
     command => 'sudo -u gitlab -g gitlab -H bundle install --without development test --deployment',
     unless  => 'false',#TODO(drt24)
     cwd     => '/srv/gitlab/gitlab/',
+    require => File['/srv/gitlab/gitlab/config/gitlab.yml'],
   }
   exec {'setup database':
     command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production',
     unless  => 'false',#TODO(drt24)
     cwd     => '/srv/gitlab/gitlab/',
+    require => File['/srv/gitlab/gitlab/config/database.yml'],
   }
   file {'/usr/share/gitolite/hooks/common/post-receive':
     ensure => file,
     owner  => 'root',
     group  => 'root',
     mode   => '0755',
-    source => 'file:///srv/gitlab/gitlab/lib/hooks/post-receive'
+    source => 'file:///srv/gitlab/gitlab/lib/hooks/post-receive',
+    require => [Package['gitolite'],Vcsrepo['/srv/gitlab/gitlab/']],
+  }
+  exec {'start gitlab':
+    command => 'sudo -u gitlab -g gitlab -H bundle exec rails s -e production -d',
+    unless  => 'false',#TODO(drt24)
+    cwd     => '/srv/gitlab/gitlab/',
+    require => Exec['install bundle','setup database'],
   }
 }
