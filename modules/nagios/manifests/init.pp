@@ -51,19 +51,21 @@ class nagios::server inherits nagios::params {
     require => Package["nagios3"]
   }
   file { "$nagios_base_dir/stylesheets":
-    source => "puppet:///modules/nagios/nagios3/stylesheets",
-    ensure => directory,
+    source  => "puppet:///modules/nagios/nagios3/stylesheets",
+    ensure  => directory,
     recurse => true,
-    notify => Service["nagios3"],
+    purge   => true,
+    notify  => Service["nagios3"],
     require => Package["nagios3"]
   }
 
   # Include plugin config directory 
   file { "$nagios_plugins_base_dir/":
-    source => "puppet:///modules/nagios/nagios-plugins/config",
-    ensure => directory,
+    source  => "puppet:///modules/nagios/nagios-plugins/config",
+    ensure  => directory,
     recurse => true,
-    notify => Service["nagios3"],
+    purge   => true,
+    notify  => Service["nagios3"],
     require => Package["nagios3"]
   }
   file { "$nagios_plugins_base_dir/epager.cfg":
@@ -114,24 +116,28 @@ class nagios::server inherits nagios::params {
   }
 
   file { "$nagios_base_dir/conf.d/nodes": 
-    ensure => directory,
+    ensure  => directory,
     recurse => true, # so that nodes get deleted if deconfigured
+    purge   => true,
     require => Package["nagios3"],
   }
 
   file { "$nagios_base_dir/conf.d/contacts": 
     ensure  => directory,
     recurse => true,
+    purge   => true,
     require => Package["nagios3"],
   }
   file { "$nagios_base_dir/conf.d/contactgroups": 
     ensure  => directory,
     recurse => true,
+    purge   => true,
     require => Package["nagios3"],
   }
   file { "$nagios_base_dir/conf.d/services": 
     ensure  => directory,
     recurse => true,
+    purge   => true,
     require => Package["nagios3"],
   }
   service { "nagios3":
