@@ -24,7 +24,7 @@ class dtg::git {
   }
   #TODO(drt24) setup backups and restore from backups
   # Setup gitlab
-  $gitlabpackages = ['ruby','rubygems','ruby-bundler','python-pygments','libicu-dev']
+  $gitlabpackages = ['ruby','rubygems','ruby-bundler','python-pygments','libicu-dev','libmysqlclient-dev', 'ruby-sqlite3', 'libsqlite3-dev']
   package {$gitlabpackages :
     ensure => installed,
   }
@@ -143,7 +143,7 @@ class dtg::git {
     command => 'sudo -u gitlab -g gitlab -H bundle install --without development test --deployment',
     unless  => 'false',#TODO(drt24)
     cwd     => '/srv/gitlab/gitlab/',
-    require => [File['/srv/gitlab/gitlab/config/gitlab.yml'],Class['mysql::ruby']],
+    require => [File['/srv/gitlab/gitlab/config/gitlab.yml'],Class['mysql::ruby'],Package['libmysqlclient-dev']],
   }
   exec {'setup gitlab database':
     command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production',
