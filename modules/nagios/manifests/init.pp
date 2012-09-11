@@ -12,6 +12,7 @@ class nagios::server inherits nagios::params {
   package { [ 'nagios3', 'libxml-rss-perl' ]: 
     ensure => present, 
   }
+  File { owner => 'root', group => 'root',}
 
   file { "$nagios_base_dir/conf.d/contacts_nagios2.cfg":
     content => template("nagios/nagios3/conf.d/contacts_nagios2.cfg.erb"),
