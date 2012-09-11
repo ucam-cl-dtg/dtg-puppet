@@ -105,4 +105,25 @@ class dtg::minimal ($manageapt = true) {
   }
   # Include default firewall rules
   class { 'dtg::firewall': }
+
+  # Keep stuff put in at bootstrap up to date
+  file {'/etc/puppet':
+    ensure => directory,
+    owner  => 'root',
+    group  => 'adm',
+    mode   => '2775',
+  }
+  file {'/etc/puppet-bare':
+    ensure => directory,
+    owner  => 'root',
+    group  => 'adm',
+    mode   => '2775',
+  }
+  file {'/etc/puppet-bare/hooks/post-update':
+    ensure => file,
+    owner  => 'root',
+    group  => 'adm',
+    mode   => '0775',
+    source => 'puppet:///modules/dtg/post-update.hook',
+  }
 }

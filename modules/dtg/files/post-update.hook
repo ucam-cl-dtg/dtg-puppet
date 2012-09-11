@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# post-update hook for /etc/puppet-bare to update /etc/puppet and apply config
+
+echo '---- Pulling changes into /etc/puppet -----'
+
+cd /etc/puppet
+unset GIT_DIR
+git pull --recurse-submodules=yes bare  master
+git submodule update --init
+
+echo '---- Applying new recipes ----'
+# Need -H so that HOME is set to /root as some stuff gets put there by puppet
+#  e.g. mysql
+sudo -H puppet apply --verbose --modulepath modules manifests/site.pp

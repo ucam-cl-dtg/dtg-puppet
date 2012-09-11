@@ -37,7 +37,7 @@ printf "unset GIT_DIR\n" >> "$target"
 printf "git pull --recurse-submodules=yes bare  master\n" >> "$target"
 printf "git submodule update --init\n\n" >> "$target"
 printf "echo ---- Applying new recipes ----\n\n" >> "$target"
-printf "sudo puppet apply --verbose --modulepath modules manifests/site.pp" >> "$target"
+printf "sudo -H puppet apply --verbose --modulepath modules manifests/site.pp" >> "$target"
 
 chmod 775 hooks/post-update
 
