@@ -116,25 +116,28 @@ class nagios::server inherits nagios::params {
   file { "$nagios_base_dir/conf.d/nodes": 
     ensure => directory,
     recurse => true, # so that nodes get deleted if deconfigured
-    require => Package["nagios3"]
+    require => Package["nagios3"],
   }
 
   file { "$nagios_base_dir/conf.d/contacts": 
-    ensure => directory,
-    require => Package["nagios3"]
+    ensure  => directory,
+    recurse => true,
+    require => Package["nagios3"],
   }
   file { "$nagios_base_dir/conf.d/contactgroups": 
-    ensure => directory,
-    require => Package["nagios3"]
+    ensure  => directory,
+    recurse => true,
+    require => Package["nagios3"],
   }
   file { "$nagios_base_dir/conf.d/services": 
-    ensure => directory,
-    require => Package["nagios3"]
+    ensure  => directory,
+    recurse => true,
+    require => Package["nagios3"],
   }
-  service {
-    "nagios3":
-      enable => true,
-      ensure => running,
+  service { "nagios3":
+    enable => true,
+    ensure => running,
+    require => Package["nagios3"],
   }
 
   # ensure user that will collect scp'ed logs from our nagios
