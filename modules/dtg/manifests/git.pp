@@ -28,8 +28,9 @@ class dtg::git {
   package {$gitlabpackages :
     ensure => installed,
   }
-  group {'gitlab':}
+  group {'gitlab': ensure => 'present',}
   user {'gitlab':
+    ensure   => 'present',
     gid      => 'gitlab',
     groups   => 'git',
     comment  => 'Gitlab System',
@@ -64,11 +65,12 @@ class dtg::git {
 #    source => 'puppet:///modules/dtg/ssh/drt24.pub',
 #  }
   file {'/srv/git/gitlab.pub':
-    ensure => file,
-    source => 'file:///srv/gitlab/.ssh/id_rsa.pub',
-    owner  => 'gitlab',
-    group  => 'git',
-    mode   => '0744',
+    ensure  => file,
+    source  => 'file:///srv/gitlab/.ssh/id_rsa.pub',
+    owner   => 'gitlab',
+    group   => 'git',
+    mode    => '0744',
+    require => Exec['gen-gitlab-sshkey'],
   }
   file {'/usr/share/gitolite/conf/example.gitolite.rc':
     ensure => file,
