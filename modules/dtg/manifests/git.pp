@@ -24,7 +24,7 @@ class dtg::git {
   }
   #TODO(drt24) setup backups and restore from backups
   # Setup gitlab
-  $gitlabpackages = ['ruby','rubygems','ruby-bundler','python-pygments','libicu-dev','ruby-mysql']
+  $gitlabpackages = ['ruby','rubygems','ruby-bundler','python-pygments','libicu-dev']
   package {$gitlabpackages :
     ensure => installed,
   }
@@ -118,6 +118,7 @@ class dtg::git {
     config_hash => { 'root_password' => 'mysql-password' }
   }
   class { 'mysql': }
+  class { 'mysql::ruby': }
   $gitlabpassword = "gitlabpassword"#TODO(drt24) generate this automatically without overwriting on every run
   mysql::db { 'gitlabhq_production':
     user     => 'gitlab',
@@ -142,7 +143,7 @@ class dtg::git {
     command => 'sudo -u gitlab -g gitlab -H bundle install --without development test --deployment',
     unless  => 'false',#TODO(drt24)
     cwd     => '/srv/gitlab/gitlab/',
-    require => [File['/srv/gitlab/gitlab/config/gitlab.yml'],Package['ruby-mysql']],
+    require => [File['/srv/gitlab/gitlab/config/gitlab.yml'],Class['mysql::ruby']],
   }
   exec {'setup gitlab database':
     command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production',
