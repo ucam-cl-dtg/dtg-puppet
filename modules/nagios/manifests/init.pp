@@ -64,7 +64,6 @@ class nagios::server inherits nagios::params {
     source  => "puppet:///modules/nagios/nagios-plugins/config",
     ensure  => directory,
     recurse => true,
-    purge   => true,
     notify  => Service["nagios3"],
     require => Package["nagios3"]
   }
