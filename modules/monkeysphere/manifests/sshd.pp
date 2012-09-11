@@ -1,10 +1,10 @@
-class sshd::default(
+class monkeysphere::sshd::default(
   $max_startups = "",
   $listen_address = [ '0.0.0.0', '::' ],
   $agent_forwarding = 'no'
 )
 {
-  class { "sshd":
+  class { "monkeysphere::sshd":
     authorized_keys_file => "/var/lib/monkeysphere/authorized_keys/%u",
     max_startups => $max_startups,
     agent_forwarding => $agent_forwarding,
@@ -12,12 +12,12 @@ class sshd::default(
   }
 }
 
-class sshd::pam(
+class monkeysphere::sshd::pam(
   $max_startups = "",
   $listen_address = [ '0.0.0.0', '::' ],
   $agent_forwarding = 'no'
 ) {
-  class { "sshd": 
+  class { "monkeysphere::sshd": 
     authorized_keys_file => "/var/lib/monkeysphere/authorized_keys/%u",
     challenge_response_authentication => 'yes',
     password_authentication => 'yes',
@@ -31,7 +31,7 @@ class sshd::pam(
   }
 }
 
-class sshd (
+class monkeysphere::sshd (
   $listen_address = [ '0.0.0.0', '::' ],
   $allowed_users = '',
   $allowed_groups = '', 

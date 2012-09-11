@@ -1,4 +1,4 @@
-class minimal ($manageapt = true) {
+class dtg::minimal ($manageapt = true) {
 
   # Set up the repositories, get some entropy then do everything else
   #  entropy needs to start being provided before it is consumed
@@ -20,7 +20,7 @@ class minimal ($manageapt = true) {
       ensure => installed
   }
 
-  include sshd::default
+  include 'monkeysphere::sshd::default'
 
   class { "etckeeper": }
   class { "ntp": servers => $ntp_servers, autoupdate => true, }

@@ -1,9 +1,13 @@
 
-$nagios_base_dir = "/etc/nagios3"
-$nagios_plugins_base_dir = "/etc/nagios-plugins/config"
+class nagios::params {
+  $base_dir = "/etc/nagios3"
+  $plugins_base_dir = "/etc/nagios-plugins/config"
+}
 
 # ensure base nagios configuration is in place
-class nagios_server {
+class nagios::server inherits nagios::params {
+  $nagios_base_dir = $nagios::params::base_dir
+  $nagios_plugins_base_dir = $nagios::params::plugins_base_dir
 
   package { [ 'nagios3', 'libxml-rss-perl' ]: 
     ensure => present, 
@@ -45,7 +49,7 @@ class nagios_server {
     notify => Service["nagios3"],
     require => Package["nagios3"]
   }
-  file { "$nagios_base_dir/":
+  file { "$nagios_base_dir/stylesheets":
     source => "puppet:///modules/nagios/nagios3/stylesheets",
     ensure => directory,
     recurse => true,
@@ -179,7 +183,7 @@ class nagios_server {
   }
 }
 
-define nagios_contact(  
+define nagios::contact ( 
   $contact_name, 
   $contact_alias, 
   $service_notification_period = "24x7",
@@ -191,7 +195,7 @@ define nagios_contact(
   $pager = "",
   $email = "" ) {
 
-  file { "$nagios_base_dir/conf.d/contacts/${contact_alias}.cfg":
+  file { "$nagios::params::base_dir/conf.d/contacts/${contact_alias}.cfg":
     ensure => present,
     content => template("nagios/contact.cfg.erb"),
     require => Package["nagios3"],
@@ -200,12 +204,12 @@ define nagios_contact(
 
 }
 
-define nagios_contactgroup(  
+define nagios::contactgroup(  
   $contactgroup_name, 
   $contactgroup_members, 
   $contactgroup_alias ) {
 
-  file { "$nagios_base_dir/conf.d/contactgroups/${contactgroup_alias}.cfg":
+  file { "$nagios::params::base_dir/conf.d/contactgroups/${contactgroup_alias}.cfg":
     ensure => present,
     content => template("nagios/contactgroup.cfg.erb"),
     require => Package["nagios3"],
@@ -213,14 +217,14 @@ define nagios_contactgroup(
   }
 }
 
-define nagios_service(  
+define nagios::service(  
   $service_hostgroup_name, 
   $service_description, 
   $service_check_command, 
   $service_use = "generice-service", 
   $service_notification_interval = "0" ) {
 
-  file { "$nagios_base_dir/conf.d/contactgroups/${service_host_group_name}.cfg":
+  file { "$nagiosi::params::base_dir/conf.d/contactgroups/${service_host_group_name}.cfg":
     ensure => present,
     content => template("nagios/service.cfg.erb"),
     require => Package["nagios3"],
@@ -228,7 +232,7 @@ define nagios_service(
   }
 }
 
-define nagios_monitor (
+define nagios::monitor (
   $address, $hostgroups, $parents, $contact_groups = "admins",
   $notification_period = "24x7", $use = "generic-host",
   $ensure = "present", $downtime = false, $include_standard_hostgroups = true ) 
@@ -245,7 +249,7 @@ define nagios_monitor (
     
   }
 
-  file { "$nagios_base_dir/conf.d/nodes/$host.cfg":
+  file { "$nagios::params::base_dir/conf.d/nodes/$host.cfg":
     ensure => $calculated_ensure,
     content => template("nagios/server.cfg.erb"),
     require => Package["nagios3"],
@@ -258,4 +262,4 @@ define nagios_monitor (
     line => "root@${host}.${::org_domain}",
     require => File["/home/nagios-collector/.monkeysphere/authorized_user_ids"],
   }
-} 
+}

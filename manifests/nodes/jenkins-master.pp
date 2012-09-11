@@ -1,10 +1,10 @@
 node 'jenkins-master.dtg.cl.cam.ac.uk' {
-  include minimal
+  include 'dtg::minimal'
   class { 'dtg::jenkins': }
   class { 'sonar': version => '3.2'}
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
-  nagios_monitor { 'jenkins-master':
+  nagios::monitor { 'jenkins-master':
     parents    => '',
     address    => 'jenkins-master.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],

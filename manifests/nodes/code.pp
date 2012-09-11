@@ -1,5 +1,5 @@
 node 'code.dtg.cl.cam.ac.uk' {
-  include minimal
+  include 'dtg::minimal'
   class {'apache': }
   class {'dtg::apache::raven': server_description => 'DTG Code Server'}
   class {'dtg::maven': }
@@ -7,12 +7,12 @@ node 'code.dtg.cl.cam.ac.uk' {
   class {'dtg::git':}
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
-  nagios_monitor { 'code':
+  nagios::monitor { 'code':
     parents    => '',
     address    => 'code.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
-  nagios_monitor { 'maven':
+  nagios::monitor { 'maven':
     parents    => 'code',
     address    => 'dtg-maven.cl.cam.ac.uk',
     hostgroups => [ 'http-servers' ],

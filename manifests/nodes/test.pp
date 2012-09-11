@@ -1,10 +1,10 @@
 node 'test-puppet.dtg.cl.cam.ac.uk' {
-  include minimal
+  include 'dtg::minimal'
 }
 # We don't actually mind if test-puppet goes down and we might take it down
 # deliberately and not want emails triggered
 #if ( $::fqdn == $::nagios_machine_fqdn ) {
-#  nagios_monitor { 'test-puppet':
+#  nagios::monitor { 'test-puppet':
 #    parents    => '',
 #    address    => 'test-puppet.dtg.cl.cam.ac.uk',
 #    hostgroups => [ 'ssh-servers'],
