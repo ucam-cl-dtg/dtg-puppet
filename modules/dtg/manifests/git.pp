@@ -138,17 +138,17 @@ class dtg::git {
     group   => 'gitlab',
     require => Vcsrepo['/srv/gitlab/gitlab/'],
   }
-  exec {'install bundle':
+  exec {'install gitlab bundle':
     command => 'sudo -u gitlab -g gitlab -H bundle install --without development test --deployment',
     unless  => 'false',#TODO(drt24)
     cwd     => '/srv/gitlab/gitlab/',
     require => File['/srv/gitlab/gitlab/config/gitlab.yml'],
   }
-  exec {'setup database':
+  exec {'setup gitlab database':
     command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production',
     unless  => 'false',#TODO(drt24)
     cwd     => '/srv/gitlab/gitlab/',
-    require => File['/srv/gitlab/gitlab/config/database.yml'],
+    require => [File['/srv/gitlab/gitlab/config/database.yml'],Exec['install gitlab bundle']],
   }
   file {'/usr/share/gitolite/hooks/common/post-receive':
     ensure => file,
@@ -162,6 +162,6 @@ class dtg::git {
     command => 'sudo -u gitlab -g gitlab -H bundle exec rails s -e production -d',
     unless  => 'false',#TODO(drt24)
     cwd     => '/srv/gitlab/gitlab/',
-    require => Exec['install bundle','setup database'],
+    require => Exec['install gitlab bundle','setup gitlab database'],
   }
 }
