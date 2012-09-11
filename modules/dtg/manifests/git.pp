@@ -120,9 +120,6 @@ class dtg::git {
     grant    => ['all'],
     require  => Class['mysql::server'],
   }
-  file { '/var/backups/mysql/':
-    ensure => directory,
-  }
   class { 'mysql::backup':
     backupuser     => 'mysqlbackup',
     backuppassword => 'mysqlbackup',
@@ -135,12 +132,12 @@ class dtg::git {
     group   => 'gitlab',
   }
   exec {'install bundle':
-    command => 'sudo -u gitlab -g gitlab -H bundle install --without development test --deployment'
+    command => 'sudo -u gitlab -g gitlab -H bundle install --without development test --deployment',
     unless  => 'false',#TODO(drt24)
     cwd     => '/srv/gitlab/gitlab/',
   }
   exec {'setup database':
-    command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production'
+    command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production',
     unless  => 'false',#TODO(drt24)
     cwd     => '/srv/gitlab/gitlab/',
   }
