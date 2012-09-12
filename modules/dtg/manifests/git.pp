@@ -171,3 +171,23 @@ class dtg::git {
     require => Exec['install gitlab bundle','setup gitlab database'],
   }
 }
+class git::mirror::server {
+  group {'gitmirror': ensure => present,}
+  user  {'gitmirror':
+    ensure  => present,
+    home    => '/srv/gitmirror',
+    gid     => 'gitmirror',
+    comment => 'Git mirror server',
+    shell   => '/bin/bash',
+  }
+  file {'/local/data/gitmirror/':
+    ensure => directory,
+    owner  => 'gitmirror',
+    group  => 'gitmirror',
+    mode   => '2775',
+  }
+  file {'/srv/gitmirror/':
+    ensure => link,
+    target => '/local/data/gitmirror/',
+  }
+}
