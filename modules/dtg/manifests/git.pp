@@ -31,7 +31,7 @@ class dtg::git {
   # Use ruby 1.9.1 to provide ruby
   dtg::alternatives{'ruby':
     linkto => '/usr/bin/ruby1.9.1',
-    require => Package['ruby1.9.1'],
+    require => Package['ruby1.9.1','ruby1.9.1-dev'],
   }
   group {'gitlab': ensure => 'present',}
   user {'gitlab':
