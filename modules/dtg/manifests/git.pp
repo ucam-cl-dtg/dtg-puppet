@@ -90,7 +90,7 @@ class dtg::git {
   package {'charlock_holmes':
     ensure   => 'latest',
     provider => 'gem',
-    require  => Package['rubygems'],
+    require  => Package['ruby1.9.1'],
   }
   vcsrepo {'/srv/gitlab/gitlab/':
     ensure   => latest,
