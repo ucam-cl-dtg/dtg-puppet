@@ -177,11 +177,18 @@ class dtg::git {
     cwd     => '/srv/gitlab/gitlab/',
     require => Exec['start gitlab'],
   }
+  file {'/srv/gitlab/gitlab/config/unicorn.rb':
+    ensure => file,
+    source => 'puppet:///modules/dtg/gitlab/unicorn.rb',
+    owner  => 'gitlab',
+    group  => 'gitlab',
+    mode   => '0775',
+  }
   exec {'run unicorn process':
     command => 'sudo -u gitlab -g gitlab -H bundle exec unicorn_rails -c config/unicorn.rb -E production -D',
     unless  => 'ps aux | grep `cat /srv/gitlab/gitlab/tmp/pids/unicorn.pid` >/dev/null',
     cwd     => '/srv/gitlab/gitlab/',
-    require => Exec['start gitlab'],
+    require => [Exec['start gitlab'],File['/srv/gitlab/gitlab/config/unicorn.rb']],
   }
   apache::site{'gitlab':
     source => 'puppet:///modules/dtg/gitlab/apache.conf'
