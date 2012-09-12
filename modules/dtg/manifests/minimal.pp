@@ -106,10 +106,17 @@ class dtg::minimal ($manageapt = true) {
   # Include default firewall rules
   class { 'dtg::firewall': }
   sshkey {'localhost':
-    ensure => present,
+    ensure       => present,
     host_aliases => [$::fqdn, $::hostname],
-    key    => $::sshrsakey,
-    type   => 'rsa',
+    key          => $::sshrsakey,
+    type         => 'rsa',
+  }
+  file {'/etc/ssh_known_hosts':# Puppet does not create a world readable file
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => Sshkey['localhost'],
   }
 
   # Keep stuff put in at bootstrap up to date
