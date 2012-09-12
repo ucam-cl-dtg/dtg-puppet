@@ -28,6 +28,10 @@ class dtg::git {
   package {$gitlabpackages :
     ensure => installed,
   }
+  # Use ruby 1.9.1 to provide ruby
+  dtg::alternatives{'ruby':
+    linkto => '/usr/bin/ruby1.9.1',
+  }
   group {'gitlab': ensure => 'present',}
   user {'gitlab':
     ensure   => 'present',
