@@ -24,13 +24,14 @@ class dtg::git {
   }
   #TODO(drt24) setup backups and restore from backups
   # Setup gitlab
-  $gitlabpackages = ['ruby1.9.1', 'ruby1.9.1-dev', 'ruby-bundler', 'python-pygments', 'libicu-dev', 'libmysqlclient-dev', 'ruby-sqlite3', 'libsqlite3-dev', 'libxslt-dev','libxml2-dev', 'libcurl4-openssl-dev', 'libreadline6-dev', 'libssl-dev', 'libmysql++-dev', 'redis-server', 'python-dev', 'libyaml-dev']
+  $gitlabpackages = ['ruby1.9.1', 'ruby1.9.1-dev', 'ruby-bundler', 'python-pygments', 'libicu-dev', 'libmysqlclient-dev', 'ruby-sqlite3', 'libsqlite3-dev', 'libxslt-dev','libxml2-dev', 'libcurl4-openssl-dev', 'libreadline6-dev', 'libssl-dev', 'libmysql++-dev', 'redis-server', 'python-dev', 'libyaml-dev', 'make', 'build-essential']
   package {$gitlabpackages :
     ensure => installed,
   }
   # Use ruby 1.9.1 to provide ruby
   dtg::alternatives{'ruby':
     linkto => '/usr/bin/ruby1.9.1',
+    require => Package['ruby1.9.1'],
   }
   group {'gitlab': ensure => 'present',}
   user {'gitlab':
@@ -94,7 +95,7 @@ class dtg::git {
   package {'charlock_holmes':
     ensure   => 'latest',
     provider => 'gem',
-    require  => Package['ruby1.9.1'],
+    require  => Dtg::Alternatives['ruby'],
   }
   vcsrepo {'/srv/gitlab/gitlab/':
     ensure   => latest,
@@ -147,7 +148,7 @@ class dtg::git {
     command => 'sudo -u gitlab -g gitlab -H bundle install --without development test --deployment',
     creates => '/srv/gitlab/gitlab/vendor/bundle/',
     cwd     => '/srv/gitlab/gitlab/',
-    require => [File['/srv/gitlab/gitlab/config/gitlab.yml'],Class['mysql::ruby'],Package['libmysqlclient-dev']],
+    require => [File['/srv/gitlab/gitlab/config/gitlab.yml'],Class['mysql::ruby'],Package['libmysqlclient-dev'],Dtg::Alternatives['ruby']],
   }
   exec {'setup gitlab database':
     command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production',
