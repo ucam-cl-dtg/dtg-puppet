@@ -11,6 +11,7 @@ class dtg::git {
     gid     => 'git',
     comment => 'Git Version Control',
     shell   => '/bin/bash',
+    password => '*',#no password but key based login
   }
   file {'/local/data/git':
     ensure => directory,
