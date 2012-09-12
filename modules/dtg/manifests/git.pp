@@ -148,7 +148,7 @@ class dtg::git {
     command => 'sudo -u gitlab -g gitlab -H bundle install --without development test --deployment',
     creates => '/srv/gitlab/gitlab/vendor/bundle/',
     cwd     => '/srv/gitlab/gitlab/',
-    require => [File['/srv/gitlab/gitlab/config/gitlab.yml'],Class['mysql::ruby'],Package['libmysqlclient-dev'],Dtg::Alternatives['ruby']],
+    require => [File['/srv/gitlab/gitlab/config/gitlab.yml'],Class['mysql::ruby'],Package['libmysqlclient-dev','make','build-essential'],Dtg::Alternatives['ruby']],
   }
   exec {'setup gitlab database':
     command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production',
