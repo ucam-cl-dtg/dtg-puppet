@@ -141,7 +141,7 @@ class dtg::git {
   }
   exec {'install gitlab bundle':
     command => 'sudo -u gitlab -g gitlab -H bundle install --without development test --deployment',
-    unless  => 'false',#TODO(drt24)
+    creates => '/srv/gitlab/gitlab/vendor/bundle/',
     cwd     => '/srv/gitlab/gitlab/',
     require => [File['/srv/gitlab/gitlab/config/gitlab.yml'],Class['mysql::ruby'],Package['libmysqlclient-dev']],
   }
@@ -149,7 +149,7 @@ class dtg::git {
     command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production',
     unless  => 'false',#TODO(drt24)
     cwd     => '/srv/gitlab/gitlab/',
-    require => [File['/srv/gitlab/gitlab/config/database.yml'],Exec['install gitlab bundle']],
+    require => [File['/srv/gitlab/gitlab/config/database.yml'],Exec['install gitlab bundle'],Mysql::Db['gitlabhq_production']],
   }
   file {'/usr/share/gitolite/hooks/common/post-receive':
     ensure => file,
