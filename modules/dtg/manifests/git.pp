@@ -122,7 +122,7 @@ class dtg::git {
   $gitlabpassword = "gitlabpassword"#TODO(drt24) generate this automatically without overwriting on every run
   mysql::db { 'gitlabhq_production':
     user     => 'gitlab',
-    password => 'gitlab',
+    password => $gitlabpassword,
     host     => 'localhost',
     grant    => ['all'],
     require  => Class['mysql::server'],
