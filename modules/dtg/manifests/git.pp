@@ -119,6 +119,22 @@ class dtg::git {
     content => template('dtg/gitlab/gitlab.yml.erb'),
     require => Vcsrepo['/srv/gitlab/gitlab/'],
   }
+  $gitlab_admin_email = $::from_address
+  $gitlab_admin_password = random_password()
+  # Remove the provided one and replace it with one containing
+  # the correct email and a randomly generated password
+  file {'/srv/gitlab/gitlab/db/fixtures/production/001_admin.rb':
+    ensure => 'absent',
+  }
+  file {'/srv/gitlab/gitlab/db/fixtures/production/002_admin.rb':
+    ensure  => file,
+    content => template('dtg/gitlab/001_admin.rb.erb'),
+    owner   => 'gitlab',
+    group   => 'gitlab',
+    mode    => '0600',
+    replace => false,
+    require => Vcsrepo['/srv/gitlab/gitlab/'],
+  }
   # setup database stuff
   class { 'mysql::server':
     config_hash => { 'root_password' => 'mysql-password' }
@@ -153,9 +169,9 @@ class dtg::git {
   }
   exec {'setup gitlab database':
     command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production',
-    unless  => 'false',#TODO(drt24)
+    unless  => 'echo "SHOW TABLES like \'users\';" | sudo -H mysql gitlabhq_production | grep users > /dev/null',
     cwd     => '/srv/gitlab/gitlab/',
-    require => [File['/srv/gitlab/gitlab/config/database.yml'],Exec['install gitlab bundle'],Mysql::Db['gitlabhq_production']],
+    require => [File['/srv/gitlab/gitlab/config/database.yml','/srv/gitlab/gitlab/db/fixtures/production/002_admin.rb'],Exec['install gitlab bundle'],Mysql::Db['gitlabhq_production']],
   }
   file {'/usr/share/gitolite/hooks/common/post-receive':
     ensure => file,
