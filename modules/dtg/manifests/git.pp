@@ -171,6 +171,21 @@ class dtg::git {
     cwd     => '/srv/gitlab/gitlab/',
     require => Exec['install gitlab bundle','setup gitlab database'],
   }
+  exec {'run resque process':
+    command => 'sudo -u gitlab -g gitlab -H ./resque.sh',
+    unless  => 'ps aux | grep `cat /srv/gitlab/gitlab/tmp/pids/resque_worker.pid` >/dev/null',
+    cwd     => '/srv/gitlab/gitlab/',
+    require => Exec['start gitlab'],
+  }
+  exec {'run unicorn process':
+    command => 'sudo -u gitlab -g gitlab -H bundle exec unicorn_rails -c config/unicorn.rb -E production -D',
+    unless  => 'ps aux | grep `cat /srv/gitlab/gitlab/tmp/pids/unicorn.pid` >/dev/null',
+    cwd     => '/srv/gitlab/gitlab/',
+    require => Exec['start gitlab'],
+  }
+  apache::site{'gitlab':
+    source => 'puppet:///modules/dtg/gitlab/apache.conf'
+  }
 }
 class git::mirror::server {
   group {'gitmirror': ensure => present,}
