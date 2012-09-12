@@ -167,7 +167,7 @@ class dtg::git {
   }
   exec {'start gitlab':
     command => 'sudo -u gitlab -g gitlab -H bundle exec rails s -e production -d',
-    unless  => 'false',#TODO(drt24)
+    unless  => 'ps aux | grep `cat /srv/gitlab/gitlab/tmp/pids/server.pid` >/dev/null',
     cwd     => '/srv/gitlab/gitlab/',
     require => Exec['install gitlab bundle','setup gitlab database'],
   }
