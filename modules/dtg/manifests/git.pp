@@ -53,30 +53,16 @@ class dtg::git {
     ensure => link,
     target => '/local/data/gitlab/',
   }
-  file {'/srv/gitlab/.ssh/':
-    ensure => directory,
-    owner  => 'gitlab',
-    group  => 'gitlab',
-    mode   => '0700',
-  }
-  exec {'gen-gitlab-sshkey':
-    command => 'sudo -H -u gitlab -g gitlab ssh-keygen -q -N "" -t rsa -f /srv/gitlab/.ssh/id_rsa',
-    creates => '/srv/gitlab/.ssh/id_rsa',
-    require => File['/srv/gitlab/.ssh/'],
-  }
+  dtg::sshkeygen{'gitlab':}
   # Setup gitolite
   # Bootstrap admin key
-#  file {'/srv/git/drt24.pub':
-#    ensure => file,
-#    source => 'puppet:///modules/dtg/ssh/drt24.pub',
-#  }
   file {'/srv/git/gitlab.pub':
     ensure  => file,
     source  => 'file:///srv/gitlab/.ssh/id_rsa.pub',
     owner   => 'gitlab',
     group   => 'git',
     mode    => '0744',
-    require => Exec['gen-gitlab-sshkey'],
+    require => Dtg::Sshkeygen['gitlab'],
   }
   file {'/usr/share/gitolite/conf/example.gitolite.rc':
     ensure => file,
