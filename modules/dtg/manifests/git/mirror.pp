@@ -43,15 +43,14 @@ define dtg::git::mirror::repo ($source) {
     ensure  => present,
     command => "cd /srv/gitmirror/repositories/${name}.git && git fetch --all --quiet --tags",
     user    => 'gitmirror',
-    minute  => '*/25',
-    #TODO(drt24) we want to select this value as a deterministic pseudorandom number based on $name so that the cron jobs don't all run at once
+    minute  => cron_minute("${name}-mirror"),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
   }
   cron {"gitmirror-gc-${name}":
     ensure  => present,
     command => "cd /srv/gitmirror/repositories/${name}.git && git repack -a -d --depth=100 --window=100",
-    hour    => '1',#TODO(drt24) as above
-    minute  => '8',
+    hour    => cron_hour($name),
+    minute  => cron_minute($name),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
   }
 }
