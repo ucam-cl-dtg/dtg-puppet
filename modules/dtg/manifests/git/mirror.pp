@@ -46,6 +46,7 @@ class dtg::git::mirror::server {
     owner  => 'root',
     group  => 'root',
     mode   => '0755',
+    notify => Service['git-daemon'],
   }
   service {'git-daemon':
     ensure   => running,
