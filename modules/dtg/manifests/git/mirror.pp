@@ -52,6 +52,7 @@ define dtg::git::mirror::repo ($source) {
     source   => $source,
     owner    => 'gitmirror',
     group    => 'gitmirror',
+    user     => 'gitmirror',
     require  => File['/srv/gitmirror/repositories'],
   }
   cron {"gitmirror-mirror-${name}":
