@@ -61,6 +61,17 @@ class dtg::minimal ($manageapt = true) {
     home       => '/root',
     require    => Gpg::Private_key['root'],
   }
+  file {'/root/.ssh/':
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
+  monkeysphere::trusting_user{'root':
+    passphrase => $::ms_gpg_passphrase,
+    require    => Monkeysphere::Auth_capable_user['root'],
+    home       => '/root/'
+  }
   monkeysphere::ssh_agent { 'root':
     passphrase => $::ms_gpg_passphrase,
     require    => Monkeysphere::Auth_capable_user['root'],
