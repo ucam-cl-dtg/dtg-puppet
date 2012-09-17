@@ -1,0 +1,7 @@
+#!/bin/sh
+exec 2>&1
+echo 'git-daemon starting.'
+exec chpst -ugitdaemon \
+  "$(git --exec-path)"/git-daemon --verbose --reuseaddr \
+    --base-path=/srv/gitmirror/repositories/ --export-all --informative-errors --enable=upload-archive /srv/gitmirror/repositories/
+

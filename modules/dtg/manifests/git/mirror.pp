@@ -39,8 +39,20 @@ class dtg::git::mirror::server {
     require    => Monkeysphere::Auth_capable_user['gitmirror'],
     home       => '/srv/gitmirror/',
   }
-  
- #TODO(drt24) Make these repositories publicly accessible via git: and http: protocols and with a pretty website for browsing
+  package {'git-daemon-run': ensure => 'present',}
+  file {'/etc/service/git-daemon/run':
+    ensure => file,
+    source => 'puppet:///modules/dtg/git-daemon-run',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
+  service {'git-daemon':
+    ensure => running,
+    require => [Package['git-daemon-run'],File['/etc/service/git-daemon/run']],
+  }
+  class {'dtg::firewall::git':}
+ #TODO(drt24) Make these repositories publicly accessible via http: protocol and with a pretty website for browsing
 }
 
 # Mirror to $name the repository accessible at $source

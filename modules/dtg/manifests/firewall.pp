@@ -89,6 +89,13 @@ class dtg::firewall::entropy {
     source  => $::local_subnet,
   }
 }
+class dtg::firewall::git {
+  firewall { '012 accept all git':
+    proto   => 'tcp',
+    dport   => '9418',
+    action  => 'accept',
+  }
+}
 class dtg::firewall::80to8080 ($private = true){
   firewall { '020 redirect 80 to 8080':
     dport   => '80',
