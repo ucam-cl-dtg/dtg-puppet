@@ -65,7 +65,7 @@ class dtg::minimal ($manageapt = true) {
     ensure => directory,
     owner  => 'root',
     group  => 'root',
-    mode   => '0755',
+    mode   => '0700',
   }
   monkeysphere::trusting_user{'root':
     passphrase => $::ms_gpg_passphrase,
