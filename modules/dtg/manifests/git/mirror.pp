@@ -54,7 +54,11 @@ class dtg::git::mirror::server {
     require  => [Package['git-daemon-run'],File['/etc/service/git-daemon/run']],
   }
   class {'dtg::firewall::git':}
- #TODO(drt24) Make these repositories publicly accessible via http: protocol and with a pretty website for browsing
+  package {'gitweb': ensure => 'installed',}
+  apache::site { 'gitmirror':
+    source => 'puppet:///modules/dtg/apache/gitmirror.conf',
+    require => File['/srv/gitmirror/repositories/'],
+  }
 }
 
 # Mirror to $name the repository accessible at $source
