@@ -25,7 +25,7 @@ class dtg::git {
   }
   #TODO(drt24) setup backups and restore from backups
   # Setup gitlab
-  $gitlabpackages = ['ruby1.9.1', 'ruby1.9.1-dev', 'ruby-bundler', 'python-pygments', 'libicu-dev', 'libmysqlclient-dev', 'ruby-sqlite3', 'libsqlite3-dev', 'libxslt-dev','libxml2-dev', 'libcurl4-openssl-dev', 'libreadline6-dev', 'libssl-dev', 'libmysql++-dev', 'redis-server', 'python-dev', 'libyaml-dev', 'make', 'build-essential']
+  $gitlabpackages = ['ruby1.9.1', 'ruby1.9.1-dev', 'ruby-bundler', 'python-pygments', 'libicu-dev', 'libmysqlclient-dev', 'ruby-sqlite3', 'libsqlite3-dev', 'libxslt1-dev','libxml2-dev', 'libcurl4-openssl-dev', 'libreadline6-dev', 'libssl-dev', 'libmysql++-dev', 'redis-server', 'python-dev', 'libyaml-dev', 'make', 'build-essential']
   package {$gitlabpackages :
     ensure => installed,
   }
