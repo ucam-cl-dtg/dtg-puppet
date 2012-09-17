@@ -25,6 +25,21 @@ class dtg::git::mirror::server {
     mode   => '2775',
   }
   dtg::sshkeygen{'gitmirror':}
+  gpg::private_key {'gitmirror':
+    homedir    => '/srv/gitmirror/',
+    passphrase => $::ms_gpg_passphrase,
+  }
+  monkeysphere::auth_capable_user {'gitmirror':
+    passphrase => $::ms_gpg_passphrase,
+    home       => '/srv/gitmirror/',
+    require    => Gpg::Private_key['gitmirror'],
+  }
+  monkeysphere::trusting_user{'gitmirror':
+    passphrase => $::ms_gpg_passphrase,
+    require    => Monkeysphere::Auth_capable_user['gitmirror'],
+    home       => '/srv/gitmirror/',
+  }
+  
  #TODO(drt24) Make these repositories publicly accessible via git: and http: protocols and with a pretty website for browsing
 }
 

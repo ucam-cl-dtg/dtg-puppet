@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+
+USAGE='Usage: PASSPHRASE=$passphrase trust-ms-certifiers <user>'
+# Make the user trust and sign the id certifying keys
+
+user=$1
+if [$user == '--help'] then
+  echo $USAGE
+  exit 0
+fi
+# Get the list of id certifiers
+certifiers=`monkeysphere-authentication list-id-certifiers | grep -v "^ :" | sed s/://`
+# get their keys in the users db
+sudo -H -u $user gpg --recv-keys $certifiers
+for certifier in $certifiers; do
+  # Sign the key
+  echo $PASSPHRASE | sudo -H -u $user gpg --command-fd 0 --yes --batch --sign-key $certifier
+  # trust the key
+  echo "${certifier}:6:" | sudo -H -u $user gpg --import-ownertrust
+done
+

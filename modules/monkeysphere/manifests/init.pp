@@ -51,6 +51,16 @@ class monkeysphere ($keyserver = "pgp.mit.edu" ) {
     ensure => present,
     source => "puppet:///modules/monkeysphere/ms-subkey-exists",
   }
+  file { '/usr/local/sbin/ms-trust-certifiers':
+    ensure => file,
+    mode   => '0755',
+    source => 'puppet:///modules/monkeysphere/ms-trust-certifiers',
+  }
+  file { '/usr/local/sbin/ms-does-trust-certifiers':
+    ensure => file,
+    mode   => '0755',
+    source => 'puppet:///modules/monkeysphere/ms-trust-certifiers',
+  }
   
 }
 
@@ -75,8 +85,9 @@ define monkeysphere::import_key ( $scheme = 'ssh://', $port = '', $path = '/etc/
 define monkeysphere::publish_server_keys {
   exec { "monkeysphere-host-publish-keys":
     command => "monkeysphere-host publish-keys",
+    unless  => 'false',#TODO(drt24) write unless condition
     environment => "MONKEYSPHERE_PROMPT=false",
-	  require => [ Package["monkeysphere"], Exec["monkeysphere-import-key"], File["monkeysphere_host_conf"] ],
+    require => [ Package["monkeysphere"], Exec["monkeysphere-import-key"], File["monkeysphere_host_conf"] ],
   }
 }
 
@@ -173,5 +184,38 @@ define monkeysphere::ssh_agent( $passphrase, $ensure = 'running' ) {
     require => [ Package["runit"], File["/etc/sv/ssh-agent-root/run"], File["/root/.ssh-agent-socket"] ],
     user => "root"
 
+  }
+}
+# $user = $name
+# Set a user's .ssh/config to use monkeysphere's ProxyCommand and to trust
+# the server's id certifiers
+define monkeysphere::trusting_user( $passphrase, $home ) {
+  $user = $name
+  exec { "ms-trust-certifiers-${user}":
+    command => "ms-trust-certifiers ${user}",
+    unless  => "ms-does-trust-certifiers ${user}", 
+    require => File['/usr/local/sbin/ms-trust-certifiers','/usr/local/sbin/ms-does-trust-certifiers'],
+  }
+  # Check we have up to date keys daily
+  cron { "refresh-gpg-keys-${user}":
+    command => '/usr/bin/gpg --refresh-keys > /dev/null 2>&1',
+    user    => $user,
+    hour    => cron_hour("refresh-gpg-keys-${user}"),
+    minute  => cron_minute("refresh-gpg-keys-${user}"),
+  }
+  # Specify the use of the monkeysphere ssh-proxycommand
+  file { "${home}.ssh/config":
+    ensure => file,
+    owner  => $user,
+    group  => $user,
+    mode   => '0600',
+    require => File["${home}.ssh/"],
+  }
+  augeas {"monkeysphere-proxycommand-${user}":
+    incl    => "${home}.ssh/config",
+    lens    => 'Ssh.lns',
+    changes => ['set Host \'*\'','set Host[.=\'*\']/ProxyCommand \'monkeysphere ssh-proxycommand %h %p\''],
+    onlyif  => "get Host[.='*']/ProxyCommand != 'monkeysphere ssh-proxycommand %h %p'",
+    require => File["${home}.ssh/config"],
   }
 }
