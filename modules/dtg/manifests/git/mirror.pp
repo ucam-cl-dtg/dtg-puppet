@@ -48,8 +48,9 @@ class dtg::git::mirror::server {
     mode   => '0755',
   }
   service {'git-daemon':
-    ensure => running,
-    require => [Package['git-daemon-run'],File['/etc/service/git-daemon/run']],
+    ensure   => running,
+    provider => 'runit',
+    require  => [Package['git-daemon-run'],File['/etc/service/git-daemon/run']],
   }
   class {'dtg::firewall::git':}
  #TODO(drt24) Make these repositories publicly accessible via http: protocol and with a pretty website for browsing
