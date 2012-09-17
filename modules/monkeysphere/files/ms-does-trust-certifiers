@@ -6,7 +6,7 @@ USAGE='Usage: ms-does-trust-certifiers <user>'
 # Does the user trust the id certifying keys
 
 user=$1
-if [$user == '--help'] then
+if ["${user}" == '--help']; then
   echo $USAGE
   exit 1 # we have't tested that they do
 fi

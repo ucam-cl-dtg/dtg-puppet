@@ -6,7 +6,7 @@ USAGE='Usage: PASSPHRASE=$passphrase trust-ms-certifiers <user>'
 # Make the user trust and sign the id certifying keys
 
 user=$1
-if [$user == '--help'] then
+if ["${user}" == '--help']; then
   echo $USAGE
   exit 0
 fi
