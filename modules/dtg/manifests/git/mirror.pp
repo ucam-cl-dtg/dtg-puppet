@@ -12,7 +12,7 @@ class dtg::git::mirror::server {
     ensure => directory,
     owner  => 'gitmirror',
     group  => 'gitmirror',
-    mode   => '2775',
+    mode   => '2755',
   }
   file {'/srv/gitmirror/':
     ensure => link,
