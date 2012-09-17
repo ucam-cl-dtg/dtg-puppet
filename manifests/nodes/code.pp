@@ -6,6 +6,7 @@ node 'code.dtg.cl.cam.ac.uk' {
   class {'dtg::firewall::publichttp':}
   class {'dtg::git':}
   class {'dtg::git::mirror::server':}
+  Dtg::Git::Mirror::Repo {require => Class['dtg::git::mirror::server'],}
   #List of git repositories to mirror
   # In alphabetical order
   
