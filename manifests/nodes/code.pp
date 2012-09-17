@@ -50,7 +50,6 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'time/transport-server': source => 'git@code.dtg.cl.cam.ac.uk:time/transport-server'}
 
   #web
-  dtg::git::mirror::repo{'web/learn': source => 'git@code.dtg.cl.cam.ac.uk:web/learn'}
   dtg::git::mirror::repo{'web/noop-filter': source => 'git@code.dtg.cl.cam.ac.uk:web/noop-filter'}
   #web/raven
   dtg::git::mirror::repo{'web/raven/mod_ucam_webauth': source => 'git@code.dtg.cl.cam.ac.uk:web/raven/mod_ucam_webauth'}
