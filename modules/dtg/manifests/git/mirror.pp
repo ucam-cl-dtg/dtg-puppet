@@ -56,6 +56,18 @@ class dtg::git::mirror::server {
   }
   class {'dtg::firewall::git':}
   package {'gitweb': ensure => 'installed',}
+  file {'/etc/apache2/conf.d/gitweb':
+    ensure  => absent,
+    require => Package['gitweb'],
+  }
+  file {'/etc/gitweb.conf':
+    ensure  => file,
+    source  => 'puppet:///modules/dtg/gitweb.conf',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    require => Package['gitweb'],
+  }
   apache::site { 'gitmirror':
     source => 'puppet:///modules/dtg/apache/gitmirror.conf',
     require => File['/srv/gitmirror/repositories/'],
