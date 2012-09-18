@@ -111,6 +111,7 @@ class dtg::git {
   # the correct email and a randomly generated password
   file {'/srv/gitlab/gitlab/db/fixtures/production/001_admin.rb':
     ensure => 'absent',
+    require => Vcsrepo['/srv/gitlab/gitlab/'],
   }
   file {'/srv/gitlab/gitlab/db/fixtures/production/002_admin.rb':
     ensure  => file,
@@ -157,7 +158,7 @@ class dtg::git {
     command => 'sudo -u gitlab -g gitlab -H bundle exec rake gitlab:app:setup RAILS_ENV=production',
     unless  => 'echo "SHOW TABLES like \'users\';" | sudo -H mysql gitlabhq_production | grep users > /dev/null',
     cwd     => '/srv/gitlab/gitlab/',
-    require => [File['/srv/gitlab/gitlab/config/database.yml','/srv/gitlab/gitlab/db/fixtures/production/002_admin.rb'],Exec['install gitlab bundle'],Mysql::Db['gitlabhq_production']],
+    require => [File['/srv/gitlab/gitlab/config/database.yml','/srv/gitlab/gitlab/db/fixtures/production/001_admin.rb','/srv/gitlab/gitlab/db/fixtures/production/002_admin.rb'],Exec['install gitlab bundle'],Mysql::Db['gitlabhq_production']],
   }
   file {'/usr/share/gitolite/hooks/common/post-receive':
     ensure => file,
