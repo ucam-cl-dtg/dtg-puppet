@@ -78,7 +78,7 @@ class dtg::git::mirror::server {
 # Name is the repository name to use
 define dtg::git::mirror::repo ($source) {
   vcsrepo {"/srv/gitmirror/repositories/${name}.git":
-    ensure   => latest,
+    ensure   => 'bare',
     provider => 'git',
     source   => $source,
     owner    => 'gitmirror',
