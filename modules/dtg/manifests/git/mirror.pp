@@ -72,6 +72,8 @@ class dtg::git::mirror::server {
     source => 'puppet:///modules/dtg/apache/gitmirror.conf',
     require => File['/srv/gitmirror/repositories/'],
   }
+  #EXTENSION(drt24) this uses a dumb backend for http git but there is a clever
+  # backend we could use instead which would be more efficient
 }
 
 # Mirror to $name the repository accessible at $source
@@ -88,7 +90,7 @@ define dtg::git::mirror::repo ($source) {
   }
   cron {"gitmirror-mirror-${name}":
     ensure  => present,
-    command => "cd /srv/gitmirror/repositories/${name}.git && git fetch --all --quiet --tags",
+    command => "cd /srv/gitmirror/repositories/${name}.git && git fetch --all --quiet --tags && git update-server-info",
     user    => 'gitmirror',
     minute  => cron_minute("${name}-mirror"),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
