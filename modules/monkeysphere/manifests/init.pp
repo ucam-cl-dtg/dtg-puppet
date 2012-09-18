@@ -85,7 +85,7 @@ define monkeysphere::import_key ( $scheme = 'ssh://', $port = '', $path = '/etc/
 define monkeysphere::publish_server_keys {
   exec { "monkeysphere-host-publish-keys":
     command => "monkeysphere-host publish-keys",
-    unless  => 'false',#TODO(drt24) write unless condition
+    unless  => "gpg --logger-fd 1 --keyserver=${::ms_keyserver} --recv-key `sudo monkeysphere-host show-keys | grep OpenPGP | sed 's/OpenPGP fingerprint: //'` | grep 'Total number processed: 1' >/dev/null || echo false",
     environment => "MONKEYSPHERE_PROMPT=false",
     require => [ Package["monkeysphere"], Exec["monkeysphere-import-key"], File["monkeysphere_host_conf"] ],
   }
