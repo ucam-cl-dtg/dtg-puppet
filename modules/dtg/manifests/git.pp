@@ -180,11 +180,12 @@ class dtg::git {
     require => Exec['start gitlab'],
   }
   file {'/srv/gitlab/gitlab/config/unicorn.rb':
-    ensure => file,
-    source => 'puppet:///modules/dtg/gitlab/unicorn.rb',
-    owner  => 'gitlab',
-    group  => 'gitlab',
-    mode   => '0775',
+    ensure  => file,
+    source  => 'puppet:///modules/dtg/gitlab/unicorn.rb',
+    owner   => 'gitlab',
+    group   => 'gitlab',
+    mode    => '0775',
+    require => Vcsrepo['/srv/gitlab/gitlab/'], 
   }
   exec {'run unicorn process':
     command => 'sudo -u gitlab -g gitlab -H bundle exec unicorn_rails -c config/unicorn.rb -E production -D',

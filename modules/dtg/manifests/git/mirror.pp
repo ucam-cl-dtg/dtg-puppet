@@ -41,12 +41,13 @@ class dtg::git::mirror::server {
   }
   package {'git-daemon-run': ensure => 'present',}
   file {'/etc/service/git-daemon/run':
-    ensure => file,
-    source => 'puppet:///modules/dtg/git-daemon-run',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
-    notify => Service['git-daemon'],
+    ensure  => file,
+    source  => 'puppet:///modules/dtg/git-daemon-run',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    notify  => Service['git-daemon'],
+    require => [Package['runit'],File['/srv/gitmirror/repositories/']],
   }
   service {'git-daemon':
     ensure   => running,
