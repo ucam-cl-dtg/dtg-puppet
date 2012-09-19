@@ -1,4 +1,23 @@
 class dtg::git {
+  # We would include gitlab here properly but doing that reqires working out
+  # how to get raven auth working correctly and migrate our existing config
+  # so for now just make the existing stuff work.
+  # class {'dtg::git::gitlab::pre':}
+  file {'/home/drt24/drt24.pub':
+    ensure => file,
+    owner  => 'drt24',
+    group  => 'drt24',
+    mode   => '0644',
+    source => 'puppet:///modules/dtg/ssh/drt24.pub',
+  }
+  class {'dtg::git::gitolite':
+    admin_key => '/home/drt24/drt24.pub',
+    require   => File['/home/drt24/drt24.pub'],
+  }
+  # class {'dtg::git::gitlab::main':}
+}
+# admin_key is the key to use for the first gitolite admin
+class dtg::git::gitolite ($admin_key){
   # Setup gitolite package
   $gitolitepackages = ['gitolite']
   package {$gitolitepackages :
@@ -24,6 +43,23 @@ class dtg::git {
     target => '/local/data/git/',
   }
   #TODO(drt24) setup backups and restore from backups
+  file {'/usr/share/gitolite/conf/example.gitolite.rc':
+    ensure => file,
+    source => 'puppet:///modules/dtg/example.gitolite.rc',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    require => Package['gitolite'],
+  }
+  exec {'setup-gitolite':
+    command => "sudo -H -u git -g git gl-setup ${admin_key}",
+    cwd     => '/srv/git/',
+    creates => '/srv/git/repositories/',
+    require => File[$admin_key, '/usr/share/gitolite/conf/example.gitolite.rc'],
+  }
+}
+# Some things need to be done before gitolite is installed (key generation)
+class dtg::git::gitlab::pre {
   # Setup gitlab
   $gitlabpackages = ['ruby1.9.1', 'ruby1.9.1-dev', 'ruby-bundler', 'python-pygments', 'libicu-dev', 'libmysqlclient-dev', 'ruby-sqlite3', 'libsqlite3-dev', 'libxslt1-dev','libxml2-dev', 'libcurl4-openssl-dev', 'libreadline6-dev', 'libssl-dev', 'libmysql++-dev', 'redis-server', 'python-dev', 'libyaml-dev', 'make', 'build-essential']
   package {$gitlabpackages :
@@ -56,7 +92,7 @@ class dtg::git {
   dtg::sshkeygen{'gitlab':}
   # Setup gitolite
   # Bootstrap admin key
-  file {'/srv/git/gitlab.pub':
+  file {'/srv/gitlab/gitlab.pub':
     ensure  => file,
     source  => 'file:///srv/gitlab/.ssh/id_rsa.pub',
     owner   => 'gitlab',
@@ -64,20 +100,9 @@ class dtg::git {
     mode    => '0744',
     require => Dtg::Sshkeygen['gitlab'],
   }
-  file {'/usr/share/gitolite/conf/example.gitolite.rc':
-    ensure => file,
-    source => 'puppet:///modules/dtg/example.gitolite.rc',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-    require => Package['gitolite'],
-  }
-  exec {'setup-gitolite':
-    command => 'sudo -H -u git -g git gl-setup gitlab.pub',
-    cwd     => '/srv/git/',
-    creates => '/srv/git/repositories/',
-    require => File['/srv/git/gitlab.pub', '/usr/share/gitolite/conf/example.gitolite.rc'],
-  }
+}
+# Stuff that needs to be done after gitolite install - though it should manage its requirements precisely itself
+class dtg::git::gitlab::main {
   # Install gitlab
   package {'charlock_holmes':
     ensure   => 'latest',
@@ -198,3 +223,4 @@ class dtg::git {
     source => 'puppet:///modules/dtg/gitlab/apache.conf'
   }
 }
+
