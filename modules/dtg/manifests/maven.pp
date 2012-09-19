@@ -48,6 +48,24 @@ class dtg::maven::nexus (
     group  => 'nexus',
     mode   => '2775',
   }
+  file {'/srv/nexus/.ssh/':
+    ensure => directory,
+    owner  => 'nexus',
+    group  => 'nexus',
+    mode   => '0700',
+  }
+  file {'/srv/nexus/.ssh/authorized_keys':
+    ensure => file,
+    owner  => 'nexus',
+    group  => 'nexus',
+    mode   => '0600',
+  }
+  dtg::backup::serversetup{'Nexus repositories':
+    backup_directory   => '/srv/nexus/sonatype-work/',
+    script_destination => '/srv/nexus/backup',
+    user               => 'nexus',
+    home               => '/srv/nexus/',
+  }
   file {'/srv/nexus/sonatype-work/nexus':
     ensure => directory,
     owner  => 'nexus',
