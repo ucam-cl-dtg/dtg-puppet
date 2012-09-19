@@ -23,24 +23,24 @@ class ms_id_certifiers {
 # Admin users to be given an account on all machines
 class admin_users {
     dtg::add_user { 'drt24':
-        email  => 'Daniel Thomas <drt24@cam.ac.uk>',
-        groups => [ 'adm' ],
-        keys   => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
+        real_name => 'Daniel Thomas',
+        groups    => [ 'adm' ],
+        keys      => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
     }
     dtg::add_user { 'lc525':
-        email  => 'Lucian Carata <lc525@cam.ac.uk>',
-        groups => ['adm'],
-        keys   => 'Lucian Carata <lc525@cam.ac.uk>',
+        real_name => 'Lucian Carata',
+        groups    => ['adm'],
+        keys      => 'Lucian Carata <lc525@cam.ac.uk>',
     }
     dtg::add_user { 'jas250':
-        email  => 'James Snee <jas250@cam.ac.uk>',
+        real_name => 'James Snee',
         groups => ['adm'],
         keys   => 'James Snee <jas250@cam.ac.uk>',
     }
     dtg::add_user { 'acr31':
-        email  => 'Andrew Rice <acr31@cam.ac.uk>',
-        groups => ['adm'],
-        keys   => 'Andrew Rice <acr31@cam.ac.uk>',
+        real_name  => 'Andrew Rice',
+        groups     => ['adm'],
+        keys       => 'Andrew Rice <acr31@cam.ac.uk>',
     }
 }
 # Admin user ids to be given root on the nodes via monkeysphere
