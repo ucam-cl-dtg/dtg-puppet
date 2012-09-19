@@ -52,7 +52,7 @@ class dtg::git::mirror::server {
   service {'git-daemon':
     ensure   => running,
     provider => 'runit',
-    require  => [Package['git-daemon-run'],File['/etc/service/git-daemon/run']],
+    require  => [Package['git-daemon-run','runit'],File['/etc/service/git-daemon/run']],
   }
   class {'dtg::firewall::git':}
   package {'gitweb': ensure => 'installed',}

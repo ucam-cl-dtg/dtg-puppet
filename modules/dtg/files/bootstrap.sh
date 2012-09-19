@@ -5,7 +5,7 @@ set -e
 
 # Install puppet
 echo "Installing puppet-common and git-core"
-apt-get -y install puppet-common git-core
+apt-get -y install puppet-common git-core runit python-software-properties
 
 # From mfpl-puppet/modules/mayfirst/files/freepuppet/frepuppet-init
 # prep a server to be free of a puppet master
