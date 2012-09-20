@@ -21,10 +21,18 @@ Port <%= port %>
 ListenAddress <%= address %>
 <% end -%>
 Protocol 2
+
 # HostKeys for protocol version 2
+<% if rsa_key_exists then -%>
 HostKey /etc/ssh/ssh_host_rsa_key
+<% end 
+if dsa_key_exists then -%>
 HostKey /etc/ssh/ssh_host_dsa_key
+<% end
+if ecdsa_key_exists then -%>
 HostKey /etc/ssh/ssh_host_ecdsa_key
+<% end -%>
+
 #Privilege Separation is turned on for security
 UsePrivilegeSeparation yes
 

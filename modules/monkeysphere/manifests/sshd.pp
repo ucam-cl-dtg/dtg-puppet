@@ -62,6 +62,9 @@ class monkeysphere::sshd (
   $ensure_version = "present",
   $ports= [ "22" ],
   $max_startups = "" ) {
+  $rsa_key_exists = exists('/etc/ssh/ssh_host_rsa_key')
+  $dsa_key_exists = exists('/etc/ssh/ssh_host_dsa_key')
+  $ecdsa_key_exists = exists('/etc/ssh/ssh_host_ecdsa_key')
 
   file { 'sshd_config':
     path => '/etc/ssh/sshd_config',
