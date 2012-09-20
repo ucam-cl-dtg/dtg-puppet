@@ -72,6 +72,12 @@ if ( $::fqdn == $::nagios_machine_fqdn ) {
     hostgroups => [ 'http-servers' ],
     include_standard_hostgroups => false,
   }
+  nagios::monitor { 'git':
+    parents    => 'code',
+    address    => 'git.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'http-servers' ],
+    include_standard_hostgroups => false,
+  }
 }
 if ( $::fqdn == $::munin_machine_fqdn ) {
   munin::gatherer::configure_node { 'code': }
