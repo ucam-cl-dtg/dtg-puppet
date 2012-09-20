@@ -69,6 +69,7 @@ PubkeyAuthentication no
 
 <%- unless authorized_keys_file.to_s.empty? then -%>
 AuthorizedKeysFile <%= authorized_keys_file %>
+AuthorizedKeysFile %h/.ssh/authorized_keys
 <%- else -%>
 AuthorizedKeysFile %h/.ssh/authorized_keys
 <%- end -%>
