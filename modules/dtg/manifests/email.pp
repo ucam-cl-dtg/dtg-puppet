@@ -13,10 +13,18 @@ class dtg::email {
   }
 
   # Set mailto for cron job emails
-  augeas {'rootcrontabmailto':
+  augeas {'rootcrontabmailtoinsert':
     incl    => '/etc/crontab',
     lens    => 'Cron.lns',
-    changes => ['ins MAILTO after SHELL', 'set MAILTO dtg-infra@cl.cam.ac.uk'],
+    changes => 'ins MAILTO after SHELL',
+    onlyif  => 'match MAILTO not_include @',
+  }
+
+  augeas {'rootcrontabmailtoset':
+    incl    => '/etc/crontab',
+    lens    => 'Cron.lns',
+    changes => 'set MAILTO dtg-infra@cl.cam.ac.uk',
     onlyif  => 'get MAILTO != dtg-infra@cl.cam.ac.uk',
+    require => Augeas['rootcrontabmailtoinsert'],
   }
 }
