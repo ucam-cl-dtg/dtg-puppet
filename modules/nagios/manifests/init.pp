@@ -251,7 +251,7 @@ define nagios::monitor (
   $calculated_ensure = $ensure
 
   if ( $include_standard_hostgroups == true ) {
-    $standard_hostgroups = [ 'df-servers' ]
+    $standard_hostgroups = [  ]# 'df-servers' not in use at present
     $assigned_hostgroups = concat($hostgroups, $standard_hostgroups)
   } else {
     $assigned_hostgroups = $hostgroups
