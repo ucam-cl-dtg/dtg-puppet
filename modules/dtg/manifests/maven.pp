@@ -110,7 +110,7 @@ class dtg::maven::nexus (
   }
   # Start nexus on reboot
   cron {'nexus':
-    command => '/srv/nexus/nexus/bin/nexus',
+    command => '/srv/nexus/nexus/bin/nexus start',
     user    => 'nexus',
     ensure  => present,
     special => 'reboot',
