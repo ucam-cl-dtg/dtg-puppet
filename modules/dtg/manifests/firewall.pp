@@ -1,15 +1,6 @@
 #iptables firewalling for nodes
 # Default setup
-class dtg::firewall {
-  exec { 'persist-firewall':
-    command => '/sbin/iptables-save > /etc/iptables.rules',
-    refreshonly => true,
-  }
-  file_line { 'restore iptables':
-    ensure => present,
-    line   => 'pre-up iptables-restore < /etc/iptables.rules',
-    path   => '/etc/network/interfaces',
-  }
+class dtg::firewall::default {
   # These defaults ensure that the persistence command is executed after 
   # every change to the firewall, and that pre & post classes are run in the
   # right order to avoid potentially locking you out of your box during the
@@ -21,6 +12,17 @@ class dtg::firewall {
   }
   Firewallchain {
     notify  => Exec['persist-firewall'],
+  }
+}
+class dtg::firewall inherits dtg::firewall::default {
+  exec { 'persist-firewall':
+    command => '/sbin/iptables-save > /etc/iptables.rules',
+    refreshonly => true,
+  }
+  file_line { 'restore iptables':
+    ensure => present,
+    line   => 'pre-up iptables-restore < /etc/iptables.rules',
+    path   => '/etc/network/interfaces',
   }
   # Purge unmanaged firewall resources
   #
@@ -34,7 +36,7 @@ class dtg::firewall {
 }
 
 # The first rules which do the accepting
-class dtg::firewall::pre {
+class dtg::firewall::pre inherits dtg::firewall::default {
   Firewall {
     require => undef,
   }
@@ -66,14 +68,14 @@ class dtg::firewall::pre {
     action  => 'accept',
   }
 }
-class dtg::firewall::publichttp {
+class dtg::firewall::publichttp inherits dtg::firewall::default {
   firewall { '010 accept all http':
     proto   => 'tcp',
     dport   => '80',
     action  => 'accept',
   }
 }
-class dtg::firewall::privatehttp {
+class dtg::firewall::privatehttp inherits dtg::firewall::default {
   firewall { '010 accept all http from dtg':
     proto   => 'tcp',
     dport   => '80',
@@ -81,7 +83,7 @@ class dtg::firewall::privatehttp {
     action  => 'accept',
   }
 }
-class dtg::firewall::entropy {
+class dtg::firewall::entropy inherits dtg::firewall::default {
   firewall { '011 accept all entropy requests':
     proto   => 'tcp',
     dport   => '7776',
@@ -89,14 +91,14 @@ class dtg::firewall::entropy {
     source  => $::local_subnet,
   }
 }
-class dtg::firewall::git {
+class dtg::firewall::git inherits dtg::firewall::default {
   firewall { '012 accept all git':
     proto   => 'tcp',
     dport   => '9418',
     action  => 'accept',
   }
 }
-class dtg::firewall::80to8080 ($private = true){
+class dtg::firewall::80to8080 ($private = true) inherits dtg::firewall::default {
   firewall { '020 redirect 80 to 8080':
     dport   => '80',
     table   => 'nat',
@@ -116,7 +118,7 @@ class dtg::firewall::80to8080 ($private = true){
   }
 }
 # The last rule which does the dropping
-class dtg::firewall::post {
+class dtg::firewall::post inherits dtg::firewall::default {
   firewall { '999 drop all':
     proto   => 'all',
     action  => 'drop',
