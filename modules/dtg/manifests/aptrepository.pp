@@ -13,13 +13,18 @@ class aptrepository($repository) {
   # Security updates
   apt::source { 'security':
     location => $repository,
-    release => "${::lsbdistcodename}-security",
-    repos => 'main restricted universe multiverse',
+    release  => "${::lsbdistcodename}-security",
+    repos    => 'main restricted universe multiverse',
+  }
+  apt::source { 'security-failsafe':
+    location => 'http://security.ubuntu.com/ubuntu',
+    release  => "${::lsbdistcodename}-security",
+    repos    => 'main restricted universe multiverse',
   }
   # Bugfix updates
   apt::source { 'updates':
     location => $repository,
-    release => "${::lsbdistcodename}-updates",
-    repos => 'main restricted universe multiverse',
+    release  => "${::lsbdistcodename}-updates",
+    repos    => 'main restricted universe multiverse',
   }
 }
