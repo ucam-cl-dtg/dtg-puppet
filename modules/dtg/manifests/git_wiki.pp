@@ -54,7 +54,7 @@ class dtg::git::gollum::main {
   }
   exec {'install gollum bundle':
     # command => '/usr/local/rvm/bin/rvm 1.9.3-p194@gollum do bundle install',
-    command => '/usr/local/rvm/bin/rvm do bundle install --without development test --deployment',
+    command => '/usr/local/rvm/bin/rvm all do bundle install --without development test --deployment',
     creates => '/srv/gollum/vendor/bundle/',
     cwd     => '/srv/gollum/',
     logoutput => true,
