@@ -15,16 +15,27 @@ class dtg::git_wiki {
 }
 # Some things need to be done before gollum is installed (ruby)
 class dtg::git::gollum::pre {
-  # Setup gitlab
-  $gollumpackages = ['ruby1.9.1', 'ruby1.9.1-dev', 'ruby-bundler', 'python-pygments', 'libicu-dev', 'libxslt1-dev','libxml2-dev', 'libcurl4-openssl-dev', 'libreadline6-dev', 'libssl-dev', 'redis-server', 'python-dev', 'libyaml-dev', 'make', 'build-essential', 'libapache2-mod-passenger']
-  package {$gitlabpackages :
-    ensure => installed,
-  }
-  # Use ruby 1.9.1 to provide ruby
-  dtg::alternatives{'ruby':
-    linkto => '/usr/bin/ruby1.9.1',
-    require => Package['ruby1.9.1','ruby1.9.1-dev'],
-  }
+    include rvm
+    #rvm::system_user{ git: ; www-data:}
+    rvm_system_ruby{'ruby-1.9.3-p194':
+	ensure => present,
+	default_use => true;
+    }
+    
+    rvm_gemset{"ruby-1.9.3-p194@gollum":
+	ensure => present,
+	require => Rvm_system_ruby['ruby-1.9.3-p194'];
+    }
+    class{
+	'rvm::passenger::apache':
+	    version => '3.0.18',
+	    ruby_version => 'ruby-1.9.3-p194',
+	    mininstances => '3',
+	    maxinstancesperapp => '0',
+	    maxpoolsize => '30',
+	    spawnmethod => 'smart-lv2';
+    }
+	    
 }
 
 # Stuff that needs to be done for installing gollum
