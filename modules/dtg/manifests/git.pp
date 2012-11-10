@@ -32,11 +32,15 @@ class dtg::git::gitolite ($admin_key){
     shell   => '/bin/bash',
     password => '*',#no password but key based login
   }
+  file { [ "/local", "/local/data" ]:
+    ensure => directory,
+  }
   file {'/local/data/git':
     ensure => directory,
     owner  => 'git',
     group  => 'git',
     mode   => '2755',
+    require => File['/local','/local/data'],
   }
   file {'/srv/git/':
     ensure => link,
