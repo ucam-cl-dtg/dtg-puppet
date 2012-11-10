@@ -10,6 +10,8 @@ class dtg::git_wiki {
     admin_key => '/home/lc525/lc525.pub',
     require   => File['/home/lc525/lc525.pub'],
   }
+  class {'dtg::git::gollum::pre':}
+  class {'dtg::git::gollum::main':}
 }
 # Some things need to be done before gollum is installed (ruby)
 class dtg::git::gollum::pre {
