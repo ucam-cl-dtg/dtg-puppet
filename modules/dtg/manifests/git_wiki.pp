@@ -26,20 +26,23 @@ class dtg::git::gollum::pre {
 	ensure => present,
 	require => Rvm_system_ruby['ruby-1.9.3-p194'];
     }
-    class{
-	'rvm::passenger::apache':
-	    version => '3.0.18',
-	    ruby_version => 'ruby-1.9.3-p194',
-	    mininstances => '3',
-	    maxinstancesperapp => '0',
-	    maxpoolsize => '30',
-	    spawnmethod => 'smart-lv2';
-    }
+    #class{
+#	'rvm::passenger::apache':
+#	    version => '3.0.18',
+#	    ruby_version => 'ruby-1.9.3-p194',
+#	    mininstances => '3',
+#	    maxinstancesperapp => '0',
+#	    maxpoolsize => '30',
+#	    spawnmethod => 'smart-lv2';
+#    }
 	    
 }
 
 # Stuff that needs to be done for installing gollum
 class dtg::git::gollum::main {
+  file{'/srv/gollum':
+    ensure => "directory"
+  }
   vcsrepo {'/srv/gollum/':
     ensure   => latest,
     provider => 'git',
@@ -53,7 +56,7 @@ class dtg::git::gollum::main {
     command => 'sudo -u lc525 -g lc525 -H bundle install --without development test --deployment',
     creates => '/srv/gollum/vendor/bundle/',
     cwd     => '/srv/gollum/',
-    require => [Dtg::Alternatives['ruby']],
+    require => Rvm_system_ruby['ruby-1.9.3-p194'];
   }
   exec {'gollum frontend permissions':
     command => 'chgrp -R www-data .; chown -R www-data .',
