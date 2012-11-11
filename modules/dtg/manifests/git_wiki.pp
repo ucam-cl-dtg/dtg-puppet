@@ -16,7 +16,7 @@ class dtg::git_wiki {
 # Some things need to be done before gollum is installed (ruby)
 class dtg::git::gollum::pre {
     include rvm
-    #rvm::system_user{ git: ; www-data:}
+    #rvm::system_user{ lc525: }
     rvm_system_ruby{'ruby-1.9.3-p194':
       ensure => present,
       default_use => true;
@@ -49,7 +49,8 @@ class dtg::git::gollum::main {
     group    => 'www-data',
   }
   exec {'install gollum bundle':
-    command => '/usr/local/rvm/bin/rvm 1.9.3-p194@gollum do bundle install --without development test --deployment',
+    # command => '/usr/local/rvm/bin/rvm 1.9.3-p194@gollum do bundle install',
+    command => '/usr/local/rvm/bin/rvm do bundle install --without development test --deployment',
     creates => '/srv/gollum/vendor/bundle/',
     cwd     => '/srv/gollum/',
     logoutput => true,
