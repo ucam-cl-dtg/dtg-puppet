@@ -18,16 +18,16 @@ class dtg::git::gollum::pre {
     include rvm
     #rvm::system_user{ git: ; www-data:}
     rvm_system_ruby{'ruby-1.9.3-p194':
-	ensure => present,
-	default_use => true;
+      ensure => present,
+      default_use => true;
     }
     
     rvm_gemset{"ruby-1.9.3-p194@gollum":
-	ensure => present,
-	require => Rvm_system_ruby['ruby-1.9.3-p194'];
+      ensure => present,
+      require => Rvm_system_ruby['ruby-1.9.3-p194'];
     }
     #class{
-#	'rvm::passenger::apache':
+#	    'rvm::passenger::apache':
 #	    version => '3.0.18',
 #	    ruby_version => 'ruby-1.9.3-p194',
 #	    mininstances => '3',
@@ -40,23 +40,20 @@ class dtg::git::gollum::pre {
 
 # Stuff that needs to be done for installing gollum
 class dtg::git::gollum::main {
-  file{'/srv/gollum':
-    ensure => "directory"
-  }
   vcsrepo {'/srv/gollum/':
     ensure   => latest,
     provider => 'git',
     source   => 'git://github.com/lc525/gollum-dtg.git',
     revision => 'dtg-master',
     owner    => 'lc525',
-    group    => 'lc525',
-    require  => File['/srv/gollum/'],
+    group    => 'www-data',
   }
   exec {'install gollum bundle':
-    command => 'sudo -u lc525 -g lc525 -H bundle install --without development test --deployment',
+    command => '/usr/local/rvm/bin/rvm 1.9.3-p194@gollum do bundle install --without development test --deployment',
     creates => '/srv/gollum/vendor/bundle/',
     cwd     => '/srv/gollum/',
-    require => Rvm_system_ruby['ruby-1.9.3-p194'];
+    logoutput => true,
+    require => [ Rvm_system_ruby['ruby-1.9.3-p194'], Vcsrepo['/srv/gollum/'] ];
   }
   exec {'gollum frontend permissions':
     command => 'chgrp -R www-data .; chown -R www-data .',
