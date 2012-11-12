@@ -69,7 +69,7 @@ class dtg::git::gollum::main {
     source  => 'puppet:///modules/dtg/gollum/config.ru',
     owner   => 'www-data',
     group   => 'www-data',
-    mode    => '0775',
+    mode    => '0755',
     require => Vcsrepo['/srv/gollum/'], 
   }
   apache::site{'gollum':
