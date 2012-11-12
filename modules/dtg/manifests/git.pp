@@ -61,6 +61,13 @@ class dtg::git::gitolite ($admin_key){
     creates => '/srv/git/repositories/',
     require => File[$admin_key, '/usr/share/gitolite/conf/example.gitolite.rc'],
   }
+  file {'/srv/git/repositories':
+    mode    => 755,
+    owner   => git,
+    group   => www-data,
+    recurse => true,
+    require => Exec['setup-gitolite'],
+  }
   file {'/srv/git/.ssh/':
     ensure => directory,
     owner  => 'git',
@@ -78,7 +85,7 @@ class dtg::git::gitolite ($admin_key){
     script_destination => '/srv/git/backup',
     user               => 'git',
     home               => '/srv/git/',
-    require            => Exec['setup-gitolite'],
+    require            => File['srv/git/repositories'],
   }
 }
 # Some things need to be done before gitolite is installed (key generation)

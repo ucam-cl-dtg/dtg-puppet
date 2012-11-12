@@ -13,10 +13,12 @@ class dtg::git_wiki {
   class {'dtg::git::gollum::pre':}
   class {'dtg::git::gollum::main':}
 }
-# Some things need to be done before gollum is installed (ruby)
+
+# Some things need to be done before gollum is installed (ruby, passenger)
 class dtg::git::gollum::pre {
     include rvm
     #rvm::system_user{ lc525: }
+    
     rvm_system_ruby{'ruby-1.9.3-p194':
       ensure => present,
       default_use => true;
@@ -26,6 +28,7 @@ class dtg::git::gollum::pre {
       ensure => present,
       require => Rvm_system_ruby['ruby-1.9.3-p194'];
     }
+    
     class{
 	    'rvm::passenger::apache':
 	    version => '3.0.18',
