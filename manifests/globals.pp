@@ -27,6 +27,11 @@ class admin_users {
         groups    => [ 'adm' ],
         keys      => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
     }
+    dtg::add_user { 'oc243':
+        real_name => 'Oliver Chick',
+        groups    => [ 'adm' ],
+        keys      => 'Oliver Chick <oc243@cam.ac.uk>',
+    }
     dtg::add_user { 'lc525':
         real_name => 'Lucian Carata',
         groups    => ['adm'],
