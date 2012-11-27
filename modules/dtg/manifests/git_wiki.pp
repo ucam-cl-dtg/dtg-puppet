@@ -10,6 +10,7 @@ class dtg::git_wiki {
     admin_key => '/home/lc525/lc525.pub',
     require   => File['/home/lc525/lc525.pub'],
   }
+
   class {'dtg::git::gollum::pre':}
   class {'dtg::git::gollum::main':}
 }
@@ -47,7 +48,7 @@ class dtg::git::gollum::main {
     ensure   => latest,
     provider => 'git',
     source   => 'git://github.com/lc525/gollum-dtg.git',
-    revision => 'dtg-master',
+    revision => 'dtg-multiwiki',
     owner    => 'lc525',
     group    => 'www-data',
   }
@@ -69,7 +70,7 @@ class dtg::git::gollum::main {
     source  => 'puppet:///modules/dtg/gollum/config.ru',
     owner   => 'www-data',
     group   => 'www-data',
-    mode    => '0755',
+    mode    => '0775',
     require => Vcsrepo['/srv/gollum/'], 
   }
   apache::site{'gollum':
