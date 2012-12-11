@@ -12,17 +12,27 @@ node 'yousense.dtg.cl.cam.ac.uk' {
       ensure => installed,
   }
 
-  class {'dtg::yousense::aptrepos': stage => 'repos'}
+  class {'dtg::yousense::apt_postgresql': stage => 'repos'}
   package {
     ['postgresql-9.2', 'postgresql-server-dev-9.2']:
       ensure => installed,
       require => Apt::Ppa['ppa:pitti/postgresql'],
   }
 
+  class {'dtg::yousense::apt_serverdensity': stage => 'repos'}
 }
 
-class dtg::yousense::aptrepos {
+class dtg::yousense::apt_postgresql {
   apt::ppa {'ppa:pitti/postgresql': }
+}
+
+class dtg::yousense::apt_serverdensity {
+  apt::source {'sdagent':
+    ensure => present,
+    location => 'http://www.serverdensity.com/downloads/linux/deb',
+    repos => 'main',
+    key_source => 'https://www.serverdensity.com/downloads/boxedice-public.key',
+  }
 }
 
 if ( $::fqdn == $::nagios_machine_fqdn ) {
