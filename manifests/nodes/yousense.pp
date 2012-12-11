@@ -23,7 +23,7 @@ node 'yousense.dtg.cl.cam.ac.uk' {
   package {
     'sd-agent':
       ensure => installed,
-      require => Apt::Source['sdagent'],  
+      require => Class['dtg::yousense::apt_serverdensity'],  
   }
 }
 
@@ -43,7 +43,13 @@ class dtg::yousense::apt_serverdensity {
     key_source => 'https://www.serverdensity.com/downloads/boxedice-public.key',
     release => 'all',
     include_src => false,
-    require => Apt::Key['sdagent']
+    require => Apt::Key['sdagent'],
+    notify => Exec['apt_update_serverdensity'],
+  }
+  exec {'apt_update_serverdensity':
+    command => 'apt-get update',
+    logoutput => 'on_failure',
+    refreshonly => true,
   }
 }
 
