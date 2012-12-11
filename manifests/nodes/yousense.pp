@@ -14,7 +14,7 @@ node 'yousense.dtg.cl.cam.ac.uk' {
       ensure => installed,
   }
 
-  apt:ppa {'ppa:pitti/postgresql': }
+  apt::ppa {'ppa:pitti/postgresql': }
 
   package {
     ['postgresql-9.2', 'postgresql-server-dev-9.2']:
