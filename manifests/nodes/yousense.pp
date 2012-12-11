@@ -25,6 +25,8 @@ node 'yousense.dtg.cl.cam.ac.uk' {
       ensure => installed,
       require => Class['dtg::yousense::apt_serverdensity'],  
   }
+
+  class {'dtg::firewall::publichttp': }
 }
 
 class dtg::yousense::apt_postgresql {
