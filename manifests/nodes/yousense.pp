@@ -32,6 +32,10 @@ class dtg::yousense::apt_postgresql {
 }
 
 class dtg::yousense::apt_serverdensity {
+  apt::key {'sdagent':
+    ensure => present,
+    key_source => 'https://www.serverdensity.com/downloads/boxedice-public.key',
+  }
   apt::source {'sdagent':
     ensure => present,
     location => 'http://www.serverdensity.com/downloads/linux/deb',
