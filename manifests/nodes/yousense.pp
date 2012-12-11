@@ -43,6 +43,7 @@ class dtg::yousense::apt_serverdensity {
     key_source => 'https://www.serverdensity.com/downloads/boxedice-public.key',
     release => 'all',
     include_src => false,
+    require => Apt::Key['sdagent']
   }
 }
 
