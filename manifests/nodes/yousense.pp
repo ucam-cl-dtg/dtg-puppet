@@ -5,6 +5,15 @@ node 'yousense.dtg.cl.cam.ac.uk' {
     groups    => [ 'adm' ],
     keys      => 'Mattias Linnap <mattias@linnap.com>',
   }
+
+#  apt:ppa {'ppa:pitti/postgresql': }
+
+  package {
+    ['nginx', 'uwsgi', 'uwsgi-plugin-python', 'python-pip', 'python-dev',
+     'tree', 'git', 'htop', 'rabbitmq-server', 'inotify-tools']:
+      ensure => installed
+  }
+
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios::monitor { 'yousense':
