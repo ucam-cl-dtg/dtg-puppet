@@ -20,6 +20,11 @@ node 'yousense.dtg.cl.cam.ac.uk' {
   }
 
   class {'dtg::yousense::apt_serverdensity': stage => 'repos'}
+  package {
+    'sd-agent':
+      ensure => installed,
+      require => Apt::Source['sdagent'],  
+  }
 }
 
 class dtg::yousense::apt_postgresql {
