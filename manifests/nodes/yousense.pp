@@ -32,6 +32,7 @@ class dtg::yousense::apt_serverdensity {
     location => 'http://www.serverdensity.com/downloads/linux/deb',
     repos => 'main',
     key_source => 'https://www.serverdensity.com/downloads/boxedice-public.key',
+    release => 'all',
     include_src => false,
   }
 }
