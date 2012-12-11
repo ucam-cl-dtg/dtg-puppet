@@ -11,7 +11,15 @@ node 'yousense.dtg.cl.cam.ac.uk' {
   package {
     ['nginx', 'uwsgi', 'uwsgi-plugin-python', 'python-pip', 'python-dev',
      'tree', 'htop', 'rabbitmq-server', 'inotify-tools']:
-      ensure => installed
+      ensure => installed,
+  }
+
+  apt:ppa {'ppa:pitti/postgresql': }
+
+  package {
+    ['postgresql-9.2', 'postgresql-server-dev-9.2']:
+      ensure => installed,
+      require => Apt:Ppa['ppa:pitti/postgresql'],
   }
 
 }
