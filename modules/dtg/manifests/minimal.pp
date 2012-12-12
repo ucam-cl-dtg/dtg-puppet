@@ -20,7 +20,7 @@ class dtg::minimal ($manageapt = true) {
       ensure => installed
   }
 
-  include 'monkeysphere::sshd::default'
+  class { 'monkeysphere::sshd::default': agent_forwarding => 'yes', }
 
   class { 'dtg::git::config': }
   class { "etckeeper": require => Class['dtg::git::config'] }
