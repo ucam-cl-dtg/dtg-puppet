@@ -6,6 +6,14 @@ node 'yousense.dtg.cl.cam.ac.uk' {
     keys      => 'Mattias Linnap <mattias@linnap.com>',
   }
 
+  ssh_authorized_key {'mattias@wf':
+     ensure => present,
+     key => 'AAAAB3NzaC1yc2EAAAABIwAAAQEAzx9Clk40PXQZdqoahSL4rrsFf5JWIBPbOBgCwgwKMl7tnZbBqAk8hwVi2fUIiWbQKgDTtNdFIuUM/xEKzrV1Vz2/Cke0Yx5WUqKZrVb/3vAA+4qwhFAM2Fc1ezUr0yufHXJeZgFvXaMPzyAfFk4UXElAsLaYvgN/4f33o9OkLiTu+wUHrR0jD9xtGko0n6ckaxQvCn1fu3zEnq/6oB+9YkVfKwzc0JbAA9W6qJ2uTU9ryjj0lCqRqqc5iA4WkohwlJzFE9/bTyavTHoEL+Zty7maEZCZJ+WDKypSXwUf0X6+p/a8KACH6rxUHePpoGTQ1kWxmVN9kSQAzuVdP2OBSQ==',
+     name => 'mattias@wf',
+     type => 'ssh-rsa',
+     user => 'ml421',
+  }
+
   package {
     ['nginx', 'uwsgi', 'uwsgi-plugin-python', 'python-pip', 'python-dev',
      'tree', 'htop', 'rabbitmq-server', 'inotify-tools']:
@@ -25,6 +33,8 @@ node 'yousense.dtg.cl.cam.ac.uk' {
       ensure => installed,
       require => Class['dtg::yousense::apt_serverdensity'],  
   }
+
+  class {'dtg::firewall::publichttp': }
 }
 
 class dtg::yousense::apt_postgresql {
