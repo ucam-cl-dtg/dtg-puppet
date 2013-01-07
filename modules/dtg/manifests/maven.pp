@@ -27,7 +27,7 @@ class dtg::maven::nexus (
     ensure => directory,
     owner  => 'nexus',
     group  => 'nexus',
-    mode   => '2775',
+    mode   => '2755',
   }
   file {'/srv/':
     ensure => directory,
