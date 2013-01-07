@@ -1,5 +1,6 @@
 #!/bin/sh
 
+set -e
 # post-update hook for /etc/puppet-bare to update /etc/puppet and apply config
 
 echo '---- Pulling changes into /etc/puppet -----'
