@@ -19,6 +19,9 @@ class dtg::minimal ($manageapt = true) {
     $packagelist:
       ensure => installed
   }
+  if $virtual {
+    class {'dtg::vm':}
+  }
 
   class { 'monkeysphere::sshd::default': agent_forwarding => 'yes', tcp_forwarding => 'yes',}
 
