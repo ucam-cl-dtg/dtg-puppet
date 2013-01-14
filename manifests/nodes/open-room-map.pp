@@ -9,7 +9,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
   }
   class {'dtg::tomcat': version => '7'}
   class {'dtg::firewall::publichttp':}
-  $openroommappackages = ['postgresql-9.1']
+  $openroommappackages = ['postgresql-9.1','python-scipy']
   package{$openroommappackages:
     ensure => installed,
   }
