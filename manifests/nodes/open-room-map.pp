@@ -61,7 +61,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
 
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
-  nagios::monitor { 'HOSTNAME':
+  nagios::monitor { 'open-room-map':
     parents    => '',
     address    => 'open-room-map.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
