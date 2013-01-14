@@ -4,6 +4,7 @@
  */
 class dtg::ravencron::client {
   group {'ravencron': ensure => present}
+  #TODO(drt24) ravencron user is created so that it cannot be sshed into which is a bit useless.
   user {'ravencron':
     ensure => present,
     gid => 'ravencron',

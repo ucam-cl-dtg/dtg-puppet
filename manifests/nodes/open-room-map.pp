@@ -24,6 +24,16 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     ensure => directory,
   }
   class {'dtg::ravencron::client':}
+  file {'/etc/apache2/conf/':
+    ensure => directory,
+    require => Class['apache'],
+  }
+  file {'/etc/apache2/conf/group-raven':
+    ensure => link,
+    target => '/home/ravencron/group-raven',
+    require => Class['dtg::ravencron::client'],
+  }
+  
   group {'jenkins': ensure => present,}
   group {'www-data': ensure => present,}
   user {'jenkins':
