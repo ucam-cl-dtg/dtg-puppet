@@ -4,7 +4,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
   class {'dtg::apache::raven': server_description => 'Open Room Map'} ->
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
-  apache::site {'maven':
+  apache::site {'open-room-map':
     source => 'puppet:///modules/dtg/apache/open-room-map.conf',
   }
   class {'dtg::tomcat': version => '7'}
