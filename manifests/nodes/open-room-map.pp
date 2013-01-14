@@ -9,7 +9,9 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
   }
   class {'dtg::tomcat': version => '7'}
   class {'dtg::firewall::publichttp':}
-  $openroommappackages = ['postgresql-9.1','python-scipy']
+  # python-scipy is used by the machineroom site in /var/www/research/dtg/openroommap/machineroom
+  # libdbd-pg-perl is used by the inventory site in /var/www/research/dtg/openroommap/inventory
+  $openroommappackages = ['postgresql-9.1','python-scipy','libdbd-pg-perl']
   package{$openroommappackages:
     ensure => installed,
   }
