@@ -14,7 +14,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       ensure => directory
     } ->
       wget::authfetch { "download":
-      source => "http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map&v=${openroommapversion}&e=war",
+      source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map&v=${openroommapversion}&e=war\"",
       destination => "/usr/local/share/openroommap-servlet/openroommap-${openroommapversion}.war",
       user => "dtg",
       password => "PetliujyowzaddOn"
