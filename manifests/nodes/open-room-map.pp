@@ -7,7 +7,13 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
   apache::site {'open-room-map':
     source => 'puppet:///modules/dtg/apache/open-room-map.conf',
   }
-  class {'dtg::tomcat': version => '7'}
+  class {'dtg::tomcat': version => '7'} ->
+  wget::authfetch { "download":
+      source => "http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map&v=1.0&e=war",
+      destination => "/var/lib/tomcat7/webapps/openroommap.war",
+      user => "dtg",
+      password => "PetliujyowzaddOn"
+  }
   class {'dtg::firewall::publichttp':}
   # python-scipy is used by the machineroom site in /var/www/research/dtg/openroommap/machineroom
   # libdbd-pg-perli is used by the inventory site in /var/www/research/dtg/openroommap/inventory
