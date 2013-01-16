@@ -102,4 +102,10 @@ define dtg::git::mirror::repo ($source) {
     minute  => cron_minute($name),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
   }
+  cron {"gitmirror-update-server-info-${name}":
+    ensure  => present,
+    command => "cd /srv/gitmirror/repositories/${name}.git && git update-server-info",
+    minute  => cron_minute("${name} update"),
+    require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
+  }
 }
