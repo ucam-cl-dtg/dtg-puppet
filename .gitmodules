@@ -49,3 +49,6 @@
 [submodule "modules/dhcp"]
 	path = modules/dhcp
 	url = git://github.com/puppetlabs/puppetlabs-dhcp.git
+[submodule "modules/concat"]
+	path = modules/concat
+	url = git://github.com/puppetlabs/puppetlabs-concat.git
