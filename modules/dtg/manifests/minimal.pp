@@ -19,7 +19,7 @@ class dtg::minimal ($manageapt = true) {
     $packagelist:
       ensure => installed
   }
-  if $virtual {
+  if $virtual and $manageapt {
     class {'dtg::vm':}
   }
 
