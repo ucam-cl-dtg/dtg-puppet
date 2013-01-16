@@ -58,8 +58,13 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'web/raven/webauth-tomcat': source => 'git@code.dtg.cl.cam.ac.uk:web/raven/webauth-tomcat'}
 
   dtg::git::mirror::repo{'web/readyourmeter': source => 'git@code.dtg.cl.cam.ac.uk:web/readyourmeter'}
+
+  #husky/scripts
+  dtg::git::mirror::repo{'husky/scripts': source => 'git@code.dtg.cl.cam.ac.uk:husky/scripts'}
+
   #dtg::git::mirror::repo{'': source => 'git@code.dtg.cl.cam.ac.uk:'}
   #dtg::git::mirror::repo{'': source => ''}
+
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios::monitor { 'code':
