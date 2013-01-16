@@ -42,7 +42,7 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'puppet/modules/sysctl': source => 'git://git.puppet.immerda.ch/module-sysctl.git'}
   dtg::git::mirror::repo{'puppet/modules/vcsrepo': source => 'git://github.com/openstack-ci/puppet-vcsrepo.git'}
   dtg::git::mirror::repo{'puppet/modules/wget': source => 'git://github.com/maestrodev/puppet-wget.git'}
-  dtg::git::mirror::repo{'puppet/modules/postgresql': source => 'git://github.com/puppetlabs/puppet-postgresql.git modules/postgresql'}
+  dtg::git::mirror::repo{'puppet/modules/postgresql': source => 'git://github.com/puppetlabs/puppet-postgresql.git'}
 
   #time project - transport
   dtg::git::mirror::repo{'time/batchupdaters': source => 'git@code.dtg.cl.cam.ac.uk:time/batchupdaters'}
