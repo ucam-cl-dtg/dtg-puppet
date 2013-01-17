@@ -8,7 +8,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     source => 'puppet:///modules/dtg/apache/open-room-map.conf',
   }
 
-    $openroommapversion=1.0
+    $openroommapversion=1.0.1
     class {'dtg::tomcat': version => '7'} ->
       file {'/usr/local/share/openroommap-servlet':
       ensure => directory
