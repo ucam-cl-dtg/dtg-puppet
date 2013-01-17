@@ -33,7 +33,11 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
         'listen_addresses' => '*', 
         'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5']
       }
-    } 
+    } ->
+    postgresql::db{'openroommap'} ->
+    postgresql::database_user{'orm':
+      password => 'openroommap'
+    }
     
   # python-scipy is used by the machineroom site in /var/www/research/dtg/openroommap/machineroom
   # libdbd-pg-perli is used by the inventory site in /var/www/research/dtg/openroommap/inventory
