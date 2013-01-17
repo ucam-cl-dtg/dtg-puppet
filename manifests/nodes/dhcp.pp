@@ -1,5 +1,6 @@
 node 'dhcp.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
+  class {'apache': }
   class { 'dhcp':
    dnsdomain    => [
                     'dtg.cl.cam.ac.uk',
