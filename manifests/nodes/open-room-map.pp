@@ -34,7 +34,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
         'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5']
       }
     } ->
-    postgresql::db{'openroommap'} ->
+    postgresql::db{'openroommap':} ->
     postgresql::database_user{'orm':
       password => 'openroommap'
     }
