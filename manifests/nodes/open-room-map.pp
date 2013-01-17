@@ -25,10 +25,20 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     }
 
   class {'dtg::firewall::publichttp':}
+
+  class { 'postgresql::server': 
+      config_hash => { 
+        'ip_mask_deny_postgres_user' => '0.0.0.0/0', 
+        'ip_mask_allow_all_users' => '127.0.0.1/32', 
+        'listen_addresses' => '*', 
+        'ipv4acls' => ['hostssl all all 127.0.0.1 md5']
+      }
+    } 
+    
   # python-scipy is used by the machineroom site in /var/www/research/dtg/openroommap/machineroom
   # libdbd-pg-perli is used by the inventory site in /var/www/research/dtg/openroommap/inventory
   # libmath-polygon-perl is used by the rooms site /var/www/research/dtg/openroommap/rooms/
-  $openroommappackages = ['postgresql-9.1','python-scipy','libdbd-pg-perl', 'libmath-polygon-perl']
+  $openroommappackages = ['python-scipy','libdbd-pg-perl', 'libmath-polygon-perl']
   package{$openroommappackages:
     ensure => installed,
   }
