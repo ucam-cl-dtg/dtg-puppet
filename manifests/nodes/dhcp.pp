@@ -9,7 +9,6 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     ntpservers   => ['ntp0.cl.cam.ac.uk'],
     interfaces   => ['eth0'],
     dnsupdatekey => "/etc/bind/keys.d/$ddnskeyname",
-    require      => Bind::Key[ $ddnskeyname ],
   }
 
   dhcp::host {
