@@ -31,7 +31,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
         'ip_mask_deny_postgres_user' => '0.0.0.0/0', 
         'ip_mask_allow_all_users' => '127.0.0.1/32', 
         'listen_addresses' => '*', 
-        'ipv4acls' => ['hostssl all all 127.0.0.1 md5']
+        'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5']
       }
     } 
     
