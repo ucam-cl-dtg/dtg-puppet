@@ -54,8 +54,6 @@ class dtg::entropy::host ($certificate, $private_key, $ca, $crl = false){
     port => '777',
     masterkey => '',
   }
-  # Allow connections to 7776
-  class { 'dtg::firewall::entropy':}
 }
 class dtg::entropy::client ($cafile, $host_address, $host_port = '7776', $local_port = '7777') {
   if ! defined(Class['dtg::entropy']) {
