@@ -8,7 +8,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     source => 'puppet:///modules/dtg/apache/open-room-map.conf',
   }
 
-    $openroommapversion=1.0
+    $openroommapversion="1.0.2"
     class {'dtg::tomcat': version => '7'} ->
       file {'/usr/local/share/openroommap-servlet':
       ensure => directory
@@ -25,10 +25,34 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     }
 
   class {'dtg::firewall::publichttp':}
+
+  class { 'postgresql::server': 
+      config_hash => { 
+        'ip_mask_deny_postgres_user' => '0.0.0.0/0', 
+        'ip_mask_allow_all_users' => '127.0.0.1/32', 
+        'listen_addresses' => '*', 
+        'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5']
+      }
+    } ->
+    postgresql::db{'openroommap':
+      user => "orm",
+      password => "openroommap",
+      charset => "UTF-8",
+      grant => "ALL"
+    } ->
+    postgresql::database_user{'ormreader':
+	password_hash => postgresql_password('ormreader', 'ormreader')
+    } ->
+    postgresql::database_grant{'ormreader':
+        privilege => "select",
+	db => "openroommap",
+	role => "ormreader"
+    }	
+    
   # python-scipy is used by the machineroom site in /var/www/research/dtg/openroommap/machineroom
   # libdbd-pg-perli is used by the inventory site in /var/www/research/dtg/openroommap/inventory
   # libmath-polygon-perl is used by the rooms site /var/www/research/dtg/openroommap/rooms/
-  $openroommappackages = ['postgresql-9.1','python-scipy','libdbd-pg-perl', 'libmath-polygon-perl']
+  $openroommappackages = ['python-scipy','libdbd-pg-perl', 'libmath-polygon-perl']
   package{$openroommappackages:
     ensure => installed,
   }
@@ -72,7 +96,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     group => 'jenkins',
     mode => '0755',
   }
-  file {'/home/jenkins/.ssh/autorized_keys':
+  file {'/home/jenkins/.ssh/authorized_keys':
     ensure => file,
     mode => '0644',
     content => 'from="*.cl.cam.ac.uk" ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAlQzIFjqes3XB09BAS9+lhZ9QuLRsFzLb3TwQJET/Q6tqotY41FgcquONrrEynTsJR8Rqko47OUH/49vzCuLMvOHBg336UQD954oIUBmyuPBlIaDH3QAGky8dVYnjf+qK6lOedvaUAmeTVgfBbPvHfSRYwlh1yYe+9DckJHsfky2OiDkych9E+XgQ4GipLf8Cw6127eiC3bQOXPYdZh7uKnW6vpnVPFPF5K1dSaUo3GxcpYt3OsT3IqB640m8mgekWtOmCuAP+9IEBFmCozwpqLz+EWv6wtova7tbVCkrU2iJwTbJzOUCvWv5JHYjAi/pWNIsKnWpFF9+m4th26GY4Q== jenkins@dtg-ci.cl.cam.ac.uk',

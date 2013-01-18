@@ -46,3 +46,9 @@
 [submodule "modules/postgresql"]
 	path = modules/postgresql
 	url = git://github.com/puppetlabs/puppet-postgresql.git
+[submodule "modules/dhcp"]
+	path = modules/dhcp
+	url = git://github.com/puppetlabs/puppetlabs-dhcp.git
+[submodule "modules/concat"]
+	path = modules/concat
+	url = git://github.com/puppetlabs/puppetlabs-concat.git
