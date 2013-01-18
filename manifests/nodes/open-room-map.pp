@@ -42,12 +42,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     } ->
     postgresql::database_user{'ormreader':
 	password_hash => postgresql_password('ormreader', 'ormreader')
-    } ->
-    postgresql::database_grant{'ormreader':
-        privilege => "select",
-	db => "openroommap",
-	role => "ormreader"
-    }	
+    }
     
   # python-scipy is used by the machineroom site in /var/www/research/dtg/openroommap/machineroom
   # libdbd-pg-perli is used by the inventory site in /var/www/research/dtg/openroommap/inventory
