@@ -1,6 +1,10 @@
 node 'dhcp.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   class {'apache': }
+  apache::site {'open-room-map':
+    source => 'puppet:///modules/dtg/apache/default.conf',
+  }
+
   class {'dtg::firewall::publichttp':}
   class { 'dhcp':
    dnsdomain    => [
@@ -8,7 +12,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
                     '128.232.20.in-addr.arpa',
                     ],
     nameservers  => ['128.232.1.1'],
-    ntpservers   => ['ntp0.cl.cam.ac.uk'],
+    ntpservers   => $ntp_servers,
     interfaces   => ['eth0'],
     dnsupdatekey => "/etc/bind/keys.d/$ddnskeyname",
   }
