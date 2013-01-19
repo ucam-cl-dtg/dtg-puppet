@@ -10,7 +10,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
 
     $openroommapversion="1.0.2"
     class {'dtg::tomcat': version => '7'} ->
-      file {'/usr/local/share/openroommap-servlet':
+    file {'/usr/local/share/openroommap-servlet':
       ensure => directory
     } ->
       wget::authfetch { "download-servlet":
@@ -31,6 +31,9 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     } ->
     file {'/var/www/research/dtg/':
       ensure => directory,
+    } ->
+    file {'/usr/local/share/openroommap-webtree':
+      ensure => directory
     } ->
     wget::authfetch { "download-webtree":
       source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map-webtree&v=${webtreeversion}&e=zip\"",
