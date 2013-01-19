@@ -13,7 +13,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       file {'/usr/local/share/openroommap-servlet':
       ensure => directory
     } ->
-      wget::authfetch { "download":
+      wget::authfetch { "download-servlet":
       source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map&v=${openroommapversion}&e=war\"",
       destination => "/usr/local/share/openroommap-servlet/openroommap-${openroommapversion}.war",
       user => "dtg",
@@ -32,7 +32,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     file {'/var/www/research/dtg/':
       ensure => directory,
     } ->
-    wget::authfetch { "download":
+    wget::authfetch { "download-webtree":
       source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map-webtree&v=${webtreeversion}&e=zip\"",
       destination => "/usr/local/share/openroommap-webtree/openroommap-webtree-${webtreeversion}.zip",
       user => "dtg",
