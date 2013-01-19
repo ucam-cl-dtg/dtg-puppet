@@ -24,6 +24,34 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       target => "/usr/local/share/openroommap-servlet/openroommap-${openroommapversion}.war"
     }
 
+    $webtreeversion="1.0.1"
+    file {'/var/www/research/':
+    	 ensure => directory,
+        require => Class['apache'],
+    } ->
+    file {'/var/www/research/dtg/':
+      ensure => directory,
+    } ->
+    wget::authfetch { "download":
+      source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map-webtree&v=${webtreeversion}&e=zip\"",
+      destination => "/usr/local/share/openroommap-webtree/openroommap-webtree-${webtreeversion}.zip",
+      user => "dtg",
+      password => "PetliujyowzaddOn"
+    } ->
+    package{'unzip':
+        ensure => installed,      
+    } ->
+    exec { "unzip /usr/local/share/openroommap-webtree/openroommap-webtree-${webtreeversion}.zip":
+      cwd => "/usr/local/share/openroommap-webtree",
+      creates => "/usr/local/share/openroommap-webtree/open-room-map-webtree-$webtreeversion/",
+      path => ["/usr/bin"]
+    } ->
+    file{"/var/www/research/dtg/openroommap":
+      ensure => link,
+      target => "/usr/local/share/openroommap-webtree/open-room-map-webtree-$webtreeversion/openroommap",
+    }
+
+
   class {'dtg::firewall::publichttp':}
 
   class { 'postgresql::server': 
@@ -51,16 +79,8 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
   package{$openroommappackages:
     ensure => installed,
   }
-  file {'/var/www/research/':
-    ensure => directory,
-    require => Class['apache'],
-  }
-  file {'/var/www/research/dtg/':
-    ensure => directory,
-  }
-  file {'/var/www/research/dtg/openroommap':
-    ensure => directory,
-  }
+
+
   class {'dtg::ravencron::client':}
   file {'/etc/apache2/conf/':
     ensure => directory,
