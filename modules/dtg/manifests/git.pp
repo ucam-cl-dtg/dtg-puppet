@@ -42,13 +42,18 @@ class dtg::git::gitolite ($admin_key){
     ensure => link,
     target => '/local/data/git/',
   }
-  #TODO(drt24) setup backups and restore from backups
+  #TODO(drt24)  restore from backups
   file {'/usr/share/gitolite/conf/example.gitolite.rc':
     ensure => file,
     source => 'puppet:///modules/dtg/example.gitolite.rc',
     owner  => 'root',
     group  => 'root',
     mode   => '0644',
+    require => Package['gitolite'],
+  }
+  file {'/usr/share/gitolite/hooks/common/post-receive':
+    ensure => link,
+    target => '/usr/share/doc/git-core/contrib/hooks/post-receive-email',
     require => Package['gitolite'],
   }
   exec {'setup-gitolite':
