@@ -14,9 +14,14 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     nameservers  => ['128.232.1.1'],
     ntpservers   => $ntp_servers,
     interfaces   => ['eth0'],
-    dnsupdatekey => "/etc/bind/keys.d/$ddnskeyname",
-  }
 
+  }
+  dhcp::pool{ 'dtg.cl.cam.ac.uk':
+    network => '128.232.20.0',
+    mask    => '255.255.255.0',
+    range   => '128.232.20.28 128.232.20.43',
+    gateway => '128.232.20.18',
+  }
   dhcp::host {
     'puppy0':mac => "00:16:3E:E8:14:1C", ip => "128.232.20.28";
     'puppy1':mac => "00:16:3E:E8:14:1D", ip => "128.232.20.29";
