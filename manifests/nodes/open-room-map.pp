@@ -9,7 +9,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
   }
     $mavenpassword="PetliujyowzaddOn"
 
-    $openroommapversion="1.0.2"
+    $openroommapversion="1.0.3"
     class {'dtg::tomcat': version => '7'} ->
     file {'/usr/local/share/openroommap-servlet':
       ensure => directory
@@ -25,7 +25,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       target => "/usr/local/share/openroommap-servlet/openroommap-${openroommapversion}.war"
     }
 
-    $webtreeversion="1.0.1"
+    $webtreeversion="1.0.3"
     file {'/var/www/research/':
     	 ensure => directory,
         require => Class['apache'],
