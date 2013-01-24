@@ -9,10 +9,10 @@ cd /etc/puppet
 unset GIT_DIR
 
 # Check permissions first
-chmod -R g+u . .git
-chgrp -R adm . .git
-find . -type d -print0 | xargs -0 chmod g+s
-find .git -type d -print0 | xargs -0 chmod g+s
+chmod -R --quiet g+u . .git
+chgrp -R --quiet adm . .git
+find . -type d -print0 | xargs -0 chmod --quiet g+s
+find .git -type d -print0 | xargs -0 chmod --quiet g+s
 
 git pull --recurse-submodules=yes bare  master
 git submodule update --init
