@@ -7,6 +7,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
   apache::site {'open-room-map':
     source => 'puppet:///modules/dtg/apache/open-room-map.conf',
   }
+    $mavenpassword="PetliujyowzaddOn"
 
     $openroommapversion="1.0.2"
     class {'dtg::tomcat': version => '7'} ->
@@ -17,7 +18,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map&v=${openroommapversion}&e=war\"",
       destination => "/usr/local/share/openroommap-servlet/openroommap-${openroommapversion}.war",
       user => "dtg",
-      password => "PetliujyowzaddOn"
+      password => $openroommapversion
     } ->
       file{"/var/lib/tomcat7/webapps/openroommap.war":
       ensure => link,
@@ -39,7 +40,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map-webtree&v=${webtreeversion}&e=zip\"",
       destination => "/usr/local/share/openroommap-webtree/openroommap-webtree-${webtreeversion}.zip",
       user => "dtg",
-      password => "PetliujyowzaddOn"
+      password => $openroommapversion
     } ->
     package{'unzip':
         ensure => installed,      
@@ -51,7 +52,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     } ->
     file{"/var/www/research/dtg/openroommap":
       ensure => link,
-      target => "/usr/local/share/openroommap-webtree/open-room-map-webtree-$webtreeversion/openroommap",
+      target => "/usr/local/share/openroommap-webtree/open-room-map-webtree-$webtreeversion/www/openroommap",
     }
 
 
