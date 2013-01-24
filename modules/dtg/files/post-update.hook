@@ -8,11 +8,11 @@ echo '---- Pulling changes into /etc/puppet -----'
 cd /etc/puppet
 unset GIT_DIR
 
-# Check permissions first
-chmod -R --quiet g+u . .git
-chgrp -R --quiet adm . .git
-find . -type d -print0 | xargs -0 chmod --quiet g+s
-find .git -type d -print0 | xargs -0 chmod --quiet g+s
+# Check permissions first, ignore errors
+chmod -R --quiet g+u . .git || true
+chgrp -R --quiet adm . .git || true
+find . -type d -print0 | xargs -0 chmod --quiet g+s || true
+find .git -type d -print0 | xargs -0 chmod --quiet g+s || true
 
 git pull --recurse-submodules=yes bare  master
 git submodule update --init
