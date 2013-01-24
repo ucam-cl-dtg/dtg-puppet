@@ -18,7 +18,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map&v=${openroommapversion}&e=war\"",
       destination => "/usr/local/share/openroommap-servlet/openroommap-${openroommapversion}.war",
       user => "dtg",
-      password => $openroommapversion
+      password => $mavenpassword
     } ->
       file{"/var/lib/tomcat7/webapps/openroommap.war":
       ensure => link,
@@ -40,7 +40,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map-webtree&v=${webtreeversion}&e=zip\"",
       destination => "/usr/local/share/openroommap-webtree/openroommap-webtree-${webtreeversion}.zip",
       user => "dtg",
-      password => $openroommapversion
+      password => $mavenpassword
     } ->
     package{'unzip':
         ensure => installed,      
