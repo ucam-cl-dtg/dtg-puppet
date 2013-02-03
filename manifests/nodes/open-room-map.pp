@@ -9,7 +9,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
   }
     $mavenpassword="PetliujyowzaddOn"
     $openroommapversion="1.0.4"
-    $webtreeversion="1.0.6"
+    $webtreeversion="1.0.7"
 
     class {'dtg::tomcat': version => '7'} ->
     file {'/usr/local/share/openroommap-servlet':
@@ -85,7 +85,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
   # python-scipy, python-jinja2 is used by the machineroom site in /var/www/research/dtg/openroommap/machineroom
   # libdbd-pg-perli is used by the inventory site in /var/www/research/dtg/openroommap/inventory
   # libmath-polygon-perl is used by the rooms site /var/www/research/dtg/openroommap/rooms/
-  $openroommappackages = ['python-scipy','python-jinja2' ,'libdbd-pg-perl', 'libmath-polygon-perl']
+  $openroommappackages = ['python-scipy','python-jinja2' ,'libdbd-pg-perl', 'libmath-polygon-perl','python-psycopg2']
   package{$openroommappackages:
     ensure => installed,
   }
