@@ -74,6 +74,12 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     } ->
     postgresql::database_user{'ormreader':
 	password_hash => postgresql_password('ormreader', 'ormreader')
+    } ->
+    postgresql::db{'machineroom':
+      user => "machineroom",
+      password => "machineroom",
+      charset => "UTF-8",
+      grant => "ALL"
     }
     
   # python-scipy, python-jinja2 is used by the machineroom site in /var/www/research/dtg/openroommap/machineroom
