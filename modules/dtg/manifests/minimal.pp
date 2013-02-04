@@ -101,17 +101,12 @@ class dtg::minimal ($manageapt = true) {
   }
   # Allow admin users to push puppet config
   group { "adm": ensure => present }
-  sudoers::allowed_command{ "puppet":
-    command          => '/usr/bin/puppet',
-    group            => 'adm',
-    require_password => false,
-    comment          => 'Allow members of the admin group to use puppet as root without requiring a password - so that they can update the puppet repositories and hence trigger the hooks',
-  }
   # Make admin users admin users
   sudoers::allowed_command{ 'adm':
     command => 'ALL',
     group   => 'adm',
-    comment => 'Allow members of the admin group to use password sudo to get root',
+    require_password => false,
+    comment => 'Allow members of the admin group to use sudo to get root',
   }
   class { 'dtg::unattendedupgrades':
     unattended_upgrade_notify_emailaddress => $::unattended_upgrade_notify_emailaddress,

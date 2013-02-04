@@ -1,4 +1,4 @@
-# The title is the username, the email will be used to tell the user their password
+# The title is the username, the email will be used to contact the user
 # groups may be provided to specify additional groups such as adm
 # keys are the array of character for character gpg key user ids for the user
 #  these will be use with monkeyshpere to provide ssh keys
@@ -27,12 +27,13 @@ define dtg::add_user ( $real_name, $groups = '', $keys = undef) {
         require => [ User[$username], Group[$username] ],
     }
 
-    exec { "setuserpassword $username":
-         refreshonly     => true,
-         subscribe       => User[$username],
-         unless          => "grep $username /etc/shadow | cut -f 2 -d : | grep -v '!'",
-         require         => File["/usr/local/sbin/setuserpassword"],
-    }
+# Passwords are outdated.
+#    exec { "setuserpassword $username":
+#         refreshonly     => true,
+#         subscribe       => User[$username],
+#         unless          => "grep $username /etc/shadow | cut -f 2 -d : | grep -v '!'",
+#         require         => File["/usr/local/sbin/setuserpassword"],
+#    }
 
     # If the user has gpg key ids specified then use them
     if ($keys != undef) {
