@@ -20,7 +20,6 @@ fi
 
 if [ ! -d $PUPPETBARE ]; then
     wget ${BOOTSTRAP}
-    sed -i '/git config/d' bootstrap.sh
     chmod +x bootstrap.sh
     ./bootstrap.sh
 fi
