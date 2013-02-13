@@ -8,11 +8,13 @@ define dtg::add_user ( $real_name, $groups = '', $keys = undef) {
     $email = "${username}@cam.ac.uk"
 
     user { $username:
+        ensure  => present,
         comment => "${real_name} <${email}>",
         home    => "/home/$username",
         shell   => "/bin/bash",
         groups  => $groups,
-        membership => minimum,
+        membership => 'minimum',
+        password => '*',
     }
 
     group { $username:
