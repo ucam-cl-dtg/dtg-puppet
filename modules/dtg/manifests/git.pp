@@ -51,13 +51,10 @@ class dtg::git::gitolite ($admin_key){
     mode   => '0644',
     require => Package['gitolite'],
   }
-  file {'/usr/share/doc/git-core/contrib/hooks/post-receive-email':
-    ensure => file,
-    mode => '0755',
-  }
   file {'/usr/share/gitolite/hooks/common/post-receive':
-    ensure => link,
-    target => '/usr/share/doc/git-core/contrib/hooks/post-receive-email',
+    ensure => file,
+    source => 'puppet:///modules/dtg/post-receive-email.hook',
+    mode   => '0755',
     require => Package['gitolite'],
   }
   exec {'setup-gitolite':
