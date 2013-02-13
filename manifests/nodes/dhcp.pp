@@ -17,14 +17,13 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
 
   }
 
-  vcsrepo {'/srv/gitlab/gitlab/':
+  vcsrepo {'/srv/preseed':
     ensure   => latest,
     provider => 'git',
-    source   => 'git://code.dtg.cl.cam.ac.uk:husky/preseed',
+    source   => 'git@code.dtg.cl.cam.ac.uk:husky/preseed',
     revision => 'master',
     owner    => 'www-data',
     group    => 'www-data',
-    require  => File['/srv/preseed/'],
   }
   file { '/var/www/puppy-preseed.cfg':
      ensure => 'link',
