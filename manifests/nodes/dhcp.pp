@@ -16,6 +16,22 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     interfaces   => ['eth0'],
 
   }
+
+  vcsrepo {'/srv/gitlab/gitlab/':
+    ensure   => latest,
+    provider => 'git',
+    source   => 'git://code.dtg.cl.cam.ac.uk:husky/preseed'
+    revision => 'master',
+    owner    => 'www-data',
+    group    => 'www-data',
+    require  => File['/srv/preseed/'],
+  }
+file { '/var/www/puppy-preseed.cfg':
+   ensure => 'link',
+   target => '/srv/preseed/puppey-preseed.cfg',
+}
+
+
   dhcp::pool{ 'dtg.cl.cam.ac.uk':
     network => '128.232.20.0',
     mask    => '255.255.255.0',
