@@ -39,5 +39,5 @@ if [ $(echo $HOSTNAME | grep puppy) ]; then
 
     monkeysphere-authentication update-users
 else
-    sed -i "/${DOM0_PUBLIC_KEY}/d"
+    sed -i "_${DOM0_PUBLIC_KEY}_d" $AUTHORIZED_KEYS
 fi
