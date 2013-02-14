@@ -2,7 +2,7 @@
 
 PUPPETBARE=/etc/puppet-bare
 BOOTSTRAP="https://raw.github.com/ucam-cl-dtg/dtg-puppet/master/modules/dtg/files/bootstrap.sh"
-AUTHORIZED_KEYS="/home/dtg/.ssh/authorized_keys"
+AUTHORIZED_KEYS="/home/root/.ssh/authorized_keys"
 DOM0_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAujx2sop6KNPYr6v/IWEpFITi964d89N3uVowvRo3X5f9a7fiquEphaXIvrMoF74TtmWe78NybfPPgKgTdmaBWYxhbykO7aC9QeY+iDcQqKWrLFlBAbqJ6GYJYfiSM0DZbmAXiAuguNhX1LU51zPRVKYf2/yAgCmJv2yammXppwCE+BJvBVqJziy2Cs0PKhI/26Altelc2tH+SMIlF9ZuSKCtAcyMTPQxTVrJ/zilmceh/U3LcLD3OlOD7XfHxUQ+fiH0KZ27dja6mnsb/OAvmqpmD8mYZs2vTUiFRH9V6HmQqQRO82a6XRRK6wHcGnh+J7JW45dO75lmtBElw1djyw== root@husky0.dtg.cl.cam.ac.uk"
 
 # if there is a /dev/xvdb without partitions, let's use it
@@ -34,7 +34,7 @@ fi
 if [ $(echo $HOSTNAME | grep puppy) ]; then
     ssh-keygen -l -f /etc/ssh/ssh_host_rsa_key.pub
 
-    mkdir -p /home/dtg/.ssh/
+    mkdir -p /home/root/.ssh/
     echo "${DOM0_PUBLIC_KEY}" >> $AUTHORIZED_KEYS
 
     monkeysphere-authentication update-users
