@@ -199,7 +199,7 @@ generate_email()
 	# Email parameters
 	# The email subject will contain the best description of the ref
 	# that we can build from the parameters
-	describe=$(git describe $rev 2>/dev/null)
+	describe=$(git log -n 1 --format=format:%s%n%b $rev 2>/dev/null)
 	if [ -z "$describe" ]; then
 		describe=$rev
 	fi
@@ -232,7 +232,7 @@ generate_email_header()
 	# Generate header
 	cat <<-EOF
 	To: $recipients
-	Subject: ${emailprefix}$projectdesc $refname_type $short_refname ${change_type}d. $describe
+	Subject: ${emailprefix}${projectname}: $refname_type $short_refname ${change_type}d. $describe
 	MIME-Version: 1.0
 	Content-Type: text/plain; charset=utf-8
 	Content-Transfer-Encoding: 8bit
@@ -240,12 +240,13 @@ generate_email_header()
 	X-Git-Reftype: $refname_type
 	X-Git-Oldrev: $oldrev
 	X-Git-Newrev: $newrev
+	Auto-Submitted: auto-generated
 
 	This is an automated email from the git hooks/post-receive script. It was
 	generated because a ref change was pushed to the repository containing
-	the project "$projectdesc".
+	the project "$projectname".
 
-	The $refname_type, $short_refname has been ${change_type}d
+	The $refname_type $short_refname has been ${change_type}d
 	EOF
 }
 
@@ -406,7 +407,7 @@ generate_update_branch_email()
 			echo "            \\"
 			echo "             O -- O -- O ($oldrev)"
 			echo ""
-			echo "The removed revisions are not necessarilly gone - if another reference"
+			echo "The removed revisions are not necessarily gone - if another reference"
 			echo "still refers to them they will stay in the repository."
 			rewind_only=1
 		else
@@ -464,7 +465,7 @@ generate_delete_branch_email()
 	echo "       was  $oldrev"
 	echo ""
 	echo $LOGBEGIN
-	git diff-tree --encoding=UTF-8 -s --pretty=oneline $oldrev
+	git show -s --pretty=oneline $oldrev
 	echo $LOGEND
 }
 
@@ -540,11 +541,11 @@ generate_atag_email()
 		# performed on them
 		if [ -n "$prevtag" ]; then
 			# Show changes since the previous release
-			git shortlog --encoding=UTF-8 "$prevtag..$newrev"
+			git rev-list --pretty=short "$prevtag..$newrev" | git shortlog
 		else
 			# No previous tag, show all the changes since time
 			# began
-			git shortlog --encoding=UTF-8 "$newrev"
+			git rev-list --pretty=short $newrev | git shortlog
 		fi
 		;;
 	*)
@@ -564,7 +565,7 @@ generate_delete_atag_email()
 	echo "       was  $oldrev"
 	echo ""
 	echo $LOGBEGIN
-	git diff-tree --encoding=UTF-8 -s --pretty=oneline $oldrev
+	git show -s --pretty=oneline $oldrev
 	echo $LOGEND
 }
 
@@ -610,7 +611,7 @@ generate_general_email()
 	echo ""
 	if [ "$newrev_type" = "commit" ]; then
 		echo $LOGBEGIN
-		git diff-tree --encoding=UTF-8 --root -s --pretty=oneline $newrev
+		git show --no-color --root -s --pretty=medium $newrev
 		echo $LOGEND
 	else
 		# What can we do here?  The tag marks an object that is not
@@ -629,7 +630,7 @@ generate_delete_general_email()
 	echo "       was  $oldrev"
 	echo ""
 	echo $LOGBEGIN
-	git diff-tree --encoding=UTF-8 -s --pretty=oneline $oldrev
+	git show -s --pretty=oneline $oldrev
 	echo $LOGEND
 }
 
@@ -722,6 +723,14 @@ projectdesc=$(sed -ne '1p' "$GIT_DIR/description" 2>/dev/null)
 if expr "$projectdesc" : "Unnamed repository.*$" >/dev/null
 then
 	projectdesc="UNNAMED PROJECT"
+fi
+
+if [ $(git rev-parse --is-bare-repository) = true ]
+then
+    projectname=$(basename "$PWD") 
+    projectname=${projectname%.git} # cut off a .git ending
+else
+    projectname=$(basename $(readlink -nf "$PWD"/..))
 fi
 
 recipients=$(git config hooks.mailinglist)
