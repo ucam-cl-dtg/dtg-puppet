@@ -62,7 +62,7 @@ if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios::monitor { 'dhcp':
     parents    => '',
     address    => 'dhcp.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers, http-servers'],
+    hostgroups => [ 'ssh-servers' ],
   }
 }
 
