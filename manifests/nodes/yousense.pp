@@ -1,12 +1,6 @@
 node 'yousense.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 
-  dtg::add_user { 'ml421':
-    real_name => 'Mattias Linnap',
-    groups    => [ 'adm' ],
-    keys      => ['Mattias Linnap <mattias@linnap.com>','Mattias Linnap (llynfi-ssh) <mattias@linnap.com>','Mattias Linnap (macmini-ssh) <mattias@linnap.com>'],
-  }
-
   # Network Setup
 
   class { 'network::interfaces':
