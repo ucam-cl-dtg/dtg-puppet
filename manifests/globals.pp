@@ -52,6 +52,11 @@ class admin_users {
         groups     => ['adm'],
         keys       => 'Daniel Wagner (ssh) <wagner.daniel.t@gmail.com>',
     }
+    # Add Mattias but don't make him an admin
+    dtg::add_user { 'ml421':
+        real_name => 'Mattias Linnap',
+        keys      => ['Mattias Linnap <mattias@linnap.com>','Mattias Linnap (llynfi-ssh) <mattias@linnap.com>','Mattias Linnap (macmini-ssh) <mattias@linnap.com>'],
+    }
 }
 # Admin user ids to be given root on the nodes via monkeysphere
 $ms_admin_user_ids = [
