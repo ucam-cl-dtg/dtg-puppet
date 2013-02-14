@@ -5,7 +5,6 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     source => 'puppet:///modules/dtg/apache/default.conf',
   }
 
-  class {'dtg::firewall::publichttp':}
   class { 'dhcp':
    dnsdomain    => [
                     'dtg.cl.cam.ac.uk',
@@ -16,20 +15,6 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     interfaces   => ['eth0'],
 
   }
-
-  vcsrepo {'/srv/preseed':
-    ensure   => latest,
-    provider => 'git',
-    source   => 'git@code.dtg.cl.cam.ac.uk:husky/preseed',
-    revision => 'master',
-    owner    => 'www-data',
-    group    => 'www-data',
-  }
-  file { '/var/www/puppy-preseed.cfg':
-     ensure => 'link',
-     target => '/srv/preseed/puppey-preseed.cfg',
-  }
-
 
   dhcp::pool{ 'dtg.cl.cam.ac.uk':
     network => '128.232.20.0',
