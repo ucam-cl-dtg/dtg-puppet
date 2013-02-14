@@ -9,7 +9,7 @@ class dtg::jenkins {
     require => Apt::Ppa['ppa:ucam-cl-dtg/jenkins'],
   }
   #packages required by jenkins jobs
-  $jenkins_job_packages = ['inkscape','openjdk-7-jdk','reprepro','git-buildpackage', 'build-essential', 'cowbuilder', 'cowdancer', 'debootstrap','devscripts','pbuilder', 'octave', 'octave-octgpr', 'mysql-common','maven']
+  $jenkins_job_packages = ['inkscape','openjdk-7-jdk','reprepro','git-buildpackage', 'build-essential', 'cowbuilder', 'cowdancer', 'debootstrap','devscripts','pbuilder', 'octave', 'octave-octgpr', 'mysql-common','maven','postgresql-client-common']
   package { $jenkins_job_packages:
     ensure => installed,
   }
