@@ -90,7 +90,7 @@ define dtg::git::mirror::repo ($source) {
   }
   cron {"gitmirror-mirror-${name}":
     ensure  => present,
-    command => "cd /srv/gitmirror/repositories/${name}.git && git fetch --all --quiet --tags && git update-server-info",
+    command => "cd /srv/gitmirror/repositories/${name}.git && git fetch --quiet origin master:master && git update-server-info",
     user    => 'gitmirror',
     minute  => cron_minute("${name}-mirror"),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
