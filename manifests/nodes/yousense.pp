@@ -1,6 +1,5 @@
 node 'yousense.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
-  include 'network::interfaces'
 
   dtg::add_user { 'ml421':
     real_name => 'Mattias Linnap',
@@ -10,7 +9,7 @@ node 'yousense.dtg.cl.cam.ac.uk' {
 
   # Network Setup
 
-  class { "network::interfaces":
+  class { 'network::interfaces':
     interfaces => {
       'eth0' => {
         'method' => 'static',
