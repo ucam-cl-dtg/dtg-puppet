@@ -75,6 +75,14 @@ class dtg::firewall::publichttp inherits dtg::firewall::default {
     action  => 'accept',
   }
 }
+class dtg::firewall::publichttps inherits dtg::firewall::default {
+  firewall { '013 accept all https':
+    proto   => 'tcp',
+    dport   => '443',
+    action  => 'accept',
+  }
+}
+
 class dtg::firewall::privatehttp inherits dtg::firewall::default {
   firewall { '010 accept all http from dtg':
     proto   => 'tcp',
