@@ -16,9 +16,8 @@ node 'yousense.dtg.cl.cam.ac.uk' {
         require => Apt::Ppa['ppa:pitti/postgresql'],
     }
 
-    # Files and directories for code and virtualenvs
-
-    file { ['/srv/repos', '/srv/venvs']:
+    # Files and directories for code, virtualenvs and static html
+    file { ['/srv/repos', '/srv/venvs', '/srv/static', '/srv/static/yousense']:
         ensure => directory,
         owner => 'ml421',
         group => 'ml421',
@@ -36,9 +35,6 @@ node 'yousense.dtg.cl.cam.ac.uk' {
         owner => 'www-data',
         group => 'www-data',
     }
-
-    # Running services
-
 }
 
 class dtg::yousense::apt_postgresql {
