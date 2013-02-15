@@ -38,10 +38,7 @@ node 'yousense.dtg.cl.cam.ac.uk' {
     }
 
     # Running services
-    rabbitmq_plugin { 'rabbitmq_management':
-        ensure => present,
-        provider => 'rabbitmqplugins',
-    }
+
 }
 
 class dtg::yousense::apt_postgresql {
