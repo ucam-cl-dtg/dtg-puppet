@@ -105,6 +105,7 @@ class dtg::minimal ($manageapt = true) {
   sudoers::allowed_command{ 'adm':
     command => 'ALL',
     group   => 'adm',
+    run_as  => 'ALL',
     require_password => false,
     comment => 'Allow members of the admin group to use sudo to get root',
   }
