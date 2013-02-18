@@ -7,7 +7,7 @@
 if [ "$1" = "config" ]; then
     echo 'graph_title FS Readonly'
     echo 'graph_vlabel readonly'
-    echo 'graph_catagory system'
+    echo 'graph_category system'
     echo 'fs_readonly.label readonly'
     exit 0
 fi
