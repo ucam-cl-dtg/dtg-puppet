@@ -121,7 +121,7 @@ class dtg::minimal ($manageapt = true) {
   # Add read only filesystem detection plugin
   file {'/usr/share/munin/plugins/fs_readonly':
     ensure => file,
-    source => 'puppet:///dtg/munin/fs_readonly',
+    source => 'puppet:///modules/dtg/munin/fs_readonly',
     mode   => '0755',
     require => Package['munin-node'],
   }
