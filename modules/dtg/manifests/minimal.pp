@@ -113,9 +113,20 @@ class dtg::minimal ($manageapt = true) {
     unattended_upgrade_notify_emailaddress => $::unattended_upgrade_notify_emailaddress,
     require => Class['dtg::email'],
   }
+
+  # Monitor using munin
   class { 'munin::node':
     node_allow_ips => [ escapeRegexp($::munin_server_ip), '^127\.0\.0\.1$' ],
   }
+  # Add read only filesystem detection plugin
+  file {'/usr/share/munin/plugins/fs_readonly':
+    ensure => file,
+    source => 'puppet:///dtg/munin/fs_readonly',
+    mode   => '0755',
+    require => Package['munin-node'],
+  }
+  munin::node::plugin{'fs_readonly':}
+
   # Include default firewall rules
   class { 'dtg::firewall': }
   sshkey {'localhost':
