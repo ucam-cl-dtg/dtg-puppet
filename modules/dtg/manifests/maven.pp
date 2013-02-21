@@ -9,7 +9,7 @@ class dtg::maven {
 }
 # This will set up nexus listening on port 8081
 class dtg::maven::nexus (
-  $version = '2.1.2',
+  $version = '2.3.0-04',
   $mirror_url = 'http://www.sonatype.org/downloads/'
 ){
   $download_file = "nexus-${version}-bundle.tar.gz"
@@ -27,7 +27,7 @@ class dtg::maven::nexus (
     ensure => directory,
     owner  => 'nexus',
     group  => 'nexus',
-    mode   => '2775',
+    mode   => '2755',
   }
   file {'/srv/':
     ensure => directory,

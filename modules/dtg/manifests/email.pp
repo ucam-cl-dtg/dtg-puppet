@@ -10,6 +10,7 @@ class dtg::email {
     ensure => present,
     path   => '/etc/email-addresses',
     line   => 'root: dtg-infra@cl.cam.ac.uk',
+    require => Package['exim'],
   }
 
   # Set mailto for cron job emails

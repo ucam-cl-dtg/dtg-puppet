@@ -42,6 +42,7 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'puppet/modules/sysctl': source => 'git://git.puppet.immerda.ch/module-sysctl.git'}
   dtg::git::mirror::repo{'puppet/modules/vcsrepo': source => 'git://github.com/openstack-ci/puppet-vcsrepo.git'}
   dtg::git::mirror::repo{'puppet/modules/wget': source => 'git://github.com/maestrodev/puppet-wget.git'}
+  dtg::git::mirror::repo{'puppet/modules/postgresql': source => 'git://github.com/puppetlabs/puppet-postgresql.git'}
 
   #time project - transport
   dtg::git::mirror::repo{'time/batchupdaters': source => 'git@code.dtg.cl.cam.ac.uk:time/batchupdaters'}
@@ -57,8 +58,14 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'web/raven/webauth-tomcat': source => 'git@code.dtg.cl.cam.ac.uk:web/raven/webauth-tomcat'}
 
   dtg::git::mirror::repo{'web/readyourmeter': source => 'git@code.dtg.cl.cam.ac.uk:web/readyourmeter'}
+
+  #husky/scripts
+  dtg::git::mirror::repo{'husky/scripts': source => 'git@code.dtg.cl.cam.ac.uk:husky/scripts'}
+  dtg::git::mirror::repo{'husky/preseed': source => 'git@code.dtg.cl.cam.ac.uk:husky/preseed'}
+
   #dtg::git::mirror::repo{'': source => 'git@code.dtg.cl.cam.ac.uk:'}
   #dtg::git::mirror::repo{'': source => ''}
+
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios::monitor { 'code':

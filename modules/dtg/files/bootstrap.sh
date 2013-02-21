@@ -13,7 +13,7 @@ apt-get -y install puppet-common git-core runit python-software-properties
 # repo (allowing you to re-push after git commit --amend)
 
 echo "Setting up git repositories"
-git config --global core.sharedRepository group
+git config --system core.sharedRepository group
 
 # remove /etc/puppet as installed by puppet
 rm -rf /etc/puppet
@@ -55,9 +55,10 @@ git pull --recurse-submodules=yes git://github.com/ucam-cl-dtg/dtg-puppet.git
 git submodule update --init
 
 # Ensure sensible permissions for checked out repository
-chmod -R g+u .
-chgrp -R adm .
+chmod -R g+u . .git
+chgrp -R adm . .git
 find . -type d -print0 | xargs -0 chmod g+s
+find .git -type d -print0 | xargs -0 chmod g+s
 chmod -R g+u .git # otherwise not necessarily covered
 chgrp -R adm .git
 

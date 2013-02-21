@@ -7,6 +7,8 @@ node 'entropy.dtg.cl.cam.ac.uk' {
     ca          => '/usr/local/share/ssl/cafile',
     stage       => 'entropy-host'
   }
+  # Allow connections to 7776
+  class { 'dtg::firewall::entropy':}
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios::monitor { 'entropy':

@@ -1,11 +1,23 @@
 #!/bin/sh
 
-# post-update hook for /etc/puppet-bare to update /etc/puppet and apply config
+set -e
 
+# Print out the host we are running on so that we know which node things fail
+# on when doing git push all
+hostname -f
+
+# post-update hook for /etc/puppet-bare to update /etc/puppet and apply config
 echo '---- Pulling changes into /etc/puppet -----'
 
 cd /etc/puppet
 unset GIT_DIR
+
+# Check permissions first, ignore errors
+chmod -R --quiet g+u . .git || true
+chgrp -R --quiet adm . .git || true
+find . -type d -print0 | xargs -0 chmod --quiet g+s || true
+find .git -type d -print0 | xargs -0 chmod --quiet g+s || true
+
 git pull --recurse-submodules=yes bare  master
 git submodule update --init
 
