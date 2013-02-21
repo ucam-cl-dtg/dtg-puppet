@@ -1,3 +1,10 @@
+# git_wiki.pp 
+# Maintainer: Lucian Carata <lc525@cam.ac.uk>
+# 
+# This installs dtg-gollum (https://github.com/lc525/gollum-dtg),
+# the DTG wiki server and corresponding git-backed wikis
+#
+
 class dtg::git_wiki {
   file {'/home/lc525/lc525.pub':
     ensure => file,
@@ -15,7 +22,7 @@ class dtg::git_wiki {
   class {'dtg::git::gollum::main':}
 }
 
-# Some things need to be done before gollum is installed (ruby, passenger)
+# Install ruby and passenger before gollum
 class dtg::git::gollum::pre {
     include rvm
     #rvm::system_user{ lc525: }

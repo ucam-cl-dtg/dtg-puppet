@@ -9,7 +9,7 @@ system("which git") or raise "Looks like I can't find the git CLI in your path.\
 
 git_repos_path = '/srv/git/repositories' # CHANGE THIS TO POINT TO YOUR GITOLITE BASE REPO PATH
 wiki_repos_pattern = 'wiki/'
-wikis_breadcrumb_url = 'http://wiki.dtg.cl.cam.ac.uk/list'
+wikis_breadcrumb_url = 'https://wiki.dtg.cl.cam.ac.uk/list'
 
 disable :run
 
