@@ -5,6 +5,19 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     source => 'puppet:///modules/dtg/apache/default.conf',
   }
 
+
+  class { 'network::interfaces':
+    interfaces => {
+      'eth0' => {
+        'method' => 'static',
+        'address' => '128.232.20.36',
+        'netmask' => '255.255.255.0',
+        'gateway' => '128.232.97.33',
+      }
+    },
+    auto => ["eth0"],
+  }
+
   class { 'dhcp':
    dnsdomain    => [
                     'dtg.cl.cam.ac.uk',
