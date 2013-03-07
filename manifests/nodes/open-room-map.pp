@@ -11,7 +11,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     $openroommapversion="1.0.4"
     $webtreeversion="1.0.10"
     $tilesversion="1.0.0-SNAPSHOT"
-    $tileclassifier="live"
+    $tilesclassifier="live"
 
     # Install the openroommap servlet code.  This requires tomcat
     class {'dtg::tomcat': version => '7'} ->
