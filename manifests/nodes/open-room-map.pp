@@ -66,7 +66,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       ensure => directory
     } ->
     wget::authfetch { "download-tiles":
-        source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map-tiles&v=${tilesversion}&e=zip&c=${tilesclassifier}\"",
+        source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=snapshots&g=uk.ac.cam.cl.dtg&a=open-room-map-tiles&v=${tilesversion}&e=zip&c=${tilesclassifier}\"",
         destination => "/usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}.zip",
       user => "dtg",
       password => $mavenpassword
