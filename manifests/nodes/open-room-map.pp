@@ -71,9 +71,6 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       user => "dtg",
       password => $mavenpassword
     } ->
-    package{'unzip':
-        ensure => installed,      
-    } ->
       exec { "unzip /usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}.zip":
       cwd => "/usr/local/share/openroommap-tiles",
       creates => "/usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}/",
