@@ -5,7 +5,19 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     source => 'puppet:///modules/dtg/apache/default.conf',
   }
 
-  class {'dtg::firewall::publichttp':}
+
+  class { 'network::interfaces':
+    interfaces => {
+      'eth0' => {
+        'method' => 'static',
+        'address' => '128.232.20.36',
+        'netmask' => '255.255.255.0',
+        'gateway' => '128.232.20.1',
+      }
+    },
+    auto => ["eth0"],
+  }
+
   class { 'dhcp':
    dnsdomain    => [
                     'dtg.cl.cam.ac.uk',
@@ -16,11 +28,13 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     interfaces   => ['eth0'],
 
   }
+
   dhcp::pool{ 'dtg.cl.cam.ac.uk':
     network => '128.232.20.0',
     mask    => '255.255.255.0',
     range   => '128.232.20.28 128.232.20.43',
-    gateway => '128.232.20.18',
+    # gateway should be route.cl
+    gateway => '128.232.20.1',
   }
   dhcp::host {
     'puppy0':mac => "00:16:3E:E8:14:1C", ip => "128.232.20.28";
@@ -62,7 +76,7 @@ if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios::monitor { 'dhcp':
     parents    => '',
     address    => 'dhcp.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers, http-servers'],
+    hostgroups => [ 'ssh-servers' ],
   }
 }
 

@@ -1,8 +1,12 @@
 #!/bin/sh
 
 set -e
-# post-update hook for /etc/puppet-bare to update /etc/puppet and apply config
 
+# Print out the host we are running on so that we know which node things fail
+# on when doing git push all
+hostname -f
+
+# post-update hook for /etc/puppet-bare to update /etc/puppet and apply config
 echo '---- Pulling changes into /etc/puppet -----'
 
 cd /etc/puppet

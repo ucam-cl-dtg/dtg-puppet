@@ -13,7 +13,7 @@ apt-get -y install puppet-common git-core runit python-software-properties
 # repo (allowing you to re-push after git commit --amend)
 
 echo "Setting up git repositories"
-git config --global core.sharedRepository group
+git config --system core.sharedRepository group
 
 # remove /etc/puppet as installed by puppet
 rm -rf /etc/puppet

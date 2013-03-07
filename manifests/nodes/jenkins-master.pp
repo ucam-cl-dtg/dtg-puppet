@@ -3,6 +3,8 @@ node 'jenkins-master.dtg.cl.cam.ac.uk' {
   class { 'dtg::jenkins': }
   class { 'sonar': version => '3.2'}
 }
+
+
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios::monitor { 'jenkins-master':
     parents    => '',

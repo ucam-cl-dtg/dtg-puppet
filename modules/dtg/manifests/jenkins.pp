@@ -9,7 +9,15 @@ class dtg::jenkins {
     require => Apt::Ppa['ppa:ucam-cl-dtg/jenkins'],
   }
   #packages required by jenkins jobs
-  $jenkins_job_packages = ['inkscape','openjdk-7-jdk','reprepro','git-buildpackage', 'build-essential', 'cowbuilder', 'cowdancer', 'debootstrap','devscripts','pbuilder', 'octave', 'octave-octgpr', 'mysql-common','maven']
+  $jenkins_job_packages = [# One line per job's install list
+    'inkscape',
+    'openjdk-7-jdk',
+    'reprepro','git-buildpackage', 'build-essential', 'cowbuilder', 'cowdancer', 'debootstrap','devscripts','pbuilder',
+    'octave', 'octave-octgpr',
+    'mysql-common',
+    'maven',
+    'postgresql-client-common','postgresql-client-9.1',
+    'gradle']
   package { $jenkins_job_packages:
     ensure => installed,
   }
@@ -63,6 +71,17 @@ class dtg::jenkins {
     owner  => 'tomcat6',
     group  => 'tomcat6',
     mode   => '0644',
+  }
+  wget::fetch { "download-gradle-plugin":
+    source => "\"https://updates.jenkins-ci.org/download/plugins/gradle/1.21/gradle.hpi\"",
+    destination => "/var/lib/jenkins/plugins/gradle.hpi",
+    require => Package['jenkins-tomcat'],
+  }
+
+  wget::fetch { "gradlew setup":
+    source => "\"http://services.gradle.org/distributions/gradle-1.4-all.zip\"",
+    destination => "/var/lib/jenkins/workspace/external/gradle/gradle-1.4-all.zip",
+    require => Package['jenkins-tomcat'],
   }
   #TODO(drt24) Default to java7
   # Modify /etc/jenkins/debian_glue to point at precise and have main and universe components

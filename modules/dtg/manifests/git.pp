@@ -32,11 +32,15 @@ class dtg::git::gitolite ($admin_key){
     shell   => '/bin/bash',
     password => '*',#no password but key based login
   }
+  file { [ "/local", "/local/data" ]:
+    ensure => directory,
+  }
   file {'/local/data/git':
     ensure => directory,
     owner  => 'git',
     group  => 'git',
     mode   => '2755',
+    require => File['/local','/local/data'],
   }
   file {'/srv/git/':
     ensure => link,
@@ -51,13 +55,10 @@ class dtg::git::gitolite ($admin_key){
     mode   => '0644',
     require => Package['gitolite'],
   }
-  file {'/usr/share/doc/git-core/contrib/hooks/post-receive-email':
-    ensure => file,
-    mode => '0755',
-  }
   file {'/usr/share/gitolite/hooks/common/post-receive':
-    ensure => link,
-    target => '/usr/share/doc/git-core/contrib/hooks/post-receive-email',
+    ensure => file,
+    source => 'puppet:///modules/dtg/post-receive-email.hook',
+    mode   => '0755',
     require => Package['gitolite'],
   }
   exec {'setup-gitolite':
@@ -65,6 +66,14 @@ class dtg::git::gitolite ($admin_key){
     cwd     => '/srv/git/',
     creates => '/srv/git/repositories/',
     require => File[$admin_key, '/usr/share/gitolite/conf/example.gitolite.rc'],
+  }
+  file {'/srv/git/repositories':
+    ensure  => directory,
+    mode    => 755,
+    owner   => git,
+    group   => www-data,
+    recurse => true,
+    require => Exec['setup-gitolite'],
   }
   file {'/srv/git/.ssh/':
     ensure => directory,
@@ -78,13 +87,13 @@ class dtg::git::gitolite ($admin_key){
     group  => 'git',
     mode   => '0600',
   }
-  dtg::backup::serversetup {'gitolite repositories':
-    backup_directory   => '/srv/git/repositories/',
-    script_destination => '/srv/git/backup',
-    user               => 'git',
-    home               => '/srv/git/',
-    require            => Exec['setup-gitolite'],
-  }
+  #dtg::backup::serversetup {'gitolite repositories':
+    #backup_directory   => '/srv/git/repositories/',
+    #script_destination => '/srv/git/backup',
+    #user               => 'git',
+    #home               => '/srv/git/',
+    #require            => File['srv/git/repositories'],
+  #}
 }
 # Some things need to be done before gitolite is installed (key generation)
 class dtg::git::gitlab::pre {
