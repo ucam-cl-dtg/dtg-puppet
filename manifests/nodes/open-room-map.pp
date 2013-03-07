@@ -9,8 +9,11 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
   }
     $mavenpassword="PetliujyowzaddOn"
     $openroommapversion="1.0.4"
-    $webtreeversion="1.0.8"
+    $webtreeversion="1.0.10"
+    $tilesversion="1.0.0-SNAPSHOT"
+    $tileclassifier="live"
 
+    # Install the openroommap servlet code.  This requires tomcat
     class {'dtg::tomcat': version => '7'} ->
     file {'/usr/local/share/openroommap-servlet':
       ensure => directory
@@ -26,6 +29,7 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
       target => "/usr/local/share/openroommap-servlet/openroommap-${openroommapversion}.war"
     }
 
+    # Install the openroommap static web tree.  This is hosted by apache
     file {'/var/www/research/':
     	 ensure => directory,
         require => Class['apache'],
@@ -53,7 +57,33 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     file{"/var/www/research/dtg/openroommap":
       ensure => link,
       target => "/usr/local/share/openroommap-webtree/open-room-map-webtree-$webtreeversion/www/openroommap",
+    } ->
+    file {'/var/www/research/dtg/static/':
+      ensure => directory,
+    } ->
+    # Install the openroommap tiles snapshot
+    file {'/usr/local/share/openroommap-tiles':
+      ensure => directory
+    } ->
+    wget::authfetch { "download-tiles":
+        source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map-tiles&v=${tilesversion}&e=zip&c=${tilesclassifier}\"",
+        destination => "/usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}.zip",
+      user => "dtg",
+      password => $mavenpassword
+    } ->
+    package{'unzip':
+        ensure => installed,      
+    } ->
+      exec { "unzip /usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}.zip":
+      cwd => "/usr/local/share/openroommap-tiles",
+      creates => "/usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}/",
+      path => ["/usr/bin"]
+    } ->
+    file{"/var/www/research/dtg/openroommap/static/tile":
+      ensure => link,
+      target => "/usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}/static/tile",
     }
+
 
 
   class {'dtg::firewall::publichttp':}
