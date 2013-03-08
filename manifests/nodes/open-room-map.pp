@@ -19,7 +19,6 @@ node /open-room-map(-\d+)?/ {
       artifact_name => "open-room-map",
       artifact_version => "1.0.4",
       artifact_type => "war",
-      artifact_classifier => "ANY",
       destination_directory => "/usr/local/share/openroommap-servlet"
     } ->
       file{"/var/lib/tomcat7/webapps/openroommap.war":
