@@ -11,7 +11,8 @@ define dtg::nexus::fetch (
        $action = "NONE"
        ) {
 
-  $destination_file = "${destination_directory}/${artifact_name}-${artifact_version}.${artifact_type}"
+  $destination_file = "${artifact_name}-${artifact_version}.${artifact_type}"
+  $destination_path = "${destination_directory}/${destination_file}"
 
   if $artifact_version =~ /-SNAPSHOT/ { $repository = "snapshot" } else { $repository = "releases" }
   if $artifact_classifier == "ANY" { $classifier = "" } else { $classifier = "&c=$artifact_classifier" }
@@ -19,7 +20,7 @@ define dtg::nexus::fetch (
   file {$destination_directory: ensure => directory } ->
   wget::authfetch { "nexus-fetch-$destination_file":
         source => "\"${nexus_server_name}/service/local/artifact/maven/redirect?r=${repository}&g=${groupID}&a=${artifact_name}&v=${artifact_version}&e=${artifact_type}${classifier}\"",
-        destination => $destination_file,
+        destination => $destination_path,
         user => $nexus_user,
         password => $nexus_password,
   } 
@@ -29,7 +30,7 @@ define dtg::nexus::fetch (
 	   require => Wget::Authfetch["nexus-fetch-$destination_file"],
 	   ensure => installed,      
      } ->
-     exec { "unzip ${destination_file}":
+     exec { "unzip ${destination_path}":
       	  cwd => $destination_directory,
       	  creates => "${destination_directory}/${artifact_name}-${artifact_version}/",
 	  path => ["/usr/bin"]
