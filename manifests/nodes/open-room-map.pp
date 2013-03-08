@@ -6,24 +6,23 @@ node /open-room-map(-\d+)?/ {
   apache::module {'proxy_http':} ->
   apache::site {'open-room-map':
     source => 'puppet:///modules/dtg/apache/open-room-map.conf',
-  }
-    $mavenpassword="PetliujyowzaddOn"
-    $openroommapversion="1.0.4"
-    $webtreeversion="1.0.10"
-    $tilesversion="1.0.0-SNAPSHOT"
-    $tilesclassifier="live"
+    }
 
+    $servlet_version = "1.0.4"
+    $webtree_version = "1.0.10"
+    $tiles_version = "1.0.0-SNAPSHOT"
+    
     # Install the openroommap servlet code.  This requires tomcat
     class {'dtg::tomcat': version => '7'} ->
     dtg::nexus::fetch{"download-servlet":
       artifact_name => "open-room-map",
-      artifact_version => "1.0.4",
+      artifact_version => $servlet_version,
       artifact_type => "war",
       destination_directory => "/usr/local/share/openroommap-servlet"
     } ->
       file{"/var/lib/tomcat7/webapps/openroommap.war":
       ensure => link,
-      target => "/usr/local/share/openroommap-servlet/openroommap-${openroommapversion}.war"
+        target => "/usr/local/share/openroommap-servlet/openroommap-${servlet_version}.war"
     }
 
     # Install the openroommap static web tree.  This is hosted by apache
@@ -36,36 +35,27 @@ node /open-room-map(-\d+)?/ {
     } ->
     dtg::nexus::fetch{"download-webtree":
         artifact_name => "open-room-map-webtree",
-        artifact_version => "1.0.10",
+        artifact_version => $webtree_version,
         artifact_type => "zip",
         destination_directory => "/usr/local/share/openroommap-webtree",
         action => "unzip"
       } ->
     file{"/var/www/research/dtg/openroommap":
       ensure => link,
-      target => "/usr/local/share/openroommap-webtree/open-room-map-webtree-$webtreeversion/www/openroommap",
+      target => "/usr/local/share/openroommap-webtree/open-room-map-webtree-${webtree_version}/www/openroommap",
     } ->
-    # Install the openroommap tiles snapshot
-    file {'/usr/local/share/openroommap-tiles':
-      ensure => directory
-    } ->
-    wget::authfetch { "download-tiles":
-        source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=snapshots&g=uk.ac.cam.cl.dtg&a=open-room-map-tiles&v=${tilesversion}&e=zip&c=${tilesclassifier}\"",
-        destination => "/usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}.zip",
-      user => "dtg",
-      password => $mavenpassword
-    } ->
-      exec { "unzip /usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}.zip":
-      cwd => "/usr/local/share/openroommap-tiles",
-      creates => "/usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}/",
-      path => ["/usr/bin"]
-    } ->
+    dtg::nexus::fetch{"download-tiles":
+        artifact_name => "open-room-map-tiles",
+        artifact_version => $tiles_version,
+        artifact_type => "zip",
+        artifact_classifier => "live",
+        destination_directory => "/usr/local/share/openroommap-tiles",
+        action => "unzip"
+      } ->    
     file{"/var/www/research/dtg/openroommap/static/tile":
       ensure => link,
-      target => "/usr/local/share/openroommap-tiles/open-room-map-tiles-${tilesversion}/static/tile",
+      target => "/usr/local/share/openroommap-tiles/open-room-map-tiles-${tiles_version}/static/tile",
     }
-
-
 
   class {'dtg::firewall::publichttp':}
 
