@@ -26,11 +26,16 @@ define dtg::nexus::fetch (
   } 
 
   if $action == "unzip" {
-     package{'unzip':
-	   require => Wget::Authfetch["nexus-fetch-$destination_file"],
-	   ensure => installed,      
-     } ->
+     if !defined(Package['unzip']) {
+          package{'unzip':
+	  	   name => 'unzip',
+	  	   ensure => installed,      
+	  }		   
+     }
+
+
      exec { "unzip ${destination_path}":
+     	  require => Package['unzip'],
       	  cwd => $destination_directory,
       	  creates => "${destination_directory}/${artifact_name}-${artifact_version}/",
 	  path => ["/usr/bin"]
