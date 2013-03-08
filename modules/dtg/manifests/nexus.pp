@@ -1,8 +1,8 @@
 define dtg::nexus::fetch (
        $artifact_name, 
        $artifact_version, 
-       $artifact_type = "ANY", 
-       $artifact_classifier, 
+       $artifact_type,
+       $artifact_classifier = "ANY", 
        $destination_directory,
        $nexus_server_name = "http://dtg-maven.cl.cam.ac.uk",
        $nexus_user = "dtg",
