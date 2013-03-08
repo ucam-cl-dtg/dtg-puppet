@@ -1,4 +1,4 @@
-node "open-room-map.dtg.cl.cam.ac.uk" {
+node /open-room-map(-\d+)?/ {
   include 'dtg::minimal'
   class {'apache': }
   class {'dtg::apache::raven': server_description => 'Open Room Map'} ->
@@ -15,14 +15,12 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
 
     # Install the openroommap servlet code.  This requires tomcat
     class {'dtg::tomcat': version => '7'} ->
-    file {'/usr/local/share/openroommap-servlet':
-      ensure => directory
-    } ->
-      wget::authfetch { "download-servlet":
-      source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map&v=${openroommapversion}&e=war\"",
-      destination => "/usr/local/share/openroommap-servlet/openroommap-${openroommapversion}.war",
-      user => "dtg",
-      password => $mavenpassword
+    dtg::nexus::fetch{"download-servlet":
+      artifact_name => "open-room-map",
+      artifact_version => "1.0.4",
+      artifact_type => "war",
+      artifact_classifier => "ANY",
+      destination_directory => "/usr/local/share/openroommap-servlet"
     } ->
       file{"/var/lib/tomcat7/webapps/openroommap.war":
       ensure => link,
@@ -57,9 +55,6 @@ node "open-room-map.dtg.cl.cam.ac.uk" {
     file{"/var/www/research/dtg/openroommap":
       ensure => link,
       target => "/usr/local/share/openroommap-webtree/open-room-map-webtree-$webtreeversion/www/openroommap",
-    } ->
-    file {'/var/www/research/dtg/static/':
-      ensure => directory,
     } ->
     # Install the openroommap tiles snapshot
     file {'/usr/local/share/openroommap-tiles':
