@@ -34,23 +34,13 @@ node /open-room-map(-\d+)?/ {
     file {'/var/www/research/dtg/':
       ensure => directory,
     } ->
-    file {'/usr/local/share/openroommap-webtree':
-      ensure => directory
-    } ->
-    wget::authfetch { "download-webtree":
-      source => "\"http://dtg-maven.cl.cam.ac.uk/service/local/artifact/maven/redirect?r=releases&g=uk.ac.cam.cl.dtg&a=open-room-map-webtree&v=${webtreeversion}&e=zip\"",
-      destination => "/usr/local/share/openroommap-webtree/openroommap-webtree-${webtreeversion}.zip",
-      user => "dtg",
-      password => $mavenpassword
-    } ->
-    package{'unzip':
-        ensure => installed,      
-    } ->
-    exec { "unzip /usr/local/share/openroommap-webtree/openroommap-webtree-${webtreeversion}.zip":
-      cwd => "/usr/local/share/openroommap-webtree",
-      creates => "/usr/local/share/openroommap-webtree/open-room-map-webtree-$webtreeversion/",
-      path => ["/usr/bin"]
-    } ->
+    dtg::nexus::fetch{"download-webtree":
+        artifact_name => "open-room-map-webtree",
+        artifact_version => "1.0.10",
+        artifact_type => "zip",
+        destination_directory => "/usr/local/share/openroommap-webtree",
+        action => "unzip"
+      } ->
     file{"/var/www/research/dtg/openroommap":
       ensure => link,
       target => "/usr/local/share/openroommap-webtree/open-room-map-webtree-$webtreeversion/www/openroommap",
