@@ -5,7 +5,7 @@ node 'yousense.dtg.cl.cam.ac.uk' {
 
     # Package Setup
 
-    package { ['nginx', 'uwsgi', 'uwsgi-plugin-python', 'uwsgi-plugin-rsyslog', 'rabbitmq-server', # Servers
+    package { ['nginx', 'uwsgi', 'uwsgi-plugin-python', 'uwsgi-plugin-syslog', 'rabbitmq-server', # Servers
                'python-pip', 'python-dev', 'tree', 'htop', 'inotify-tools']:  # Tools
         ensure => installed,
     }
@@ -21,19 +21,6 @@ node 'yousense.dtg.cl.cam.ac.uk' {
         ensure => directory,
         owner => 'ml421',
         group => 'ml421',
-    }
-
-    # Python webapp log files
-
-    file { '/var/log/django':
-        ensure => directory,
-        owner => 'www-data',
-        group => 'www-data',
-    }
-    file { ['/var/log/django/celery.log', '/var/log/django/debug.log', '/var/log/django/warn.log']:
-        ensure => file,
-        owner => 'www-data',
-        group => 'www-data',
     }
 }
 
