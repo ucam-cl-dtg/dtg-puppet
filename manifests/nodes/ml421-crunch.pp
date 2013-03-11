@@ -33,6 +33,7 @@ node 'ml421-crunch' {
         mode => '0600',
         content => 'from="*.cam.ac.uk,*.ee" ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAvy3tVsuO7ibMBcJ5NY3xdc8f8yPHNYTu4VPpooDo0MiThj+BE/sSBGsklKPqw6bmPO9LBatItMUqNXWb9qdTwdAEZXGHcnxb/s2V07I6S+xN8iq10AlLTlaawPadXqK7eG1clrxCSnccZ7tJHtnID0nb2Tsh7OZATANeikJS8TEHv4/v9SWqpg2CpcG3Jd2UqQ2BBbdNTJ3t72wXl4BvaSKl+A1vPSjfZ5DqY5a5U/xZz2f3cV5CYdebzXdbVHnw8NaQzXqa8CsyVq8eLj28rb7ytGdj5HRslTuOdsXf8u2LiP+Q/oupW9giZ+DutLouSJjUMy3Wx1Mzzh83XygqeQ==',
     }
+
 }
 
 class dtg::yousense::apt_postgresql {
