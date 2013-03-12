@@ -22,6 +22,7 @@ node 'ml421-crunch' {
         gid => 'positium',
         groups => ['positium'],
         shell => '/bin/bash',
+        password => '*',
     }
     file { ['/home/positium', '/home/positium/.ssh', '/local/data/positium']:
         ensure => directory,
