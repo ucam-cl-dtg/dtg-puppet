@@ -36,6 +36,3 @@ node 'ml421-crunch' {
 
 }
 
-class dtg::yousense::apt_postgresql {
-    apt::ppa { 'ppa:pitti/postgresql': }
-}
