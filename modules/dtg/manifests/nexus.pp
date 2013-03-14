@@ -12,14 +12,14 @@ define dtg::nexus::fetch (
   $symlink = "NONE",                                        # file and path => symlink the downloaded file to here, NONE (default) => do nothing
   ) {
   
-  $destination_file = "${artifact_name}-${artifact_version}.${artifact_type}"
-  $destination_path = "${destination_directory}/${destination_file}"
+  $destination_filename = "${artifact_name}-${artifact_version}.${artifact_type}"
+  $destination_path = "${destination_directory}/${destination_filename}"
   
   if $artifact_version =~ /-SNAPSHOT/ { $repository = "snapshot" } else { $repository = "releases" }
   if $artifact_classifier == "ANY" { $classifier = "" } else { $classifier = "&c=$artifact_classifier" }
   
   file {$destination_directory: ensure => directory } ->
-  wget::authfetch { "nexus-fetch-$destination_file":
+  wget::authfetch { "nexus-fetch-$destination_filename":
     source => "\"${nexus_server_name}/service/local/artifact/maven/redirect?r=${repository}&g=${groupID}&a=${artifact_name}&v=${artifact_version}&e=${artifact_type}${classifier}\"",
     destination => $destination_path,
     user => $nexus_user,
@@ -29,9 +29,9 @@ define dtg::nexus::fetch (
   if $action == "NONE" {
     if $symlink != "NONE" {
       file{ $symlink:
-      	require => Wget::Authfetch["nexus-fetch-${destination_file}"],
+      	require => Wget::Authfetch["nexus-fetch-${destination_filename}"],
         ensure => link,
-      	target => $destination_file,
+      	target => $destination_path,
       }
     }
   }
@@ -45,9 +45,9 @@ define dtg::nexus::fetch (
       }		   
     }
     
-    exec { "unzip-${destination_file}":
+    exec { "unzip-${destination_filename}":
       command => "unzip ${destination_path}",
-      require => [ Package['unzip'], Wget::Authfetch["nexus-fetch-$destination_file"] ],
+      require => [ Package['unzip'], Wget::Authfetch["nexus-fetch-$destination_filename"] ],
       cwd => $destination_directory,
       creates => $unzip_target,
       path => ["/usr/bin"]
@@ -55,7 +55,7 @@ define dtg::nexus::fetch (
     
     if $symlink != "NONE" {
       file{ $symlink:
-      	require => Exec["unzip-${destination_file}"],
+      	require => Exec["unzip-${destination_filename}"],
         ensure => link,
       	target => $unzip_target,
       }
