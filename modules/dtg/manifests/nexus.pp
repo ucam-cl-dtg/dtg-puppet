@@ -15,7 +15,7 @@ define dtg::nexus::fetch (
   $destination_filename = "${artifact_name}-${artifact_version}.${artifact_type}"
   $destination_path = "${destination_directory}/${destination_filename}"
   
-  if $artifact_version =~ /-SNAPSHOT/ { $repository = "snapshot" } else { $repository = "releases" }
+  if $artifact_version =~ /-SNAPSHOT/ { $repository = "snapshots" } else { $repository = "releases" }
   if $artifact_classifier == "ANY" { $classifier = "" } else { $classifier = "&c=$artifact_classifier" }
   
   file {$destination_directory: ensure => directory } ->
