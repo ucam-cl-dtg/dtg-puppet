@@ -87,12 +87,13 @@ class dtg::git::gitolite ($admin_key){
     group  => 'git',
     mode   => '0600',
   }
+  #TODO(drt24) work out why this has been commented out by Lucian.
   #dtg::backup::serversetup {'gitolite repositories':
     #backup_directory   => '/srv/git/repositories/',
     #script_destination => '/srv/git/backup',
     #user               => 'git',
     #home               => '/srv/git/',
-    #require            => File['srv/git/repositories'],
+    #require            => File['/srv/git/repositories'],
   #}
 }
 # Some things need to be done before gitolite is installed (key generation)
