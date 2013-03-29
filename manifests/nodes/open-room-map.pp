@@ -71,6 +71,18 @@ node /open-room-map(-\d+)?/ {
   postgresql::database_user{'ormreader':
     password_hash => postgresql_password('ormreader', 'ormreader')
   }
+  dtg::nexus::fetch{"download-ormbackup":
+    artifact_name => "open-room-map-backup",
+    artifact_version => "1.0.0-SNAPSHOT",
+    artifact_type => "zip",
+    artifact_classifier => "live",
+    destination_directory => "/usr/local/share/openroommap-backup",
+    action => "unzip"
+  }
+  exec{"restore-backup":
+    command => "psql -d orm -f /usr/local/share/openroommap-backup/backup.sql",
+    path => "/usr/bin"
+  }  
   ->
   postgresql::db{'machineroom':
     user => "machineroom",
