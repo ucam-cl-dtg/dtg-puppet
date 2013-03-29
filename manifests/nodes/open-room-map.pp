@@ -10,8 +10,6 @@ node /open-room-map(-\d+)?/ {
   
   $servlet_version = "1.0.4"
   $webtree_version = "1.0.10"
-  $tiles_version = "1.0.0-SNAPSHOT"
-  
   # Install the openroommap servlet code.  This requires tomcat
   class {'dtg::tomcat': version => '7'}
   ->
@@ -44,7 +42,7 @@ node /open-room-map(-\d+)?/ {
   ->
   dtg::nexus::fetch{"download-tiles":
     artifact_name => "open-room-map-tiles",
-    artifact_version => $tiles_version,
+    artifact_version => "1.0.0-SNAPSHOT",
     artifact_type => "zip",
     artifact_classifier => "live",
     destination_directory => "/usr/local/share/openroommap-tiles",
