@@ -81,7 +81,8 @@ node /open-room-map(-\d+)?/ {
     action => "unzip"
   }
   exec{"restore-backup":
-    command => "export PGPASSWORD=openroommap; psql -U openroommap -d orm -f /usr/local/share/openroommap-backup/backup.sql; export PGPASSWORD=",
+    command => "psql -U openroommap -d orm -f /usr/local/share/openroommap-backup/backup.sql; export PGPASSWORD=",
+    environment => "PGPASSWORD=openroommap"
     path => "/usr/bin"
   }  
   ->
