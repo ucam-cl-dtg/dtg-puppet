@@ -10,6 +10,7 @@ define dtg::nexus::fetch (
   $groupID = "uk.ac.cam.cl.dtg",                            # maven group id for artifact
   $action = "NONE",                                         # unzip => archive file should be unzipped, NONE (default) => do nothing
   $symlink = "NONE",                                        # file and path => symlink the downloaded file to here, NONE (default) => do nothing
+  $always_refresh = false                                   # set this to true to force the download to go ahead whether the file is already there or not
   ) {
   
   $destination_filename = "${artifact_name}-${artifact_version}.${artifact_type}"
@@ -25,6 +26,13 @@ define dtg::nexus::fetch (
     user => $nexus_user,
     password => $nexus_password,
   } 
+
+  if $always_refresh {
+    exec {"rm-$destination_filename":
+      command => "rm -f ${destination_path}",
+      before => Wget::AuthFetch["nexus-fetch-$destination_filename"]
+    }
+  }
   
   if $action == "NONE" {
     if $symlink != "NONE" {
@@ -49,7 +57,7 @@ define dtg::nexus::fetch (
       command => "unzip ${destination_path}",
       require => [ Package['unzip'], Wget::Authfetch["nexus-fetch-$destination_filename"] ],
       cwd => $destination_directory,
-      creates => $unzip_target,
+      onlyif => "test ${destination_path} -nt ${unzip_target}",
       path => ["/usr/bin"]
     }
     
