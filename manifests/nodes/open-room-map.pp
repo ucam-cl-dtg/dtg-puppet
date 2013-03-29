@@ -9,7 +9,8 @@ node /open-room-map(-\d+)?/ {
   }
   
   $servlet_version = "1.0.4"
-  $webtree_version = "1.0.10"
+  $webtree_version = "1.0.12"
+
   # Install the openroommap servlet code.  This requires tomcat
   class {'dtg::tomcat': version => '7'}
   ->
