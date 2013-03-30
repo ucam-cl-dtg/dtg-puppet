@@ -11,6 +11,11 @@ node /open-room-map(-\d+)?/ {
   $servlet_version = "1.0.4"
   $webtree_version = "1.0.12"
 
+  schedule {'daily':
+    period => daily,
+    repeat => 1,
+  }
+
   # Install the openroommap servlet code.  This requires tomcat
   class {'dtg::tomcat': version => '7'}
   ->
@@ -49,7 +54,8 @@ node /open-room-map(-\d+)?/ {
     destination_directory => "/usr/local/share/openroommap-tiles",
     action => "unzip",
     symlink => "/var/www/research/dtg/openroommap/static/tile",
-    always_refresh => true
+    always_refresh => true,
+    schedule => daily
   }
   
   class {'dtg::firewall::publichttp':}
@@ -102,18 +108,19 @@ node /open-room-map(-\d+)?/ {
   package{$openroommappackages:
     ensure => installed,
   }
-  
 
-  class {'dtg::ravencron::client':}
   file {'/etc/apache2/conf/':
     ensure => directory,
     require => Class['apache'],
   }
-  file {'/etc/apache2/conf/group-raven':
-    ensure => link,
-    target => '/home/ravencron/group-raven',
-    require => Class['dtg::ravencron::client'],
-  }
+  ->
+  wget::fetch { "wget-fetch-ravengroup":
+    source => "http://sysdata.cl.cam.ac.uk/www-conf/group-raven",
+    destination => "/etc/apache2/conf/group-raven",
+    redownload => true,
+    schedule => daily
+  } 
+
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios::monitor { 'open-room-map':

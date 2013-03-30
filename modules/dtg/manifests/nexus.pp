@@ -25,15 +25,9 @@ define dtg::nexus::fetch (
     destination => $destination_path,
     user => $nexus_user,
     password => $nexus_password,
+    redownload => $always_refresh
   } 
 
-  if $always_refresh {
-    exec {"rm-$destination_filename":
-      command => "rm -f ${destination_path}",
-      before => Wget::AuthFetch["nexus-fetch-$destination_filename"]
-    }
-  }
-  
   if $action == "NONE" {
     if $symlink != "NONE" {
       file{ $symlink:
@@ -52,9 +46,13 @@ define dtg::nexus::fetch (
 	ensure => installed,      
       }		   
     }
-    
+
+    # We do execute the unzip command whenever the mtime of the zip
+    # file is newer than the mtime of the target directory.  This
+    # means that if we've forced wget to download a new copy of the
+    # file then unzip will run automatically
     exec { "unzip-${destination_filename}":
-      command => "unzip ${destination_path}",
+      command => "unzip -o ${destination_path}",
       require => [ Package['unzip'], Wget::Authfetch["nexus-fetch-$destination_filename"] ],
       cwd => $destination_directory,
       onlyif => "test ${destination_path} -nt ${unzip_target}",
