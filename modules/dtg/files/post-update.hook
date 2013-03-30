@@ -12,16 +12,18 @@ echo '---- Pulling changes into /etc/puppet -----'
 cd /etc/puppet
 unset GIT_DIR
 
-# Check permissions first, ignore errors
-chmod -R --quiet g+u . .git || true
-chgrp -R --quiet adm . .git || true
-find . -type d -print0 | xargs -0 chmod --quiet g+s || true
-find .git -type d -print0 | xargs -0 chmod --quiet g+s || true
-
 git pull --recurse-submodules=yes bare  master
 # sync the submodules so as to pick up changes to their remotes
 git submodule sync
 git submodule update --init
+
+# Make sure the permissions on the files we've created are such that
+# future people can run this script: set the group to adm, mirror
+# permissions from user to group, set group sticky
+chmod -R --quiet g+u . .git || true
+chgrp -R --quiet adm . .git || true
+find . -type d -print0 | xargs -0 chmod --quiet g+s || true
+find .git -type d -print0 | xargs -0 chmod --quiet g+s || true
 
 echo '---- Applying new recipes ----'
 # Need -H so that HOME is set to /root as some stuff gets put there by puppet
