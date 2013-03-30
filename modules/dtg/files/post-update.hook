@@ -19,6 +19,8 @@ find . -type d -print0 | xargs -0 chmod --quiet g+s || true
 find .git -type d -print0 | xargs -0 chmod --quiet g+s || true
 
 git pull --recurse-submodules=yes bare  master
+# sync the submodules so as to pick up changes to their remotes
+git submodule sync
 git submodule update --init
 
 echo '---- Applying new recipes ----'
