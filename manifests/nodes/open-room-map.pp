@@ -102,18 +102,18 @@ node /open-room-map(-\d+)?/ {
   package{$openroommappackages:
     ensure => installed,
   }
-  
 
-  class {'dtg::ravencron::client':}
   file {'/etc/apache2/conf/':
     ensure => directory,
     require => Class['apache'],
   }
-  file {'/etc/apache2/conf/group-raven':
-    ensure => link,
-    target => '/home/ravencron/group-raven',
-    require => Class['dtg::ravencron::client'],
-  }
+  ->
+  wget::fetch { "wget-fetch-ravengroup":
+    source => "http://sysdata.cl.cam.ac.uk/www-conf/group-raven",
+    destination => "/etc/apache2/conf/group-raven",
+    redownload => true
+  } 
+
 }
 if ( $::fqdn == $::nagios_machine_fqdn ) {
   nagios::monitor { 'open-room-map':
