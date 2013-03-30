@@ -6,7 +6,7 @@ node 'yousense.dtg.cl.cam.ac.uk' {
     # Package Setup
 
     package { ['nginx', 'uwsgi', 'uwsgi-plugin-python', 'uwsgi-plugin-syslog', 'rabbitmq-server', # Servers
-               'python-pip', 'python-dev', 'tree', 'htop', 'inotify-tools']:  # Tools
+               'python-pip', 'python-dev', 'tree', 'inotify-tools']:  # Tools
         ensure => installed,
     }
 
