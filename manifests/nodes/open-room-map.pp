@@ -90,7 +90,7 @@ node /open-room-map(-\d+)?/ {
   exec{"restore-backup":
     command => "psql -U orm -d openroommap -h localhost -f /usr/local/share/openroommap-backup/open-room-map-backup-1.0.0-SNAPSHOT/backup.sql",
     environment => "PGPASSWORD=openroommap",
-    path => "/usr/bin",
+    path => "/usr/bin:/bin",
     unless => 'psql -U orm -h localhost -d openroommap -t -c "select count(*) from room_table"'
   }  
   ->
