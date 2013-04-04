@@ -79,6 +79,7 @@ node /open-room-map(-\d+)?/ {
   postgresql::database_user{'ormreader':
     password_hash => postgresql_password('ormreader', 'ormreader')
   }
+  ->
   dtg::nexus::fetch{"download-ormbackup":
     artifact_name => "open-room-map-backup",
     artifact_version => "1.0.0-SNAPSHOT",
@@ -87,10 +88,11 @@ node /open-room-map(-\d+)?/ {
     destination_directory => "/usr/local/share/openroommap-backup",
     action => "unzip"
   }
+  ->
   exec{"restore-backup":
     command => "psql -U orm -d openroommap -h localhost -f /usr/local/share/openroommap-backup/open-room-map-backup-1.0.0-SNAPSHOT/backup.sql",
     environment => "PGPASSWORD=openroommap",
-    path => "/usr/bin",
+    path => "/usr/bin:/bin",
     unless => 'psql -U orm -h localhost -d openroommap -t -c "select count(*) from room_table"'
   }  
   ->
