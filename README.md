@@ -1,3 +1,4 @@
+
 DTG Puppet Repository
 =====================
 
@@ -23,6 +24,4 @@ TODO
  * dtg-weather
  * dtg-www
  * husky
- * trac (or at least something to replace trac)
- * open-room-map
 * Configure backups
