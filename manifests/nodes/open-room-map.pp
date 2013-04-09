@@ -89,7 +89,7 @@ node /open-room-map(-\d+)?/ {
     action => "unzip"
   }
   ->
-  exec{"restore-backup":
+  exec{"restore-openroommap-backup":
     command => "psql -U orm -d openroommap -h localhost -f /usr/local/share/openroommap-backup/open-room-map-backup-1.0.0-SNAPSHOT/backup.sql",
     environment => "PGPASSWORD=openroommap",
     path => "/usr/bin:/bin",
@@ -102,7 +102,23 @@ node /open-room-map(-\d+)?/ {
     charset => "UTF-8",
     grant => "ALL"
   }
-    
+  ->
+  dtg::nexus::fetch{"download-machinebackup":
+    artifact_name => "machine-power-backup",
+    artifact_version => "1.0.0-SNAPSHOT",
+    artifact_type => "zip",
+    artifact_classifier => "live",
+    destination_directory => "/usr/local/share/machine-power-backup",
+    action => "unzip"
+  }
+  ->
+  exec{"restore-machinepower-backup":
+    command => "psql -U machineroom -d machineroom -h localhost -f /usr/local/share/machine-power-backup/machine-power-backup-1.0.0-SNAPSHOT/backup.sql",
+    environment => "PGPASSWORD=machineroom",
+    path => "/usr/bin:/bin",
+    unless => 'psql -U machineroom -h localhost -d machineroom -t -c "select count(*) from categories"'
+  }  
+
   # python-scipy, python-jinja2 is used by the machineroom site in /var/www/research/dtg/openroommap/machineroom
   # libdbd-pg-perli is used by the inventory site in /var/www/research/dtg/openroommap/inventory
   # libmath-polygon-perl is used by the rooms site /var/www/research/dtg/openroommap/rooms/
