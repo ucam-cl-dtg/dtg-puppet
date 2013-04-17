@@ -55,7 +55,6 @@ node /open-room-map(-\d+)?/ {
     action => "unzip",
     symlink => "/var/www/research/dtg/openroommap/static/tile",
     always_refresh => true,
-    schedule => daily
   }
   
   class {'dtg::firewall::publichttp':}
