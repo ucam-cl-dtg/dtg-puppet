@@ -9,7 +9,7 @@ node /open-room-map(-\d+)?/ {
   }
   
   $servlet_version = "1.0.4"
-  $webtree_version = "1.0.13"
+  $webtree_version = "1.0.14"
 
   schedule {'daily':
     period => daily,
