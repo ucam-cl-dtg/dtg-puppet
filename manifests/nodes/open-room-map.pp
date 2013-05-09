@@ -8,8 +8,8 @@ node /open-room-map(-\d+)?/ {
     source => 'puppet:///modules/dtg/apache/open-room-map.conf',
   }
   
-  $servlet_version = "1.0.4"
-  $webtree_version = "1.0.14"
+  $servlet_version = "1.0.5"
+  $webtree_version = "1.0.15"
 
   schedule {'daily':
     period => daily,
