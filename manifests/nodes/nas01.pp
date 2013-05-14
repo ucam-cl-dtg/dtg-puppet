@@ -1,6 +1,9 @@
 node /nas01/ {
   include 'dtg::minimal'
 
+  # Its important to probe these modules in this particular order because it affects which device id they get, which in turn affects the fancontrol config
+  dtg::kernelmodule::add{"coretemp": }
+  ->
   # Control the fan speeds.  This requires a particular kernel module to be manually loaded
   dtg::kernelmodule::add{"w83627ehf": }
   ->
