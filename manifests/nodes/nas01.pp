@@ -117,7 +117,7 @@ node /nas01/ {
   # remove devicescan_options here
   class { "smartd": 
     mail_to => "dtg-infra@cl.cam.ac.uk",
-    devicescan_options => "-m dtg-infra@cl.cam.ac.uk -M test"
+    devicescan_options => "-m dtg-infra@cl.cam.ac.uk -M daily"
   }
   ->
   munin::node::plugin{'smart_sda':
