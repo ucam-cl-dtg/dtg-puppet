@@ -64,3 +64,9 @@
 [submodule "modules/nfs"]
 	path = modules/nfs
 	url = git://github.com/stankevich/puppet-nfs.git
+[submodule "modules/smartd"]
+	path = modules/smartd
+	url = git://github.com/jhoblitt/puppet-smartd.git
+[submodule "modules/shell_config"]
+	path = modules/shell_config
+	url = git://github.com/puppetlabs-operations/puppet-shell_config.git
