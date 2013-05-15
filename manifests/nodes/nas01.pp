@@ -110,6 +110,43 @@ node /nas01/ {
       "${::local_subnet}" => 'rw,sync,root_squash,no_subtree_check'
     },
   }
+
+  # The smartd class uses DEFAULT directive in smartd.conf which doesn't seem to be
+  # supported by the current stable version in ubuntu.  Therefore as a workaround
+  # I've set the options on devicescan.  Once the version in ubuntu catches up we can
+  # remove devicescan_options here
+  class { "smartd": 
+    mail_to => "dtg-infra@cl.cam.ac.uk",
+    devicescan_options => "-m dtg-infra@cl.cam.ac.uk -M test"
+  }
+  ->
+  munin::node::plugin{'smart_sda':
+    target => "smart_"
+  }
+  ->
+  munin::node::plugin{'smart_sdb':
+    target => "smart_"
+  }
+  ->
+  munin::node::plugin{'smart_sdc':
+    target => "smart_"
+  }
+  ->
+  munin::node::plugin{'smart_sdd':
+    target => "smart_"
+  }
+  ->
+  munin::node::plugin{'smart_sde':
+    target => "smart_"
+  }
+  ->
+  munin::node::plugin{'smart_sdf':
+    target => "smart_"
+  }
+  ->
+  munin::node::plugin{'smart_sdg':
+    target => "smart_"
+  }
 }
 
 if ( $::fqdn == $::nagios_machine_fqdn ) {
