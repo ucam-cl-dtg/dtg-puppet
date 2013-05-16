@@ -25,6 +25,9 @@ class dtg::minimal ($manageapt = true) {
 
   class { 'monkeysphere::sshd::default':
     agent_forwarding => 'yes', tcp_forwarding => 'yes', x11_forwarding => 'yes',
+    # Set use_pam to yes so that we trigger the pam_motd printing module
+    # We leave Passwords and ChallengeResponse set to no
+    use_pam => 'yes'
   }
 
   class { 'dtg::git::config': }
