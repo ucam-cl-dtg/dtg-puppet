@@ -147,6 +147,19 @@ node /nas01/ {
   munin::node::plugin{'smart_sdg':
     target => "smart_"
   }
+
+  file {"/etc/update-motd.d/10-help-text":
+    ensure => absent
+  }
+
+  file {"/etc/update-motd.d/50-landscape-sysinfo":
+    ensure => absent
+  }
+
+  file{"/etc/update-motd.d/20-disk-info":
+    source => 'puppet:///modules/dtg/motd/nas-disk-info'
+  }
+
 }
 
 if ( $::fqdn == $::nagios_machine_fqdn ) {

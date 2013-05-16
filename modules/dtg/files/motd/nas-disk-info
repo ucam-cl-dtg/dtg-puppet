@@ -1,0 +1,22 @@
+#!/bin/bash
+
+function get_slot {
+    local SLOT=`udevadm info --query=path --path=/block/$1 2>/dev/null | sed -re "s/.*host([0-9]+).*/\1/"`
+    if [ $SLOT ]; then
+	echo $(( $SLOT + 1 ))
+    else
+	echo "NA"
+    fi
+}
+
+echo -n "Drive locations: "
+for DEVICE in sda sdb sdc sdd sde sdf sdg sdh; do
+	echo -n $DEVICE":"$(get_slot $DEVICE)" ";
+done
+echo ""
+
+echo "RAID array (root)" $(grep ^md0 /proc/mdstat)
+echo "RAID array (data)" $(grep ^md1 /proc/mdstat)
+
+df -h /dev/md0 /dev/md1
+
