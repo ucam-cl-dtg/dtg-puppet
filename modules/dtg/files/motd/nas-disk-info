@@ -18,5 +18,5 @@ echo ""
 echo "RAID array (root)" $(grep ^md0 /proc/mdstat)
 echo "RAID array (data)" $(grep ^md1 /proc/mdstat)
 
-df -h /dev/md0 /dev/md1
+df -h /dev/md0 /dev/md1 /boot
 
