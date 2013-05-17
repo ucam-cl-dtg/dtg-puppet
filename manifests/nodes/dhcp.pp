@@ -20,7 +20,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
 
   class { 'dhcp':
    dnsdomain    => [
-                    'dtg.cl.cam.ac.uk',
+                     $org_domain,
                     '128.232.20.in-addr.arpa',
                     ],
     nameservers  => $name_servers,
