@@ -23,7 +23,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
                     'dtg.cl.cam.ac.uk',
                     '128.232.20.in-addr.arpa',
                     ],
-    nameservers  => ['128.232.1.1'],
+    nameservers  => $name_servers,
     ntpservers   => $ntp_servers,
     interfaces   => ['eth0'],
 

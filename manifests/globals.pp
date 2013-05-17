@@ -15,6 +15,11 @@ $ntp_servers = [ 'ntp2.csx.cam.ac.uk',
                  'ntp1a.cl.cam.ac.uk',
                  'ntp1b.cl.cam.ac.uk',
                  'ntp1c.cl.cam.ac.uk', ]
+
+$name_servers = [ '128.232.1.1',
+                  '128.232.1.2',
+                  '128.232.1.3' ]
+
 # Id certifiers people who can sign other users keys to certify them
 class ms_id_certifiers {
     monkeysphere::add_id_certifier { "drt24": keyid => "5017A1EC0B2908E3CF647CCD551435D5D74933D9" }
