@@ -16,8 +16,12 @@ class dtg::git {
   }
   # class {'dtg::git::gitlab::main':}
 }
+
 # admin_key is the key to use for the first gitolite admin
-class dtg::git::gitolite ($admin_key){
+# repo_group is the group to use for the repositories
+# repo_mode the mode to make the repositories parent directory
+# repo_recurse whether the permission should be applied recursively
+class dtg::git::gitolite ($admin_key, $repo_group = 'git', $repo_mode = undef, $repo_recurse = false){
   # Setup gitolite package
   $gitolitepackages = ['gitolite']
   package {$gitolitepackages :
@@ -69,10 +73,10 @@ class dtg::git::gitolite ($admin_key){
   }
   file {'/srv/git/repositories':
     ensure  => directory,
-    mode    => 755,
-    owner   => git,
-    group   => www-data,
-    recurse => true,
+    mode    => $repo_mode,
+    owner   => 'git',
+    group   => $repo_group,
+    recurse => $repo_recurse,
     require => Exec['setup-gitolite'],
   }
   file {'/srv/git/.ssh/':

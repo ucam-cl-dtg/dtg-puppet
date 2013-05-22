@@ -13,8 +13,12 @@ class dtg::git_wiki {
     mode   => '0644',
     source => 'puppet:///modules/dtg/ssh/lc525.pub',
   }
+
   class {'dtg::git::gitolite':
     admin_key => '/home/lc525/lc525.pub',
+    repo_group => 'www-data',
+    repo_mode  => '0775',
+    repo_recurse => true,
     require   => File['/home/lc525/lc525.pub'],
   }
 
