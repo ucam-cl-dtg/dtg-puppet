@@ -97,3 +97,7 @@ $unattended_upgrade_notify_emailaddress = $from_address
 
 #Firewall config
 $local_subnet = '128.232.0.0/16'
+
+# Backup config
+$backup_hosts = 'nas01.dtg.cl.cam.ac.uk'
+
