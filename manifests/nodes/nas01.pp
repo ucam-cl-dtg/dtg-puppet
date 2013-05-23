@@ -160,6 +160,23 @@ node /nas01/ {
     source => 'puppet:///modules/dtg/motd/nas-disk-info'
   }
 
+  # Backups
+  # We take backups of various servers onto nas01 these are run as low priority cron jobs
+  # and run as very restricted user.
+  class { "dtg::backup::host":
+    directory => '/data/backups',
+  }
+  dtg::backup::hostsetup{'git_repositories':
+    user => 'git',
+    host => 'code.dtg.cl.cam.ac.uk',
+    require => Class["dtg::backup::host"],
+  }
+  dtg::backup::hostsetup{'nexus_repositories':
+    user => 'nexus',
+    host => 'code.dtg.cl.cam.ac.uk',
+    require => Class["dtg::backup::host"],
+  }
+
 }
 
 if ( $::fqdn == $::nagios_machine_fqdn ) {

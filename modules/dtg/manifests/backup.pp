@@ -23,3 +23,60 @@ define dtg::backup::serversetup ($backup_directory, $script_destination, $user, 
     require => File["${home}.ssh/authorized_keys", $script_destination],
   }
 }
+# Configure a host to have a place and user for taking backups
+class dtg::backup::host($directory, $user = 'backup', $home = "/home/${user}", $key = "${home}/.ssh/id_rsa") {
+  group {"${user}":
+    ensure => present,
+  }
+  user {"${user}":
+    ensure   => present,
+    password => "!!",# No logins
+    shell    => '/bin/false',
+    gid      => $user,
+  }
+  file{"${home}":
+    ensure => directory,
+    owner  => $user,
+    group  => $user,
+    mode   => '0755',
+  }
+  file{"${home}/.ssh":
+    ensure => directory,
+    owner  => $user,
+    group  => $user,
+    mode   => '0700',
+  }
+  file{"${directory}":
+    ensure => directory,
+    owner  => $user,
+    group  => $user,
+    mode   => '0700',#Backups should not be readable by anyone else
+  }
+}
+
+# The mirror of dtg::backup::serversetup this configures the backup host to take backups
+# of a server which has been setup.
+# The name of the backup will be used as the directory name for the subdir containing the backups
+# user is the user to ssh in as
+# host is the host to ssh into
+define dtg::backup::hostsetup($user, $host) {
+  $backupsdirectory = $dtg::backup::host::directory
+  $backupsuser      = $dtg::backup::host::user
+  $backupskey       = $dtg::backup::host::key
+  $backupto = "${backupsdirectory}/${name}"
+  file {"${backupto}":
+    ensure => directory,
+    owner  => $backupsuser,
+    group  => $backupsuser,
+    mode   => '0700',
+  }
+  cron {"backup ${name}":
+    ensure  => present,
+    user    => $backupsuser,
+    command => "nice -n 19 /bin/bash -c 'ssh -T -i ${backupskey} ${user}@${host} > ${backupto}/`date +%F_%T`.tar.bz2'",
+    minute  => cron_minute("backup ${name}"),
+    hour    => cron_hour("backup ${name}"),
+    weekday => 'Saturday',
+    require => File["${backupto}"],
+  }
+}
