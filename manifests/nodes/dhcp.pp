@@ -5,7 +5,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     source => 'puppet:///modules/dtg/apache/default.conf',
   }
 
-  $dns_name_servers = join($::name_servers, ',')
+  $dns_name_servers = join($::name_servers, ' ')
   class { 'network::interfaces':
     interfaces => {
       'eth0' => {
