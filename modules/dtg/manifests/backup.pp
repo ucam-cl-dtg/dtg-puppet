@@ -24,7 +24,17 @@ define dtg::backup::serversetup ($backup_directory, $script_destination, $user, 
   }
 }
 # Configure a host to have a place and user for taking backups
-class dtg::backup::host($directory, $user = 'backup', $home = "/home/${user}", $key = "${home}/.ssh/id_rsa") {
+class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = undef) {
+  if $home == undef {
+    $realhome = "/home/${user}"
+  } else {
+    $realhome = $home
+  }
+  if $key == undef {
+    $realkey = "${realhome}/.ssh/id_rsa"
+  } else {
+    $realkey = $key
+  }
   group {"${user}":
     ensure => present,
   }
@@ -34,13 +44,13 @@ class dtg::backup::host($directory, $user = 'backup', $home = "/home/${user}", $
     shell    => '/bin/false',
     gid      => $user,
   }
-  file{"${home}":
+  file{"${realhome}":
     ensure => directory,
     owner  => $user,
     group  => $user,
     mode   => '0755',
   }
-  file{"${home}/.ssh":
+  file{"${realhome}/.ssh":
     ensure => directory,
     owner  => $user,
     group  => $user,
@@ -62,7 +72,7 @@ class dtg::backup::host($directory, $user = 'backup', $home = "/home/${user}", $
 define dtg::backup::hostsetup($user, $host) {
   $backupsdirectory = $dtg::backup::host::directory
   $backupsuser      = $dtg::backup::host::user
-  $backupskey       = $dtg::backup::host::key
+  $backupskey       = $dtg::backup::host::realkey
   $backupto = "${backupsdirectory}/${name}"
   file {"${backupto}":
     ensure => directory,
