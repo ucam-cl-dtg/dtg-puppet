@@ -13,7 +13,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
         'address' => '128.232.20.36',
         'netmask' => '255.255.255.0',
         'gateway' => '128.232.20.1',
-        'dns-name-servers' => $dns_name_servers,
+        'dns-nameservers' => $dns_name_servers,
       }
     },
     auto => ["eth0"],
