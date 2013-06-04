@@ -20,7 +20,6 @@ class dtg::minimal ($manageapt = true) {
       ensure => installed
   }
   if ($virtual != 'physical') and $manageapt {
-    notify('virtual machine')
     class {'dtg::vm':}
   }
 
