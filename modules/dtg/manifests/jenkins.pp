@@ -17,7 +17,8 @@ class dtg::jenkins {
     'mysql-common',
     'maven',
     'postgresql-client-common','postgresql-client-9.1',
-    'gradle']
+    'gradle',
+    'jenkins-crypto-util', 'jenkins-external-job-monitor', 'jenkins-instance-identity', 'jenkins-memory-monitor', 'jenkins-ssh-cli-auth']
   package { $jenkins_job_packages:
     ensure => installed,
   }
