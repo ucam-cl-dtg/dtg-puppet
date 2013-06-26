@@ -14,7 +14,7 @@ class dtg::minimal ($manageapt = true) {
   }
 
   # Packages which should be installed on all servers
-  $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar', 'runit', 'apg', 'emacs23-nox', 'htop']
+  $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar', 'runit', 'apg', 'emacs23-nox', 'htop', 'nfs-common']
   package {
     $packagelist:
       ensure => installed
