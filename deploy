@@ -44,23 +44,23 @@ def add_remotes(repo, machines):
     """
     for remote in repo.remotes:
         repo.delete_remote(remote)
-        
+
     for mc in machines:
         new_remote = repo.create_remote(mc['name'], mc['hostname']  + ':' + PUPPET_BARE)
 
 def push_config(repo, mc):
     repo.remotes[mc['name']].push()
 
-        
+
 def main(args):
     repo = Repo('.')
     machines = get_machines()
     add_remotes(repo, machines)
-    
+
     for mc in machines:
         if mc['VM']:
             execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
-#'        push_config(repo, mc)
+        push_config(repo, mc)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Pushes the master branch of dtg-puppet, as found on github all over the world')
