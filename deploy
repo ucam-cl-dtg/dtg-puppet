@@ -2,6 +2,7 @@
 
 import argparse
 import socket
+import threading
 from fabric.api import *
 from git import *
 
@@ -57,13 +58,18 @@ def main(args):
     machines = get_machines()
     add_remotes(repo, machines)
 
+    threads = []
     for mc in machines:
-        if mc['VM']:
-            execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
-        push_config(repo, mc)
+        thread = threading.Thread(name=mc['name'], target=push_config, args=(repo, mc))
+        threads.append(thread)
+        thread.start()
+
+    for thread in threads:
+        thread.join()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Pushes the master branch of dtg-puppet, as found on github all over the world')
     parser.add_argument('--boot', help='Boot linux machines that are currently turned off.')
+
     args = parser.parse_args()
     main(args)
