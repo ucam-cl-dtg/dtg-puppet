@@ -50,6 +50,8 @@ def add_remotes(repo, machines):
         new_remote = repo.create_remote(mc['name'], mc['hostname']  + ':' + mc['repo_loc'])
 
 def push_config(repo, mc):
+    if mc['VM']:
+        execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
     repo.remotes[mc['name']].push()
 
 
