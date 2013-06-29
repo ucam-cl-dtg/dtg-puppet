@@ -9,6 +9,7 @@ from git import *
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
 DOM0    = 'root@husky0' + DTG_DOM
+REMOTE_PREFIX = 'lick'
 
 PUPPET_BARE = '/etc/puppet-bare'
 
@@ -44,10 +45,11 @@ def add_remotes(repo, machines):
     Delete all remotes, then add those listed in `machines'
     """
     for remote in repo.remotes:
-        repo.delete_remote(remote)
+        if (remote.url.startswith(REMOTE_PREFIX)):
+            repo.delete_remote(remote)
 
     for mc in machines:
-        new_remote = repo.create_remote(mc['name'], mc['hostname']  + ':' + mc['repo_loc'])
+        new_remote = repo.create_remote(REMOTE_PREFIX + '-' + mc['name'], mc['hostname']  + ':' + mc['repo_loc'])
 
 def push_config(repo, mc):
     if mc['VM']:
