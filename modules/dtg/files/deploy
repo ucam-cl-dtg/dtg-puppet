@@ -54,7 +54,7 @@ def add_remotes(repo, machines):
 def push_config(repo, mc):
     if mc['VM']:
         execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
-    repo.remotes[mc['name']].push()
+    repo.remotes[REMOTE_PREFIX + '-' + mc['name']].push()
 
 
 def main(args):
