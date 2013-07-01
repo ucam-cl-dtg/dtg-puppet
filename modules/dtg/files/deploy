@@ -32,12 +32,14 @@ def get_vms():
     return vms
 
 def get_machines():
-    vms = execute(get_vms, hosts=[DOM0])
+    with settings(hide('running', 'stdout')):
+        vms = execute(get_vms, hosts=[DOM0])
     return PHYSICAL_MACHINES + vms[DOM0]
 
 @task
 def snapshot_mc(mc, commit_id):
     assert mc['VM']
+    print('Snapshotting %s' % mc['name'])
     run('xe vm-snapshot uuid=%s new-name-label=%s' % (mc['uuid'], commit_id))
 
 def add_remotes(repo, machines):
@@ -52,8 +54,10 @@ def add_remotes(repo, machines):
         new_remote = repo.create_remote(REMOTE_PREFIX + '-' + mc['name'], mc['hostname']  + ':' + mc['repo_loc'])
 
 def push_config(repo, mc):
-    if mc['VM']:
-        execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
+    with settings(hide('running', 'stdout')):
+        if mc['VM']:
+            execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
+    print('Pushing to %s' % mc['name'])
     repo.remotes[REMOTE_PREFIX + '-' + mc['name']].push()
 
 
