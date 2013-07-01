@@ -2,7 +2,7 @@
 # groups may be provided to specify additional groups such as adm
 # keys are the array of character for character gpg key user ids for the user
 #  these will be use with monkeyshpere to provide ssh keys
-define dtg::add_user ( $real_name, $groups = '', $keys = undef) {
+define dtg::add_user ( $real_name, $groups = '', $keys = undef, $uid) {
 
     $username = $title
     $email = "${username}@cam.ac.uk"
@@ -13,12 +13,14 @@ define dtg::add_user ( $real_name, $groups = '', $keys = undef) {
         home    => "/home/$username",
         shell   => "/bin/bash",
         groups  => $groups,
+        uid     => $uid,
         membership => 'minimum',
         password => '*',
     }
 
     group { $username:
-        require => User[$username]
+        require => User[$username],
+        gid => $uid,
     }
 
     file { "/home/$username/":

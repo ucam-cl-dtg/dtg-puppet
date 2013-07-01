@@ -31,41 +31,49 @@ class admin_users {
         real_name => 'Daniel Thomas',
         groups    => [ 'adm' ],
         keys      => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
+        uid       => 2607, 
     }
     dtg::add_user { 'oc243':
         real_name => 'Oliver Chick',
         groups    => [ 'adm' ],
         keys      => 'Oliver Chick <oc243@cam.ac.uk>',
+        uid       => 2834, 
     }
     dtg::add_user { 'lc525':
         real_name => 'Lucian Carata',
         groups    => ['adm'],
         keys      => 'Lucian Carata <lc525@cam.ac.uk>',
+        uid       => 2925, 
     }
     dtg::add_user { 'jas250':
         real_name => 'James Snee',
         groups => ['adm'],
         keys   => 'James Snee <jas250@cam.ac.uk>',
+        uid       => 2814, 
     }
     dtg::add_user { 'acr31':
         real_name  => 'Andrew Rice',
         groups     => ['adm'],
         keys       => 'Andrew Rice <acr31@cam.ac.uk>',
+        uid        => 2132, 
     }
     dtg::add_user { 'dtw30':
         real_name  => 'Daniel Wagner',
         groups     => ['adm'],
         keys       => 'Daniel Wagner (ssh) <wagner.daniel.t@gmail.com>',
+        uid        => 2712,
     }
     dtg::add_user { 'ml421':
         real_name => 'Mattias Linnap',
         groups    => [ 'adm' ],
         keys      => ['Mattias Linnap <mattias@linnap.com>','Mattias Linnap (llynfi-ssh) <mattias@linnap.com>','Mattias Linnap (macmini-ssh) <mattias@linnap.com>'],
+        uid        => 2610,
     }
     dtg::add_user { 'tb403':
 	real_name => 'Thomas Bytheway',
 	groups    => [ 'adm' ],
-	keys	  => ['Thomas Bytheway <thomas.bytheway@cl.cam.ac.uk>']
+	keys	  => ['Thomas Bytheway <thomas.bytheway@cl.cam.ac.uk>'],
+        uid        => 3105,        
     }
 }
 # Admin user ids to be given root on the nodes via monkeysphere
