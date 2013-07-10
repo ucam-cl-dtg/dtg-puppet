@@ -23,11 +23,20 @@ class dtg::minimal ($manageapt = true) {
     class {'dtg::vm':}
   }
 
-  class { 'monkeysphere::sshd::default':
-    agent_forwarding => 'yes', tcp_forwarding => 'yes', x11_forwarding => 'yes',
+  class { 'monkeysphere::sshd':
+    max_startups => "",
+    agent_forwarding => 'yes', 
+    tcp_forwarding => 'yes', 
+    x11_forwarding => 'yes',
+    listen_address => [ '0.0.0.0', '::' ],
+    
     # Set use_pam to yes so that we trigger the pam_motd printing module
     # We leave Passwords and ChallengeResponse set to no
-    use_pam => 'yes'
+    use_pam => 'yes',
+
+    # sometimes we need to give ad-hoc access to people not in monkeysphere.  This turns on
+    # the normal authorized_keys file if we need it
+    authorized_keys_file             => "/var/lib/monkeysphere/authorized_keys/%u .ssh/authorized_keys",
   }
 
   class { 'dtg::git::config': }
