@@ -3,7 +3,10 @@ class munin::gatherer(
   $server_name = "munin",
   $tls_cert_file = undef,
   $tls_cert_chain_file = undef,
-  $tls_key_file = undef 
+  $tls_key_file = undef,
+  $graph_strategy = "cgi",
+  $html_strategy = "cgi",
+  $alerts_email = $from_address
 ) {
   package { "munin":
     ensure => installed
@@ -19,6 +22,9 @@ class munin::gatherer(
   }
   file { "/etc/apache2/conf.d/munin":
     ensure => absent,
+  }
+  file { "/etc/munin/munin.conf":
+    content => template("munin/munin-conf.erb"),
   }
 }
 
