@@ -1,7 +1,71 @@
 <VirtualHost <%= listen_ip %><% if munin_ssl -%>:443<% else -%>:80<% end -%>>
-  ServerName <%= server_name %>
-  Alias /munin /var/cache/munin/www
-  DocumentRoot /var/cache/munin/www
+ServerName <%= server_name %>
+
+  <IfModule !mod_rewrite.c>
+    # required because we serve out of the cgi directory and URLs are relative
+    Alias /munin-cgi/munin-cgi-html/static /var/cache/munin/www/static
+    RedirectMatch ^/$ /munin-cgi/munin-cgi-html/
+  </IfModule>
+
+  <IfModule mod_rewrite.c>
+    # Rewrite rules to serve traffic from the root instead of /munin-cgi
+    RewriteEngine On
+
+    # Static files
+    RewriteRule ^/favicon.ico /var/cache/munin/www/static/favicon.ico [L]
+    RewriteRule ^/static/(.*) /var/cache/munin/www/static/$1          [L]
+
+    # HTML
+    RewriteRule ^(/.*\.html)?$           /munin-cgi/munin-cgi-html/$1 [PT]
+
+    # Images
+    RewriteRule ^/munin-cgi/munin-cgi-graph/(.*) /$1
+    RewriteCond %{REQUEST_URI}                 !^/static
+    RewriteRule ^/(.*.png)$  /munin-cgi/munin-cgi-graph/$1 [L,PT]
+  </IfModule>
+
+  # Ensure we can run (fast)cgi scripts
+  ScriptAlias /munin-cgi/munin-cgi-graph /usr/lib/munin/cgi/munin-cgi-graph
+  <Location /munin-cgi/munin-cgi-graph>
+    Options +ExecCGI
+    <IfModule mod_fcgid.c>
+      SetHandler fcgid-script
+    </IfModule>
+    <IfModule mod_fastcgi.c>
+      SetHandler fastcgi-script
+    </IfModule>
+    <IfModule !mod_fastcgi.c>
+      <IfModule !mod_fcgid.c>
+	SetHandler cgi-script
+      </IfModule>
+    </IfModule>
+    Allow from all
+  </Location>
+
+  ScriptAlias /munin-cgi/munin-cgi-html /usr/lib/munin/cgi/munin-cgi-html
+  <Location /munin-cgi/munin-cgi-html>
+    Options +ExecCGI
+    <IfModule mod_fcgid.c>
+      SetHandler fcgid-script
+    </IfModule>
+    <IfModule mod_fastcgi.c>
+      SetHandler fastcgi-script
+    </IfModule>
+    <IfModule !mod_fastcgi.c>
+      <IfModule !mod_fcgid.c>
+	SetHandler cgi-script
+      </IfModule>
+    </IfModule>
+    Allow from all
+  </Location>
+
+  <IfModule !mod_rewrite.c>
+    <Location /munin-cgi/munin-cgi-html/static>
+      # this needs to be at the end to override the above sethandler directives
+      Options -ExecCGI
+      SetHandler None
+    </Location>
+  </IfModule>
   <% if munin_ssl %>
   <% if has_variable?("tls_cert_file") then %>
     SSLEngine On
@@ -12,36 +76,6 @@
     SSLCertificateKeyFile <%= tls_key_file %> 
   <% end %>
   <% end %>
-  <Directory /var/cache/munin/www>
-    Options None
-
-    # This file can be used as a .htaccess file, or a part of your apache
-    # config file.
-    #
-    # For the .htaccess file option to work the munin www directory
-    # (/var/cache/munin/www) must have "AllowOverride all" or something 
-    # close to that set.
-    #
-
-    # AuthUserFile /etc/munin/munin-htpasswd
-    # AuthName "Munin"
-    # AuthType Basic
-    # require valid-user
-
-    # This next part requires mod_expires to be enabled.
-    #
-    
-    # Set the default expiration time for files to 5 minutes 10 seconds from
-    # their creation (modification) time.  There are probably new files by
-    # that time. 
-    #
-
-    <IfModule mod_expires.c>
-        ExpiresActive On
-      ExpiresDefault M310
-    </IfModule>
-
-  </Directory> 
 </VirtualHost>
 <% if munin_ssl -%>
 <VirtualHost <%= listen_ip %>:80>

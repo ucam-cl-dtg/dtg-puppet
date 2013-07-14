@@ -8,10 +8,12 @@ class munin::gatherer(
   $html_strategy = "cgi",
   $alerts_email = $from_address
 ) {
-  package { "munin":
+  package { [ "munin", "libcgi-fast-perl", "libapache2-mod-fcgid" ]:
     ensure => installed
   }
-
+  exec {'Enable mod rewrite':
+    command   => "a2enmod rewrite"
+  }
   file { '/etc/munin/munin-conf.d/':
     ensure => directory,
     require => Package['munin'],
