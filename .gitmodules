@@ -75,4 +75,4 @@
 	url = git://github.com/ucam-cl-dtg/puppet-monkeysphere.git
 [submodule "modules/zfs-auto-snapshot"]
 	path = modules/zfs-auto-snapshot
-	url = git://github.com:ucam-cl-dtg/puppet-zfs-auto-snapshot.git
+	url = git://github.com/ucam-cl-dtg/puppet-zfs-auto-snapshot.git
