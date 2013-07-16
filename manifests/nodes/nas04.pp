@@ -12,7 +12,6 @@ node "nas04.dtg.cl.cam.ac.uk" {
     command => "zpool scrub dtg-pool0",
     user => 'root',
     minute => 0,
-    minute => 0,
     hour => 0,
     weekday => 1,
   }
