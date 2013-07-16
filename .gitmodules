@@ -73,3 +73,6 @@
 [submodule "modules/monkeysphere"]
 	path = modules/monkeysphere
 	url = git://github.com/ucam-cl-dtg/puppet-monkeysphere.git
+[submodule "modules/zfs_auto_snapshot"]
+	path = modules/zfs_auto_snapshot
+	url = git://github.com/ucam-cl-dtg/puppet-zfs-auto-snapshot.git

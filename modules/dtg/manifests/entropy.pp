@@ -2,6 +2,9 @@
 # Relies on the ekeyd and stunnel modules
 class dtg::entropy {
   class { 'stunnel': stage => $stage, }
+
+  # The Filesystem Hierachy Standard says we can assume that /usr/local/share exists
+  
   file {'/usr/local/share/ssl/':
     ensure => directory,
     mode   => '0755',
