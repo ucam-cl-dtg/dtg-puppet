@@ -26,7 +26,22 @@ class dtg::zfs {
     group  => 'root',
     mode   => '0755',
     source => 'puppet:///modules/dtg/zfs/zpool_iostat',
-  }  
+  }
+  
+  file {'/etc/munin/plugins/zlist':
+    ensure => link,
+    target => '/usr/share/munin/plugins/zlist',
+  }
+
+  file {'/etc/munin/plugins/zfs_fs_dtg-pool0':
+    ensure => link,
+    target => '/usr/share/munin/plugins/zfs-filesystem-graph',
+  }
+
+  file {'/etc/munin/plugins/zpool_iostat':
+    ensure => link,
+    target => '/usr/share/munin/plugins/zpool_iostat',
+  }
 }
 
 class dtg::zfs::repos {
