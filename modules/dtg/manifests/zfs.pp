@@ -4,6 +4,21 @@ class dtg::zfs {
     ensure => present,
     require => Apt::Ppa['ppa:zfs-native/stable'],
   }
+
+  # zfs includes this config file to let unpriviliged users run read only ZFS commands.
+  # By default, it has the options disabled, so let's put that right.
+  # Without doing this, munin cannot read zfs's state :-(
+
+  file {'/etc/sudoers.d/zfs':
+    ensure => file,
+    owner  =>  'root',
+    group  => 'root',
+    mode   => '0440',
+    source => 'puppet:///modules/dtg/zfs/zfs-sudoers',
+  }
+  
+
+
   file {'/usr/share/munin/plugins/zlist':
     ensure => file,
     owner  =>  'root',
