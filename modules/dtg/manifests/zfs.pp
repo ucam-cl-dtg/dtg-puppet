@@ -17,7 +17,13 @@ class dtg::zfs {
     source => 'puppet:///modules/dtg/zfs/zfs-sudoers',
   }
   
-
+  file {'/usr/share/munin/plugins/zpool_status':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+    source => 'puppet:///modules/dtg/zfs/zpool_status'
+  }
 
   file {'/usr/share/munin/plugins/zlist':
     ensure => file,
@@ -41,6 +47,11 @@ class dtg::zfs {
     group  => 'root',
     mode   => '0755',
     source => 'puppet:///modules/dtg/zfs/zpool_iostat',
+  }
+
+  file {'/etc/munin/plugins/zpool-status':
+    ensure => link,
+    target => '/usr/share/munin/plugins/zpool-status',
   }
   
   file {'/etc/munin/plugins/zlist':
