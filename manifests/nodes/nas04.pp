@@ -8,6 +8,15 @@ node "nas04.dtg.cl.cam.ac.uk" {
     pool_names => [ 'dtg-pool' ]
   }
 
+  cron { 'zfs_weekly_scrub':
+    command => "zpool scrub dtg-pool0",
+    user => 'root',
+    minute => 0,
+    minute => 0,
+    hour => 0,
+    weekday => 1,
+  }
+
 }
 
 if ( $::fqdn == $::nagios_machine_fqdn ) {
