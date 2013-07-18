@@ -9,6 +9,7 @@ if [ "$1" = "config" ]; then
     echo 'graph_vlabel readonly'
     echo 'graph_category system'
     echo 'fs_readonly.label readonly'
+    echo 'fs_readonly.critical 0:0'
     exit 0
 fi
 
@@ -29,4 +30,3 @@ then
 fi
 
 echo "0"
-
