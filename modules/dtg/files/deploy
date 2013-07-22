@@ -26,7 +26,11 @@ def get_vms():
     for uuid in uuids:
         name_label = run('xe vm-list params=name-label uuid=%s --minimal' % uuid).replace(' ','')
         ip = run('xe vm-param-get param-name=networks uuid=%s | sed -e \'s_0/ip: __\' -e  \'s/; .*$//\'' % uuid)
-        hostname = socket.gethostbyaddr(ip)[0]
+        try:
+            hostname = socket.gethostbyaddr(ip)[0]
+        except socket.error:
+            sys.stderr.write("Unable to lookup hostname of %s\n" % ip)
+            continue
 
         vms.append({'name':name_label, 'hostname':hostname, 'repo_loc': PUPPET_BARE, 'VM': True, 'uuid':uuid})
     return vms
