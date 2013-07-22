@@ -1,7 +1,7 @@
 class dtg::vm {
   class {'dtg::vm::repos': stage => 'repos'}
   package {'xe-guest-utilities':
-    ensure => present,
+    ensure => latest,
     require => Apt::Ppa['ppa:retrosnub/xenserver-support'],
   }
 }
