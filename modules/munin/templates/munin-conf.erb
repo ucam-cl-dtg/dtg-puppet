@@ -87,7 +87,7 @@ html_strategy <%= html_strategy %>
 
 # Drop somejuser@fnord.comm and anotheruser@blibb.comm an email everytime
 # something changes (OK -> WARNING, CRITICAL -> OK, etc)
-contact.someuser.command mail -s "Munin notification" <%= alerts_email %>
+contact.<%= contact %>.command mail -aFrom:<%= alerts_email %> -aReturn-Path:<%= alerts_email %> -s "Munin notification" <%= alerts_email %> -- -f <%= alerts_email %>
 #contact.anotheruser.command mail -s "Munin notification" anotheruser@blibb.comm
 #
 # For those with Nagios, the following might come in handy. In addition,
@@ -99,6 +99,9 @@ contact.someuser.command mail -s "Munin notification" <%= alerts_email %>
     address 127.0.0.1
     use_node_name yes
 
+[<%= org_domain %>;]
+    contact <%= contact %>
+    
 #
 # A more complex example of a host tree
 #

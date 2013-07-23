@@ -6,7 +6,8 @@ class munin::gatherer(
   $tls_key_file = undef,
   $graph_strategy = "cgi",
   $html_strategy = "cgi",
-  $alerts_email = $from_address
+  $alerts_email = $from_address,
+  $contact = "dtg"
 ) {
   package { [ "munin", "libcgi-fast-perl", "libapache2-mod-fcgid" ]:
     ensure => installed
