@@ -41,7 +41,7 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
   user {"${user}":
     ensure   => present,
     password => "!!",# No logins
-    shell    => '/bin/false',
+    shell    => '/bin/sh',
     gid      => $user,
   }
   file{"${realhome}":
