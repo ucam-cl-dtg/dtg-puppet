@@ -18,5 +18,8 @@ if ( $::fqdn == $::nagios_machine_fqdn ) {
   }
 }
 if ( $::fqdn == $::munin_machine_fqdn ) {
-  munin::gatherer::configure_node { 'entropy': }
+  munin::gatherer::configure_node { 'entropy': 
+    override_lines => 'diskstats_latency.warning 4
+  diskstats_latency.critical 6'
+  }
 }
