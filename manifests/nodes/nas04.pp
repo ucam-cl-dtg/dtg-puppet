@@ -1,18 +1,18 @@
-node "nas04.dtg.cl.cam.ac.uk" {
+node 'nas04.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   include 'nfs::server'
-  
+
   class {'dtg::zfs': }
-  
+
   class {'zfs_auto_snapshot':
     pool_names => [ 'dtg-pool' ]
   }
 
   cron { 'zfs_weekly_scrub':
-    command => "zpool scrub dtg-pool0",
-    user => 'root',
-    minute => 0,
-    hour => 0,
+    command => 'zpool scrub dtg-pool0',
+    user    => 'root',
+    minute  => 0,
+    hour    => 0,
     weekday => 1,
   }
 }
