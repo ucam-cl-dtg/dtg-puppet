@@ -26,5 +26,10 @@ node /acr31-rutherford(-\d+)?/ {
     dport   => '8080',
     action  => 'accept',
   }
+
+  $packages = ['maven2']
+  package{$packages:
+    ensure => installed,
+  }
   
 }
