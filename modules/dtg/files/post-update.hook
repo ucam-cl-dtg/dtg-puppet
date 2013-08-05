@@ -12,9 +12,18 @@ echo '---- Pulling changes into /etc/puppet -----'
 cd /etc/puppet
 unset GIT_DIR
 
-git pull --recurse-submodules=yes bare  master
+# First pull updates without the submodules - this gives us a chance
+# to fix broken repositories for any submodules
+git pull --recurse-submodules=no bare  master
+
 # sync the submodules so as to pick up changes to their remotes
 git submodule sync
+
+# now try to pull in the upstream changes for submodules too (if a
+# remote is not available this command will fail and abort the script
+git pull --recurse-submodules=yes bare  master
+
+# checkout the commit specified in .gitmodules for each submodule
 git submodule update --init
 
 # Make sure the permissions on the files we've created are such that
