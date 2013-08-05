@@ -6,7 +6,8 @@ class munin::gatherer(
   $tls_key_file = undef,
   $graph_strategy = "cgi",
   $html_strategy = "cgi",
-  $alerts_email = $from_address
+  $alerts_email = $from_address,
+  $contact = "dtg"
 ) {
   package { [ "munin", "libcgi-fast-perl", "libapache2-mod-fcgid" ]:
     ensure => installed
@@ -30,7 +31,7 @@ class munin::gatherer(
   }
 }
 
-define munin::gatherer::configure_node () {
+define munin::gatherer::configure_node ( $override_lines = '') {
   $munin_node_host = $title
   file { "/etc/munin/munin-conf.d/$munin_node_host":
     ensure  => present,
