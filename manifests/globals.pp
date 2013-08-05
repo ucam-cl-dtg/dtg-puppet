@@ -80,6 +80,12 @@ class admin_users {
        groups    => [ 'adm' ],
        keys	 => ['Alastair Beresford (ssh) <arb33@cam.ac.uk>'],
        uid       => 2125,        
+    }
+    dtg::add_user { 'ipd21':
+       real_name => 'Ian Davies',
+       groups    => [ 'adm' ],
+       keys	 => ['Ian Davies (ssh) <ipd21@cam.ac.uk>'],
+       uid       => 2361,        
     } 
 
 }
