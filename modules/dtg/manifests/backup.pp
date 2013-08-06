@@ -40,7 +40,7 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
   }
   user {"${user}":
     ensure   => present,
-    password => "!!",# No logins
+    password => "*",
     shell    => '/bin/sh',
     gid      => $user,
   }
