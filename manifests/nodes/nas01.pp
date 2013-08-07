@@ -177,6 +177,16 @@ node /nas01/ {
     require => Class["dtg::backup::host"],
   }
 
+  augeas { "default_grub":
+    context => "/files/etc/default/grub",
+    changes => [
+                "set GRUB_RECORDFAIL_TIMEOUT 2",
+                "set GRUB_HIDDEN_TIMEOUT 0",
+                "set GRUB_TIMEOUT 2"
+                ],
+  }
+
+
 }
 
 if ( $::fqdn == $::nagios_machine_fqdn ) {
