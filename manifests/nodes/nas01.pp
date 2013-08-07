@@ -19,87 +19,104 @@ node /nas01/ {
     source => 'puppet:///modules/dtg/fancontrol/nas01'
   }
 
+  $portmapper_port     = 111
+  $nfs_port            = 2049
+  $lockd_tcpport       = 32803
+  $lockd_udpport       = 32769
+  $mountd_port         = 892
+  $rquotad_port        = 875
+  $statd_port          = 662
+  $statd_outgoing_port = 2020
+  
   # We have to tell the NFS server to use a particular set of ports
   # and then open the relevant firewall holes
   include 'nfs::server'
-  file{"/etc/default/nfs-kernel-server":
-    source => 'puppet:///modules/dtg/nfs/nas-nfs-kernel-server',
+  augeas { "nfs-kernel-server":
+    context => "/files/etc/default/nfs-kernel-server",
+    changes => [
+                "set LOCKD_TCPPORT $lockd_tcpport",
+                "set LOCKD_UDPPORT $lockd_udpport",
+                "set MOUNTD_PORT $mountd_port",
+                "set RQUOTAD_PORT $rquotad_port",
+                "set STATD_PORT $statd_port",
+                "set STATD_OUTGOING_PORT $statd_outgoing_port",
+                ],
     notify => Service['nfs-kernel-server']
   }
   ->
-  firewall { '030-nfs accept tcp 111 (sunrpc) from dtg':
+  firewall { "030-nfs accept tcp $portmapper_port (sunrpc) from dtg":
     proto   => 'tcp',
-    dport   => '111',
+    dport   => $portmapper_port,
     source  => $::local_subnet,
     action  => 'accept',
   }
   ->
-  firewall { '031-nfs accept udp 111 (sunrpc) from dtg':
+  firewall { "031-nfs accept udp $portmapper_port (sunrpc) from dtg":
     proto   => 'udp',
-    dport   => '111',
+    dport   => $portmapper_port,
     source  => $::local_subnet,
     action  => 'accept',
   }
   ->
-  firewall { '032-nfs accept tcp 2049 (nfs) from dtg':
+  firewall { "032-nfs accept tcp $nfs_port (nfs) from dtg":
     proto   => 'tcp',
-    dport   => '2049',
+    dport   => $nfs_port,
     source  => $::local_subnet,
     action  => 'accept',
   }
   ->
-  firewall { '033-nfs accept tcp 32803 (lockd) from dtg':
+  firewall { "033-nfs accept tcp $lockd_tcpport (lockd) from dtg":
     proto   => 'tcp',
-    dport   => '32803',
+    dport   => $lockd_tcpport,
     source  => $::local_subnet,
     action  => 'accept',
   }
   ->
-  firewall { '034-nfs accept udp 32769 (lockd) from dtg':
+  firewall { "034-nfs accept udp $lockd_udpport (lockd) from dtg":
     proto   => 'udp',
-    dport   => '32769',
+    dport   => $lockd_udpport,
     source  => $::local_subnet,
     action  => 'accept',
   }
   ->
-  firewall { '035-nfs accept tcp 892 (mountd) from dtg':
+  firewall { "035-nfs accept tcp $mountd_port (mountd) from dtg":
     proto   => 'tcp',
-    dport   => '892',
+    dport   => $mountd_port,
     source  => $::local_subnet,
     action  => 'accept',
   }
   ->
-  firewall { '036-nfs accept udp 892 (mountd) from dtg':
+  firewall { "036-nfs accept udp $mountd_port (mountd) from dtg":
     proto   => 'udp',
-    dport   => '892',
+    dport   => $mountd_port,
     source  => $::local_subnet,
     action  => 'accept',
   }
   ->
-  firewall { '037-nfs accept tcp 875 (rquotad) from dtg':
+  firewall { "037-nfs accept tcp $rquotad_port (rquotad) from dtg":
     proto   => 'tcp',
-    dport   => '875',
+    dport   => $rquotad_port,
     source  => $::local_subnet,
     action  => 'accept',
   }
   ->
-  firewall { '038-nfs accept udp 875 (rquotad) from dtg':
+  firewall { "038-nfs accept udp $rquotad_port (rquotad) from dtg":
     proto   => 'udp',
-    dport   => '875',
+    dport   => $rquotad_port,
     source  => $::local_subnet,
     action  => 'accept',
   }
   ->
-  firewall { '039-nfs accept tcp 662 (statd) from dtg':
+  firewall { "039-nfs accept tcp $statd_port (statd) from dtg":
     proto   => 'tcp',
-    dport   => '662',
+    dport   => $statd_port,
     source  => $::local_subnet,
     action  => 'accept',
   }
   ->
-  firewall { '039-nfs accept udp 662 (statd) from dtg':
+  firewall { "039-nfs accept udp $statd_port (statd) from dtg":
     proto   => 'udp',
-    dport   => '662',
+    dport   => $statd_port,
     source  => $::local_subnet,
     action  => 'accept',
   }
