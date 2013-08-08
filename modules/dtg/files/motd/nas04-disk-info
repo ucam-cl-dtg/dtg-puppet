@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function get_slot {
+    local SLOT=`udevadm info --query=path --path=/block/$1 2>/dev/null | sed -rne "s/.*host4\\/port-4:([0-9]+).*/\1/ p"`
+    if [ $SLOT ]; then
+	echo $(( $SLOT + 1 ))
+    else
+	echo "NA"
+    fi
+}
+
+echo -n "Drive locations: "
+for DEVICE in sda sdb sdc sdd sde sdf sdg sdh sdi sdj sdk sdl sdm sdn sdo sdp sdq; do
+	echo -n $DEVICE":"$(get_slot $DEVICE)" ";
+done
+echo ""
+
+df -h | grep -vE "^udev|^tmpfs|^none"
+echo ""
+
+sudo -n zpool status -x

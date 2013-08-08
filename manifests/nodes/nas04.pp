@@ -114,6 +114,28 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     source  => $::local_subnet,
     action  => 'accept',
   }
+
+  augeas { "default_grub":
+    context => "/files/etc/default/grub",
+    changes => [
+                "set GRUB_RECORDFAIL_TIMEOUT 2",
+                "set GRUB_HIDDEN_TIMEOUT 0",
+                "set GRUB_TIMEOUT 2"
+                ],
+  }
+
+  file {"/etc/update-motd.d/10-help-text":
+    ensure => absent
+  }
+  
+  file {"/etc/update-motd.d/50-landscape-sysinfo":
+    ensure => absent
+  }
+  
+  file{"/etc/update-motd.d/20-disk-info":
+    source => 'puppet:///modules/dtg/motd/nas04-disk-info'
+  }
+  
 }
 
 if ( $::fqdn == $::nagios_machine_fqdn ) {
