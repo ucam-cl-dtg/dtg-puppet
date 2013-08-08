@@ -174,7 +174,7 @@ node /nas01/ {
   }
 
   file{"/etc/update-motd.d/20-disk-info":
-    source => 'puppet:///modules/dtg/motd/nas-disk-info'
+    source => 'puppet:///modules/dtg/motd/nas01-disk-info'
   }
 
   # Backups
