@@ -4,6 +4,9 @@ node "monitor.dtg.cl.cam.ac.uk" {
   class {'munin::gatherer':
     server_name => $::munin_server
   }
+  munin::node::plugin {'nagiosstatus':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/nagios/nagiosstatus',
+  }
   nagios::monitor {'monitor':
     parents    => '',
     address    => "monitor.dtg.cl.cam.ac.uk",

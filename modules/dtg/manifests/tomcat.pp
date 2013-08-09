@@ -7,6 +7,9 @@ class dtg::tomcat ($version = '6'){
     ensure => running,
     require => Package[$tomcat]
   }
+  munin::node::plugin {'tomcat_access':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/tomcat/tomcat_access',
+  }
 }
 class dtg::tomcat::raven inherits dtg::tomcat {
   class {'dtg::tomcat::raven::repo': stage => 'repos'}

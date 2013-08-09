@@ -130,6 +130,9 @@ class dtg::minimal ($manageapt = true) {
   class { 'munin::node':
     node_allow_ips => [ escapeRegexp($::munin_server_ip), '^127\.0\.0\.1$' ],
   }
+  munin::node::plugin{ 'apt_ubuntu':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/ubuntu/apt_ubuntu',
+  }
   # Add read only filesystem detection plugin
   file {'/usr/share/munin/plugins/fs_readonly':
     ensure => file,
