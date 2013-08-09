@@ -43,7 +43,11 @@ define munin::gatherer::configure_node ( $override_lines = '') {
 define munin::node::plugin( $ensure = "symlink", $target = "") {
   $base = "/usr/share/munin/plugins"
   if ( $target ) {
-    $target_path = "$base/${target}"
+    if ( $target =~ /\/.*/ ) {
+      $target_path = $target
+    } else {
+      $target_path = "$base/${target}"
+    }
   } else {
     $target_path = "$base/${title}"
   }
