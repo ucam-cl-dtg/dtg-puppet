@@ -83,7 +83,7 @@ define dtg::backup::hostsetup($user, $host) {
   cron {"backup ${name}":
     ensure  => present,
     user    => $backupsuser,
-    command => "nice -n 19 /bin/bash -c 'ssh -T -i ${backupskey} ${user}@${host} > ${backupto}/`date +%F_%T`.tar.bz2'",
+    command => "nice -n 19 /bin/bash -c 'ssh -T -i ${backupskey} ${user}@${host} > ${backupto}/`date +\\%F_\\%T`.tar.bz2'",
     minute  => cron_minute("backup ${name}"),
     hour    => cron_hour("backup ${name}"),
     weekday => 'Saturday',
