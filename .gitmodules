@@ -78,4 +78,4 @@
 	url = git://github.com/ucam-cl-dtg/puppet-zfs-auto-snapshot.git
 [submodule "modules/munin/files/contrib"]
 	path = modules/munin/files/contrib
-	url = https://github.com/munin-monitoring/contrib.git
+	url = https://github.com/ucam-cl-dtg/contrib.git
