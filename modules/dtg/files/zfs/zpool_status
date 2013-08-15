@@ -1,4 +1,4 @@
-]#! /bin/bash
+#! /bin/bash
 
 CMD="zpool status -x"
 
@@ -18,52 +18,45 @@ no_actions=$(no_with_status "action:")
 
 case $1 in
    config)
-        cat <<EOM "graph_order online degraded faulted offline unavailable removed action
-graph_args --base 1024 -r -l 0 --vertial-label Units
+        echo <<EOM "graph_title zpool status
+graph_order online degraded faulted offline unavailable removed action
+graph_args --base 1024 -r -l 0 --vertical-label Units
 graph_info Shows the status of the ZFS node
 graph_category Zfs
 graph_period second
-
-
 online.label Online
 online.draw LINE1
 online.info Online
-
 degraded.label Degraded
 degraded.draw LINE1
 degraded.info Degraded
-degraded.error 0:0
-
+degraded.critical 0:0
 faulted.label Faulted
 faulted.draw LINE1
 faulted.info Faulted
-faulted.error 0:0
-
-offline.label Faulted
+faulted.critical 0:0
+offline.label Offline
 offline.draw LINE1
-offline.info Faulted
-offline.error 0:0
-
-unavailable.label Faulted
+offline.info Offline
+offline.critical 0:0
+unavailable.label Unavailable
 unavailable.draw LINE1
-unavailable.info Faulted
-unavailable.error 0:0
-
-removed.label Faulted
+unavailable.info Unavailable
+unavailable.critical 0:0
+removed.label Removed
 removed.draw LINE1
-removed.info Faulted
-removed.error 0:0
-
+removed.info Removed
+removed.critical 0:0
 action.label Actions
 action.draw LINE1
 action.info Actions
-action.error 0:0"
+action.critical 0:0"
 
 EOM
         exit 0;;
 esac
 
-echo <<EOF "online.value  $no_online 
+echo <<EOF "online.value  $no_online
 degraded.value $no_degraded
 faulted.value $no_faulted
 offline.value $no_offline
