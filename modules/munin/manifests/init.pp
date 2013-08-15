@@ -71,6 +71,10 @@ class munin::node (
   service { "munin-node":
     ensure => running
   }
+  exec { "munin-node-configure":
+    command  => '$(munin-node-configure --shell)',
+    provider => shell,
+  }
 
   file { "/etc/munin/munin-node.conf":
     ensure => present,
