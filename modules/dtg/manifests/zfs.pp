@@ -49,9 +49,9 @@ class dtg::zfs {
     source => 'puppet:///modules/dtg/zfs/zpool_iostat',
   }
 
-  file {'/etc/munin/plugins/zpool-status':
+  file {'/etc/munin/plugins/zpool_status':
     ensure => link,
-    target => '/usr/share/munin/plugins/zpool-status',
+    target => '/usr/share/munin/plugins/zpool_status',
   }
   
   file {'/etc/munin/plugins/zlist':
