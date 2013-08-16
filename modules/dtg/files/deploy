@@ -15,6 +15,7 @@ REMOTE_PREFIX = 'lick'
 PUPPET_BARE = '/etc/puppet-bare'
 
 PHYSICAL_MACHINES = [ {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
+                      {'name': 'nas04', 'hostname': 'nas04' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
                       {'name': 'entropy', 'hostname': 'entropy' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
                       {'name': 'github', 'hostname': 'git@github.com', 'repo_loc':'ucam-cl-dtg/dtg-puppet.git', 'VM': False},
                       {'name': 'origin', 'hostname': 'git@dtg-code.cl.cam.ac.uk', 'repo_loc': 'infrastructure/dtg-puppet', 'VM': False}
