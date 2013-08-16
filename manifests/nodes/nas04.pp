@@ -2,12 +2,21 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   include 'nfs::server'
 
+  $pool_name = 'dtg-pool0'
+  $cl_share = "rw=@${local_subnet}"
+
   class {'dtg::zfs': }
 
   class {'zfs_auto_snapshot':
     pool_names => [ 'dtg-pool0' ]
   }
 
+  dtg::zfs::fs{'vms':
+    pool_name  => $pool_name,
+    fs_name    => 'vms',
+    share_opts => $cl_share,
+  }
+   
   cron { 'zfs_weekly_scrub':
     command => 'zpool scrub dtg-pool0',
     user    => 'root',
