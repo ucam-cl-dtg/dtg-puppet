@@ -5,7 +5,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   class {'dtg::zfs': }
 
   class {'zfs_auto_snapshot':
-    pool_names => [ 'dtg-pool' ]
+    pool_names => [ 'dtg-pool0' ]
   }
 
   cron { 'zfs_weekly_scrub':
