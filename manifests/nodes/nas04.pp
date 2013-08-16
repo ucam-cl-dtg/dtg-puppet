@@ -8,7 +8,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   class {'dtg::zfs': }
 
   class {'zfs_auto_snapshot':
-    pool_names => [ 'dtg-pool0' ]
+    pool_names => [ $pool_name ]
   }
 
   dtg::zfs::fs{'vms':
