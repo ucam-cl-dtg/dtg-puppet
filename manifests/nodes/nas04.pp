@@ -34,6 +34,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
                 "set RQUOTAD_PORT $rquotad_port",
                 "set STATD_PORT $statd_port",
                 "set STATD_OUTGOING_PORT $statd_outgoing_port",
+                "set RPCMOUNTDOPTS \"'--manage-gids --port $mountd_port'\"",
                 ],
     notify => Service['nfs-kernel-server']
   }
