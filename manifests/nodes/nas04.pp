@@ -136,6 +136,10 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     source => 'puppet:///modules/dtg/motd/nas04-disk-info'
   }
   
+  class { "smartd": 
+    mail_to => "dtg-infra@cl.cam.ac.uk",
+    devicescan_options => "-m dtg-infra@cl.cam.ac.uk -M daily"
+  }  
 }
 
 if ( $::fqdn == $::nagios_machine_fqdn ) {
