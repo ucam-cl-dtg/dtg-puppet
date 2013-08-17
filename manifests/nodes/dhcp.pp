@@ -1,9 +1,5 @@
 node 'dhcp.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
-  class {'apache': }
-  apache::site {'open-room-map':
-    source => 'puppet:///modules/dtg/apache/default.conf',
-  }
 
   $dns_name_servers = join($::name_servers, ' ')
   class { 'network::interfaces':
