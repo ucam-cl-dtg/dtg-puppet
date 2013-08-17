@@ -65,8 +65,8 @@ node /berrycider(-\d+)?/ {
   }
   ->
   postgresql::db{'notifications':
-    user => "notifications",
-    password => "notifications",
+    user => "signups",
+    password => "signups",
     charset => "UTF-8",
     grant => "ALL"
   }
