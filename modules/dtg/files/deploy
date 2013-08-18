@@ -14,6 +14,8 @@ REMOTE_PREFIX = 'lick'
 
 PUPPET_BARE = '/etc/puppet-bare'
 
+SHA_LENGTH = 9
+
 PHYSICAL_MACHINES = [ {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
                       {'name': 'nas04', 'hostname': 'nas04' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
                       {'name': 'code', 'hostname': 'code' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
@@ -46,8 +48,13 @@ def get_machines():
 @task
 def snapshot_mc(mc, commit_id):
     assert mc['VM']
-    print('Snapshotting %s' % mc['name'])
-    run('xe vm-snapshot uuid=%s new-name-label=%s' % (mc['uuid'], commit_id))
+
+    cur_snaps = run('xe vm-list params=snapshots uuid=%s --minimal' % mc['uuid']).split('; ')
+    if any(commit_id in u for u in cur_snaps):
+        print('%s already has a snapshot for commit %s. Not snapshotting again' % (mc['name'], commit_id))
+    else:
+        print('Snapshotting %s' % mc['name'])
+        run('xe vm-snapshot uuid=%s new-name-label=%s' % (mc['uuid'], commit_id[0:SHA_LENGTH]))
 
 def add_remotes(repo, machines):
     """
