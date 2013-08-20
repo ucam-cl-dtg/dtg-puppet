@@ -1,6 +1,6 @@
 node /berrycider(-\d+)?/ {
 
-  $dashboard_version = "1.0.0"
+  $dashboard_version = "1.0.2"
   $handins_version   = "0.0.2"
   $questions_version = "0.0.1"
   $signups_version   = "0.0.1"
@@ -29,6 +29,12 @@ node /berrycider(-\d+)?/ {
     artifact_type => "war",
     destination_directory => "/usr/local/share/ott-handins",
     symlink => "/var/lib/tomcat7/webapps/handins.war",
+  }
+  ->
+  file {'/local/data/handins':
+    ensure => directory,
+    group => "tomcat7",
+    mode => "a=xr,ug+wrx,g+s"
   }
   ->
   dtg::nexus::fetch{"download-questions":
