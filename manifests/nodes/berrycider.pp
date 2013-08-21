@@ -11,7 +11,9 @@ node /berrycider(-\d+)?/ {
   ->
   class {'dtg::firewall::publichttp':}
   ->
-  class {'dtg::firewall::80to8080':}
+  class {'dtg::firewall::80to8080':
+    private => false,
+  }
   ->
   dtg::nexus::fetch{"download-dashboard":
     groupID => "uk.ac.cam.cl.dtg.teaching",
