@@ -9,6 +9,14 @@ node /berrycider(-\d+)?/ {
   
   class {'dtg::tomcat': version => '7'}
   ->
+  file {'/var/lib/tomcat7/webapps/ROOT/index.html':
+    ensure => absent
+  }
+  ->
+  file {'/var/lib/tomcat7/webapps/ROOT/index.jsp':
+    source => 'puppet:///modules/dtg/tomcat/berrycider-redirect.jsp'
+  }
+  ->
   class {'dtg::firewall::publichttp':}
   ->
   class {'dtg::firewall::80to8080':
