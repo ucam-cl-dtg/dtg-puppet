@@ -75,13 +75,20 @@ def push_config(repo, mc):
 
 
 def main(args):
+    ssh_no_fngr =  "%s/%s" % (os.getcwd(), 'ssh-no-fingerprint')
+    try:
+        with open(ssh_no_fngr): pass
+    except IOError:
+        sys.stderr.write('You must lick from modules/dtg/files')
+        sys.exit(1)
+
     repo = Repo('.')
     machines = get_machines()
     add_remotes(repo, machines)
 
     # Set GIT_SSH to point to the wrapper around SSH that stops hostkey checks.
     # We don't need to check hostkeys as we're only pushing at hosts, so we don't care if someone MiTMs us.
-    os.environ['GIT_SSH'] = "%s/%s" % (os.getcwd(), 'ssh-no-fingerprint')
+    os.environ['GIT_SSH'] = ssh_no_fngr
 
     threads = []
     for mc in machines:
