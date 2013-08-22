@@ -26,7 +26,7 @@ PHYSICAL_MACHINES = [ {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc
 
 @task
 def get_vms():
-    uuids = run('xe vm-list params=uuid PV-bootloader=pygrub --minimal').split(',')
+    uuids = run('xe vm-list params=uuid power-state=running PV-bootloader=pygrub --minimal').split(',')
     vms = []
     for uuid in uuids:
         name_label = run('xe vm-list params=name-label uuid=%s --minimal' % uuid).replace(' ','')
