@@ -31,6 +31,9 @@ node /berrycider(-\d+)?/ {
     destination_directory => "/usr/local/share/ott-dashboard",
     symlink => "/var/lib/tomcat7/webapps/dashboard.war",
   }
+  file {'/var/lib/tomcat7/conf/Catalina/localhost/dashboard.xml':
+    source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
+  }
   ->
   dtg::nexus::fetch{"download-handins":
     groupID => "uk.ac.cam.cl.dtg.teaching",
@@ -39,6 +42,10 @@ node /berrycider(-\d+)?/ {
     artifact_type => "war",
     destination_directory => "/usr/local/share/ott-handins",
     symlink => "/var/lib/tomcat7/webapps/handins.war",
+  }
+  ->
+  file {'/var/lib/tomcat7/conf/Catalina/localhost/handins.xml':
+    source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
   ->
   file {'/local/data/handins':
@@ -55,6 +62,9 @@ node /berrycider(-\d+)?/ {
     destination_directory => "/usr/local/share/ott-questions",
     symlink => "/var/lib/tomcat7/webapps/questions.war",
   }
+  file {'/var/lib/tomcat7/conf/Catalina/localhost/questions.xml':
+    source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
+  }
   ->
   dtg::nexus::fetch{"download-signups":
     groupID => "uk.ac.cam.cl.dtg.teaching",
@@ -62,8 +72,13 @@ node /berrycider(-\d+)?/ {
     artifact_version => $signups_version,
     artifact_type => "war",
     destination_directory => "/usr/local/share/ott-signups",
-    symlink => "/var/lib/tomcat7/webapps/signups.war",
+    symlink => "/var/lib/tomcat7/webapps/signapp.war",
   }
+  ->
+  file {'/var/lib/tomcat7/conf/Catalina/localhost/signapp.xml':
+    source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
+  }
+
   class { 'postgresql::server': 
     config_hash => { 
       'ip_mask_deny_postgres_user' => '0.0.0.0/0', 
