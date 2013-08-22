@@ -100,6 +100,13 @@ node /berrycider(-\d+)?/ {
     charset => "UTF-8",
     grant => "ALL"
   }
+  ->
+  postgresql::db{'log':
+    user => "signups",
+    password => "signups",
+    charset => "UTF-8",
+    grant => "ALL"
+  }
 
   $packages = ['maven2','openjdk-7-jdk','puppet-el']
   package{$packages:
