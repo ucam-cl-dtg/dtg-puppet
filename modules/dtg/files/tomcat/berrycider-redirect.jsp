@@ -1,5 +1,5 @@
 <%
-    String redirectURL = "/dashboard";
+    String redirectURL = "/dashboard/";
     response.sendRedirect(redirectURL);
 %>
 
