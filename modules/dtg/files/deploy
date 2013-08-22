@@ -34,7 +34,7 @@ def get_vms():
         try:
             hostname = socket.gethostbyaddr(ip)[0]
         except socket.error:
-            sys.stderr.write("Unable to lookup hostname of %s\n" % ip)
+            sys.stderr.write("Unable to lookup hostname of %s\n" % name_label)
             continue
 
         vms.append({'name':name_label, 'hostname':hostname, 'repo_loc': PUPPET_BARE, 'VM': True, 'uuid':uuid})
