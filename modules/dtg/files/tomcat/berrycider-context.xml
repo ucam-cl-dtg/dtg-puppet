@@ -1,0 +1,4 @@
+<Context>
+	<Parameter name="dashboardUrl" value="http://localhost:8080/dashboard" override="false" />
+	<Parameter name="apiKey" value="4870v534lmomthfssb27ho4vjtidhujlmmssasue" override="false" />
+</Context>
