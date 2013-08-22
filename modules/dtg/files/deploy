@@ -4,6 +4,7 @@ import argparse
 import socket
 import threading
 import sys, os
+import time
 from fabric.api import *
 from git import *
 
@@ -95,6 +96,8 @@ def main(args):
         thread = threading.Thread(name=mc['name'], target=push_config, args=(repo, mc))
         threads.append(thread)
         thread.start()
+        time.sleep(1)
+
 
     for thread in threads:
         thread.join()
