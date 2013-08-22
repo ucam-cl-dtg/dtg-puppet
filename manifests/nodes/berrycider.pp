@@ -31,6 +31,7 @@ node /berrycider(-\d+)?/ {
     destination_directory => "/usr/local/share/ott-dashboard",
     symlink => "/var/lib/tomcat7/webapps/dashboard.war",
   }
+  ->
   file {'/var/lib/tomcat7/conf/Catalina/localhost/dashboard.xml':
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
@@ -62,6 +63,7 @@ node /berrycider(-\d+)?/ {
     destination_directory => "/usr/local/share/ott-questions",
     symlink => "/var/lib/tomcat7/webapps/questions.war",
   }
+  ->
   file {'/var/lib/tomcat7/conf/Catalina/localhost/questions.xml':
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
