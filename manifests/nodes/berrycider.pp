@@ -1,9 +1,9 @@
 node /berrycider(-\d+)?/ {
 
-  $dashboard_version = "1.0.2"
+  $dashboard_version = "1.0.3"
   $handins_version   = "0.0.2"
-  $questions_version = "0.0.1"
-  $signups_version   = "0.0.1"
+  $questions_version = "1.0.0"
+  $signups_version   = "1.0.0"
 
   include 'dtg::minimal'
   
@@ -98,8 +98,8 @@ node /berrycider(-\d+)?/ {
   }
   ->
   postgresql::db{'notifications':
-    user => "signups",
-    password => "signups",
+    user => "notifications",
+    password => "notifications",
     charset => "UTF-8",
     grant => "ALL"
   }
@@ -119,8 +119,8 @@ node /berrycider(-\d+)?/ {
   }
   ->
   postgresql::db{'log':
-    user => "signups",
-    password => "signups",
+    user => "log",
+    password => "log",
     charset => "UTF-8",
     grant => "ALL"
   }
