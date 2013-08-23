@@ -4,6 +4,7 @@ import argparse
 import socket
 import threading
 import sys, os
+import time
 from fabric.api import *
 from git import *
 
@@ -26,7 +27,7 @@ PHYSICAL_MACHINES = [ {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc
 
 @task
 def get_vms():
-    uuids = run('xe vm-list params=uuid PV-bootloader=pygrub --minimal').split(',')
+    uuids = run('xe vm-list params=uuid power-state=running PV-bootloader=pygrub --minimal').split(',')
     vms = []
     for uuid in uuids:
         name_label = run('xe vm-list params=name-label uuid=%s --minimal' % uuid).replace(' ','')
@@ -34,7 +35,7 @@ def get_vms():
         try:
             hostname = socket.gethostbyaddr(ip)[0]
         except socket.error:
-            sys.stderr.write("Unable to lookup hostname of %s\n" % ip)
+            sys.stderr.write("Unable to lookup hostname of %s\n" % name_label)
             continue
 
         vms.append({'name':name_label, 'hostname':hostname, 'repo_loc': PUPPET_BARE, 'VM': True, 'uuid':uuid})
@@ -95,6 +96,8 @@ def main(args):
         thread = threading.Thread(name=mc['name'], target=push_config, args=(repo, mc))
         threads.append(thread)
         thread.start()
+        time.sleep(1)
+
 
     for thread in threads:
         thread.join()
