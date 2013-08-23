@@ -5,13 +5,11 @@ node 'jenkins-master.dtg.cl.cam.ac.uk' {
 }
 
 
-if ( $::fqdn == $::nagios_machine_fqdn ) {
+if ( $::monitor ) {
   nagios::monitor { 'jenkins-master':
     parents    => '',
     address    => 'jenkins-master.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
-}
-if ( $::fqdn == $::munin_machine_fqdn ) {
   munin::gatherer::configure_node { 'jenkins-master': }
 }

@@ -10,14 +10,12 @@ node 'entropy.dtg.cl.cam.ac.uk' {
   # Allow connections to 7776
   class { 'dtg::firewall::entropy':}
 }
-if ( $::fqdn == $::nagios_machine_fqdn ) {
+if ( $::monitor ) {
   nagios::monitor { 'entropy':
     parents    => '',
     address    => 'entropy.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers'],
   }
-}
-if ( $::fqdn == $::munin_machine_fqdn ) {
   munin::gatherer::configure_node { 'entropy': 
     override_lines => 'diskstats_latency.warning 0:4
   diskstats_latency.critical 0:6

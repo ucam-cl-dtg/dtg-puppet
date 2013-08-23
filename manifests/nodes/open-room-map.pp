@@ -170,13 +170,11 @@ node /open-room-map(-\d+)?/ {
 
 
 }
-if ( $::fqdn == $::nagios_machine_fqdn ) {
+if ( $::monitor ) {
   nagios::monitor { 'open-room-map':
     parents    => '',
     address    => 'open-room-map.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
-}
-if ( $::fqdn == $::munin_machine_fqdn ) {
   munin::gatherer::configure_node { 'open-room-map': }
 }
