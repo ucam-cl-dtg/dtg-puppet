@@ -3,7 +3,7 @@ node /berrycider(-\d+)?/ {
   $dashboard_version = "1.0.3"
   $handins_version   = "0.0.2"
   $questions_version = "1.0.0"
-  $signups_version   = "1.0.0"
+  $signapp_version   = "1.0.0"
 
   include 'dtg::minimal'
   
@@ -68,12 +68,12 @@ node /berrycider(-\d+)?/ {
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
   ->
-  dtg::nexus::fetch{"download-signups":
+  dtg::nexus::fetch{"download-signapp":
     groupID => "uk.ac.cam.cl.dtg.teaching",
-    artifact_name => "signups",
-    artifact_version => $signups_version,
+    artifact_name => "signapp",
+    artifact_version => $signapp_version,
     artifact_type => "war",
-    destination_directory => "/usr/local/share/ott-signups",
+    destination_directory => "/usr/local/share/ott-signapp",
     symlink => "/var/lib/tomcat7/webapps/signapp.war",
   }
   ->
