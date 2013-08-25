@@ -97,11 +97,45 @@ node /berrycider(-\d+)?/ {
     grant => "ALL"
   }
   ->
+  dtg::nexus::fetch{"download-handins-backup":
+    groupID => "uk.ac.cam.cl.dtg.teaching",
+    artifact_name => "handins-backup",
+    artifact_version => "1.0.0-SNAPSHOT",
+    artifact_type => "zip",
+    artifact_classifier => "live",
+    destination_directory => "/usr/local/share/ott-handins-backup",
+    action => "unzip"
+  }
+  ->
+  exec{"restore-handins-backup":
+    command => "psql -U handins -d handins -h localhost -f /usr/local/share/ott-handins-backup/handins-backup-1.0.0-SNAPSHOT/target/backup.sql",
+    environment => "PGPASSWORD=handins",
+    path => "/usr/bin:/bin",
+    unless => 'psql -U handins -h localhost -d handins -t -c "select * from Bin limit 1"'
+  }  
+  ->
   postgresql::db{'notifications':
     user => "notifications",
     password => "notifications",
     charset => "UTF-8",
     grant => "ALL"
+  }
+  ->
+  dtg::nexus::fetch{"download-dashboard-backup":
+    groupID => "uk.ac.cam.cl.dtg.teaching",
+    artifact_name => "dashboard-backup",
+    artifact_version => "1.0.0-SNAPSHOT",
+    artifact_type => "zip",
+    artifact_classifier => "live",
+    destination_directory => "/usr/local/share/ott-dashboard-backup",
+    action => "unzip"
+  }
+  ->
+  exec{"restore-dashboard-backup":
+    command => "psql -U notifications -d notifications -h localhost -f /usr/local/share/ott-dashboard-backup/dashboard-backup-1.0.0-SNAPSHOT/target/backup.sql",
+    environment => "PGPASSWORD=notifications",
+    path => "/usr/bin:/bin",
+    unless => 'psql -U notifications -h localhost -d notifications -t -c "select * from Users limit 1"'
   }
   ->
   postgresql::db{'questions':
@@ -111,6 +145,23 @@ node /berrycider(-\d+)?/ {
     grant => "ALL"
   }
   ->
+  dtg::nexus::fetch{"download-questions-backup":
+    groupID => "uk.ac.cam.cl.dtg.teaching",
+    artifact_name => "questions-backup",
+    artifact_version => "1.0.0-SNAPSHOT",
+    artifact_type => "zip",
+    artifact_classifier => "live",
+    destination_directory => "/usr/local/share/ott-questions-backup",
+    action => "unzip"
+  }
+  ->
+  exec{"restore-questions-backup":
+    command => "psql -U questions -d questions -h localhost -f /usr/local/share/ott-questions-backup/questions-backup-1.0.0-SNAPSHOT/target/backup.sql",
+    environment => "PGPASSWORD=questions",
+    path => "/usr/bin:/bin",
+    unless => 'psql -U questions -h localhost -d questions -t -c "select * from Users limit 1"'
+  }
+  ->
   postgresql::db{'signups':
     user => "signups",
     password => "signups",
@@ -118,11 +169,45 @@ node /berrycider(-\d+)?/ {
     grant => "ALL"
   }
   ->
+    dtg::nexus::fetch{"download-signapp-backup":
+    groupID => "uk.ac.cam.cl.dtg.teaching",
+    artifact_name => "signapp-backup",
+    artifact_version => "1.0.0-SNAPSHOT",
+    artifact_type => "zip",
+    artifact_classifier => "live",
+    destination_directory => "/usr/local/share/ott-signapp-backup",
+    action => "unzip"
+  }
+  ->
+  exec{"restore-signapp-backup":
+    command => "psql -U signups -d signups -h localhost -f /usr/local/share/ott-signapp-backup/signapp-backup-1.0.0-SNAPSHOT/target/backup.sql",
+    environment => "PGPASSWORD=signups",
+    path => "/usr/bin:/bin",
+    unless => 'psql -U signups -h localhost -d signups -t -c "select * from Users limit 1"'
+  }
+  ->
   postgresql::db{'log':
     user => "log",
     password => "log",
     charset => "UTF-8",
     grant => "ALL"
+  }
+  ->
+    dtg::nexus::fetch{"download-frontend-backup":
+    groupID => "uk.ac.cam.cl.dtg.teaching",
+    artifact_name => "frontend-backup",
+    artifact_version => "1.0.0-SNAPSHOT",
+    artifact_type => "zip",
+    artifact_classifier => "live",
+    destination_directory => "/usr/local/share/ott-frontend-backup",
+    action => "unzip"
+  }
+  ->
+  exec{"restore-frontend-backup":
+    command => "psql -U log -d log -h localhost -f /usr/local/share/ott-frontend-backup/frontend-backup-1.0.0-SNAPSHOT/target/backup.sql",
+    environment => "PGPASSWORD=log",
+    path => "/usr/bin:/bin",
+    unless => 'psql -U log -h localhost -d log -t -c "select * from Log limit 1"'
   }
 
   $packages = ['maven2','openjdk-7-jdk','puppet-el']
