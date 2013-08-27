@@ -16,7 +16,13 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     fs_name    => 'vms',
     share_opts => $cl_share,
   }
-   
+
+  dtg::zfs::fs{'shin-backup':
+    pool_name  => $pool_name,
+    fs_name    => 'shin-backup',
+    share_opts => "rw=@shin.cl.cam.ac.uk",
+  }
+
   cron { 'zfs_weekly_scrub':
     command => 'zpool scrub dtg-pool0',
     user    => 'root',
