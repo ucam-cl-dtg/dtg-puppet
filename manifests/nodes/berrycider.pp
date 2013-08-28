@@ -1,9 +1,9 @@
 node /berrycider(-\d+)?/ {
 
   $dashboard_version = "1.0.4"
-  $handins_version   = "1.0.0"
-  $questions_version = "1.0.1"
-  $signapp_version   = "1.0.1"
+  $handins_version   = "1.0.1"
+  $questions_version = "1.0.2"
+  $signapp_version   = "1.0.2"
 
   include 'dtg::minimal'
   
