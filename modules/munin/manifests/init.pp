@@ -72,7 +72,7 @@ class munin::node (
     ensure => running
   }
   exec { "munin-node-configure":
-    command  => '$(munin-node-configure --shell)',
+    command  => 'munin-node-configure --shell | sh',
     provider => shell,
   }
 
