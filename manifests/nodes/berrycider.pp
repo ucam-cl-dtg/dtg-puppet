@@ -55,6 +55,12 @@ node /berrycider(-\d+)?/ {
     mode => "a=xr,ug+wrx,g+s"
   }
   ->
+  file {'/local/data/questions':
+    ensure => directory,
+    group => "tomcat7",
+    mode => "a=xr,ug+wrx,g+s"
+  }
+  ->
   dtg::nexus::fetch{"download-questions":
     groupID => "uk.ac.cam.cl.dtg.teaching",
     artifact_name => "questions",
