@@ -92,17 +92,8 @@ node /berrycider(-\d+)?/ {
       'ip_mask_deny_postgres_user' => '0.0.0.0/0', 
       'ip_mask_allow_all_users' => '127.0.0.1/32', 
       'listen_addresses' => '*', 
-      'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5',
-                     'hostssl all all 128.232.20.42/32 md5'
-                     ]
+      'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5'],
     }
-  }
-  ->
-  firewall { '034 accept postgres from uropserver':
-    proto   => 'tcp',
-    dport   => '5432',
-    source  => '128.232.20.42',
-    action  => 'accept',
   }
   ->
   postgresql::db{'handins':
