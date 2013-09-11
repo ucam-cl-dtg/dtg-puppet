@@ -125,6 +125,12 @@ $munin_server = "munin.$org_domain"
 $munin_server_ip_array = dnsLookup($munin_server)
 $munin_server_ip = $munin_server_ip_array[0]
 
+if ( $::fqdn =~ /(monitor|prism).dtg.cl.cam.ac.uk/ ) {
+  $monitor = true
+} else {
+  $monitor = false
+}
+
 # Unattended upgrade config
 $unattended_upgrade_notify_emailaddress = $from_address
 

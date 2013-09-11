@@ -7,6 +7,9 @@ node "monitor.dtg.cl.cam.ac.uk" {
   munin::node::plugin {'nagiosstatus':
     target => '/etc/puppet/modules/munin/files/contrib/plugins/nagios/nagiosstatus',
   }
+  class {'dtg::firewall::privatehttp':}
+}
+if ($::monitor) {
   nagios::monitor {'monitor':
     parents    => '',
     address    => "monitor.dtg.cl.cam.ac.uk",
@@ -24,5 +27,4 @@ node "monitor.dtg.cl.cam.ac.uk" {
     hostgroups => [ 'http-servers' ],
     include_standard_hostgroups => false,
   }
-  class {'dtg::firewall::privatehttp':}
 }

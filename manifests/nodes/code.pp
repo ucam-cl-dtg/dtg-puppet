@@ -68,7 +68,7 @@ node 'code.dtg.cl.cam.ac.uk' {
   #dtg::git::mirror::repo{'': source => ''}
 
 }
-if ( $::fqdn == $::nagios_machine_fqdn ) {
+if ( $::monitor ) {
   nagios::monitor { 'code':
     parents    => '',
     address    => 'code.dtg.cl.cam.ac.uk',
@@ -86,7 +86,5 @@ if ( $::fqdn == $::nagios_machine_fqdn ) {
     hostgroups => [ 'http-servers' ],
     include_standard_hostgroups => false,
   }
-}
-if ( $::fqdn == $::munin_machine_fqdn ) {
   munin::gatherer::configure_node { 'code': }
 }

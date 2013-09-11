@@ -1,10 +1,12 @@
 node /berrycider(-\d+)?/ {
 
-  $dashboard_version = "1.0.6"
-  $handins_version   = "1.0.2"
-  $questions_version = "1.0.5"
-  $signapp_version   = "1.0.5"
+  $dashboard_version = "1.0.7"
+  $handins_version   = "1.0.3"
+  $questions_version = "1.0.6"
+  $signapp_version   = "1.0.6"
 
+  $install_directory = "/local/data/webapps"
+  
   include 'dtg::minimal'
   
   class {'dtg::tomcat': version => '7'}
@@ -23,12 +25,18 @@ node /berrycider(-\d+)?/ {
     private => false,
   }
   ->
+  file {[$install_directory,'/local/data/handins','/local/data/questions']:
+    ensure => directory,
+    group => "tomcat7",
+    mode => "a=xr,ug+wrx,g+s"
+  }
+  ->
   dtg::nexus::fetch{"download-dashboard":
     groupID => "uk.ac.cam.cl.dtg.teaching",
     artifact_name => "dashboard",
     artifact_version => $dashboard_version,
     artifact_type => "war",
-    destination_directory => "/usr/local/share/ott-dashboard",
+    destination_directory => "$install_directory/ott-dashboard",
     symlink => "/var/lib/tomcat7/webapps/dashboard.war",
   }
   ->
@@ -41,7 +49,7 @@ node /berrycider(-\d+)?/ {
     artifact_name => "handins",
     artifact_version => $handins_version,
     artifact_type => "war",
-    destination_directory => "/usr/local/share/ott-handins",
+    destination_directory => "$install_directory/ott-handins",
     symlink => "/var/lib/tomcat7/webapps/handins.war",
   }
   ->
@@ -49,18 +57,12 @@ node /berrycider(-\d+)?/ {
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
   ->
-  file {'/local/data/handins':
-    ensure => directory,
-    group => "tomcat7",
-    mode => "a=xr,ug+wrx,g+s"
-  }
-  ->
   dtg::nexus::fetch{"download-questions":
     groupID => "uk.ac.cam.cl.dtg.teaching",
     artifact_name => "questions",
     artifact_version => $questions_version,
     artifact_type => "war",
-    destination_directory => "/usr/local/share/ott-questions",
+    destination_directory => "$install_directory/ott-questions",
     symlink => "/var/lib/tomcat7/webapps/questions.war",
   }
   ->
@@ -73,7 +75,7 @@ node /berrycider(-\d+)?/ {
     artifact_name => "signapp",
     artifact_version => $signapp_version,
     artifact_type => "war",
-    destination_directory => "/usr/local/share/ott-signapp",
+    destination_directory => "$install_directory/ott-signapp",
     symlink => "/var/lib/tomcat7/webapps/signapp.war",
   }
   ->
@@ -86,17 +88,8 @@ node /berrycider(-\d+)?/ {
       'ip_mask_deny_postgres_user' => '0.0.0.0/0', 
       'ip_mask_allow_all_users' => '127.0.0.1/32', 
       'listen_addresses' => '*', 
-      'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5',
-                     'hostssl all all 128.232.20.42/32 md5'
-                     ]
+      'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5'],
     }
-  }
-  ->
-  firewall { '034 accept postgres from uropserver':
-    proto   => 'tcp',
-    dport   => '5432',
-    source  => '128.232.20.42',
-    action  => 'accept',
   }
   ->
   postgresql::db{'handins':
@@ -112,12 +105,12 @@ node /berrycider(-\d+)?/ {
     artifact_version => "1.0.0-SNAPSHOT",
     artifact_type => "zip",
     artifact_classifier => "live",
-    destination_directory => "/usr/local/share/ott-handins-backup",
+    destination_directory => "$install_directory/ott-handins-backup",
     action => "unzip"
   }
   ->
   exec{"restore-handins-backup":
-    command => "psql -U handins -d handins -h localhost -f /usr/local/share/ott-handins-backup/handins-backup-1.0.0-SNAPSHOT/target/backup.sql",
+    command => "psql -U handins -d handins -h localhost -f $install_directory/ott-handins-backup/handins-backup-1.0.0-SNAPSHOT/target/backup.sql",
     environment => "PGPASSWORD=handins",
     path => "/usr/bin:/bin",
     unless => 'psql -U handins -h localhost -d handins -t -c "select * from Bin limit 1"'
@@ -136,12 +129,12 @@ node /berrycider(-\d+)?/ {
     artifact_version => "1.0.0-SNAPSHOT",
     artifact_type => "zip",
     artifact_classifier => "live",
-    destination_directory => "/usr/local/share/ott-dashboard-backup",
+    destination_directory => "$install_directory/ott-dashboard-backup",
     action => "unzip"
   }
   ->
   exec{"restore-dashboard-backup":
-    command => "psql -U notifications -d notifications -h localhost -f /usr/local/share/ott-dashboard-backup/dashboard-backup-1.0.0-SNAPSHOT/target/backup.sql",
+    command => "psql -U notifications -d notifications -h localhost -f $install_directory/ott-dashboard-backup/dashboard-backup-1.0.0-SNAPSHOT/target/backup.sql",
     environment => "PGPASSWORD=notifications",
     path => "/usr/bin:/bin",
     unless => 'psql -U notifications -h localhost -d notifications -t -c "select * from Users limit 1"'
@@ -160,12 +153,12 @@ node /berrycider(-\d+)?/ {
     artifact_version => "1.0.0-SNAPSHOT",
     artifact_type => "zip",
     artifact_classifier => "live",
-    destination_directory => "/usr/local/share/ott-questions-backup",
+    destination_directory => "$install_directory/ott-questions-backup",
     action => "unzip"
   }
   ->
   exec{"restore-questions-backup":
-    command => "psql -U questions -d questions -h localhost -f /usr/local/share/ott-questions-backup/questions-backup-1.0.0-SNAPSHOT/target/backup.sql",
+    command => "psql -U questions -d questions -h localhost -f $install_directory/ott-questions-backup/questions-backup-1.0.0-SNAPSHOT/target/backup.sql",
     environment => "PGPASSWORD=questions",
     path => "/usr/bin:/bin",
     unless => 'psql -U questions -h localhost -d questions -t -c "select * from Users limit 1"'
@@ -184,12 +177,12 @@ node /berrycider(-\d+)?/ {
     artifact_version => "1.0.0-SNAPSHOT",
     artifact_type => "zip",
     artifact_classifier => "live",
-    destination_directory => "/usr/local/share/ott-signapp-backup",
+    destination_directory => "$install_directory/ott-signapp-backup",
     action => "unzip"
   }
   ->
   exec{"restore-signapp-backup":
-    command => "psql -U signups -d signups -h localhost -f /usr/local/share/ott-signapp-backup/signapp-backup-1.0.0-SNAPSHOT/target/backup.sql",
+    command => "psql -U signups -d signups -h localhost -f $install_directory/ott-signapp-backup/signapp-backup-1.0.0-SNAPSHOT/target/backup.sql",
     environment => "PGPASSWORD=signups",
     path => "/usr/bin:/bin",
     unless => 'psql -U signups -h localhost -d signups -t -c "select * from Users limit 1"'
@@ -208,12 +201,12 @@ node /berrycider(-\d+)?/ {
     artifact_version => "1.0.0-SNAPSHOT",
     artifact_type => "zip",
     artifact_classifier => "live",
-    destination_directory => "/usr/local/share/ott-frontend-backup",
+    destination_directory => "$install_directory/ott-frontend-backup",
     action => "unzip"
   }
   ->
   exec{"restore-frontend-backup":
-    command => "psql -U log -d log -h localhost -f /usr/local/share/ott-frontend-backup/frontend-backup-1.0.0-SNAPSHOT/target/backup.sql",
+    command => "psql -U log -d log -h localhost -f $install_directory/ott-frontend-backup/frontend-backup-1.0.0-SNAPSHOT/target/backup.sql",
     environment => "PGPASSWORD=log",
     path => "/usr/bin:/bin",
     unless => 'psql -U log -h localhost -d log -t -c "select * from Log limit 1"'
