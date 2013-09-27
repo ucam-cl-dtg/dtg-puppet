@@ -7,7 +7,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
       'eth0' => {
         'method' => 'static',
         'address' => '128.232.20.36',
-        'netmask' => '255.255.255.0',
+        'netmask' => '255.255.252.0',
         'gateway' => '128.232.20.1',
         'dns-nameservers' => $dns_name_servers,
       }
@@ -28,7 +28,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
 
   dhcp::pool{ 'dtg.cl.cam.ac.uk':
     network => '128.232.20.0',
-    mask    => '255.255.255.0',
+    mask    => '255.255.252.0',
     range   => '128.232.20.28 128.232.20.59',
     # gateway should be route.cl
     gateway => '128.232.20.1',
