@@ -63,7 +63,8 @@ define munin::node::plugin( $ensure = "symlink", $target = "") {
 }
 
 class munin::node (
-  $node_allow_ips = ['^127\.0\.0\.1$']
+  $node_allow_ips = ['^127\.0\.0\.1$'],
+  $node_timeout = "15"
 ) {
   package { [ "munin-node", "munin-plugins-extra", "libcache-cache-perl" ]:
     ensure => installed
