@@ -32,6 +32,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     range   => '128.232.20.28 128.232.20.59',
     # gateway should be route.cl
     gateway => '128.232.20.1',
+    parameters => 'deny unknown-clients',
   }
   dhcp::host {
     'puppy0':mac => "00:16:3E:E8:14:1C", ip => "128.232.20.28";
