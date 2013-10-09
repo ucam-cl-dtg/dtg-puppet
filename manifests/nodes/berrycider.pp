@@ -1,9 +1,9 @@
 node /berrycider(-\d+)?/ {
 
-  $dashboard_version = "1.0.9"
-  $handins_version   = "1.0.5"
-  $questions_version = "1.0.7"
-  $signapp_version   = "1.0.7"
+  $dashboard_version = "1.0.10-SNAPSHOT"
+  $handins_version   = "1.0.6-SNAPSHOT"
+  $questions_version = "1.0.8-SNAPSHOT"
+  $signapp_version   = "1.0.8-SNAPSHOT"
 
   $install_directory = "/local/data/webapps"
   
