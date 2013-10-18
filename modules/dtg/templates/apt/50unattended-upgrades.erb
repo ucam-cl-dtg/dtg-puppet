@@ -1,6 +1,6 @@
 // Automatically upgrade packages from these (origin, archive) pairs
 Unattended-Upgrade::Allowed-Origins {
-        "<%= operatingsystem %> <%= lsbdistcodename %>-security";
+        "<%= @operatingsystem %> <%= lsbdistcodename %>-security";
 //      "Ubuntu lucid-updates";
 };
 
@@ -16,7 +16,7 @@ Unattended-Upgrade::Package-Blacklist {
 // If empty or unset then no email is sent, make sure that you
 // have a working mail setup on your system. The package 'mailx'
 // must be installed or anything that provides /usr/bin/mail.
-Unattended-Upgrade::Mail "<%= unattended_upgrade_notify_emailaddress %>";
+Unattended-Upgrade::Mail "<%= @unattended_upgrade_notify_emailaddress %>";
 
 // Do automatic removal of new unused dependencies after the upgrade
 // (equivalent to apt-get autoremove)
