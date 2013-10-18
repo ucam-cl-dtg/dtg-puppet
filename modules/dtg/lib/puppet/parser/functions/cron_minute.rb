@@ -1,5 +1,5 @@
 # Generate a minute using the one argument as a seed for generation
-require 'md5'
+require 'digest/md5'
 
 module Puppet::Parser::Functions
   newfunction(:cron_minute, :type => :rvalue) do |args|
