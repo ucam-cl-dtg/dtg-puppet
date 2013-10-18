@@ -3,6 +3,6 @@ require 'digest/md5'
 
 module Puppet::Parser::Functions
   newfunction(:cron_hour, :type => :rvalue) do |args|
-    MD5.new(args[0]).to_s.hex % 8
+    Digest::MD5::hexdigest(args[0]).to_i(16) % 8
   end
 end
