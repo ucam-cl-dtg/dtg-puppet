@@ -40,6 +40,7 @@ ServerName <%= server_name %>
       </IfModule>
     </IfModule>
     Allow from all
+    Require all granted
   </Location>
 
   ScriptAlias /munin-cgi/munin-cgi-html /usr/lib/munin/cgi/munin-cgi-html
@@ -57,7 +58,12 @@ ServerName <%= server_name %>
       </IfModule>
     </IfModule>
     Allow from all
+    Require all granted
   </Location>
+
+  <Directory "/var/cache/munin/www/static/">
+    Require all granted
+  </Directory>
 
   <IfModule !mod_rewrite.c>
     <Location /munin-cgi/munin-cgi-html/static>
