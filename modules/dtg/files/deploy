@@ -85,6 +85,12 @@ def main(args):
 
     repo = Repo('.')
     machines = get_machines()
+    if args.machines:
+        machines = filter(lambda m : m['name'] in args.machines, machines)
+    if not machines:
+        sys.stderr.write("No machines to apply puppet to")
+        sys.exit(-1);
+
     add_remotes(repo, machines)
 
     # Set GIT_SSH to point to the wrapper around SSH that stops hostkey checks.
@@ -105,6 +111,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Pushes the master branch of dtg-puppet, as found on github all over the world')
     parser.add_argument('--boot', help='Boot linux machines that are currently turned off.')
+    parser.add_argument('machines', nargs='?', help='Limit the machines that the lick is applied to')
 
     args = parser.parse_args()
     main(args)
