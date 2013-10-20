@@ -50,6 +50,12 @@ class nagios::server inherits nagios::params {
     notify => Service["nagios3"],
     require => Package["nagios3"]
   }
+  file { "$nagios_base_dir/apache2.conf":
+    source => "puppet:///modules/nagios/nagios3/apache2.cfg",
+    ensure => present,
+    notify => Service["nagios3"],
+    require => Package["nagios3"]
+  }
   file { "$nagios_base_dir/stylesheets":
     source  => "puppet:///modules/nagios/nagios3/stylesheets",
     ensure  => directory,
