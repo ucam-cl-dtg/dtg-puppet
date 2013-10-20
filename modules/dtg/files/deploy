@@ -57,6 +57,17 @@ def snapshot_mc(mc, commit_id):
         print('Snapshotting %s' % mc['name'])
         run('xe vm-snapshot uuid=%s new-name-label=%s' % (mc['uuid'], commit_id[0:SHA_LENGTH]))
 
+@task
+def upgrade_mc():
+    # Remove unusued packages to reduce the chance of falling over
+    # during the upgrade
+    sudo('apt-get autoremove')
+    sudo('do-release-upgrade -f DistUpgradeViewNonInteractive')
+
+@task
+def post_update_hook():
+    run('/etc/puppet-bare/hooks/post-update')
+
 def add_remotes(repo, machines):
     """
     Delete all remotes, then add those listed in `machines'
@@ -67,12 +78,18 @@ def add_remotes(repo, machines):
     for mc in machines:
         new_remote = repo.create_remote(REMOTE_PREFIX + '-' + mc['name'], mc['hostname']  + ':' + mc['repo_loc'])
 
-def push_config(repo, mc):
+def push_config(repo, mc, upgrade):
     with settings(hide('running', 'stdout')):
         if mc['VM']:
             execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
+    if upgrade:
+        execute(upgrade_mc, hosts=[mc['hostname']])
     print('Pushing to %s' % mc['name'])
     repo.remotes[REMOTE_PREFIX + '-' + mc['name']].push()
+
+    #  We need to manually force the update hook to execute after pushing.
+    #  PyGit doesn't seem to do this.
+    execute(post_update_hook, hosts=[mc['hostname']])
 
 
 def main(args):
@@ -99,7 +116,7 @@ def main(args):
 
     threads = []
     for mc in machines:
-        thread = threading.Thread(name=mc['name'], target=push_config, args=(repo, mc))
+        thread = threading.Thread(name=mc['name'], target=push_config, args=(repo, mc, args.upgrade))
         threads.append(thread)
         thread.start()
         time.sleep(1)
@@ -111,6 +128,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Pushes the master branch of dtg-puppet, as found on github all over the world')
     parser.add_argument('--boot', help='Boot linux machines that are currently turned off.')
+    parser.add_argument('--do-release-upgrade', action='store_true', dest='upgrade', help='Upgrade the version of Ubuntu before applying the puppet config')
     parser.add_argument('machines', nargs='?', help='Limit the machines that the lick is applied to')
 
     args = parser.parse_args()
