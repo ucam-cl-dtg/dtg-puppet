@@ -44,7 +44,7 @@ def get_vms():
 def get_machines():
     with settings(hide('running', 'stdout')):
         vms = execute(get_vms, hosts=[DOM0])
-    return PHYSICAL_MACHINES + vms[DOM0]
+    return vms[DOM0] + PHYSICAL_MACHINES
 
 @task
 def snapshot_mc(mc, commit_id):
