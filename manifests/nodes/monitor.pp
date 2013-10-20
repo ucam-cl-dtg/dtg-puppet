@@ -1,6 +1,7 @@
 node "monitor.dtg.cl.cam.ac.uk" {
   include 'dtg::minimal'
   class {'dtg::apache::raven': server_description => 'Monitor'}
+  $nagios_ssl = true
   class {'nagios::server':}
   class {'munin::gatherer':
     server_name => $::munin_server
@@ -9,7 +10,7 @@ node "monitor.dtg.cl.cam.ac.uk" {
     target => '/etc/puppet/modules/munin/files/contrib/plugins/nagios/nagiosstatus',
   }
   class {'dtg::firewall::privatehttp':}
-  class {'dtg::firewall::privatehttps':}
+  class {'dtg::firewall::publichttps':}
 }
 if ($::monitor) {
   nagios::monitor {'monitor':
@@ -30,3 +31,4 @@ if ($::monitor) {
     include_standard_hostgroups => false,
   }
 }
+
