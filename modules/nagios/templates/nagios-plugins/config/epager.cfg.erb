@@ -3,12 +3,12 @@
 # epager host command - short output
 define command{
   command_name  notify-host-by-epager
-  command_line  /usr/bin/printf "%b" "Host '$HOSTALIAS$' is $HOSTSTATE$\nTime: $LONGDATETIME$" | /usr/bin/mail -s "$HOSTNAME$" $CONTACTPAGER$ -- -f <%= nagios_from_emailaddress %>
+  command_line  /usr/bin/printf "%b" "Host '$HOSTALIAS$' is $HOSTSTATE$\nTime: $LONGDATETIME$" | /usr/bin/mail -s "$HOSTNAME$" $CONTACTPAGER$ -- -f <%= @nagios_from_emailaddress %>
 }
 
 # epager service command - short output
 define command{
   command_name  notify-service-by-epager
-  command_line  /usr/bin/printf "%b" "Service: $SERVICEDESC$\nHost: $HOSTALIAS$\nState: $SERVICESTATE$\nDate: $LONGDATETIME$" | /usr/bin/mail -s "$HOSTNAME$" $CONTACTPAGER$ -- -f <%= nagios_from_emailaddress %>
+  command_line  /usr/bin/printf "%b" "Service: $SERVICEDESC$\nHost: $HOSTALIAS$\nState: $SERVICESTATE$\nDate: $LONGDATETIME$" | /usr/bin/mail -s "$HOSTNAME$" $CONTACTPAGER$ -- -f <%= @nagios_from_emailaddress %>
 }
 

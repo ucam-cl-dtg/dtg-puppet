@@ -8,7 +8,7 @@ define contact {
 	host_notification_period       24x7
 	service_notification_commands  notify-service-by-email
 	host_notification_commands     notify-host-by-email
-	email                          <%= nagios_alert_emailaddress %>
+	email                          <%= @nagios_alert_emailaddress %>
 }
 
 define contact {

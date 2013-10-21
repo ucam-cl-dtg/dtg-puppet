@@ -1,18 +1,18 @@
-<%- if nagios_ssl then -%>
+<%- if @nagios_ssl then -%>
 <VirtualHost *:80>
-   ServerName <%=nagios_server%>
+   ServerName <%= @nagios_server%>
    Redirect permanent / https://<%=nagios_server%>
 </VirtualHost>
 <%- end -%>
 
-<VirtualHost <% if nagios_ssl -%> *:443 <% else -%> *:80 <% end -%> >
-  ServerName <%= nagios_server %>
+<VirtualHost <% if @nagios_ssl -%> *:443 <% else -%> *:80 <% end -%> >
+  ServerName <%= @nagios_server %>
   DocumentRoot /usr/share/nagios3/htdocs
-<%- if nagios_ssl then -%>
+<%- if @nagios_ssl then -%>
   SSLEngine On
-  SSLCertificateFile /etc/ssl/<%=nagios_server%>.crt
-  SSLCertificateKeyFile /etc/ssl/private/<%=nagios_server%>.key
-  SSLCertificateChainFile /etc/ssl/certs/<%=nagios_server%>.ca-bundle
+  SSLCertificateFile /etc/ssl/<%=@nagios_server%>.crt
+  SSLCertificateKeyFile /etc/ssl/private/<%=@nagios_server%>.key
+  SSLCertificateChainFile /etc/ssl/certs/<%=@nagios_server%>.ca-bundle
 <%- end -%>
 
   ScriptAlias /cgi-bin /usr/lib/cgi-bin
