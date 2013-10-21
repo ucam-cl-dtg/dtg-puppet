@@ -1,5 +1,5 @@
-<VirtualHost <%= listen_ip %><% if munin_ssl -%>:443<% else -%>:80<% end -%>>
-ServerName <%= server_name %>
+<VirtualHost <%= @listen_ip %><% if @munin_ssl -%>:443<% else -%>:80<% end -%>>
+ServerName <%= @server_name %>
 
   <IfModule !mod_rewrite.c>
     # required because we serve out of the cgi directory and URLs are relative
@@ -72,21 +72,21 @@ ServerName <%= server_name %>
       SetHandler None
     </Location>
   </IfModule>
-  <% if munin_ssl %>
+  <% if @munin_ssl %>
   <% if has_variable?("tls_cert_file") then %>
     SSLEngine On
     SSLCertificateFile <%= tls_cert_file %>
     <% if has_variable?("tls_cert_chain_file") then %>
-      SSLCertificateChainFile <%= tls_cert_chain_file %> 
+      SSLCertificateChainFile <%= @tls_cert_chain_file %> 
     <% end %>
-    SSLCertificateKeyFile <%= tls_key_file %> 
+    SSLCertificateKeyFile <%= @tls_key_file %> 
   <% end %>
   <% end %>
 </VirtualHost>
-<% if munin_ssl -%>
-<VirtualHost <%= listen_ip %>:80>
-  ServerName <%= server_name %>
+<% if @munin_ssl -%>
+<VirtualHost <%= @listen_ip %>:80>
+  ServerName <%= @server_name %>
   RewriteEngine On
-  RewriteRule . https://<%= server_name %>
+  RewriteRule . https://<%= @server_name %>
 </VirtualHost>
 <% end -%>
