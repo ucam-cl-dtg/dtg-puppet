@@ -1,7 +1,7 @@
 <%- if @nagios_ssl then -%>
 <VirtualHost *:80>
    ServerName <%= @nagios_server%>
-   Redirect permanent / https://<%=nagios_server%>
+   Redirect permanent / https://<%=@nagios_server%>
 </VirtualHost>
 <%- end -%>
 

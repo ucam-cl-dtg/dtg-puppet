@@ -1,10 +1,10 @@
 # Puppet file, will be overwritten
 define host {
   host_name             <%= @host %>
-  parents               <% if parents.is_a? String -%><%= @parents %><% elsif parents.is_a? Array -%><%= parents.map { |i| "#{i}" }.join(",") %><% end -%>
+  parents               <% if @parents.is_a? String -%><%= @parents %><% elsif @parents.is_a? Array -%><%= @parents.map { |i| "#{i}" }.join(",") %><% end -%>
   alias                 <%= @host %>
-<% if downtime == false -%>
-  hostgroups            <% if assigned_hostgroups.is_a? String -%><%= @assigned_hostgroups %><% elsif assigned_hostgroups.is_a? Array -%><%= assigned_hostgroups.map { |i| "#{i}" }.join(",") %><% end -%>
+<% if @downtime == false -%>
+  hostgroups            <% if @assigned_hostgroups.is_a? String -%><%= @assigned_hostgroups %><% elsif @assigned_hostgroups.is_a? Array -%><%= @assigned_hostgroups.map { |i| "#{i}" }.join(",") %><% end -%>
 <% end -%>
   address               <%= @address %>
   notification_period   <%= @notification_period %>
