@@ -10,7 +10,7 @@ define host {
   notification_period   <%= @notification_period %>
   contact_groups        <%= @contact_groups %>
   use                   <%= @use %>
-<% if downtime == true -%>
+<% if @downtime == true -%>
   check_command         check-noop
 <% end -%>
 }
