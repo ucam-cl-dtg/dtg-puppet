@@ -116,16 +116,8 @@ def main(args):
     # We don't need to check hostkeys as we're only pushing at hosts, so we don't care if someone MiTMs us.
     os.environ['GIT_SSH'] = ssh_no_fngr
 
-    threads = []
     for mc in machines:
-        thread = threading.Thread(name=mc['name'], target=push_config, args=(repo, mc, args.upgrade))
-        threads.append(thread)
-        thread.start()
-        time.sleep(1)
-
-
-    for thread in threads:
-        thread.join()
+        push_config(repo, mc, args.upgrade)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Pushes the master branch of dtg-puppet, as found on github all over the world')
