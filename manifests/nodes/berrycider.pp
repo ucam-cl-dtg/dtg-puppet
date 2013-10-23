@@ -249,3 +249,12 @@ node /berrycider(-\d+)?/ {
 
   
 }
+
+if ( $::monitor ) {
+  nagios::monitor { 'berrycider':
+    parents    => '',
+    address    => 'berrycider.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers', 'http-servers'],
+  }
+  munin::gatherer::configure_node { 'berrycider': }
+}
