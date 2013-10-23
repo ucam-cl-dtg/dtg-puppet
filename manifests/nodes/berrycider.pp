@@ -256,5 +256,10 @@ if ( $::monitor ) {
     address    => 'berrycider.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
+  nagios::monitor { 'ott':
+    parents    => '',
+    address    => 'ott.cl.cam.ac.uk',
+    hostgroups => [ 'http-servers'],
+  }
   munin::gatherer::configure_node { 'berrycider': }
 }
