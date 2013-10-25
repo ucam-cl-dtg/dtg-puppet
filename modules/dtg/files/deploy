@@ -7,6 +7,7 @@ import sys, os
 import time
 from fabric.api import *
 from git import *
+import random
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
@@ -39,6 +40,9 @@ def get_vms():
             continue
 
         vms.append({'name':name_label, 'hostname':hostname, 'repo_loc': PUPPET_BARE, 'VM': True, 'uuid':uuid})
+    # Randomize the order of vms. Otherwise we will starve the vms at the end of the list
+    # if lick doesn't finish running
+    random.shuffle(vms)
     return vms
 
 def get_machines():
