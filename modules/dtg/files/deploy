@@ -117,7 +117,10 @@ def main(args):
     os.environ['GIT_SSH'] = ssh_no_fngr
 
     for mc in machines:
-        push_config(repo, mc, args.upgrade)
+        try:
+            push_config(repo, mc, args.upgrade)
+        except GitCommandError:
+            sys.stderr.write('Cannot push to %s' % mc['name'])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Pushes the master branch of dtg-puppet, as found on github all over the world')
