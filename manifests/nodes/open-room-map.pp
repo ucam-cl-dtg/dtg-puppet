@@ -1,7 +1,9 @@
 node /open-room-map(-\d+)?/ {
   include 'dtg::minimal'
-  class {'apache': }
+  class {'apache::ubuntu': } ->
   class {'dtg::apache::raven': server_description => 'Open Room Map'} ->
+  apache::module {'authz_groupfile':} ->
+  apache::module {'cgi':} ->
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
   apache::site {'open-room-map':
@@ -59,23 +61,25 @@ node /open-room-map(-\d+)?/ {
   
   class {'dtg::firewall::publichttp':}
 
-  class { 'postgresql::server': 
-    config_hash => { 
-      'ip_mask_deny_postgres_user' => '0.0.0.0/0', 
-      'ip_mask_allow_all_users' => '127.0.0.1/32', 
-      'listen_addresses' => '*', 
-      'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5']
-    }
+  class { 'postgresql::globals':
+    version => '9.1',
   }
   ->
-  postgresql::db{'openroommap':
+  class { 'postgresql::server': 
+    ip_mask_deny_postgres_user => '0.0.0.0/0', 
+    ip_mask_allow_all_users => '127.0.0.1/32', 
+    listen_addresses => '*', 
+    ipv4acls => ['hostssl all all 127.0.0.1/32 md5']
+  }
+  ->
+  postgresql::server::db{'openroommap':
     user => "orm",
     password => "openroommap",
-    charset => "UTF-8",
+    encoding => "UTF-8",
     grant => "ALL"
   }
   ->
-  postgresql::database_user{'ormreader':
+  postgresql::server::role{'ormreader':
     password_hash => postgresql_password('ormreader', 'ormreader')
   }
   ->
@@ -95,10 +99,10 @@ node /open-room-map(-\d+)?/ {
     unless => 'psql -U orm -h localhost -d openroommap -t -c "select count(*) from room_table"'
   }  
   ->
-  postgresql::db{'machineroom':
+  postgresql::server::db{'machineroom':
     user => "machineroom",
     password => "machineroom",
-    charset => "UTF-8",
+    encoding => "UTF-8",
     grant => "ALL"
   }
   ->
