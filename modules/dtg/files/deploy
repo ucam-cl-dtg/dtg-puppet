@@ -65,7 +65,8 @@ def snapshot_mc(mc, commit_id):
 def upgrade_mc():
     # Remove unusued packages to reduce the chance of falling over
     # during the upgrade
-    sudo('apt-get autoremove')
+    sudo('apt-get -y autoremove')
+    sudo("sed -i 's/Prompt=lts/Prompt=normal/' /etc/update-manager/release-upgrades")
     sudo('do-release-upgrade -f DistUpgradeViewNonInteractive')
 
 @task
