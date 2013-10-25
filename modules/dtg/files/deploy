@@ -92,11 +92,6 @@ def push_config(repo, mc, upgrade):
     print('Pushing to %s' % mc['name'])
     repo.remotes[REMOTE_PREFIX + '-' + mc['name']].push()
 
-    #  We need to manually force the update hook to execute after pushing.
-    #  PyGit doesn't seem to do this.
-    execute(post_update_hook, hosts=[mc['hostname']])
-
-
 def main(args):
     ssh_no_fngr =  "%s/%s" % (os.getcwd(), 'ssh-no-fingerprint')
     try:
