@@ -3,6 +3,7 @@ node /open-room-map(-\d+)?/ {
   class {'apache::ubuntu': } ->
   class {'dtg::apache::raven': server_description => 'Open Room Map'} ->
   apache::module {'authz_groupfile':} ->
+  apache::module {'cgi':} ->
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
   apache::site {'open-room-map':
