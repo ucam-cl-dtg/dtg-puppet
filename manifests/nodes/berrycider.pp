@@ -83,19 +83,21 @@ node /berrycider(-\d+)?/ {
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
 
+  class { 'postgresql::globals':
+    version => '9.1',
+  }
+  ->  
   class { 'postgresql::server': 
-    config_hash => { 
-      'ip_mask_deny_postgres_user' => '0.0.0.0/0', 
-      'ip_mask_allow_all_users' => '127.0.0.1/32', 
-      'listen_addresses' => '*', 
-      'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5'],
-    }
+    ip_mask_deny_postgres_user => '0.0.0.0/0', 
+    ip_mask_allow_all_users => '127.0.0.1/32', 
+    listen_addresses => '*', 
+    ipv4acls => ['hostssl all all 127.0.0.1/32 md5'],
   }
   ->
-  postgresql::db{'handins':
+  postgresql::server::db{'handins':
     user => "handins",
     password => "handins",
-    charset => "UTF-8",
+    encoding => "UTF-8",
     grant => "ALL"
   }
   ->
@@ -116,10 +118,10 @@ node /berrycider(-\d+)?/ {
     unless => 'psql -U handins -h localhost -d handins -t -c "select * from Bin limit 1"'
   }  
   ->
-  postgresql::db{'notifications':
+  postgresql::server::db{'notifications':
     user => "notifications",
     password => "notifications",
-    charset => "UTF-8",
+    encoding => "UTF-8",
     grant => "ALL"
   }
   ->
@@ -140,10 +142,10 @@ node /berrycider(-\d+)?/ {
     unless => 'psql -U notifications -h localhost -d notifications -t -c "select * from Users limit 1"'
   }
   ->
-  postgresql::db{'questions':
+  postgresql::server::db{'questions':
     user => "questions",
     password => "questions",
-    charset => "UTF-8",
+    encoding => "UTF-8",
     grant => "ALL"
   }
   ->
@@ -164,10 +166,10 @@ node /berrycider(-\d+)?/ {
     unless => 'psql -U questions -h localhost -d questions -t -c "select * from Users limit 1"'
   }
   ->
-  postgresql::db{'signups':
+  postgresql::server::db{'signups':
     user => "signups",
     password => "signups",
-    charset => "UTF-8",
+    encoding => "UTF-8",
     grant => "ALL"
   }
   ->
@@ -188,10 +190,10 @@ node /berrycider(-\d+)?/ {
     unless => 'psql -U signups -h localhost -d signups -t -c "select * from Users limit 1"'
   }
   ->
-  postgresql::db{'log':
+  postgresql::server::db{'log':
     user => "log",
     password => "log",
-    charset => "UTF-8",
+    encoding => "UTF-8",
     grant => "ALL"
   }
   ->
