@@ -3,7 +3,7 @@ node /berrycider(-\d+)?/ {
   $dashboard_version = "1.0.10-SNAPSHOT"
   $handins_version   = "1.0.6-SNAPSHOT"
   $questions_version = "1.0.8-SNAPSHOT"
-  $signapp_version   = "1.0.8-SNAPSHOT"
+  $signups_version   = "1.0.8-SNAPSHOT"
 
   $install_directory = "/local/data/webapps"
   
@@ -70,16 +70,16 @@ node /berrycider(-\d+)?/ {
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
   ->
-  dtg::nexus::fetch{"download-signapp":
+  dtg::nexus::fetch{"download-signups":
     groupID => "uk.ac.cam.cl.dtg.teaching",
-    artifact_name => "signapp",
-    artifact_version => $signapp_version,
+    artifact_name => "signups",
+    artifact_version => $signups_version,
     artifact_type => "war",
-    destination_directory => "$install_directory/ott-signapp",
-    symlink => "/var/lib/tomcat7/webapps/signapp.war",
+    destination_directory => "$install_directory/ott-signups",
+    symlink => "/var/lib/tomcat7/webapps/signups.war",
   }
   ->
-  file {'/var/lib/tomcat7/conf/Catalina/localhost/signapp.xml':
+  file {'/var/lib/tomcat7/conf/Catalina/localhost/signups.xml':
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
 
@@ -173,18 +173,18 @@ node /berrycider(-\d+)?/ {
     grant => "ALL"
   }
   ->
-    dtg::nexus::fetch{"download-signapp-backup":
+    dtg::nexus::fetch{"download-signups-backup":
     groupID => "uk.ac.cam.cl.dtg.teaching",
-    artifact_name => "signapp-backup",
+    artifact_name => "signups-backup",
     artifact_version => "1.0.0-SNAPSHOT",
     artifact_type => "zip",
     artifact_classifier => "live",
-    destination_directory => "$install_directory/ott-signapp-backup",
+    destination_directory => "$install_directory/ott-signups-backup",
     action => "unzip"
   }
   ->
-  exec{"restore-signapp-backup":
-    command => "psql -U signups -d signups -h localhost -f $install_directory/ott-signapp-backup/signapp-backup-1.0.0-SNAPSHOT/target/backup.sql",
+  exec{"restore-signups-backup":
+    command => "psql -U signups -d signups -h localhost -f $install_directory/ott-signups-backup/signups-backup-1.0.0-SNAPSHOT/target/backup.sql",
     environment => "PGPASSWORD=signups",
     path => "/usr/bin:/bin",
     unless => 'psql -U signups -h localhost -d signups -t -c "select * from Users limit 1"'
