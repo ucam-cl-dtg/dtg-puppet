@@ -259,7 +259,7 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
   nagios::monitor { 'ott':
-    parents    => '',
+    parents    => 'berrycider',
     address    => 'ott.cl.cam.ac.uk',
     hostgroups => [ 'http-servers'],
   }
