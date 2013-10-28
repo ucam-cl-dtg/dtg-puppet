@@ -125,7 +125,7 @@ $nagios_org_name = "Digitial Technology Group"
 $nagios_org_url = "http://www.cl.cam.ac.uk/research/dtg/"
 
 #Munin config
-$munin_ssl = false
+$munin_ssl = true
 $munin_machine_fqdn = $nagios_machine_fqdn
 $munin_server = "munin.$org_domain"
 $munin_server_ip_array = dnsLookup($munin_server)

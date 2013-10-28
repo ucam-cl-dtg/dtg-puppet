@@ -75,11 +75,9 @@ ServerName <%= @server_name %>
   <% if @munin_ssl %>
   <% if has_variable?("tls_cert_file") then %>
     SSLEngine On
-    SSLCertificateFile <%= tls_cert_file %>
-    <% if has_variable?("tls_cert_chain_file") then %>
-      SSLCertificateChainFile <%= @tls_cert_chain_file %> 
-    <% end %>
-    SSLCertificateKeyFile <%= @tls_key_file %> 
+    SSLCertificateFile /etc/ssl/<%=@munin_server%>.crt
+    SSLCertificateKeyFile /etc/ssl/private/<%=@munin_server%>.key
+    SSLCertificateChainFile /etc/ssl/certs/<%=@munin_server%>.ca-bundle
   <% end %>
   <% end %>
 </VirtualHost>
