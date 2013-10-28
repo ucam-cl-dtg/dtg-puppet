@@ -5,19 +5,21 @@ node /acr31-rutherford(-\d+)?/ {
   
   class {'dtg::firewall::publichttp':}
 
-  class { 'postgresql::server': 
-    config_hash => { 
-      'ip_mask_deny_postgres_user' => '0.0.0.0/0', 
-      'ip_mask_allow_all_users' => '127.0.0.1/32', 
-      'listen_addresses' => '*', 
-      'ipv4acls' => ['hostssl all all 127.0.0.1/32 md5']
-    }
+  class { 'postgresql::globals':
+    version => '9.1'
   }
   ->
-  postgresql::db{'rutherford':
+  class { 'postgresql::server': 
+    ip_mask_deny_postgres_user => '0.0.0.0/0', 
+    ip_mask_allow_all_users => '127.0.0.1/32', 
+    listen_addresses => '*', 
+    ipv4acls => ['hostssl all all 127.0.0.1/32 md5']
+  }
+  ->
+  postgresql::server::db{'rutherford':
     user => "rutherford",
     password => "rutherford",
-    charset => "UTF-8",
+    encoding => "UTF-8",
     grant => "ALL"
   }
 
