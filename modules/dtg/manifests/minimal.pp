@@ -43,7 +43,7 @@ class dtg::minimal ($manageapt = true) {
 
   class { 'dtg::git::config': }
   class { "etckeeper": require => Class['dtg::git::config'] }
-  class { "ntp": servers => $ntp_servers, autoupdate => true, }
+  class { "ntp": servers => $ntp_servers, package_ensure => latest, }
   # Get entropy then do gpg and then monkeysphere
   class { 'dtg::entropy': stage => 'entropy-host' }
   class { 'dtg::entropy::client':
