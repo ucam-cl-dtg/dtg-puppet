@@ -1,6 +1,7 @@
 node "monitor.dtg.cl.cam.ac.uk" {
   include 'dtg::minimal'
   class {'dtg::apache::raven': server_description => 'Monitor'}
+  apache::module {'headers':}
   $nagios_ssl = true
   class {'nagios::server':}
   class {'munin::gatherer':

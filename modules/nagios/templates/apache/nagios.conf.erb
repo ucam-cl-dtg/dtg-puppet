@@ -13,6 +13,7 @@
   SSLCertificateFile /etc/ssl/<%=@nagios_server%>.crt
   SSLCertificateKeyFile /etc/ssl/private/<%=@nagios_server%>.key
   SSLCertificateChainFile /etc/ssl/certs/<%=@nagios_server%>.ca-bundle
+  Header add Strict-Transport-Security "max-age=15768000"
 <%- end -%>
 
   ScriptAlias /cgi-bin /usr/lib/cgi-bin
