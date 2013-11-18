@@ -8,7 +8,7 @@ if ( $::monitor ) {
   }
   nagios::monitor { 'hound4':
     parents    => '',
-    address    => 'hound4.cl.cam.ac.uk',
+    address    => 'hound4.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
   nagios::monitor { 'deviceanalyzer':
