@@ -2,6 +2,22 @@
 
 node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
+
+  # open up ports 80,443,2468
+  class {'dtg::firewall::publichttp':}
+  class {'dtg::firewall::publichttps':}
+  firewall { "030-xmlsocketserver accept tcp 2468 (xmlsocketserver) from anywhere":
+    proto   => 'tcp',
+    dport   => 2468,
+    action  => 'accept',
+  }
+
+  # Packages which should be installed
+  $packagelist = ['jetty8', 'nginx']
+  package {
+    $packagelist:
+      ensure => installed
+  }
 }
 if ( $::monitor ) {
   nagios::monitor { 'hound3':
