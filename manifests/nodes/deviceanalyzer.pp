@@ -19,6 +19,16 @@ if ( $::monitor ) {
     address    => 'deviceanalyzer.cl.cam.ac.uk',
     hostgroups => [ 'http-servers' ],
   }
+  nagios::monitor { 'secure.deviceanalyzer':
+    parents    => 'hound3',
+    address    => 'secure.deviceanalyzer.cl.cam.ac.uk',
+    hostgroups => [ 'http-servers' ],
+  }
+  nagios::monitor { 'upload.deviceanalyzer':
+    parents    => 'hound3',
+    address    => 'upload.deviceanalyzer.cl.cam.ac.uk',
+    hostgroups => [ 'http-servers' ],
+  }
   nagios::monitor { 'deviceanalyzer.dtg':
     parents    => '',
     address    => 'deviceanalyzer.dtg.cl.cam.ac.uk',
