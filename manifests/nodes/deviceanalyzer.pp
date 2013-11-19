@@ -1,5 +1,8 @@
 #Configuration for deviceanalyzer related stuff
 
+node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
+  include 'dtg::minimal'
+}
 if ( $::monitor ) {
   nagios::monitor { 'hound3':
     parents    => '',
@@ -16,7 +19,12 @@ if ( $::monitor ) {
     address    => 'deviceanalyzer.cl.cam.ac.uk',
     hostgroups => [ 'http-servers' ],
   }
+  nagios::monitor { 'deviceanalyzer.dtg':
+    parents    => '',
+    address    => 'deviceanalyzer.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers', 'http-servers'],
+  }
   munin::gatherer::configure_node { 'hound3': }
   munin::gatherer::configure_node { 'hound4': }
+  munin::gatherer::configure_node { 'deviceanalyzer': }
 }
-
