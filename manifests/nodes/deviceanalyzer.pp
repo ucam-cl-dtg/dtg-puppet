@@ -13,10 +13,22 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   }
 
   # Packages which should be installed
-  $packagelist = ['jetty8', 'nginx']
+  $packagelist = ['openjdk-7-jdk', 'jetty8', 'nginx']
   package {
     $packagelist:
       ensure => installed
+  }
+
+  # mount nas02
+  file { '/nas2'
+  	ensure => directory,
+  	owner => 'root',
+    group => 'root',
+    mode  => '0000', # we don't want *anyone* to actually write to that directory, ever. We just want it as a mount point.
+  }->
+  file_line { 'mount nas02':
+  	line => 'nas02.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
+  	path => '/etc/fstab', 
   }
 
   # set up nginx and jetty config
