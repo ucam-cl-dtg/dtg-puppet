@@ -1,0 +1,24 @@
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eth0
+iface eth0 inet static
+        address 128.232.98.188
+        netmask 255.255.255.0
+        network 128.232.98.0
+        broadcast 128.232.98.255
+        gateway 128.232.98.1
+        # dns-* options are implemented by the resolvconf package, if installed
+        dns-nameservers 128.232.1.1
+        dns-search dtg.cl.cam.ac.uk
+
+auto eth0:1
+iface eth0:1 inet static
+        address 128.232.98.189
+        netmask 255.255.255.0
+        network 128.232.98.0
+        broadcast 128.232.98.255
+
+pre-up iptables-restore < /etc/iptables.rules

@@ -1,0 +1,36 @@
+#! /bin/sh
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DAEMON="/usr/bin/java"
+DAEMON_OPTS="-jar /home/dtw30/xmlsocketserver.jar > /dev/null"
+NAME=xmlsocketserver
+PIDFILE="/var/run/${NAME}.pid"
+QUIET="--quiet"
+START_OPTS="--start ${QUIET} --background -c www-data --make-pidfile --pidfile ${PIDFILE} --exec ${DAEMON} -- ${DAEMON_OPTS}"
+STOP_OPTS="--stop --pidfile ${PIDFILE}"
+
+test -x $DAEMON || exit 0
+
+case "$1" in
+  start)
+        echo "Starting $NAME... "
+        start-stop-daemon $START_OPTS
+        ;;
+  stop)
+        echo "Stopping $NAME... "
+        start-stop-daemon $STOP_OPTS
+        ;;
+  restart|force-reload)
+        echo "Restarting $NAME... "
+        start-stop-daemon $STOP_OPTS
+        sleep 1
+	start-stop-daemon $START_OPTS
+        ;;
+  *)
+        echo "Usage: $NAME {start|stop|restart}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
+
