@@ -18,6 +18,26 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
     $packagelist:
       ensure => installed
   }
+
+  # set up nginx and jetty config
+  file {'/etc/nginx/sites-enabled/default':
+    ensure => absent,
+  }
+  ->
+  file {'/etc/nginx/sites-enabled/deviceanalyzer.nginx.conf':
+    ensure => file,
+    owner => 'root',
+    group => 'root',
+    mode  => '0755',
+    source => 'puppet:///modules/dtg/files/deviceanalyzer/deviceanalyzer.nginx.conf',
+  }
+  file {'/etc/default/jetty8':
+    ensure => file,
+    owner => 'root',
+    group => 'root',
+    mode  => '0755',
+    source => 'puppet:///modules/dtg/files/deviceanalyzer/jetty8',
+  }
 }
 if ( $::monitor ) {
   nagios::monitor { 'hound3':
