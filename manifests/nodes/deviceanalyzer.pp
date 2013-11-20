@@ -28,28 +28,28 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
     owner => 'root',
     group => 'root',
     mode  => '0644',
-    source => 'puppet:///modules/dtg/files/deviceanalyzer/deviceanalyzer.nginx.conf',
+    source => 'puppet:///modules/dtg/deviceanalyzer/deviceanalyzer.nginx.conf',
   }
   file {'/etc/default/jetty8':
     ensure => file,
     owner => 'root',
     group => 'root',
     mode  => '0644',
-    source => 'puppet:///modules/dtg/files/deviceanalyzer/jetty8',
+    source => 'puppet:///modules/dtg/deviceanalyzer/jetty8',
   }
   file {'/etc/init.d/xmlsocketserver':
     ensure => file,
     owner => 'root',
     group => 'root',
     mode  => '0755',
-    source => 'puppet:///modules/dtg/files/deviceanalyzer/xmlsocketserver.initd',
+    source => 'puppet:///modules/dtg/deviceanalyzer/xmlsocketserver.initd',
   }
   file {'/etc/network/interfaces':
     ensure => file,
     owner => 'root',
     group => 'root',
     mode  => '0644',
-    source => 'puppet:///modules/dtg/files/deviceanalyzer/interfaces',
+    source => 'puppet:///modules/dtg/deviceanalyzer/interfaces',
   }
 }
 if ( $::monitor ) {
