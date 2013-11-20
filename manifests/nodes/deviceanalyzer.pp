@@ -63,6 +63,14 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
     mode  => '0644',
     source => 'puppet:///modules/dtg/deviceanalyzer/interfaces',
   }
+
+  # ensure webapps directory is writeable by the non-standard 'www-data' user
+  file { '/var/lib/jetty8/webapps':
+  	ensure => directory,
+  	owner => 'www-data',
+    group => 'www-data',
+    mode  => '0755',
+  }
 }
 if ( $::monitor ) {
   nagios::monitor { 'hound3':
