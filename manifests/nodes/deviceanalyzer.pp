@@ -23,7 +23,6 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   file {'/etc/nginx/sites-enabled/default':
     ensure => absent,
   }
-  ->
   file {'/etc/nginx/sites-enabled/deviceanalyzer.nginx.conf':
     ensure => file,
     owner => 'root',
