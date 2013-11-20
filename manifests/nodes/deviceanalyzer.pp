@@ -20,7 +20,7 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   }
 
   # mount nas02
-  file { '/nas2'
+  file { '/nas2':
   	ensure => directory,
   	owner => 'root',
     group => 'root',
