@@ -67,11 +67,6 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   }
 }
 if ( $::monitor ) {
-  nagios::monitor { 'hound3':
-    parents    => '',
-    address    => 'hound3.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
-  }
   nagios::monitor { 'hound4':
     parents    => '',
     address    => 'hound4.dtg.cl.cam.ac.uk',
