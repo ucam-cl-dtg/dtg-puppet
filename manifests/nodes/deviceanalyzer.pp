@@ -21,7 +21,7 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
 
   # mount nas02 on startup
   file_line { 'mount nas02':
-  	line => 'nas02.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
+  	line => 'nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
   	path => '/etc/fstab', 
   }
 
