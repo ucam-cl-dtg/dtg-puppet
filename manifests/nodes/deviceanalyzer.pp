@@ -73,7 +73,6 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers' ],
   }
   nagios::monitor { 'deviceanalyzer':
-    parents    => 'deviceanalyzer',
     address    => 'deviceanalyzer.cl.cam.ac.uk',
     hostgroups => [ 'http-servers', 'ssh-servers' ],
   }
