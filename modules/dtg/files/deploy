@@ -81,7 +81,7 @@ def add_remotes(repo, machines):
         if (remote.name.startswith(REMOTE_PREFIX)):
             repo.delete_remote(remote)
     for mc in machines:
-        new_remote = repo.create_remote(REMOTE_PREFIX + '-' + mc['name'], mc['hostname']  + ':' + mc['repo_loc'])
+        repo.create_remote(REMOTE_PREFIX + '_' + mc['name'], mc['hostname']  + ':' + mc['repo_loc'])
 
 def push_config(repo, mc, upgrade):
     with settings(hide('running', 'stdout')):
@@ -90,7 +90,7 @@ def push_config(repo, mc, upgrade):
     if upgrade:
         execute(upgrade_mc, hosts=[mc['hostname']])
     print('Pushing to %s' % mc['name'])
-    repo.remotes[REMOTE_PREFIX + '-' + mc['name']].push()
+    repo.remotes[REMOTE_PREFIX + '_' + mc['name']].push(refspec='master:master')
 
 def main(args):
     ssh_no_fngr =  "%s/%s" % (os.getcwd(), 'ssh-no-fingerprint')
