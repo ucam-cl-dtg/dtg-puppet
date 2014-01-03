@@ -105,13 +105,13 @@ def main(args):
 
     repo = Repo('.')
     machines = get_machines()
+    add_remotes(repo, machines)
+
     if args.machines:
         machines = filter(lambda m : m['name'] in args.machines, machines)
     if not machines:
         sys.stderr.write("No machines to apply puppet to")
         sys.exit(-1)
-
-    add_remotes(repo, machines)
 
     # Set GIT_SSH to point to the wrapper around SSH that stops hostkey checks.
     # We don't need to check hostkeys as we're only pushing at hosts, so we don't care if someone MiTMs us.
