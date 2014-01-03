@@ -109,7 +109,7 @@ def main(args):
         machines = filter(lambda m : m['name'] in args.machines, machines)
     if not machines:
         sys.stderr.write("No machines to apply puppet to")
-        sys.exit(-1);
+        sys.exit(-1)
 
     add_remotes(repo, machines)
 
