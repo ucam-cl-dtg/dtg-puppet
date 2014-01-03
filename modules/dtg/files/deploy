@@ -54,12 +54,13 @@ def get_machines():
 def snapshot_mc(mc, commit_id):
     assert mc['VM']
 
-    cur_snaps = run('xe vm-list params=snapshots uuid=%s --minimal' % mc['uuid']).split('; ')
-    if any(commit_id in u for u in cur_snaps):
-        print('%s already has a snapshot for commit %s. Not snapshotting again' % (mc['name'], commit_id))
+    new_snap_name = commit_id[0:SHA_LENGTH]
+    cur_snaps = run('xe snapshot-list  snapshot-of=%s params=name-label --minimal' % mc['uuid']).split(',')
+    if new_snap_name in cur_snaps:
+        print('%s already has a snapshot for commit %s. Not snapshotting again' % (mc['name'], new_snap_name))
     else:
         print('Snapshotting %s' % mc['name'])
-        run('xe vm-snapshot uuid=%s new-name-label=%s' % (mc['uuid'], commit_id[0:SHA_LENGTH]))
+        run('xe vm-snapshot uuid=%s new-name-label=%s' % (mc['uuid'], new_snap_name))
 
 @task
 def upgrade_mc():
