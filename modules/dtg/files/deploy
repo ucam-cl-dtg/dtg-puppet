@@ -2,9 +2,7 @@
 
 import argparse
 import socket
-import threading
 import sys, os
-import time
 from fabric.api import *
 from git import *
 import random
