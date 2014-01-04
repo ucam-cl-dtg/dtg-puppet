@@ -6,6 +6,8 @@ import sys, os
 from fabric.api import *
 from git import *
 import random
+import datetime
+from datetime import time, timedelta
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
@@ -60,6 +62,40 @@ def snapshot_mc(mc, commit_id):
         print('Snapshotting %s' % mc['name'])
         run('xe vm-snapshot uuid=%s new-name-label=%s' % (mc['uuid'], new_snap_name))
 
+def is_hex(str):
+    try:
+        int(str, 16)
+    except ValueError:
+        return False
+    return True
+
+@task
+def snap_gc():
+    snap_uuids = run('xe snapshot-list params=uuid --minimal').split(',')
+    snap_names = run('xe snapshot-list params=name-label --minimal').split(',')
+    snap_times = run('xe snapshot-list params=snapshot-time --minimal').split(',')
+    snap_times = map(lambda x:
+                     datetime.datetime.strptime(x, '%Y%m%dT%H:%M:%SZ'),
+                     snap_times)
+    keys = ('uuid', 'name', 'time')
+    snaps = ([dict(zip(keys, data)) for data in
+              zip(snap_uuids, snap_names, snap_times)])
+
+    # filter out those snapshots where the timestamp field is > 14 days old
+    snaps = filter(lambda x: x['time'] <
+                   datetime.datetime.today() - timedelta(days=14), snaps)
+
+    # filter out snapshots whose name is not $SHA_LENGTH digits of hex
+    snaps = filter (lambda x: is_hex(x['name']) and
+                    len(x['name']) == SHA_LENGTH, snaps)
+
+    if snaps:
+        print('Destroying %d old snapshots' % len(snaps))
+
+    for snap in snaps:
+        run('xe snapshot-destroy uuid=%s' % snap['uuid'])
+
+
 @task
 def upgrade_mc():
     # Remove unusued packages to reduce the chance of falling over
@@ -111,6 +147,10 @@ def main(args):
         sys.stderr.write("No machines to apply puppet to")
         sys.exit(-1)
 
+    # Remove old lick-generated snapshots, or else they build up
+    if not args.no_snap_gc:
+        execute(snap_gc, hosts=[DOM0])
+
     # Set GIT_SSH to point to the wrapper around SSH that stops hostkey checks.
     # We don't need to check hostkeys as we're only pushing at hosts, so we don't care if someone MiTMs us.
     os.environ['GIT_SSH'] = ssh_no_fngr
@@ -125,6 +165,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Pushes the master branch of dtg-puppet, as found on github all over the world')
     parser.add_argument('--boot', help='Boot linux machines that are currently turned off.')
     parser.add_argument('--do-release-upgrade', action='store_true', dest='upgrade', help='Upgrade the version of Ubuntu before applying the puppet config')
+    parser.add_argument('--no-snap-gc', action='store_true', dest='no_snap_gc', help='Do not remove old snapshots')
     parser.add_argument('machines', nargs='?', help='Limit the machines that the lick is applied to')
 
     args = parser.parse_args()
