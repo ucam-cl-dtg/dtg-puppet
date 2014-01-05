@@ -92,7 +92,7 @@ def snap_gc():
         print('Destroying %d old snapshots' % len(snaps))
 
     for snap in snaps:
-        run('xe snapshot-destroy uuid=%s' % snap['uuid'])
+        run('xe snapshot-uninstall force=true uuid=%s' % snap['uuid'])
 
 
 @task
