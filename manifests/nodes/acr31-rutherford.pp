@@ -40,7 +40,7 @@ if ( $::monitor ) {
   nagios::monitor { 'rutherford':
     parents    => '',
     address    => 'rutherford.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => [ 'ssh-servers' , 'http-servers' ],
   }
   munin::gatherer::configure_node { 'rutherford': }
 }
