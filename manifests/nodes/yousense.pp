@@ -29,10 +29,5 @@ class dtg::yousense::apt_postgresql {
 }
 
 if ( $::monitor ) {
-    nagios::monitor { 'yousense':
-        parents    => '',
-        address    => 'yousense.dtg.cl.cam.ac.uk',
-        hostgroups => [ 'ssh-servers', 'http-servers'],
-    }
     munin::gatherer::configure_node { 'yousense': }
 }
