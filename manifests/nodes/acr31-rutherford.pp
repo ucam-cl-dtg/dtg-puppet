@@ -4,6 +4,7 @@ node /acr31-rutherford(-\d+)?/ {
   class {'dtg::tomcat': version => '7'}
   
   class {'dtg::firewall::publichttp':}
+  class {'dtg::firewall::80to8080': private => false}
 
   class { 'postgresql::globals':
     version => '9.1'
