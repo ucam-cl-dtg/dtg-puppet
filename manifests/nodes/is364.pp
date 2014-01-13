@@ -1,5 +1,5 @@
 
-node "is364-scratch.dtg.cl.cam.ac.uk" {
+node 'is364-scratch.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   dtg::add_user { 'is364':
     real_name => 'Ian Sheret',
