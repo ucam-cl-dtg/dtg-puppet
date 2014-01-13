@@ -26,6 +26,20 @@ PHYSICAL_MACHINES = [ {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc
                       {'name': 'origin', 'hostname': 'git@dtg-code.cl.cam.ac.uk', 'repo_loc': 'infrastructure/dtg-puppet', 'VM': False}
                   ]
 
+class RemoteHandler(RemoteProgress):
+
+    def __init__(self, vm):
+        self.vm = vm
+
+    def line_dropped(self, line):
+        if (not "Warning: Permanently added" in line) and (line.strip() !=
+                                                           "remote:"):
+            print("%s: %s" % (self.vm, line))
+
+    def update(self, op_code, cur_count, max_count=None, message=''):
+        pass
+
+
 @task
 def get_vms():
     uuids = run('xe vm-list params=uuid power-state=running PV-bootloader=pygrub --minimal').split(',')
@@ -123,7 +137,18 @@ def push_config(repo, mc, upgrade):
     if upgrade:
         execute(upgrade_mc, hosts=[mc['hostname']])
     print('Pushing to %s' % mc['name'])
-    repo.remotes[REMOTE_PREFIX + '_' + mc['name']].push(refspec='master:master')
+    handler = RemoteHandler(mc['name'])
+    remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
+    info = remote.push(refspec='master:master', progress=handler)[0]
+    if info.flags & (info.NEW_TAG | info.NEW_HEAD |
+                     info.UP_TO_DATE | info.FAST_FORWARD):
+        print(info.summary)
+    else:
+        sys.stderr.write(info.summary)
+        sys.stderr.write("Incorrect flag whilst pushing to %s: %d. Terminating.\n"
+                         % (mc['name'], info.flags))
+        sys.exit(-1)
+
 
 def main(args):
     output['running'] = False
