@@ -1,7 +1,7 @@
 /* Replace HOSTNAME with the machines hostname and add additional config into
  the node section.
 
-node "HOSTNAME.dtg.cl.cam.ac.uk" {
+node 'HOSTNAME.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 }
 if ( $::monitor ) {
