@@ -29,6 +29,7 @@ PHYSICAL_MACHINES = [ {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc
 class RemoteHandler(RemoteProgress):
 
     def __init__(self, vm):
+        super(RemoteHandler, self).__init__()
         self.vm = vm
 
     def line_dropped(self, line):
