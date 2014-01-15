@@ -29,10 +29,10 @@ git submodule update --init
 # Make sure the permissions on the files we've created are such that
 # future people can run this script: set the group to adm, mirror
 # permissions from user to group, set group sticky
-chmod -R --quiet g+u . .git || true
-chgrp -R --quiet adm . .git || true
-find . -type d -print0 | xargs -0 chmod --quiet g+s || true
-find .git -type d -print0 | xargs -0 chmod --quiet g+s || true
+sudo chmod -R --quiet g+u . .git || true
+sudo chgrp -R --quiet adm . .git || true
+find . -type d -print0 | xargs -0 sudo chmod --quiet g+s || true
+find .git -type d -print0 | xargs -0 sudo chmod --quiet g+s || true
 
 echo '---- Applying new recipes ----'
 # Need -H so that HOME is set to /root as some stuff gets put there by puppet
