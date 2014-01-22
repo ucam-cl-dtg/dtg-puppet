@@ -4,7 +4,7 @@ node 'is364-scratch.dtg.cl.cam.ac.uk' {
   dtg::add_user { 'is364':
     real_name => 'Ian Sheret',
     groups    => ['adm'],
-    keys      => [],
+    keys      => ['Ian Sheret <is364@cam.ac.uk>'],
     uid       => 3179,
   }
 }
