@@ -8,6 +8,14 @@ class dtg::git::mirror::server {
     comment => 'Git mirror server',
     shell   => '/bin/bash',
   }
+  # Set sending address for gitmirror to dtg-infra
+  file_line {'gitmirror-email':
+    ensure => present,
+    path   => '/etc/email-addresses',
+    line   => 'gitmirror: dtg-infra@cl.cam.ac.uk',
+    require => Package['exim'],
+  }
+
   file {'/local/data/gitmirror/':
     ensure => directory,
     owner  => 'gitmirror',
