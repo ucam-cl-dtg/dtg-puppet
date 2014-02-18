@@ -40,7 +40,7 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'puppet/modules/stunnel': source => 'git://github.com/ucam-cl-dtg/blendedbyus-stunnel.git'}
   dtg::git::mirror::repo{'puppet/modules/sudoers': source => 'git://github.com/phinze/puppet-sudoers.git'}
   dtg::git::mirror::repo{'puppet/modules/sysctl': source => 'git://git.puppet.immerda.ch/module-sysctl.git'}
-  dtg::git::mirror::repo{'puppet/modules/vcsrepo': source => 'git://github.com/openstack-ci/puppet-vcsrepo.git'}
+  dtg::git::mirror::repo{'puppet/modules/vcsrepo': source => 'git://github.com/openstack-infra/puppet-vcsrepo.git'}
   dtg::git::mirror::repo{'puppet/modules/wget': source => 'git://github.com/maestrodev/puppet-wget.git'}
   dtg::git::mirror::repo{'puppet/modules/postgresql': source => 'git://github.com/puppetlabs/puppet-postgresql.git'}
 
