@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# Take a backup of the <%=backup_description%> and ship it to nas
+# Take a backup of the <%=@backup_description%> and ship it to nas
 set -e
 
-cd <%=backup_directory%>
+cd <%=@backup_directory%>
 nice tar --create --bzip2 .
 
