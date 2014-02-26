@@ -23,6 +23,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => "rw=@shin.cl.cam.ac.uk",
   }
 
+  dtg::zfs::fs{'deviceanalyzer':
+    pool_name  => $pool_name,
+    fs_name    => 'deviceanalyzer',
+    share_opts => $cl_share,
+  }
+
   cron { 'zfs_weekly_scrub':
     command => '/sbin/zpool scrub dtg-pool0',
     user    => 'root',
