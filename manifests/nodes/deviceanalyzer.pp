@@ -25,6 +25,12 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   	path => '/etc/fstab', 
   }
 
+  # mount nas04 on startup
+  file_line { 'mount nas04':
+  	line => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer /nas4 nfs defaults 0 0',
+  	path => '/etc/fstab', 
+  }
+
   # set up nginx and jetty config
   file {'/etc/nginx/sites-enabled/default':
     ensure => absent,
