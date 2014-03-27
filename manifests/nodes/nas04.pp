@@ -29,6 +29,18 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => $cl_share,
   }
 
+  dtg::zfs::fs{'abbot-archive':
+    pool_name  => $pool_name,
+    fs_name    => 'abbot-archive',
+    share_opts => $cl_share,
+  }
+
+  dtg::zfs::fs{'time':
+    pool_name  => $pool_name,
+    fs_name    => 'time',
+    share_opts => $cl_share,
+  }
+  
   cron { 'zfs_weekly_scrub':
     command => '/sbin/zpool scrub dtg-pool0',
     user    => 'root',
