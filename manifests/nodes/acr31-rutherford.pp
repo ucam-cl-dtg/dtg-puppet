@@ -46,12 +46,10 @@ node /acr31-rutherford(-\d+)?/ {
     ensure => installed,
   }
   ->
-  file_line { 'rssh-allow-scp':
-    line => 'allowscp',
+  file_line { 'rssh-allow-sftp':
+    line => 'allowsftp',
     path => '/etc/rssh.conf', 
   }
-
-  
 }
 
 if ( $::monitor ) {
