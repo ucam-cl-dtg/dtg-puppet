@@ -41,7 +41,7 @@ node /acr31-rutherford(-\d+)?/ {
     action  => 'accept',
   }
 
-  $packages = ['maven2','openjdk-7-jdk']
+  $packages = ['maven2','openjdk-7-jdk','rssh']
   package{$packages:
     ensure => installed,
   }
