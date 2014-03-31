@@ -2,6 +2,10 @@ node /acr31-rutherford(-\d+)?/ {
   include 'dtg::minimal'
   
   class {'dtg::tomcat': version => '7'}
+  ->
+  user { 'tomcat7':
+    shell => '/usr/bin/rssh'
+  }
   
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::80to8080': private => false}
