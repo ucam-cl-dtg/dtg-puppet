@@ -45,6 +45,12 @@ node /acr31-rutherford(-\d+)?/ {
   package{$packages:
     ensure => installed,
   }
+  ->
+  file_line { 'rssh-allow-scp':
+    line => 'allowscp',
+    path => '/etc/rssh.conf', 
+  }
+
   
 }
 
