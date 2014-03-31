@@ -72,30 +72,32 @@ class dtg::minimal ($manageapt = true) {
   # ensure our ssh key is imported into the monkeysphere
   monkeysphere::import_key { "main": }
   monkeysphere::publish_server_keys { 'main':}
-  gpg::private_key {'root':
-    homedir => '/root',
-    passphrase => $::ms_gpg_passphrase,
-  }
-  monkeysphere::auth_capable_user {'root':
-    passphrase => $::ms_gpg_passphrase,
-    home       => '/root',
-    require    => Gpg::Private_key['root'],
-  }
-  file {'/root/.ssh/':
-    ensure => directory,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0700',
-  }
-  monkeysphere::trusting_user{'root':
-    passphrase => $::ms_gpg_passphrase,
-    require    => Monkeysphere::Auth_capable_user['root'],
-    home       => '/root/'
-  }
-  monkeysphere::ssh_agent { 'root':
-    passphrase => $::ms_gpg_passphrase,
-    require    => Monkeysphere::Auth_capable_user['root'],
-  }
+## This stuff is important but currently broken TODO(drt24) fix it.
+#  gpg::private_key {'root':
+#    homedir => '/root',
+#    passphrase => $::ms_gpg_passphrase,
+#  }
+#  monkeysphere::auth_capable_user {'root':
+#    passphrase => $::ms_gpg_passphrase,
+#    home       => '/root',
+#    require    => Gpg::Private_key['root'],
+#  }
+#  file {'/root/.ssh/':
+#    ensure => directory,
+#    owner  => 'root',
+#    group  => 'root',
+#    mode   => '0700',
+#  }
+#  monkeysphere::trusting_user{'root':
+#    passphrase => $::ms_gpg_passphrase,
+#    require    => Monkeysphere::Auth_capable_user['root'],
+#    home       => '/root/'
+#  }
+#  monkeysphere::ssh_agent { 'root':
+#    passphrase => $::ms_gpg_passphrase,
+#    require    => Monkeysphere::Auth_capable_user['root'],
+#  }
+
   # Add the certifiers who sign the users
   class { "ms_id_certifiers": }
   monkeysphere::authorized_user_ids { "root":
