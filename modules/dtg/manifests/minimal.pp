@@ -103,14 +103,6 @@ class dtg::minimal ($manageapt = true) {
   monkeysphere::authorized_user_ids { "root":
     user_ids => $ms_admin_user_ids
   }
-  file { "/usr/local/sbin/setuserpassword":
-    ensure  => file,
-    mode    => 755,
-    owner   => root,
-    group   => root,
-    source  => "puppet:///modules/dtg/sbin/setuserpassword",
-    require => Package['apg'],
-  }
   # Create the admin users
   class { "admin_users":
     require => Class['dtg::email'],
