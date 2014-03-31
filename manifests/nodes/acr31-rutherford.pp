@@ -4,7 +4,7 @@ node /acr31-rutherford(-\d+)?/ {
   class {'dtg::tomcat': version => '7'}
   ->
   user { 'tomcat7':
-    shell => '/usr/bin/rssh'
+    shell => '/usr/bin/bash'
   }
   
   class {'dtg::firewall::publichttp':}
