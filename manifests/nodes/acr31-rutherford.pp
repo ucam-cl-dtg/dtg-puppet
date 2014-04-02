@@ -53,10 +53,6 @@ node /acr31-rutherford(-\d+)?/ {
       require => Apt::Source['elasticsearch-source']
   }
   
-  apt::key { 'elasticsearch-key':
-    key_source => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-  }
-
   ->
   file_line { 'rssh-allow-sftp':
     line => 'allowsftp',
@@ -65,11 +61,18 @@ node /acr31-rutherford(-\d+)?/ {
 }
 
 class dtg::acr31-rutherford::apt_elasticsearch {
- apt::source { 'elasticsearch-source':
+  apt::key { 'elasticsearch-key':
+	key =>'D88E42B4',
+	key_source => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+  }
+
+  apt::source { 'elasticsearch-source':
         location        => "http://packages.elasticsearch.org/elasticsearch/1.0/debian",
         release         => "stable",
         repos           => "main",
-        include_src     => false
+        include_src     => false,
+        key =>'D88E42B4',
+        key_source => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
   }
 
   apt::source { 'elasticsearch-logstash':
