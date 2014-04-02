@@ -42,14 +42,43 @@ node /acr31-rutherford(-\d+)?/ {
   }
 
   $packages = ['maven2','openjdk-7-jdk','rssh']
+
   package{$packages:
     ensure => installed,
   }
+
+  class { 'dtg::acr31-rutherford::apt_elasticsearch': stage => 'repos' }
+  package { ['elasticsearch']:
+      ensure => installed,
+      require => Apt::Source['elasticsearch-source']
+  }
+  
+  apt::key { 'elasticsearch-key':
+    key_source => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+  }
+
   ->
   file_line { 'rssh-allow-sftp':
     line => 'allowsftp',
     path => '/etc/rssh.conf', 
   }
+}
+
+class dtg::acr31-rutherford::apt_elasticsearch {
+ apt::source { 'elasticsearch-source':
+        location        => "http://packages.elasticsearch.org/elasticsearch/1.0/debian",
+        release         => "stable",
+        repos           => "main",
+        include_src     => false
+  }
+
+  apt::source { 'elasticsearch-logstash':
+        location        => "http://packages.elasticsearch.org/logstash/1.3/debian",
+        release         => "stable",
+        repos           => "main",
+        include_src     => false
+  }
+
 }
 
 if ( $::monitor ) {
