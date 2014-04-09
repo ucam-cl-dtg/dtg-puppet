@@ -14,4 +14,10 @@ class dtg::unattendedupgrades ($unattended_upgrade_notify_emailaddress) {
     owner   => 'root',
     group   => 'adm',
   }
+  file {'/etc/cron.daily/apt':
+    ensure => present,
+    owner  => 'root',
+    group  => 'root',
+    mode    => 755,    
+  }
 }
