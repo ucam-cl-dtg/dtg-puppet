@@ -27,12 +27,3 @@ node 'yousense.dtg.cl.cam.ac.uk' {
 class dtg::yousense::apt_postgresql {
     apt::ppa { 'ppa:pitti/postgresql': }
 }
-
-if ( $::monitor ) {
-    nagios::monitor { 'yousense':
-        parents    => '',
-        address    => 'yousense.dtg.cl.cam.ac.uk',
-        hostgroups => [ 'ssh-servers', 'http-servers'],
-    }
-    munin::gatherer::configure_node { 'yousense': }
-}
