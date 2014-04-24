@@ -3,7 +3,7 @@
 	url = git://github.com/puppetlabs/puppetlabs-stdlib.git
 [submodule "modules/etckeeper"]
 	path = modules/etckeeper
-	url = git://github.com/thomasvandoren/puppet-etckeeper.git
+	url = git://github.com/oc243/puppet-etckeeper.git
 [submodule "modules/ekeyd"]
 	path = modules/ekeyd
 	url = git://github.com/ucam-cl-dtg/puppet-ekeyd.git
