@@ -38,7 +38,7 @@ class RemoteHandler(RemoteProgress):
             print("%s: %s" % (self.vm, line))
 
     def update(self, op_code, cur_count, max_count=None, message=''):
-        pass
+        print(message)
 
 
 @task
@@ -118,6 +118,14 @@ def upgrade_mc():
     sudo("sed -i 's/Prompt=lts/Prompt=normal/' /etc/update-manager/release-upgrades")
     sudo('do-release-upgrade -f DistUpgradeViewNonInteractive')
 
+
+def run_puppet():
+    print("Running puppet")
+    with show('output'):
+        with cd('/etc/puppet'):
+            run('sudo -H puppet apply --verbose --modulepath modules manifests/site.pp')
+    print("Ran puppet")
+
 @task
 def post_update_hook():
     run('/etc/puppet-bare/hooks/post-update')
@@ -141,6 +149,7 @@ def push_config(repo, mc, upgrade):
     handler = RemoteHandler(mc['name'])
     remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
     info = remote.push(refspec='master:master', progress=handler)[0]
+    execute(run_puppet, hosts=[mc['hostname']])
     if info.flags & (info.NEW_TAG | info.NEW_HEAD |
                      info.UP_TO_DATE | info.FAST_FORWARD):
         print(info.summary)
