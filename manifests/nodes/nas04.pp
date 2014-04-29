@@ -172,6 +172,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   
   class { "smartd": 
     mail_to => "dtg-infra@cl.cam.ac.uk",
+    service_name => 'smartmontools',
     devicescan_options => "-m dtg-infra@cl.cam.ac.uk -M daily"
   }  
 }
