@@ -47,7 +47,7 @@ node /acr31-isaac(-\d+)?/ {
     action  => 'accept',
   }
 
-  $packages = ['maven2','openjdk-7-jdk','rssh','monogodb']
+  $packages = ['maven2','openjdk-7-jdk','rssh','mongodb']
 
   package{$packages:
     ensure => installed
