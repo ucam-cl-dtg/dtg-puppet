@@ -34,9 +34,10 @@ node /acr31-rutherford(-\d+)?/ {
     action  => 'accept',
   }
 
-  $packages = ['maven2','openjdk-7-jdk','monogodb']
+  $packages = ['maven2','openjdk-7-jdk','rssh','monogodb']
   package{$packages:
     ensure => installed,
+    require => Exec['apt-get update']
   }
   
   ->

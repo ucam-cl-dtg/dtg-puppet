@@ -50,18 +50,18 @@ node /acr31-isaac(-\d+)?/ {
   $packages = ['maven2','openjdk-7-jdk','rssh','monogodb']
 
   package{$packages:
-    ensure => installed,
+    ensure => installed
+  }
+  ->
+  file_line { 'rssh-allow-sftp':
+    line => 'allowsftp',
+    path => '/etc/rssh.conf', 
   }
 
   class { 'dtg::acr31-rutherford::apt_elasticsearch': stage => 'repos' }
   package { ['elasticsearch']:
       ensure => installed,
       require => Apt::Source['elasticsearch-source']
-  }
-  ->
-  file_line { 'rssh-allow-sftp':
-    line => 'allowsftp',
-    path => '/etc/rssh.conf', 
   }
 }
 
