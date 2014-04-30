@@ -36,8 +36,7 @@ node /acr31-rutherford(-\d+)?/ {
 
   $packages = ['maven2','openjdk-7-jdk','rssh','mongodb']
   package{$packages:
-    ensure => installed,
-    require => Exec['apt-get update']
+    ensure => installed
   }
   
   ->
