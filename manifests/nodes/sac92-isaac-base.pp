@@ -1,5 +1,7 @@
-node /(\w+-)?isaac(-\w+)?/ {
+node /(\w+-)?isaac(-\w+)?(.+)?/ {
   include 'dtg::minimal'
+  
+  User<|title == sac92 |> { groups +>[ 'adm' ]}
   
   class {'dtg::tomcat': version => '7'}
   ->
