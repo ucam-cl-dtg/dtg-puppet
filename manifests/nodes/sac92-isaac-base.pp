@@ -1,4 +1,4 @@
-node /acr31-isaac(-\d+)?/ {
+node /(\w+-)?isaac(-\w+)?/ {
   include 'dtg::minimal'
   
   class {'dtg::tomcat': version => '7'}
