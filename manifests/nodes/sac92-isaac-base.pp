@@ -89,12 +89,3 @@ class dtg::acr31-rutherford::apt_elasticsearch {
   }
 
 }
-
-if ( $::monitor ) {
-  nagios::monitor { 'rutherford':
-    parents    => '',
-    address    => 'rutherford.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' , 'http-servers' ],
-  }
-  munin::gatherer::configure_node { 'rutherford': }
-}
