@@ -26,7 +26,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   class {'dtg::firewall::80to8080': private => false}
 
   class { 'postgresql::globals':
-    version => '9.1'
+    version => '9.3'
   }
   ->
   class { 'postgresql::server': 
