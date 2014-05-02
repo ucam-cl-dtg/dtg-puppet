@@ -114,9 +114,12 @@ def snap_gc():
 def upgrade_mc():
     # Remove unusued packages to reduce the chance of falling over
     # during the upgrade
-    sudo('apt-get -y autoremove')
-    sudo("sed -i 's/Prompt=lts/Prompt=normal/' /etc/update-manager/release-upgrades")
-    sudo('do-release-upgrade -f DistUpgradeViewNonInteractive')
+    with show('output'):
+        sudo('apt-get -y dist-upgrade')
+        sudo('apt-get -y autoremove')
+        sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
+        sudo("sed -i 's/Prompt=lts/Prompt=normal/' /etc/update-manager/release-upgrades")
+        sudo('do-release-upgrade -f DistUpgradeViewNonInteractive')
 
 
 def run_puppet():
