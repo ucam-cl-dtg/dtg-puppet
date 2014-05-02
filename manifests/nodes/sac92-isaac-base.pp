@@ -64,6 +64,10 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
       ensure => installed,
       require => Apt::Source['elasticsearch-source']
   }
+  ->
+  service { "elasticsearch":
+    ensure => "running"
+  }
 }
 
 class dtg::acr31-rutherford::apt_elasticsearch {
