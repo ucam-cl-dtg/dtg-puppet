@@ -20,8 +20,8 @@ define dtg::nexus::fetch (
   if $artifact_classifier == "ANY" { $classifier = "" } else { $classifier = "&c=$artifact_classifier" }
   
   file {$destination_directory: ensure => directory } ->
-  wget::authfetch { "nexus-fetch-$destination_filename":
-    source => "\"${nexus_server_name}/service/local/artifact/maven/redirect?r=${repository}&g=${groupID}&a=${artifact_name}&v=${artifact_version}&e=${artifact_type}${classifier}\"",
+  wget::fetch { "nexus-fetch-$destination_filename":
+    source => "${nexus_server_name}/service/local/artifact/maven/redirect?r=${repository}&g=${groupID}&a=${artifact_name}&v=${artifact_version}&e=${artifact_type}${classifier}",
     destination => $destination_path,
     user => $nexus_user,
     password => $nexus_password,
@@ -31,7 +31,7 @@ define dtg::nexus::fetch (
   if $action == "NONE" {
     if $symlink != "NONE" {
       file{ $symlink:
-      	require => Wget::Authfetch["nexus-fetch-${destination_filename}"],
+      	require => Wget::Fetch["nexus-fetch-${destination_filename}"],
         ensure => link,
       	target => $destination_path,
       }
@@ -53,7 +53,7 @@ define dtg::nexus::fetch (
     # file then unzip will run automatically
     exec { "unzip-${destination_filename}":
       command => "unzip -o ${destination_path}",
-      require => [ Package['unzip'], Wget::Authfetch["nexus-fetch-$destination_filename"] ],
+      require => [ Package['unzip'], Wget::Fetch["nexus-fetch-$destination_filename"] ],
       cwd => $destination_directory,
       onlyif => "test ${destination_path} -nt ${unzip_target}",
       path => ["/usr/bin"]
