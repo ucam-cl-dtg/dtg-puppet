@@ -35,7 +35,6 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     parameters => 'deny unknown-clients',
   }
   dhcp::host {
-    'nas01':mac => "00:1F:33:EA:18:BF", ip => "128.232.20.12";
     'puppy0':mac => "00:16:3E:E8:14:1C", ip => "128.232.20.28";
     'puppy1':mac => "00:16:3E:E8:14:1D", ip => "128.232.20.29";
     'puppy2':mac => "00:16:3E:E8:14:1E", ip => "128.232.20.30";
