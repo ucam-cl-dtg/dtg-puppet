@@ -95,7 +95,7 @@ if ( $::monitor ) {
   }
   nagios::monitor { 'dtw30-crunch0':
     parents    => '',
-    address    => 'dtw30-crunch0.cl.cam.ac.uk',
+    address    => 'dtw30-crunch0.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],#TODO(drt24) monitor the statsserver
   }
   munin::gatherer::configure_node { 'hound4': }
