@@ -133,7 +133,8 @@ node /nas01/ {
   # I've set the options on devicescan.  Once the version in ubuntu catches up we can
   # remove devicescan_options here
   class { "smartd": 
-    mail_to => "dtg-infra@cl.cam.ac.uk",
+    mail_to            => "dtg-infra@cl.cam.ac.uk",
+    service_name       => 'smartmontools',
     devicescan_options => "-m dtg-infra@cl.cam.ac.uk -M daily"
   }
   ->
