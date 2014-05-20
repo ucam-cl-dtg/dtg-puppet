@@ -9,11 +9,14 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   apache::module {'proxy_http':} ->
   apache::site {'isaac-server':
     source => 'puppet:///modules/dtg/apache/isaac-server.conf',
-  } ->
-  file { "/var/isaac-app":
-    ensure => "directory",
-    owner  => "root",
-    group  => "root",
+  } 
+  ->
+  vcsrepo { "/var/isaac-app":
+    ensure => latest,
+    provider => git,
+    source => 'https://github.com/ucam-cl-dtg/isaac-app.git',
+    owner    => 'root',
+    group    => 'root',
     mode   => 644,
   }
   
