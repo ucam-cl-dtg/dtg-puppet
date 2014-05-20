@@ -10,7 +10,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   apache::site {'isaac-server':
     source => 'puppet:///modules/dtg/apache/isaac-server.conf',
   } ->
-  file { "/var/isaac-app/app":
+  file { "/var/isaac-app":
     ensure => "directory",
     owner  => "root",
     group  => "root",
