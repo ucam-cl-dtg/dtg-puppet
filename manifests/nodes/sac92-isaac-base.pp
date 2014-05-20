@@ -16,8 +16,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     provider => git,
     source => 'https://github.com/ucam-cl-dtg/isaac-app.git',
     owner    => 'root',
-    group    => 'root',
-    mode   => 644,
+    group    => 'root'
   }
   
   class {'dtg::tomcat': version => '7'}
