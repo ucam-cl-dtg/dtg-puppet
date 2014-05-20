@@ -3,14 +3,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   
   User<|title == sac92 |> { groups +>[ 'adm' ]}
   
-  class {'apache::ubuntu': } ->
-  apache::module {'cgi':} ->
-  apache::module {'proxy':} ->
-  apache::module {'proxy_http':} ->
-  apache::site {'isaac-server':
-    source => 'puppet:///modules/dtg/apache/isaac-server.conf',
-  } 
-  ->
+  # download front-end code from public repository
   vcsrepo { "/var/isaac-app":
     ensure => latest,
     provider => git,
@@ -18,6 +11,14 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     owner    => 'root',
     group    => 'root'
   }
+  ->
+  class {'apache::ubuntu': } ->
+  apache::module {'cgi':} ->
+  apache::module {'proxy':} ->
+  apache::module {'proxy_http':} ->
+  apache::site {'isaac-server':
+    source => 'puppet:///modules/dtg/apache/isaac-server.conf',
+  } 
   
   class {'dtg::tomcat': version => '7'}
   ->
