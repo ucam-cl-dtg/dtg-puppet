@@ -40,7 +40,6 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
    }
   
   class {'dtg::firewall::publichttp':}
-  #class {'dtg::firewall::80to8080': private => false}
 
   class { 'postgresql::globals':
     version => '9.3'
