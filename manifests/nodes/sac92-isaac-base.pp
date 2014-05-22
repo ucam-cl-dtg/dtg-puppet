@@ -5,15 +5,16 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   
   # download front-end code from public repository
   vcsrepo { "/var/isaac-app":
-    ensure => latest,
+    ensure => present,
     provider => git,
     source => 'https://github.com/ucam-cl-dtg/isaac-app.git',
-    owner    => 'root',
-    group    => 'root'
+    owner    => 'tomcat7',
+    group    => 'tomcat7'
   }
   ->
   class {'apache::ubuntu': } ->
   apache::module {'cgi':} ->
+  apache::module {'rewrite':} ->
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
   apache::site {'isaac-server':
@@ -58,12 +59,6 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     password => "rutherford",
     encoding => "UTF-8",
     grant => "ALL"
-  }
-
-  firewall { '011 accept all http on 8080':
-    proto   => 'tcp',
-    dport   => '8080',
-    action  => 'accept',
   }
 
   $packages = ['maven2','openjdk-7-jdk','rssh','mongodb']
