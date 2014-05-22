@@ -14,6 +14,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   ->
   class {'apache::ubuntu': } ->
   apache::module {'cgi':} ->
+  apache::module {'headers':} ->
   apache::module {'rewrite':} ->
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
