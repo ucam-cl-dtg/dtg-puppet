@@ -1,0 +1,8 @@
+if ( $::monitor ) {
+  nagios::monitor { 'learn':
+    parents    => '',
+    address    => 'svr-acr31-learn.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers', 'http-servers' ],
+  }
+  munin::gatherer::configure_node { 'learn': }
+}
