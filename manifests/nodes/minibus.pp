@@ -1,5 +1,5 @@
 if ( $::monitor ) {
-  nagios::monitor { 'learn':
+  nagios::monitor { 'minibus':
     parents    => '',
     address    => 'svr-acr31-minibus.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
