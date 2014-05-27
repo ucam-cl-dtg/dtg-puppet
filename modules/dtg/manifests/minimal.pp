@@ -21,6 +21,15 @@ class dtg::minimal ($manageapt = true) {
     $packagelist:
       ensure => installed
   }
+
+  # Packages that should not be installed on a server
+  $banned_packages = ['sl', 'emacs23-common']
+
+  package {
+    $banned_packages:
+      ensure => purged
+  }
+
   if ($virtual != 'physical') and $manageapt {
     class {'dtg::vm':}
   }
