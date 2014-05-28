@@ -49,12 +49,12 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     ensure => installed
   }
   ->
-  file_line { 'rssh-allow-sftp':
+  file_line { 'rssh-allow-scp':
     line => 'allowscp',
     path => '/etc/rssh.conf', 
   }
   ->
-  file_line { 'rssh-allow-sftp':
+  file_line { 'rssh-allow-rsync':
     line => 'allowrsync',
     path => '/etc/rssh.conf', 
   }
