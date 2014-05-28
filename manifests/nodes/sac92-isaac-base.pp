@@ -3,6 +3,21 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   
   User<|title == sac92 |> { groups +>[ 'adm' ]}
   
+  # download api content repo from private repo (TODO)
+  file { "/local/data/rutherford/":
+    ensure => "directory",
+    owner  => "tomcat7",
+    group  => "tomcat7",
+    mode   => 644,
+  }
+  ->
+  file { "/local/data/rutherford/git-contentstore":
+    ensure => "directory",
+    owner  => "tomcat7",
+    group  => "tomcat7",
+    mode   => 644,
+  }
+
   # download front-end code from public repository
   vcsrepo { "/var/isaac-app":
     ensure => present,
