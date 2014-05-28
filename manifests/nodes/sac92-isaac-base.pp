@@ -44,31 +44,18 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   
   class {'dtg::firewall::publichttp':}
 
-  class { 'postgresql::globals':
-    version => '9.3'
-  }
-  ->
-  class { 'postgresql::server': 
-    ip_mask_deny_postgres_user => '0.0.0.0/0', 
-    ip_mask_allow_all_users => '127.0.0.1/32', 
-    listen_addresses => '*', 
-    ipv4acls => ['hostssl all all 127.0.0.1/32 md5']
-  }
-  ->
-  postgresql::server::db{'rutherford':
-    user => "rutherford",
-    password => "rutherford",
-    encoding => "UTF-8",
-    grant => "ALL"
-  }
-
   $packages = ['maven2','openjdk-7-jdk','rssh','mongodb']
   package{$packages:
     ensure => installed
   }
   ->
   file_line { 'rssh-allow-sftp':
-    line => 'allowsftp',
+    line => 'allowscp',
+    path => '/etc/rssh.conf', 
+  }
+  ->
+  file_line { 'rssh-allow-sftp':
+    line => 'allowrsync',
     path => '/etc/rssh.conf', 
   }
 
