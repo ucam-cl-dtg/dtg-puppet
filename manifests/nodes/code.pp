@@ -70,7 +70,7 @@ node 'code.dtg.cl.cam.ac.uk' {
 }
 if ( $::monitor ) {
   nagios::monitor { 'code':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'code.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }

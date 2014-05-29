@@ -3,7 +3,7 @@ node 'gitlab.dtg.cl.cam.ac.uk' {
 }
 if ( $::monitor ) {
   nagios::monitor { 'gitlab':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'gitlab.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }

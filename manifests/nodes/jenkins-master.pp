@@ -7,7 +7,7 @@ node 'jenkins-master.dtg.cl.cam.ac.uk' {
 
 if ( $::monitor ) {
   nagios::monitor { 'jenkins-master':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'jenkins-master.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
