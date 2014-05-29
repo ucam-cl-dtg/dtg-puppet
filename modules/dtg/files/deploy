@@ -24,8 +24,7 @@ PHYSICAL_MACHINES = [ {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc
                       {'name': 'entropy', 'hostname': 'entropy' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
                       {'name': 'github', 'hostname': 'git@github.com', 'repo_loc':'ucam-cl-dtg/dtg-puppet.git', 'VM': False},
                       {'name': 'origin', 'hostname': 'git@code.dtg.cl.cam.ac.uk', 'repo_loc': 'infrastructure/dtg-puppet', 'VM': False},
-                      {'name': 'learn', 'hostname': 'svr-acr31-learn.cl.cam.ac.uk', 'repo_loc': PUPPET_BARE, 'VM': False},
-                      {'name': 'minibus', 'hostname': 'svr-acr31-minibus.cl.cam.ac.uk', 'repo_loc': PUPPET_BARE, 'VM': False}
+                      {'name': 'learn', 'hostname': 'svr-acr31-learn.cl.cam.ac.uk', 'repo_loc': PUPPET_BARE, 'VM': False}
                   ]
 
 class RemoteHandler(RemoteProgress):
