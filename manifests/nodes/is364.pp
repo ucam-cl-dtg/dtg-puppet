@@ -10,7 +10,7 @@ node 'is364-scratch.dtg.cl.cam.ac.uk' {
 }
 if ( $::monitor ) {
   nagios::monitor { 'is364-scratch':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'is364-scratch.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }

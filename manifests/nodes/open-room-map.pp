@@ -182,7 +182,7 @@ node /open-room-map(-\d+)?/ {
 }
 if ( $::monitor ) {
   nagios::monitor { 'open-room-map':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'open-room-map.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }

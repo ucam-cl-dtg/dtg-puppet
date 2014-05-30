@@ -48,7 +48,7 @@ node /acr31-rutherford(-\d+)?/ {
 
 if ( $::monitor ) {
   nagios::monitor { 'rutherford':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'rutherford.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' , 'http-servers' ],
   }
