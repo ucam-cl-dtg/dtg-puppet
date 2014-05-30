@@ -64,6 +64,13 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     content => 'from="*.cl.cam.ac.uk" ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAlQzIFjqes3XB09BAS9+lhZ9QuLRsFzLb3TwQJET/Q6tqotY41FgcquONrrEynTsJR8Rqko47OUH/49vzCuLMvOHBg336UQD954oIUBmyuPBlIaDH3QAGky8dVYnjf+qK6lOedvaUAmeTVgfBbPvHfSRYwlh1yYe+9DckJHsfky2OiDkych9E+XgQ4GipLf8Cw6127eiC3bQOXPYdZh7uKnW6vpnVPFPF5K1dSaUo3GxcpYt3OsT3IqB640m8mgekWtOmCuAP+9IEBFmCozwpqLz+EWv6wtova7tbVCkrU2iJwTbJzOUCvWv5JHYjAi/pWNIsKnWpFF9+m4th26GY4Q== jenkins@dtg-ci.cl.cam.ac.uk',
    }
   
+  file_line{"tomcat-memory-increase":
+    line => 'JAVA_OPTS="-Djava.awt.headless=true -Xms512m -Xmx1024m -XX:+UseConcMarkSweepGC"',
+    path => "/etc/default/tomcat7",
+    notify => Service['tomcat7'],
+    match => '^JAVA_OPTS="-Djava\.awt\.headless=true.*'
+  }    
+  
   class {'dtg::firewall::publichttp':}
 
   $packages = ['maven2','openjdk-7-jdk','rssh','mongodb']
