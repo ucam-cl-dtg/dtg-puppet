@@ -104,7 +104,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
 
 if ( $::monitor ) {
   nagios::monitor { 'dhcp':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'dhcp.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }

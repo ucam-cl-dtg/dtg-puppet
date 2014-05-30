@@ -79,7 +79,7 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers' ],
   }
   nagios::monitor { 'deviceanalyzer':
-    parents    => '',
+    parents    => ['nas04', 'nas02'],
     address    => 'deviceanalyzer.cl.cam.ac.uk',
     hostgroups => [ 'http-servers', 'ssh-servers' ],
   }
@@ -94,7 +94,7 @@ if ( $::monitor ) {
     hostgroups => [ 'http-servers' ],
   }
   nagios::monitor { 'dtw30-crunch0':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'dtw30-crunch0.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],#TODO(drt24) monitor the statsserver
   }

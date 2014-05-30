@@ -254,7 +254,7 @@ node /berrycider(-\d+)?/ {
 
 if ( $::monitor ) {
   nagios::monitor { 'berrycider':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'berrycider.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }

@@ -16,7 +16,7 @@ node "dac53.dtg.cl.cam.ac.uk" {
 }
 if ( $::monitor ) {
   nagios::monitor { 'dac53':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'dac53.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
