@@ -1,3 +1,8 @@
+node 'weather.dtg.cl.cam.ac.uk' {
+  # We don't have a local mirror of debian to point at
+  class { 'dtg::minimal': manageapt => false, }
+}
+
 if ( $::monitor ) {
   nagios::monitor { 'weather':
     parents    => 'nas04',
