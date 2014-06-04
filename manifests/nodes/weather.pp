@@ -19,7 +19,7 @@ node 'weather.dtg.cl.cam.ac.uk' {
     content => 'nas01	nas01.dtg.cl.cam.ac.uk:/data/weather',
   } ->
   file_line {'mount nas01':
-    line => '/mnt/nas01	/etc/auto.nas01',
+    line => '/mnt	/etc/auto.nas01',
     path => '/etc/auto.master',
   }
 }
