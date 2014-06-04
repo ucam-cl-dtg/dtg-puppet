@@ -195,6 +195,19 @@ node /nas01/ {
     require => Class["dtg::backup::host"],
   }
 
+  user {'weather':
+    ensure => 'present',
+    uid => 501,
+    gid => 'www-data',
+  }
+
+  file {'/data/weather':
+    ensure => directory,
+    owner => 'weather',
+    group => 'www-data',
+    mode => 'ug=rwx,o=rx',
+  }
+
   augeas { "default_grub":
     context => "/files/etc/default/grub",
     changes => [
