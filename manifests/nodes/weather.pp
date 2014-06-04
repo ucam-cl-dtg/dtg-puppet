@@ -16,7 +16,7 @@ node 'weather.dtg.cl.cam.ac.uk' {
     owner  => 'root',
     group  => 'root',
     mode   => 'a=r',
-    contents => 'nas01	nas01.dtg.cl.cam.ac.uk:/data/weather',
+    content => 'nas01	nas01.dtg.cl.cam.ac.uk:/data/weather',
   } ->
   file_line {'mount nas01':
     line => '/mnt/nas01	/etc/auto.nas01',
