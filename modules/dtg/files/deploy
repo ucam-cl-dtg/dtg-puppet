@@ -120,6 +120,11 @@ def upgrade_mc():
         sudo("sed -i 's/Prompt=lts/Prompt=normal/' /etc/update-manager/release-upgrades")
         sudo('do-release-upgrade -f DistUpgradeViewNonInteractive')
 
+@task
+def security_update():
+    sudo('apt-get update')
+    sudo('unattended-upgrade')
+
 
 def run_puppet():
     print("Running puppet")
@@ -142,11 +147,13 @@ def add_remotes(repo, machines):
     for mc in machines:
         repo.create_remote(REMOTE_PREFIX + '_' + mc['name'], mc['hostname']  + ':' + mc['repo_loc'])
 
-def push_config(repo, mc, upgrade):
+def push_config(repo, mc, upgrade, sec_update):
     if mc['VM']:
         execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
     if upgrade:
         execute(upgrade_mc, hosts=[mc['hostname']])
+    if sec_update:
+        execute(security_update, hosts=[mc['hostname']])
     print('Pushing to %s' % mc['name'])
     handler = RemoteHandler(mc['name'])
     remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
@@ -194,7 +201,7 @@ def main(args):
 
     for mc in machines:
         try:
-            push_config(repo, mc, args.upgrade)
+            push_config(repo, mc, args.upgrade, args.security_update)
         except GitCommandError:
             sys.stderr.write('Cannot push to %s' % mc['name'])
 
@@ -203,6 +210,7 @@ if __name__ == '__main__':
     parser.add_argument('--boot', help='Boot linux machines that are currently turned off.')
     parser.add_argument('--do-release-upgrade', action='store_true', dest='upgrade', help='Upgrade the version of Ubuntu before applying the puppet config')
     parser.add_argument('--no-snap-gc', action='store_true', dest='no_snap_gc', help='Do not remove old snapshots')
+    parser.add_argument('--security-update', action='store_true', dest='security_update', help='Apply all security updates immediately')
     parser.add_argument('machines', nargs='?', help='Limit the machines that the lick is applied to')
 
     args = parser.parse_args()
