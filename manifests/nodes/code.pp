@@ -76,7 +76,7 @@ if ( $::monitor ) {
   }
   nagios::monitor { 'maven':
     parents    => 'code',
-    address    => 'dtg-maven.cl.cam.ac.uk',
+    address    => 'maven.dtg.cl.cam.ac.uk',
     hostgroups => [ 'http-servers' ],
     include_standard_hostgroups => false,
   }

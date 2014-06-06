@@ -4,7 +4,7 @@ define dtg::nexus::fetch (
   $artifact_type,                                           # the type: war, zip, jar etc.
   $artifact_classifier = "ANY",                             # classifier e.g. live or leave as ANY (default)
   $destination_directory,                                   # the directory to store the downloaded file in
-  $nexus_server_name = "http://dtg-maven.cl.cam.ac.uk",     # nexus server host name (include http, ommit trailing slash)
+  $nexus_server_name = "http://maven.dtg.cl.cam.ac.uk",     # nexus server host name (include http, ommit trailing slash)
   $nexus_user = "dtg",                                      # username for nexus server
   $nexus_password = "PetliujyowzaddOn",                     # password for nexus server
   $groupID = "uk.ac.cam.cl.dtg",                            # maven group id for artifact
