@@ -20,6 +20,9 @@ class dtg::unattendedupgrades ($unattended_upgrade_notify_emailaddress) {
     group  => 'root',
     mode    => '0755',
   }
+  package {'debian-goodies':
+    ensure => installed,
+  } ->
   file {'/usr/local/sbin/postupdate-service-restart':
     ensure => file,
     owner  => 'root',
