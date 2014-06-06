@@ -31,14 +31,6 @@ define dtg::add_user ( $real_name, $groups = '', $keys = undef, $uid) {
         require => [ User[$username], Group[$username] ],
     }
 
-# Passwords are outdated.
-#    exec { "setuserpassword $username":
-#         refreshonly     => true,
-#         subscribe       => User[$username],
-#         unless          => "grep $username /etc/shadow | cut -f 2 -d : | grep -v '!'",
-#         require         => File["/usr/local/sbin/setuserpassword"],
-#    }
-
     # If the user has gpg key ids specified then use them
     if ($keys != undef) {
         monkeysphere::authorized_user_ids { "$username":
