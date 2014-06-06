@@ -18,6 +18,18 @@ class dtg::unattendedupgrades ($unattended_upgrade_notify_emailaddress) {
     ensure => present,
     owner  => 'root',
     group  => 'root',
-    mode    => 755,    
+    mode    => '0755',
+  }
+  file {'/usr/local/sbin/postupdate-service-restart':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+    source => 'puppet:///modules/dtg/sbin/postupdate-service-restart'
+  }
+  file_line {'apt postupdate-service-restart':
+    ensure => present,
+    path   => '/etc/cron.daily/apt',
+    line   => 'postupdate-service-restart',
   }
 }
