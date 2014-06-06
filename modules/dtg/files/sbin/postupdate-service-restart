@@ -9,7 +9,7 @@ nonefound="Found 0 processes using old versions of upgraded files"
 # Try and automatically restart as much as we can
 services=`sudo checkrestart | grep -v "$nonefound" | grep --line-regexp 'service [a-zA-Z0-9\.\-]* restart' | sed 's/service \([a-Z0-9\.\-]*\) restart/\1/'`
 
-if [ ! -z $services ]; then
+if [ ! -z "$services" ]; then
 	echo "Restarting services: $services"
 fi
 
