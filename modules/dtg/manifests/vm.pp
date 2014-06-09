@@ -4,6 +4,12 @@ class dtg::vm {
     ensure => latest,
     require => Apt::Ppa['ppa:retrosnub/xenserver-support'],
   }
+  package {'linux-image-virtual':
+    ensure => latest,
+  }
+  package {'linux-image-generic':
+    ensure => absent,
+  }
 }
 # So that we can appy a stage to it
 class dtg::vm::repos {
