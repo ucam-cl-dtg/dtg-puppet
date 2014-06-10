@@ -14,6 +14,15 @@ fi
 if [[ $ckrestart == *"$nonefound"* ]]; then
 	exit 0
 fi
+# Postgres and mysql are not handled by checkrestart so when it tells us it doesn't know what to do, just do it.
+if [[ $ckrestart == *mysql* ]]; then
+	echo "Triggering mysql restart"
+	sudo service mysql restart
+fi
+if [[ $ckrestart == *postgresql* ]]; then
+	echo "Triggering postgresql restart"
+        sudo service postgresql restart
+fi
 
 # Try and automatically restart as much as we can
 # When $nonefound exists it is the only line and so the rest does not execute.
