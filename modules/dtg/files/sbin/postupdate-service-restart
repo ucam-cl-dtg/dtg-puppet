@@ -6,8 +6,18 @@ set -e
 
 nonefound="Found 0 processes using old versions of upgraded files"
 
+# If the output indicates that checkrestart can do nothing then skip
+ckrestart=`sudo checkrestart`
+if [[ $ckrestart == *"(0 distinct packages)"* ]]; then
+	exit 0
+fi
+if [[ $ckrestart == *"$nonefound"* ]]; then
+	exit 0
+fi
+
 # Try and automatically restart as much as we can
-services=`sudo checkrestart | grep -v "$nonefound" | grep --line-regexp 'service [a-zA-Z0-9\.\-]* restart' | sed 's/service \([a-Z0-9\.\-]*\) restart/\1/'`
+# When $nonefound exists it is the only line and so the rest does not execute.
+services=`sudo checkrestart | grep --line-regexp 'service [a-zA-Z0-9\.\-]* restart' | sed 's/service \([a-Z0-9\.\-]*\) restart/\1/'`
 
 if [ ! -z "$services" ]; then
 	echo "Restarting services: $services"
