@@ -3,7 +3,7 @@ node 'crucible.dtg.cl.cam.ac.uk' {
 
   User<|title == sac92 |> { groups +>[ 'adm' ] }
 
-  package {['openjdk-7-jre']:
+  package {['openjdk-7-jdk']:
     ensure => installed
   }
 }
