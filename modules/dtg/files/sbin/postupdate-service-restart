@@ -36,4 +36,4 @@ for service in $services; do sudo service "$service" restart; done
 
 # If there are still things left then this will output text which will be emailed by cron or displayed to the sysadmin
 
-sudo checkrestart | grep -v "$nonefound"
+sudo checkrestart | grep -v "$nonefound" || true # grep returns 1 if it finds nothing
