@@ -35,4 +35,11 @@ class dtg::unattendedupgrades ($unattended_upgrade_notify_emailaddress) {
     path   => '/etc/cron.daily/apt',
     line   => 'postupdate-service-restart',
   }
+  file {'/usr/local/etc/checkrestart_blacklist':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    source => 'puppet:///modules/dtg/sbin/checkrestart_blacklist'
+  }
 }
