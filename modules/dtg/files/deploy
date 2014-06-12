@@ -129,7 +129,7 @@ def security_update():
 def run_puppet():
     with show('output'):
         with cd('/etc/puppet'):
-            run('sudo -H puppet apply --verbose --modulepath modules manifests/site.pp')
+            run('sudo -H puppet apply --modulepath modules manifests/site.pp')
 
 @task
 def post_update_hook():
