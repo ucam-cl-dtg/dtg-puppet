@@ -4,12 +4,20 @@ class dtg::vm {
     ensure => latest,
     require => Apt::Ppa['ppa:retrosnub/xenserver-support'],
   }
-  package {'linux-image-virtual':
+  package {'mingetty':
     ensure => latest,
   }
   package {'linux-image-generic':
     ensure => absent,
   }
+
+  file { "/etc/init/hvc0.conf":
+    source => "puppet:///modules/dtg/hvc0.conf",
+    ensure => present,
+    owner  => "root",
+    group  => "root"
+  }
+
 }
 # So that we can appy a stage to it
 class dtg::vm::repos {
