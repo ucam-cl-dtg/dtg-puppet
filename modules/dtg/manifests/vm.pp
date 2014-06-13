@@ -7,9 +7,6 @@ class dtg::vm {
   package {'mingetty':
     ensure => latest,
   }
-  package {'linux-image-generic':
-    ensure => absent,
-  }
 
   file { "/etc/init/hvc0.conf":
     source => "puppet:///modules/dtg/hvc0.conf",
