@@ -40,7 +40,7 @@ define gpg::private_key( $homedir, $passphrase = '', $expire = '31536000', $leng
       unless => "test -f '$homedir/.ssh/id_rsa'"
   }
   exec { "gpg-pem2openpgp-$user":
-      command => "pem2openpgp $user@$::fqdn < '$homedir/.ssh/id_rsa' | gpg --import",
+      command => "pem2openpgp $calculated_uid < '$homedir/.ssh/id_rsa' | gpg --import",
       environment => [ "HOME=$homedir", "PEM2OPENPGP_EXPIRATION=$expire" ],
       require =>  [ Package["monkeysphere"], Package["openssh-client"], Exec["gpg-ssh-genkey-$user" ] ],
       user => $user,
@@ -57,7 +57,7 @@ define gpg::private_key( $homedir, $passphrase = '', $expire = '31536000', $leng
     '': { }
     default: { 
       exec { "gpg-add-passphrase-$user":
-        command => "printf '$passphrase\n$passphrase\nsave\n' |gpg --command-fd 0 --passphrase-fd 0 --no-tty --edit-key root@$::fqdn password",
+        command => "printf '$passphrase\n$passphrase\nsave\n' |gpg --command-fd 0 --passphrase-fd 0 --no-tty --edit-key '$calculated_uid' password",
         require =>  [ Exec["gpg-pem2openpgp-$user"] ],
         environment => "HOME=$homedir",
         user => $user,
