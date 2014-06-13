@@ -1,4 +1,4 @@
-node 'balancer.dtg.cl.cam.ac.uk' {
+1;3409;0cnode 'balancer.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   
   User<|title == sac92 |> { groups +>[ 'adm' ]}
@@ -35,4 +35,13 @@ node 'balancer.dtg.cl.cam.ac.uk' {
     path => '/etc/rssh.conf', 
   }
 
+}
+
+if ( $::monitor ) {
+  nagios::monitor { 'balancer':
+    parents    => '',
+    address    => 'balancer.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers' , 'http-servers' ],
+  }
+  munin::gatherer::configure_node { 'balancer': }
 }
