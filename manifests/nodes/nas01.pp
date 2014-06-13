@@ -124,7 +124,8 @@ node /nas01/ {
   nfs::export{"/data":
     export => {
       # host           options
-      "${::local_subnet}" => 'rw,sync,root_squash,no_subtree_check'
+      "${::dtg_subnet},${::desktop_ips},${::weather_ip}" => 'rw,sync,root_squash,no_subtree_check'
+      # TODO restrict weather to just /data/weather or similar
     },
   }
 
