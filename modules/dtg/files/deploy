@@ -37,7 +37,8 @@ class RemoteHandler(RemoteProgress):
             print("%s: %s" % (self.vm, line))
 
     def update(self, op_code, cur_count, max_count=None, message=''):
-        print(message)
+        if len(message) > 0:
+            print(message)
 
 
 @task
