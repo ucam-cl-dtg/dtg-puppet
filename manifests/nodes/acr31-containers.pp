@@ -9,7 +9,7 @@ node /acr31-containers(-\d+)?/ {
 
   class {'dtg::firewall::publichttp':}
 
-  $packages = ['python-jinja2','lxc']
+  $packages = ['python-jinja2','lxc','python-flask']
 
   package{$packages:
     ensure => installed,
