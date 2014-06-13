@@ -1,7 +1,7 @@
 CONFIG = {
     'mode': 'wsgi',
     'working_dir': '/usr/local/containers-webapp',
-    'python': '/usr/bin/python',
+    'python': '/usr/bin/python3',
     'args': (
         '--bind=:80',
         '--workers=16',
