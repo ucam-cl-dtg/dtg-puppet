@@ -128,6 +128,11 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
       comment => 'Allow members of the admin group to use sudo to get root on low-security boxes',
     }
   }
+  else {
+    file {'/etc/sudoers.d/adm':
+      ensure => absent,
+    }
+  }
   group { "dtg-admin": ensure => present }
   # Make dtg-admin users have root on all high-security boxes (eg nas0{1,4})
   sudoers::allowed_command{ 'dtg-adm':
