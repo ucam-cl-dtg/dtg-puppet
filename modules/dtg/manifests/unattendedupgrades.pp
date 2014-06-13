@@ -35,6 +35,12 @@ class dtg::unattendedupgrades ($unattended_upgrade_notify_emailaddress) {
     path   => '/etc/cron.daily/apt',
     line   => 'postupdate-service-restart',
   }
+  file {'/usr/local/etc/':
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
   file {'/usr/local/etc/checkrestart_blacklist':
     ensure => file,
     owner  => 'root',
