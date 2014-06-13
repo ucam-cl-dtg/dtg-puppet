@@ -1,4 +1,4 @@
-1;3409;0cnode 'balancer.dtg.cl.cam.ac.uk' {
+node 'balancer.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   
   User<|title == sac92 |> { groups +>[ 'adm' ]}
@@ -39,7 +39,7 @@
 
 if ( $::monitor ) {
   nagios::monitor { 'balancer':
-    parents    => '',
+    parents    => 'nas04',
     address    => 'balancer.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' , 'http-servers' ],
   }
