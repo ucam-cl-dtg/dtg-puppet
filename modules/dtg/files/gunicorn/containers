@@ -1,0 +1,11 @@
+CONFIG = {
+    'mode': 'wsgi',
+    'working_dir': '/usr/local/containers-webapp',
+    'python': '/usr/bin/python',
+    'args': (
+        '--bind=:80',
+        '--workers=16',
+        '--timeout=60',
+        'containers:app',
+    ),
+}

@@ -1,20 +1,20 @@
 node /acr31-containers(-\d+)?/ {
   include 'dtg::minimal'
 
-  class {'apache::ubuntu': } ->
-  apache::module {'cgi':} ->
-  apache::site {'containers':
-    source => 'puppet:///modules/dtg/apache/containers.conf',
-  }
-
-  class {'dtg::firewall::publichttp':}
-
-  $packages = ['python-jinja2','lxc','python-flask']
+  $packages = ['python-jinja2','lxc','python-flask','libapache2-mod-fastcgi','gunicorn']
 
   package{$packages:
     ensure => installed,
   }
 
+  file{"/etc/gunicorn.d/containers":
+    source => 'puppet:///modules/dtg/gunicorn/containers',
+  }
+    
+  class {'dtg::firewall::publichttp':}
+
+
+  
   file{"/usr/local/containers-webapp-bare":
     ensure => directory,
     owner => acr31,
