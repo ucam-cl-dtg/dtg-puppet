@@ -6,8 +6,29 @@ set -e
 
 nonefound="Found 0 processes using old versions of upgraded files"
 
+checkrestartcommand='sudo checkrestart -b /usr/local/etc/checkrestart_blacklist'
+
+# If the output indicates that checkrestart can do nothing then skip
+ckrestart=`$checkrestartcommand`
+if [[ $ckrestart == *"(0 distinct packages)"* ]]; then
+	exit 0
+fi
+if [[ $ckrestart == *"$nonefound"* ]]; then
+	exit 0
+fi
+# Postgres and mysql are not handled by checkrestart so when it tells us it doesn't know what to do, just do it.
+if [[ $ckrestart == *mysql* ]]; then
+	echo "Triggering mysql restart"
+	sudo service mysql restart
+fi
+if [[ $ckrestart == *postgresql* ]]; then
+	echo "Triggering postgresql restart"
+        sudo service postgresql restart
+fi
+
 # Try and automatically restart as much as we can
-services=`sudo checkrestart | grep -v "$nonefound" | grep --line-regexp 'service [a-zA-Z0-9\.\-]* restart' | sed 's/service \([a-Z0-9\.\-]*\) restart/\1/'`
+# When $nonefound exists it is the only line and so the rest does not execute.
+services=`$checkrestartcommand | grep --line-regexp 'service [a-zA-Z0-9\.\-]* restart' | sed 's/service \([a-Z0-9\.\-]*\) restart/\1/'`
 
 if [ ! -z "$services" ]; then
 	echo "Restarting services: $services"
@@ -17,4 +38,4 @@ for service in $services; do sudo service "$service" restart; done
 
 # If there are still things left then this will output text which will be emailed by cron or displayed to the sysadmin
 
-sudo checkrestart | grep -v "$nonefound"
+$checkrestartcommand | grep -v "$nonefound" || true # grep returns 1 if it finds nothing

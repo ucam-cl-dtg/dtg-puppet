@@ -37,7 +37,8 @@ class RemoteHandler(RemoteProgress):
             print("%s: %s" % (self.vm, line))
 
     def update(self, op_code, cur_count, max_count=None, message=''):
-        print(message)
+        if len(message) > 0:
+            print(message)
 
 
 @task
@@ -127,11 +128,9 @@ def security_update():
 
 
 def run_puppet():
-    print("Running puppet")
     with show('output'):
         with cd('/etc/puppet'):
-            run('sudo -H puppet apply --verbose --modulepath modules manifests/site.pp')
-    print("Ran puppet")
+            run('sudo -H puppet apply --modulepath modules manifests/site.pp')
 
 @task
 def post_update_hook():
