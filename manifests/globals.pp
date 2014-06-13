@@ -26,6 +26,9 @@ class ms_id_certifiers {
     monkeysphere::add_id_certifier { 'drt24-laptop': keyid => 'EA14782BFF32D5B8464B92D7B2FB14CF18EB83B1' }
 }
 # Admin users to be given an account on all machines
+group { 'dtg-adm' :
+  ensure => present
+}
 class admin_users {
     dtg::add_user { 'drt24':
         real_name => 'Daniel Thomas',

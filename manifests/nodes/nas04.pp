@@ -1,7 +1,7 @@
 node 'nas04.dtg.cl.cam.ac.uk' {
   include 'nfs::server'
 
-  class { 'dtg:minimal': adm_sudoers => false}
+  class { 'dtg::minimal': adm_sudoers => false}
 
   $pool_name = 'dtg-pool0'
   $cl_share = "rw=@${local_subnet}"
