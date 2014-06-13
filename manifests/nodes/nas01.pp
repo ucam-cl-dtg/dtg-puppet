@@ -1,5 +1,5 @@
 node /nas01/ {
-  include 'dtg::minimal'
+  class { 'dtg::minimal': adm_sudoers => false }
 
   # Its important to probe these modules in this particular order because it affects which device id they get, which in turn affects the fancontrol config
   dtg::kernelmodule::add{"coretemp": }
