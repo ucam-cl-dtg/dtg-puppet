@@ -29,13 +29,13 @@ class ms_id_certifiers {
 class admin_users {
     dtg::add_user { 'drt24':
         real_name => 'Daniel Thomas',
-        groups    => [ 'adm' ],
+        groups    => [ 'adm', 'dtg-adm' ],
         keys      => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
         uid       => 2607, 
     }
     dtg::add_user { 'oc243':
         real_name => 'Oliver Chick',
-        groups    => [ 'adm' ],
+        groups    => [ 'adm', 'dtg-adm' ],
         keys      => 'Oliver Chick <oc243@cam.ac.uk>',
         uid       => 2834, 
     }
@@ -53,7 +53,7 @@ class admin_users {
     }
     dtg::add_user { 'acr31':
         real_name  => 'Andrew Rice',
-        groups     => ['adm'],
+        groups     => ['adm', 'dtg-adm'],
         keys       => 'Andrew Rice <acr31@cam.ac.uk>',
         uid        => 2132, 
     }

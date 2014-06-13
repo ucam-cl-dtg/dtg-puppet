@@ -1,4 +1,4 @@
-class dtg::minimal ($manageapt = true) {
+class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
 
   # Set up the repositories, get some entropy then do everything else
   #  entropy needs to start being provided before it is consumed
@@ -117,15 +117,26 @@ class dtg::minimal ($manageapt = true) {
     require => Class['dtg::email'],
   }
   # Allow admin users to push puppet config
-  group { "adm": ensure => present }
-  # Make admin users admin users
-  sudoers::allowed_command{ 'adm':
-    command => 'ALL',
-    group   => 'adm',
-    run_as  => 'ALL',
-    require_password => false,
-    comment => 'Allow members of the admin group to use sudo to get root',
+  if $adm_sudoers {
+    group { "adm": ensure => present }
+    # Make admin users admin users
+    sudoers::allowed_command{ 'adm':
+      command => 'ALL',
+      group   => 'adm',
+      run_as  => 'ALL',
+      require_password => false,
+      comment => 'Allow members of the admin group to use sudo to get root on low-security boxes',
+    }
   }
+  group { "dtg-admin": ensure => present }
+  # Make dtg-admin users have root on all high-security boxes (eg nas0{1,4})
+  sudoers::allowed_command{ 'dtg-adm':
+      command => 'ALL',
+      group   => 'dtg-adm',
+      run_as  => 'ALL',
+      require_password => false,
+      comment => 'Allow members of the dtg-admin group to use sudo to get root on high-security boxes',
+    }
   class { 'dtg::unattendedupgrades':
     unattended_upgrade_notify_emailaddress => $::unattended_upgrade_notify_emailaddress,
     require => Class['dtg::email'],
