@@ -5,6 +5,8 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
   $pool_name = 'dtg-pool0'
   $cl_share = "rw=@${local_subnet}"
+  $dtg_share = "rw=@${dtg_subnet},${desktop_ips}"
+  $secgrp_subnet = '128.232.18.0/24'
 
   class {'dtg::zfs': }
 
@@ -15,7 +17,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'vms':
     pool_name  => $pool_name,
     fs_name    => 'vms',
-    share_opts => $cl_share,
+    share_opts => 'rw=@128.232.20.18,128.232.20.20,128.232.20.22,128.232.20.24,128.232.20.26',
   }
 
   dtg::zfs::fs{'shin-backup':
@@ -27,19 +29,19 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'deviceanalyzer':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer',
-    share_opts => $cl_share,
+    share_opts => "$dtg_share,$secgrp_subnet,$deviceanalyzer_ip",
   }
 
   dtg::zfs::fs{'abbot-archive':
     pool_name  => $pool_name,
     fs_name    => 'abbot-archive',
-    share_opts => $cl_share,
+    share_opts => $dtg_share,
   }
 
   dtg::zfs::fs{'time':
     pool_name  => $pool_name,
     fs_name    => 'time',
-    share_opts => $cl_share,
+    share_opts => $dtg_share,
   }
   
   cron { 'zfs_weekly_scrub':
