@@ -62,13 +62,13 @@ class admin_users {
     }
     dtg::add_user { 'dtw30':
         real_name  => 'Daniel Wagner',
-        groups     => ['adm'],
+        groups     => [],
         keys       => 'Daniel Wagner (ssh) <wagner.daniel.t@gmail.com>',
         uid        => 2712,
     }
     dtg::add_user { 'ml421':
         real_name => 'Mattias Linnap',
-        groups    => [ 'adm' ],
+        groups    => [],
         keys      => ['Mattias Linnap <mattias@linnap.com>','Mattias Linnap (llynfi-ssh) <mattias@linnap.com>','Mattias Linnap (macmini-ssh) <mattias@linnap.com>'],
         uid        => 2610,
     }
