@@ -128,8 +128,13 @@ node /nas01/ {
       "${::grapevine_ip}" => 'rw,sync,root_squash',
       "${::shin_ip}" => 'rw,sync,root_squash',
       "${::earlybird_ip}" => 'rw,sync,root_squash',
+    },
+  }
+  ->
+  nfs::export{"/data/weather":
+    export => {
+      # host           options
       "${::weather_ip}" => 'rw,sync,root_squash',
-      # TODO restrict weather to just /data/weather or similar
     },
   }
 
