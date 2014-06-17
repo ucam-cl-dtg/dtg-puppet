@@ -26,16 +26,19 @@ class ms_id_certifiers {
     monkeysphere::add_id_certifier { 'drt24-laptop': keyid => 'EA14782BFF32D5B8464B92D7B2FB14CF18EB83B1' }
 }
 # Admin users to be given an account on all machines
+group { 'dtg-adm' :
+  ensure => present
+}
 class admin_users {
     dtg::add_user { 'drt24':
         real_name => 'Daniel Thomas',
-        groups    => [ 'adm' ],
+        groups    => [ 'adm', 'dtg-adm' ],
         keys      => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
         uid       => 2607, 
     }
     dtg::add_user { 'oc243':
         real_name => 'Oliver Chick',
-        groups    => [ 'adm' ],
+        groups    => [ 'adm', 'dtg-adm' ],
         keys      => 'Oliver Chick <oc243@cam.ac.uk>',
         uid       => 2834, 
     }
@@ -53,7 +56,7 @@ class admin_users {
     }
     dtg::add_user { 'acr31':
         real_name  => 'Andrew Rice',
-        groups     => ['adm'],
+        groups     => ['adm', 'dtg-adm'],
         keys       => 'Andrew Rice <acr31@cam.ac.uk>',
         uid        => 2132, 
     }
@@ -142,6 +145,7 @@ $unattended_upgrade_notify_emailaddress = $from_address
 
 #Firewall config
 $local_subnet = '128.232.0.0/16'
+$dtg_subnet = '128.232.20.0/22'
 
 # Backup config
 $backup_hosts = 'nas01.dtg.cl.cam.ac.uk'

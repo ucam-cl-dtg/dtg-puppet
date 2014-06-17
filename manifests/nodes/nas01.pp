@@ -1,5 +1,5 @@
 node /nas01/ {
-  include 'dtg::minimal'
+  class { 'dtg::minimal': adm_sudoers => false }
 
   # Its important to probe these modules in this particular order because it affects which device id they get, which in turn affects the fancontrol config
   dtg::kernelmodule::add{"coretemp": }
@@ -124,7 +124,17 @@ node /nas01/ {
   nfs::export{"/data":
     export => {
       # host           options
-      "${::local_subnet}" => 'rw,sync,root_squash,no_subtree_check'
+      "${::dtg_subnet}" => 'rw,sync,root_squash',
+      "${::grapevine_ip}" => 'rw,sync,root_squash',
+      "${::shin_ip}" => 'rw,sync,root_squash',
+      "${::earlybird_ip}" => 'rw,sync,root_squash',
+    },
+  }
+  ->
+  nfs::export{"/data/weather":
+    export => {
+      # host           options
+      "${::weather_ip}" => 'rw,sync,root_squash',
     },
   }
 

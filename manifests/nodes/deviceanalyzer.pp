@@ -1,5 +1,8 @@
 #Configuration for deviceanalyzer related stuff
 
+$deviceanalyzer_ips = dnsLookup('deviceanalyzer.dtg.cl.cam.ac.uk')
+$deviceanalyzer_ip = $deviceanalyzer_ips[0]
+
 node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 
