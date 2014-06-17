@@ -96,12 +96,6 @@ if ( $::monitor ) {
     address    => 'upload.deviceanalyzer.cl.cam.ac.uk',
     hostgroups => [ 'http-servers' ],
   }
-  nagios::monitor { 'dtw30-crunch0':
-    parents    => 'nas04',
-    address    => 'dtw30-crunch0.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],#TODO(drt24) monitor the statsserver
-  }
   munin::gatherer::configure_node { 'hound4': }
   munin::gatherer::configure_node { 'deviceanalyzer': }
-  munin::gatherer::configure_node { 'dtw30-crunch0': }
 }
