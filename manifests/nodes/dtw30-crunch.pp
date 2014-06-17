@@ -43,7 +43,7 @@ node /dtw30-crunch(\d+)?.dtg.cl.cam.ac.uk/ {
   }
 
   # Packages which should be installed
-  $packagelist = ['openjdk-7-jre-headless', 'nfs-comon']
+  $packagelist = ['openjdk-7-jre-headless', 'nfs-common']
   package {
     $packagelist:
       ensure => installed
