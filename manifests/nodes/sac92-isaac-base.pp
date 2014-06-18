@@ -122,3 +122,12 @@ class dtg::acr31-rutherford::apt_elasticsearch {
   }
 
 }
+
+if ( $::monitor ) {
+  nagios::monitor { 'isaac-live':
+    parents    => 'nas04',
+    address    => 'isaac-live.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers' , 'http-servers' ],
+  }
+  munin::gatherer::configure_node { 'isaac-live': }
+}

@@ -14,17 +14,17 @@ unset GIT_DIR
 
 # First pull updates without the submodules - this gives us a chance
 # to fix broken repositories for any submodules
-git pull --recurse-submodules=no bare  master
+git pull --quiet --recurse-submodules=no bare  master
 
 # sync the submodules so as to pick up changes to their remotes
-git submodule sync
+git submodule --quiet sync
 
 # now try to pull in the upstream changes for submodules too (if a
 # remote is not available this command will fail and abort the script
-git pull --recurse-submodules=yes bare  master
+git pull --quiet --recurse-submodules=yes bare  master
 
 # checkout the commit specified in .gitmodules for each submodule
-git submodule update --init
+git submodule --quiet update --init
 
 # Make sure the permissions on the files we've created are such that
 # future people can run this script: set the group to adm, mirror
@@ -37,4 +37,4 @@ find .git -type d -print0 | xargs -0 sudo chmod --quiet g+s || true
 echo '---- Applying new recipes ----'
 # Need -H so that HOME is set to /root as some stuff gets put there by puppet
 #  e.g. mysql
-sudo -H puppet apply --verbose --modulepath modules manifests/site.pp
+sudo -H puppet apply --modulepath modules manifests/site.pp

@@ -36,3 +36,12 @@ node 'balancer.dtg.cl.cam.ac.uk' {
   }
 
 }
+
+if ( $::monitor ) {
+  nagios::monitor { 'balancer':
+    parents    => 'nas04',
+    address    => 'balancer.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers' , 'http-servers' ],
+  }
+  munin::gatherer::configure_node { 'balancer': }
+}
