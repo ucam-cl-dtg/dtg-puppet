@@ -60,18 +60,18 @@ class admin_users {
         keys       => 'Andrew Rice <acr31@cam.ac.uk>',
         uid        => 2132, 
     }
-    dtg::add_user { 'dtw30':
-        real_name  => 'Daniel Wagner',
-        groups     => [],
-        keys       => 'Daniel Wagner (ssh) <wagner.daniel.t@gmail.com>',
-        uid        => 2712,
-    }
-    dtg::add_user { 'ml421':
-        real_name => 'Mattias Linnap',
-        groups    => [],
-        keys      => ['Mattias Linnap <mattias@linnap.com>','Mattias Linnap (llynfi-ssh) <mattias@linnap.com>','Mattias Linnap (macmini-ssh) <mattias@linnap.com>'],
-        uid        => 2610,
-    }
+#    dtg::add_user { 'dtw30':
+#        real_name  => 'Daniel Wagner',
+#        groups     => [],
+#        keys       => 'Daniel Wagner (ssh) <wagner.daniel.t@gmail.com>',
+#        uid        => 2712,
+#    }
+#    dtg::add_user { 'ml421':
+#        real_name => 'Mattias Linnap',
+#        groups    => [],
+#        keys      => ['Mattias Linnap <mattias@linnap.com>','Mattias Linnap (llynfi-ssh) <mattias@linnap.com>','Mattias Linnap (macmini-ssh) <mattias@linnap.com>'],
+#        uid        => 2610,
+#    }
     dtg::add_user { 'tb403':
 	real_name => 'Thomas Bytheway',
 	groups    => [ 'adm' ],
