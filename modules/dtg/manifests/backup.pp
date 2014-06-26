@@ -62,6 +62,13 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
     group  => $user,
     mode   => '0700',#Backups should not be readable by anyone else
   }
+  # Set sending address for $user to dtg-infra
+  file_line {"${user}email":
+    ensure => present,
+    path   => '/etc/email-addresses',
+    line   => "${user}: dtg-infra@cl.cam.ac.uk",
+    require => [Package['exim'],User[$user]],
+  }
 }
 
 # The mirror of dtg::backup::serversetup this configures the backup host to take backups
