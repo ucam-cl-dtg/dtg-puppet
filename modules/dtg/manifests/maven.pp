@@ -157,9 +157,7 @@ class dtg::maven::sshmirror {
   }
   # Directory to chroot the maven user to and to mount the sshmirror files into
   file {'/srv/maven-sshmirror':
-    ensure => directory,
-    owner  => 'root',
-    group  => 'root',
+    ensure => directory, # Don't specify owner or group as will change when mounted
     mode   => '0755',
   } ->
   file_line{'mount sshmirror ro':
@@ -177,10 +175,12 @@ class dtg::maven::sshmirror {
     command => 'start sshmirrormount',
     unless  => 'mount | grep /srv/maven-sshmirror | grep ro >/dev/null'
   }
-  # Use a resource collector to make the sshd_config restrict the maven user to the chroot
-  File <| title == 'sshd_config' |> { content +> '
+  file {'/etc/ssh/sshd_config.d/maven-sshmirror.conf':
+    content => '
 Match User maven
     ChrootDirectory /srv/maven-sshmirror
     ForceCommand internal-sftp
-' }
+',
+    before => File['sshd_config'],
+  }
 }
