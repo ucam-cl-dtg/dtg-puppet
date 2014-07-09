@@ -5,7 +5,8 @@ class dtg::maven {
   apache::site {'maven':
     source => 'puppet:///modules/dtg/apache/maven.conf',
   }
-  class {'dtg::maven::nexus':}
+  class {'dtg::maven::nexus':} ->
+  class {'dtg::maven::sshmirror':}
 }
 # This will set up nexus listening on port 8081
 class dtg::maven::nexus (
@@ -125,4 +126,50 @@ class dtg::maven::nexus (
     logoutput => 'on_failure',
     require   => [File['/srv/nexus/nexus/'], Package['default-jre']],
   }
+}
+class dtg::maven::sshmirror {
+  file {'/srv/nexus/sshmirror':
+    ensure => directory,
+    owner  => 'nexus',
+    group  => 'nexus',
+    mode   => '0755',
+  }
+  file {'/usr/local/bin/maven-sshmirror-cron':
+    ensure => file,
+    mode   => '0755',
+    owner  => 'root',
+    source => 'puppet:///modules/dtg/nexus/maven-sshmirror-cron',
+  }
+  cron {'maven-sshmirror':
+    command => '/usr/local/bin/maven-sshmirror-cron',
+    user    => 'nexus',
+    ensure  => 'present',
+    minute  => cron_minute('maven-sshmirror'),
+    require => File['/usr/local/bin/maven-sshmirror-cron'],
+  }
+  # People will scp in as the maven user
+  group {'maven':
+    ensure => present,
+  }
+  user {'maven':
+    gid    => 'maven',
+    ensure => present,
+  }
+  # Directory to chroot the maven user to and to mount the sshmirror files into
+  file {'/srv/maven-sshmirror':
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  } ->
+  file_line{'mount sshmirror ro':
+    path => '/etc/fstab',
+    line => '/local/data/nexus/sshmirror	/srv/maven-sshmirror/	none	bind,ro	0	0',
+  }
+  # Use a resource collector to make the sshd_config restrict the maven user to the chroot
+  File <| title == 'sshd_config' |> { content +> '
+Match User maven
+    ChrootDirectory /srv/maven-sshmirror
+    ForceCommand internal-sftp
+' }
 }
