@@ -1,4 +1,6 @@
-class dtg::maven {
+class dtg::maven (
+  $sshmirror_keyids = []
+){
   # Proxy from apache to nexus
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
@@ -6,7 +8,7 @@ class dtg::maven {
     source => 'puppet:///modules/dtg/apache/maven.conf',
   }
   class {'dtg::maven::nexus':} ->
-  class {'dtg::maven::sshmirror':}
+  class {'dtg::maven::sshmirror': monkeysphere_keyids => $sshmirror_keyids}
 }
 # This will set up nexus listening on port 8081
 class dtg::maven::nexus (
@@ -127,7 +129,9 @@ class dtg::maven::nexus (
     require   => [File['/srv/nexus/nexus/'], Package['default-jre']],
   }
 }
-class dtg::maven::sshmirror {
+class dtg::maven::sshmirror (
+  $monkeysphere_keyids
+){
   file {'/srv/nexus/sshmirror':
     ensure => directory,
     owner  => 'nexus',
@@ -154,7 +158,23 @@ class dtg::maven::sshmirror {
   user {'maven':
     gid    => 'maven',
     ensure => present,
-    home   => '/',#Inside a chroot
+    home   => '/home/maven',
+  }
+  # We need somewhere to store authorized uids and authorized_keys
+  file {'/home/maven/':
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+  }
+  file {'/home/maven/.ssh':
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
+  monkeysphere::authorized_user_ids { "maven":
+    user_ids => $monkeysphere_keyids,
+    dest_dir => "/home/maven/.monkeysphere",
   }
   # Directory to chroot the maven user to and to mount the sshmirror files into
   file {'/srv/maven-sshmirror':
@@ -163,9 +183,20 @@ class dtg::maven::sshmirror {
     group  => 'root',
     mode   => '0755',
   } ->
+  # Need /home/maven inside the chroot but still want to end up at the root of the chroot
+  # So just use symlinks
+  file {'/srv/maven-sshmirror/home':
+    ensure => link,
+    target => '/',
+  } ->
+  file {'/srv/maven-sshmirror/maven':
+    ensure => link,
+    target => '/',
+  }
   file {'/srv/maven-sshmirror/mirror':
     ensure => directory, # Don't specify owner or group as will change when mounted
     mode   => '0755',
+    require => File['/srv/maven-sshmirror'],
   } ->
   file_line{'mount sshmirror ro':
     path => '/etc/fstab',
