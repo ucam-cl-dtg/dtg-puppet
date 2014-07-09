@@ -154,15 +154,22 @@ class dtg::maven::sshmirror {
   user {'maven':
     gid    => 'maven',
     ensure => present,
+    home   => '/',#Inside a chroot
   }
   # Directory to chroot the maven user to and to mount the sshmirror files into
   file {'/srv/maven-sshmirror':
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  } ->
+  file {'/srv/maven-sshmirror/mirror':
     ensure => directory, # Don't specify owner or group as will change when mounted
     mode   => '0755',
   } ->
   file_line{'mount sshmirror ro':
     path => '/etc/fstab',
-    line => '/local/data/nexus/sshmirror	/srv/maven-sshmirror/	none	bind,ro,noexec,nosuid,nodev	0	0',
+    line => '/local/data/nexus/sshmirror	/srv/maven-sshmirror/mirror	none	bind,ro,noexec,nosuid,nodev	0	0',
   } ->
   file {'/etc/init/sshmirrormount.conf':
     ensure => file,
@@ -173,7 +180,7 @@ class dtg::maven::sshmirror {
   exec {'sshmirror ensure mounted':
     path   => "/usr/bin:/usr/sbin:/bin:/sbin",
     command => 'start sshmirrormount',
-    unless  => 'mount | grep /srv/maven-sshmirror | grep ro >/dev/null'
+    unless  => 'mount | grep /srv/maven-sshmirror/mirror | grep ro >/dev/null'
   }
   file {'/etc/ssh/sshd_config.d/maven-sshmirror.conf':
     content => '
