@@ -164,7 +164,18 @@ class dtg::maven::sshmirror {
   } ->
   file_line{'mount sshmirror ro':
     path => '/etc/fstab',
-    line => '/local/data/nexus/sshmirror	/srv/maven-sshmirror/	none	bind,ro	0	0',
+    line => '/local/data/nexus/sshmirror	/srv/maven-sshmirror/	none	bind,ro,noexec,nosuid,nodev	0	0',
+  } ->
+  file {'/etc/init/sshmirrormount.conf':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    source => 'puppet:///modules/dtg/nexus/sshmirrormount.conf',
+  } ->
+  exec {'sshmirror ensure mounted':
+    path   => "/usr/bin:/usr/sbin:/bin:/sbin",
+    command => 'start sshmirrormount',
+    unless  => 'mount | grep /srv/maven-sshmirror | grep ro >/dev/null'
   }
   # Use a resource collector to make the sshd_config restrict the maven user to the chroot
   File <| title == 'sshd_config' |> { content +> '
