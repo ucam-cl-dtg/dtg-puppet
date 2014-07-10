@@ -24,6 +24,7 @@ $name_servers = [ '128.232.1.1',
 class ms_id_certifiers {
     monkeysphere::add_id_certifier { "drt24": keyid => "5017A1EC0B2908E3CF647CCD551435D5D74933D9" }
     monkeysphere::add_id_certifier { 'drt24-laptop': keyid => 'EA14782BFF32D5B8464B92D7B2FB14CF18EB83B1' }
+    monkeysphere::add_id_certifier { 'oc243': keyid => '4292E0E21E9FDE91D0EC6AD457CB6E4578EA2A07' }
 }
 # Admin users to be given an account on all machines
 group { 'dtg-adm' :
