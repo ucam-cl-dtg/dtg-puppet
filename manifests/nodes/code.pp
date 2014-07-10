@@ -16,7 +16,8 @@ node 'code.dtg.cl.cam.ac.uk' {
     'Ian Davies (ssh) <ipd21@cam.ac.uk>',
     'Ripduman Sohan (Cambridge Key) <ripduman.sohan@cl.cam.ac.uk>',
     'Stephen Cummins (Main key) <sacummins@gmail.com>',
-    'Kovacsics Robert (Alias "kr2") <kovirobi@gmail.com>'
+    'Kovacsics Robert (Alias "kr2") <kovirobi@gmail.com>',
+    'Tom Lefley <tl364@cam.ac.uk>'
     ]
   }
   class {'dtg::firewall::publichttp':}
