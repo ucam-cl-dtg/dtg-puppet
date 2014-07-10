@@ -16,6 +16,12 @@ node 'urop2014.dtg.cl.cam.ac.uk' {
     keys      => 'Tom Lefley <tl364@cam.ac.uk>',
     uid       => 204241, # From MCS linux `getent passwd tl364`
   }
+  dtg::add_user { 'ird28':
+    real_name => 'Isaac Dunn',
+    groups    => [ 'adm' ],
+    keys      => 'Isaac Dunn <ird28@cam.ac.uk>',
+    uid       => 232976, # From MCS linux `getent passwd ird28`
+  }
 
   # Specific config
   class {'dtg::tomcat': version => '7'}
