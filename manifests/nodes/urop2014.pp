@@ -22,6 +22,18 @@ node 'urop2014.dtg.cl.cam.ac.uk' {
     keys      => 'Isaac Dunn <ird28@cam.ac.uk>',
     uid       => 232976, # From MCS linux `getent passwd ird28`
   }
+  dtg::add_user { 'rds46':
+    real_name => 'Raahil Shah',
+    groups    => [ 'adm' ],
+    keys      => 'Raahil Shah (ssh) <rds46@cam.ac.uk>',
+    uid       => 232161, # From MCS linux `getent passwd rds46`
+  }
+  dtg::add_user { 'as2388':
+    real_name => 'Alexander Simpson',
+    groups    => [ 'adm' ],
+    keys      => 'Alexander Simpson (ssh) <as2388@cam.ac.uk>',
+    uid       => 231203, # From MCS linux `getent passwd as2388`
+  }
 
   # Specific config
   class {'dtg::tomcat': version => '7'}
