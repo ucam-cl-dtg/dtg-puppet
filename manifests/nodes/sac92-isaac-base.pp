@@ -65,7 +65,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
    }
   
   file_line{"tomcat-memory-increase":
-    line => 'JAVA_OPTS="-Djava.awt.headless=true -Xms512m -Xmx1024m -XX:+UseConcMarkSweepGC"',
+    line => 'JAVA_OPTS="-Djava.awt.headless=true -Xms512m -Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC"',
     path => "/etc/default/tomcat7",
     notify => Service['tomcat7'],
     match => '^JAVA_OPTS="-Djava\.awt\.headless=true.*'
