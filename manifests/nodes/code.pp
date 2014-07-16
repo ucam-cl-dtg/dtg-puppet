@@ -20,7 +20,8 @@ node 'code.dtg.cl.cam.ac.uk' {
     'Tom Lefley <tl364@cam.ac.uk>',
     'Isaac Dunn <ird28@cam.ac.uk>',
     'Alexander Simpson (ssh) <as2388@cam.ac.uk>',
-    'Raahil Shah (ssh) <rds46@cam.ac.uk>'
+    'Raahil Shah (ssh) <rds46@cam.ac.uk>',
+    'Katie Scott (ssh) <kls82@cam.ac.uk>'
     ]
   }
   class {'dtg::firewall::publichttp':}
