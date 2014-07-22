@@ -1,5 +1,5 @@
 
-node 'urop2014.dtg.cl.cam.ac.uk' {
+node /urop2014(-\d+)?.dtg.cl.cam.ac.uk/ {
   # Default config
   include 'dtg::minimal'
 
