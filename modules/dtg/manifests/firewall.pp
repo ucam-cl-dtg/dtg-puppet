@@ -121,7 +121,7 @@ class dtg::firewall::80to8080 ($private = true) inherits dtg::firewall::default 
     chain   => 'OUTPUT',
     jump    => 'REDIRECT',
     toports => '8080',
-    destination => 'localhost',
+    destination => '127.0.0.1/8',
   }
   firewall { '020 accept on 8080':
     proto   => 'tcp',
