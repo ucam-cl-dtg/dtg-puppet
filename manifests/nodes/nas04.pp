@@ -43,6 +43,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     fs_name    => 'time',
     share_opts => $dtg_share,
   }
+
+  dtg::zfs::fs{'gmp37':
+    pool_name  => $pool_name,
+    fs_name    => 'gmp37',
+    share_opts => 'rw',
+  }
   
   cron { 'zfs_weekly_scrub':
     command => '/sbin/zpool scrub dtg-pool0',
