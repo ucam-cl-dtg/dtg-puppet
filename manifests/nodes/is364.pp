@@ -8,11 +8,11 @@ node 'is364-scratch.dtg.cl.cam.ac.uk' {
     uid       => 3179,
   }
 }
-if ( $::monitor ) {
-  nagios::monitor { 'is364-scratch':
-    parents    => 'nas04',
-    address    => 'is364-scratch.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
-  }
-  munin::gatherer::configure_node { 'is364': }
-}
+#if ( $::monitor ) {
+#  nagios::monitor { 'is364-scratch':
+#    parents    => 'nas04',
+#    address    => 'is364-scratch.dtg.cl.cam.ac.uk',
+#    hostgroups => [ 'ssh-servers' ],
+#  }
+#  munin::gatherer::configure_node { 'is364': }
+#}
