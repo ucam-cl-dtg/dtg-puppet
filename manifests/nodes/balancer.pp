@@ -4,6 +4,7 @@ node 'balancer.dtg.cl.cam.ac.uk' {
   User<|title == sac92 |> { groups +>[ 'adm' ]}
   
   class {'dtg::firewall::publichttp':}
+  class {'dtg::firewall::publichttps':}
 
   class {'apache::ubuntu': } ->
   class {'dtg::apache::raven': server_description => 'Isaac Physics'} ->
@@ -12,6 +13,7 @@ node 'balancer.dtg.cl.cam.ac.uk' {
   apache::module {'rewrite':} ->
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
+  apache::module {'ssl':} ->
   apache::site {'balancer':
     source => 'puppet:///modules/dtg/apache/balancer.conf',
   }->
