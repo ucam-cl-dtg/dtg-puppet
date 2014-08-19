@@ -6,7 +6,7 @@ if ( $::monitor ) {
   nagios::monitor { 'wiki':
     parents    => 'nas04',
     address    => 'wiki.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers'],#TODO(drt24) monitor https-servers
+    hostgroups => [ 'ssh-servers', 'https-servers' ],
   }
   munin::gatherer::configure_node { 'wiki': }
 }
