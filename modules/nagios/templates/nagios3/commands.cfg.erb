@@ -32,13 +32,8 @@ define command{
 # nagios-plugins-basic package
 
 define command{
-	command_name	check_https
-	command_line	/usr/lib/nagios/plugins/check_http -S --sni
-	}
-
-define command{
-	command_name	check_https
-	command_line	/usr/lib/nagios/plugins/check_http --certificate=30,14
+	command_name	check_https_cert
+	command_line	/usr/lib/nagios/plugins/check_http --certificate=30,14 -H '$HOSTNAME$' -I '$HOSTADDRESS$'
 	}
 
 ################################################################################
