@@ -23,7 +23,21 @@ if [[ $ckrestart == *mysql* ]]; then
 fi
 if [[ $ckrestart == *postgresql* ]]; then
 	echo "Triggering postgresql restart"
-        sudo service postgresql restart
+	sudo service postgresql restart
+fi
+# Restart java based things
+if [[ $ckrestart == *openjdk* ]]; then
+	# Get the list of pids of java processes, perl puts the newlines back in
+	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/usr/lib/jvm.*|\1|' | grep '^[0-9]*$'`
+	for pid in $pids; do
+		if [[ -n "$pid" ]]; then
+			username=`getent passwd $(cat /proc/$pid/status | grep Uid | tr '[:space:]' ' ' | cut -d " " -f 2) | cut -d ':' -f 1`
+			if [[ $username == tomcat* ]] || [[ $username == sonar ]]; then
+				echo "Triggering $username restart"
+				sudo service $username restart
+			fi
+		fi
+	done
 fi
 
 # Try and automatically restart as much as we can
