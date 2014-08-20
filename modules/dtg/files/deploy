@@ -160,7 +160,8 @@ def push_config(repo, mc, upgrade, sec_update):
     handler = RemoteHandler(mc['name'])
     remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
     info = remote.push(refspec='master:master', progress=handler)[0]
-    execute(run_puppet, hosts=[mc['hostname']])
+    if not mc in ORIGIN:
+        execute(run_puppet, hosts=[mc['hostname']])
     if info.flags & (info.NEW_TAG | info.NEW_HEAD |
                      info.UP_TO_DATE | info.FAST_FORWARD):
         print(info.summary)
