@@ -32,7 +32,7 @@ if [[ $ckrestart == *openjdk* ]]; then
 	for pid in $pids; do
 		if [[ -n "$pid" ]]; then
 			username=`getent passwd $(cat /proc/$pid/status | grep Uid | tr '[:space:]' ' ' | cut -d " " -f 2) | cut -d ':' -f 1`
-			if [[ $username == tomcat* ]] || [[ $username == sonar ]]; then
+			if [[ $username == tomcat* ]] || [[ $username == sonar ]] || [[ $username == elasticsearch ]]; then
 				echo "Triggering $username restart"
 				sudo service $username restart
 			fi
