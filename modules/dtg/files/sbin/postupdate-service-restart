@@ -16,6 +16,9 @@ fi
 if [[ $ckrestart == *"$nonefound"* ]]; then
 	exit 0
 fi
+
+### Special Cases
+
 # Postgres and mysql are not handled by checkrestart so when it tells us it doesn't know what to do, just do it.
 if [[ $ckrestart == *mysql* ]]; then
 	echo "Triggering mysql restart"
@@ -39,6 +42,46 @@ if [[ $ckrestart == *openjdk* ]]; then
 		fi
 	done
 fi
+
+if [[ $ckrestart == */bin/sleep* ]] || [[ $ckrestart == */bin/login* ]] || [[ $ckrestart == */usr/bin/ssh-agent* ]]; then
+	# Get the list of pids of login and sleep processes, perl puts the newlines back in
+	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+\(/bin/login\)|\(/bin/sleep\)|\(/usr/bin/ssh-agent\).*|\1|' | grep '^[0-9]*$'`
+	# These can safely be killed as login will respawn and sleep will just move something earlier (or in the case it occurs - monkeysphere - just be restarted)
+	for pid in $pids; do
+		echo "Killing: "`ps --pid $pid | tail -n 1`
+		sudo kill $pid
+	done
+fi
+
+if [[ $ckrestart == */bin/bash* ]] ; then
+	# Get the list of pids of bash processes, perl puts the newlines back in
+	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/bin/bash.*|\1|' | grep '^[0-9]*$'`
+	for pid in $pids; do
+		psout=`ps --pid $pid | tail -n 1 | tr -s '[:space:]' ' '`
+		if [[ `echo $psout | cut -d ' ' -f 2` == 'hvc0' ]]; then
+			echo "Killing hvc0 bash"
+			sudo kill $pid
+			break
+		fi
+		if [[ `echo $psout | cut -d ' ' -f 4` == 'xe-daemon' ]]; then
+			echo "Restarting xe-linux-distribution"
+			sudo service xe-linux-distribution restart
+		fi
+	done
+fi
+
+if [[ $ckrestart == */sbin/dhclient* ]] ; then
+	# Get the list of pids of bash processes, perl puts the newlines back in
+	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/sbin/dhclient.*|\1|' | grep '^[0-9]*$'`
+	for pid in $pids; do
+		echo "Killing dhclient and starting it"
+		sudo kill $pid
+		sudo dhclient
+		break
+	done
+fi
+
+### Automatic cases
 
 # Try and automatically restart as much as we can
 # When $nonefound exists it is the only line and so the rest does not execute.
