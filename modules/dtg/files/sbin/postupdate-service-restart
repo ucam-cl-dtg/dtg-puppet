@@ -44,7 +44,7 @@ if [[ $ckrestart == *openjdk* ]]; then
 	done
 fi
 
-if [[ $ckrestart == */bin/sleep* ]] || [[ $ckrestart == */bin/login* ]] || [[ $ckrestart == */usr/bin/ssh-agent* ]]; then
+if [[ $ckrestart == */bin/sleep* ]] || [[ $ckrestart == */bin/login* ]] || [[ $ckrestart == */usr/bin/ssh-agent* ]] || [[ $ckrestart == */sbin/getty* ]]; then
 	echo "Need to restart sleep, login, ssh-agent or getty"
 	# Get the list of pids of login and sleep processes, perl puts the newlines back in
 	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's&.*\s\+\([0-9]\+\)\s\+\(\(/bin/login\)\|\(/bin/sleep\)\|\(/usr/bin/ssh-agent\)\|\(/sbin/getty\)\).*&\1&' | grep '^[0-9]*$'`
