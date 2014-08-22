@@ -30,6 +30,7 @@ if [[ $ckrestart == *postgresql* ]]; then
 fi
 # Restart java based things
 if [[ $ckrestart == *openjdk* ]]; then
+	echo "Need to restart some java"
 	# Get the list of pids of java processes, perl puts the newlines back in
 	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/usr/lib/jvm.*|\1|' | grep '^[0-9]*$'`
 	for pid in $pids; do
@@ -44,8 +45,9 @@ if [[ $ckrestart == *openjdk* ]]; then
 fi
 
 if [[ $ckrestart == */bin/sleep* ]] || [[ $ckrestart == */bin/login* ]] || [[ $ckrestart == */usr/bin/ssh-agent* ]]; then
+	echo "Need to restart sleep, login, ssh-agent or getty"
 	# Get the list of pids of login and sleep processes, perl puts the newlines back in
-	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+\(/bin/login\)|\(/bin/sleep\)|\(/usr/bin/ssh-agent\).*|\1|' | grep '^[0-9]*$'`
+	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's&.*\s\+\([0-9]\+\)\s\+\(\(/bin/login\)\|\(/bin/sleep\)\|\(/usr/bin/ssh-agent\)\|\(/sbin/getty\)\).*&\1&' | grep '^[0-9]*$'`
 	# These can safely be killed as login will respawn and sleep will just move something earlier (or in the case it occurs - monkeysphere - just be restarted)
 	for pid in $pids; do
 		echo "Killing: "`ps --pid $pid | tail -n 1`
@@ -54,6 +56,7 @@ if [[ $ckrestart == */bin/sleep* ]] || [[ $ckrestart == */bin/login* ]] || [[ $c
 fi
 
 if [[ $ckrestart == */bin/bash* ]] ; then
+	echo "Need to restart some bash"
 	# Get the list of pids of bash processes, perl puts the newlines back in
 	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/bin/bash.*|\1|' | grep '^[0-9]*$'`
 	for pid in $pids; do
@@ -71,6 +74,7 @@ if [[ $ckrestart == */bin/bash* ]] ; then
 fi
 
 if [[ $ckrestart == */sbin/dhclient* ]] ; then
+	echo "need to restart dhclient"
 	# Get the list of pids of bash processes, perl puts the newlines back in
 	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/sbin/dhclient.*|\1|' | grep '^[0-9]*$'`
 	for pid in $pids; do
