@@ -84,17 +84,17 @@ if ( $::monitor ) {
   nagios::monitor { 'deviceanalyzer':
     parents    => ['nas04', 'nas02'],
     address    => 'deviceanalyzer.cl.cam.ac.uk',
-    hostgroups => [ 'http-servers', 'ssh-servers' ],
+    hostgroups => [ 'http-servers', 'ssh-servers', 'https-servers' ],
   }
   nagios::monitor { 'secure.deviceanalyzer':
     parents    => 'deviceanalyzer',
     address    => 'secure.deviceanalyzer.cl.cam.ac.uk',
-    hostgroups => [ 'http-servers' ],
+    hostgroups => [ 'http-servers', 'https-servers' ],
   }
   nagios::monitor { 'upload.deviceanalyzer':
     parents    => 'deviceanalyzer',
     address    => 'upload.deviceanalyzer.cl.cam.ac.uk',
-    hostgroups => [ 'http-servers' ],
+    hostgroups => [ 'http-servers', 'https-servers' ],
   }
   munin::gatherer::configure_node { 'hound4': }
   munin::gatherer::configure_node { 'deviceanalyzer': }

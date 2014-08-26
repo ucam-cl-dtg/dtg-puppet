@@ -27,11 +27,11 @@ node /acr31-containers(-\d+)?/ {
   
 }
 
-#if ( $::monitor ) {
-#  nagios::monitor { 'containers':
-#    parents    => '',
-#    address    => 'containers.dtg.cl.cam.ac.uk',
-#    hostgroups => [ 'ssh-servers' , 'http-servers' ],
-#  }
-#  munin::gatherer::configure_node { 'containers': }
-#}
+if ( $::monitor ) {
+  nagios::monitor { 'containers-1':
+    parents    => 'nas04',
+    address    => 'containers-1.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers' , 'https-servers' ],
+  }
+  munin::gatherer::configure_node { 'containers-1': }
+}
