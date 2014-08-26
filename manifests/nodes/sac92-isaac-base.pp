@@ -130,4 +130,10 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers' , 'http-servers' ],
   }
   munin::gatherer::configure_node { 'isaac-live': }
+
+  nagios::monitor { 'isaac-physics':
+    parents    => 'isaac-live',
+    address    => 'isaacphysics.org',
+    hostgroups => ['https-servers'],
+  }
 }
