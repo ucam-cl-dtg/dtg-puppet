@@ -24,6 +24,12 @@ node /acr31-containers(-\d+)?/ {
     ensure => directory,
     owner => acr31,
   }
+
+  dtg::add_user { 'kls82':
+    real_name => 'Katie Scott',
+    keys      => 'Katie Scott (ssh) <kls82@cam.ac.uk>',
+    uid       => 233375, # From MCS linux `getent passwd kls82`
+  }
   
 }
 
