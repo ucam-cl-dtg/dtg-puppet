@@ -132,7 +132,7 @@ if ( $::monitor ) {
   munin::gatherer::configure_node { 'isaac-live': }
 
   nagios::monitor { 'isaac-physics':
-    parents    => 'isaac-live',
+    parents    => ['isaac-live', 'balancer'],
     address    => 'isaacphysics.org',
     hostgroups => ['https-servers'],
   }
