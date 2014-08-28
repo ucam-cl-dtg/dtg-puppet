@@ -41,6 +41,8 @@ node /urop2014(-\d+)?.dtg.cl.cam.ac.uk/ {
     uid       => 233375, # From MCS linux `getent passwd kls82`
   }
 
+  User<|title == sac92 |> { groups +>[ 'adm' ]}
+
   # Specific config
   class {'dtg::tomcat': version => '7'}
   class {'dtg::tomcat::raven':}
