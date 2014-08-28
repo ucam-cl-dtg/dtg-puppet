@@ -1,4 +1,4 @@
-node 'balancer.dtg.cl.cam.ac.uk' {
+node /balancer(-\d+)?/ {
   include 'dtg::minimal'
   
   User<|title == sac92 |> { groups +>[ 'adm' ]}
@@ -26,7 +26,6 @@ node 'balancer.dtg.cl.cam.ac.uk' {
     group    => 'root'
   }
 
-
   $packages = ['rssh', 'inotify-tools']
   package{$packages:
     ensure => installed
@@ -36,7 +35,6 @@ node 'balancer.dtg.cl.cam.ac.uk' {
     line => 'allowsftp',
     path => '/etc/rssh.conf', 
   }
-
 }
 
 if ( $::monitor ) {
