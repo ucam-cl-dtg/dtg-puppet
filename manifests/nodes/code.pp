@@ -2,7 +2,28 @@ node 'code.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   class {'apache': }
   class {'dtg::apache::raven': server_description => 'DTG Code Server'}
-  class {'dtg::maven': }
+  class {'dtg::maven':
+    sshmirror_keyids => [
+    'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
+    'Oliver Chick <oc243@cam.ac.uk>',
+    'Lucian Carata <lc525@cam.ac.uk>',
+    'James Snee <jas250@cam.ac.uk>',
+    'Andrew Rice <acr31@cam.ac.uk>',
+    'Daniel Wagner (ssh) <wagner.daniel.t@gmail.com>',
+    'Mattias Linnap <mattias@linnap.com>','Mattias Linnap (llynfi-ssh) <mattias@linnap.com>','Mattias Linnap (macmini-ssh) <mattias@linnap.com>',
+    'Thomas Bytheway <thomas.bytheway@cl.cam.ac.uk>',
+    'Alastair Beresford (ssh) <arb33@cam.ac.uk>',
+    'Ian Davies (ssh) <ipd21@cam.ac.uk>',
+    'Ripduman Sohan (Cambridge Key) <ripduman.sohan@cl.cam.ac.uk>',
+    'Stephen Cummins (Main key) <sacummins@gmail.com>',
+    'Kovacsics Robert (Alias "kr2") <kovirobi@gmail.com>',
+    'Tom Lefley <tl364@cam.ac.uk>',
+    'Isaac Dunn <ird28@cam.ac.uk>',
+    'Alexander Simpson (ssh) <as2388@cam.ac.uk>',
+    'Raahil Shah (ssh) <rds46@cam.ac.uk>',
+    'Katie Scott (ssh) <kls82@cam.ac.uk>'
+    ]
+  }
   class {'dtg::firewall::publichttp':}
   class {'dtg::git':}
   class {'dtg::git::mirror::server':}

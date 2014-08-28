@@ -1,9 +1,10 @@
-node 'balancer.dtg.cl.cam.ac.uk' {
+node /balancer(-\d+)?/ {
   include 'dtg::minimal'
   
   User<|title == sac92 |> { groups +>[ 'adm' ]}
   
   class {'dtg::firewall::publichttp':}
+  class {'dtg::firewall::publichttps':}
 
   class {'apache::ubuntu': } ->
   class {'dtg::apache::raven': server_description => 'Isaac Physics'} ->
@@ -12,6 +13,7 @@ node 'balancer.dtg.cl.cam.ac.uk' {
   apache::module {'rewrite':} ->
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
+  apache::module {'ssl':} ->
   apache::site {'balancer':
     source => 'puppet:///modules/dtg/apache/balancer.conf',
   }->
@@ -24,7 +26,6 @@ node 'balancer.dtg.cl.cam.ac.uk' {
     group    => 'root'
   }
 
-
   $packages = ['rssh', 'inotify-tools']
   package{$packages:
     ensure => installed
@@ -34,14 +35,13 @@ node 'balancer.dtg.cl.cam.ac.uk' {
     line => 'allowsftp',
     path => '/etc/rssh.conf', 
   }
-
 }
 
 if ( $::monitor ) {
   nagios::monitor { 'balancer':
     parents    => 'nas04',
     address    => 'balancer.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' , 'http-servers' ],
+    hostgroups => [ 'ssh-servers', 'http-servers', 'https-servers'],
   }
   munin::gatherer::configure_node { 'balancer': }
 }

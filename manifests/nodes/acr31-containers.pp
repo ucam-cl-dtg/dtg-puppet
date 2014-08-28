@@ -57,14 +57,21 @@ node /acr31-containers(-\d+)?/ {
     ensure => directory,
     owner => acr31,
   }
+
+  dtg::add_user { 'kls82':
+    real_name => 'Katie Scott',
+    groups    => [],
+    keys      => 'Katie Scott (ssh) <kls82@cam.ac.uk>',
+    uid       => 233375, # From MCS linux `getent passwd kls82`
+  }
   
 }
 
-#if ( $::monitor ) {
-#  nagios::monitor { 'containers':
-#    parents    => '',
-#    address    => 'containers.dtg.cl.cam.ac.uk',
-#    hostgroups => [ 'ssh-servers' , 'http-servers' ],
-#  }
-#  munin::gatherer::configure_node { 'containers': }
-#}
+if ( $::monitor ) {
+  nagios::monitor { 'containers-1':
+    parents    => 'nas04',
+    address    => 'containers-1.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers' , 'https-servers' ],
+  }
+  munin::gatherer::configure_node { 'containers-1': }
+}

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Hourly cron job to create hardlinked copy of all the repos into one directory
+# tree for sshmirror
+
+repos='releases public central snapshots'
+
+for repo in $repos; do
+    cp -aln /srv/nexus/sonatype-work/nexus/storage/$repo/* /srv/nexus/sshmirror/
+done
