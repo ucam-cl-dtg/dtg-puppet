@@ -99,7 +99,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
       mode   => 755,
       owner  => mongodb,
       group  => mongodb,
-      source => "puppet:///modules/dtg/files/isaac/mongodb/isaac-mongodb-backup.sh"
+      source => "puppet:///modules/dtg/isaac/mongodb/isaac-mongodb-backup.sh"
   }
   ->
   cron {"isaac-backups":
