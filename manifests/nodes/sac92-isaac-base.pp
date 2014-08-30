@@ -87,6 +87,27 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     line => 'allowrsync',
     path => '/etc/rssh.conf', 
   }
+  
+  file { "/local/data/rutherford/database-backup":
+    ensure => "directory",
+    owner  => "mongodb",
+    group  => "mongodb",
+    mode   => 744,
+  }
+  ->
+  file { "/local/data/rutherford/isaac-mongodb-backup.sh":
+      mode   => 755,
+      owner  => mongodb,
+      group  => mongodb,
+      source => "puppet:///modules/dtg/files/isaac/mongodb/isaac-mongodb-backup.sh"
+  }
+  ->
+  cron {"isaac-backups":
+    command => "/local/data/rutherford/isaac-mongodb-backup.sh",
+    user    => mongodb,
+    hour    => 0,
+    minute  => 0
+  }
 
   class { 'dtg::acr31-rutherford::apt_elasticsearch': stage => 'repos' }
   package { ['elasticsearch']:
