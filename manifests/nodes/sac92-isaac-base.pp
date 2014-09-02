@@ -94,20 +94,6 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     shell => '/bin/bash',
     home => "/usr/share/isaac"
   }
-  ->
-  file { ["/usr/share/isaac/", "/usr/share/isaac/.ssh","/usr/share/isaac/backup"]:
-    ensure => "directory",
-    owner  => "isaac",
-    group  => "root",
-    mode   => 644,
-  }
-  ->
-  file {'/usr/share/isaac/.ssh/authorized_keys':
-    ensure => file,
-    owner  => 'isaac',
-    group  => 'isaac',
-    mode   => '0600',
-  }
 
   file { "/local/data/rutherford/database-backup":
     ensure => "directory",

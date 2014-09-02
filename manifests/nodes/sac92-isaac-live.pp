@@ -1,4 +1,25 @@
 node /(\w+-)?isaac-live/ {
+  # dbbackup user
+  user {'isaac':
+    ensure => present,
+    shell => '/bin/bash',
+    home => "/usr/share/isaac"
+  }
+  ->
+  file { ["/usr/share/isaac/", "/usr/share/isaac/.ssh"]:
+    ensure => "directory",
+    owner  => "isaac",
+    group  => "root",
+    mode   => 644,
+  }
+  ->
+  file {'/usr/share/isaac/.ssh/authorized_keys':
+    ensure => file,
+    owner  => 'isaac',
+    group  => 'isaac',
+    mode   => '0600',
+  }
+  ->
   dtg::backup::serversetup{'Mongodb backup':
     backup_directory   => '/local/data/rutherford/database-backup',
     script_destination => '/usr/share/isaac/backup',
