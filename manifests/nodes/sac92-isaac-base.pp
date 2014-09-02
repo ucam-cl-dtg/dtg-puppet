@@ -18,7 +18,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     mode   => 640,
   }
   ->
-  file { "/local/data/rutherford/git-contentstore":
+  file { ["/local/data/rutherford/git-contentstore", "/local/data/rutherford/conf"]:
     ensure => "directory",
     owner  => "tomcat7",
     group  => "tomcat7",
