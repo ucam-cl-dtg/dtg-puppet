@@ -101,6 +101,13 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     group  => "root",
     mode   => 644,
   }
+  ->
+  file {'/usr/share/isaac/.ssh/authorized_keys':
+    ensure => file,
+    owner  => 'isaac',
+    group  => 'isaac',
+    mode   => '0600',
+  }
 
   file { "/local/data/rutherford/database-backup":
     ensure => "directory",
