@@ -204,6 +204,11 @@ node /nas01/ {
     host => 'code.dtg.cl.cam.ac.uk',
     require => Class["dtg::backup::host"],
   }
+  dtg::backup::hostsetup{'isaac_physics_db':
+    user => 'isaac',
+    host => 'isaac-live.dtg.cl.cam.ac.uk',
+    require => Class["dtg::backup::host"],
+  }
 
   user {'weather':
     ensure => 'present',
