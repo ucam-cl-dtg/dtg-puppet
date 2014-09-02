@@ -28,6 +28,14 @@ node /(\w+-)?isaac-live/ {
   }
 }
 
+if ( $::is_backup_server ) {
+  dtg::backup::hostsetup{'isaac_physics_db':
+    user => 'isaac',
+    host => 'isaac-live.dtg.cl.cam.ac.uk',
+    require => Class["dtg::backup::host"],
+  }
+}
+
 if ( $::monitor ) {
   nagios::monitor { 'isaac-live':
     parents    => 'nas04',

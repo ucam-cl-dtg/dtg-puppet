@@ -89,6 +89,19 @@ node 'code.dtg.cl.cam.ac.uk' {
   #dtg::git::mirror::repo{'': source => ''}
 
 }
+if ( $::is_backup_server ) {
+  dtg::backup::hostsetup{'git_repositories':
+    user => 'git',
+    host => 'code.dtg.cl.cam.ac.uk',
+    require => Class["dtg::backup::host"],
+  }
+  dtg::backup::hostsetup{'nexus_repositories':
+    user => 'nexus',
+    host => 'code.dtg.cl.cam.ac.uk',
+    require => Class["dtg::backup::host"],
+  }
+}
+
 if ( $::monitor ) {
   nagios::monitor { 'code':
     parents    => 'nas04',
