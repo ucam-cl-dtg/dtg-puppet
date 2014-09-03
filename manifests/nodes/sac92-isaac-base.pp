@@ -38,6 +38,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   apache::module {'cgi':} ->
   apache::module {'headers':} ->
   apache::module {'rewrite':} ->
+  apache::module {'expires':} ->
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
   apache::site {'isaac-server':
