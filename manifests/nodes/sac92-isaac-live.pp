@@ -1,18 +1,11 @@
-node /(\w+-)?isaac-live/ {
-  # dbbackup user
-  user {'isaac':
-    ensure => present,
-    shell => '/bin/bash',
-    home => "/usr/share/isaac"
-  }
-  ->
+if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
   file { ["/usr/share/isaac/", "/usr/share/isaac/.ssh"]:
     ensure => "directory",
     owner  => "isaac",
     group  => "root",
     mode   => 644,
   }
-  ->
+
   file {'/usr/share/isaac/.ssh/authorized_keys':
     ensure => file,
     owner  => 'isaac',

@@ -10,14 +10,14 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     group  => "tomcat7",
     mode   => 644,
   }
-  ->
+  
   file { "/local/data/rutherford/keys/":
     ensure => "directory",
     owner  => "tomcat7",
     group  => "tomcat7",
     mode   => 640,
   }
-  ->
+  
   file { ["/local/data/rutherford/git-contentstore", "/local/data/rutherford/conf"]:
     ensure => "directory",
     owner  => "tomcat7",
@@ -78,15 +78,17 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   package{$packages:
     ensure => installed
   }
-  ->
+  
   file_line { 'rssh-allow-scp':
     line => 'allowscp',
     path => '/etc/rssh.conf', 
+    require => Package['rssh'],
   }
-  ->
+  
   file_line { 'rssh-allow-rsync':
     line => 'allowrsync',
     path => '/etc/rssh.conf', 
+    require => Package['rssh'],
   }
   
   # dbbackup user
