@@ -12,13 +12,13 @@ define dtg::sshtunnelhost ($username, $home, $destination, $keys) {
     ensure => directory,
     owner  => 'root',
     group  => 'root',
-    mode   => 'a+rx',
+    mode   => '0555',
   }
   file { "${home}/.ssh":
     ensure => directory,
     owner  => $username,
     group  => $username,
-    mode   => 'u+rx',
+    mode   => '0500',
   }
   /* This will become useful in later versions of puppet but is not available in the 2.7 puppet installed on the entropy server
 
