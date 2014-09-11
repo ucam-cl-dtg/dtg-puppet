@@ -119,7 +119,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     minute  => 0
   }
 
-  class { 'dtg::acr31-rutherford::apt_elasticsearch': stage => 'repos' }
+  class { 'dtg::apt_elasticsearch': stage => 'repos' }
   package { ['elasticsearch']:
       ensure => installed,
       require => Apt::Source['elasticsearch-source']
@@ -130,7 +130,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   }
 }
 
-class dtg::acr31-rutherford::apt_elasticsearch {
+class dtg::apt_elasticsearch {
   apt::key { 'elasticsearch-key':
     key =>'D88E42B4',
     key_source => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
