@@ -101,14 +101,14 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   file { "/local/data/rutherford/database-backup":
     ensure => "directory",
     owner  => "mongodb",
-    group  => "mongodb",
+    group  => "root",
     mode   => 755,
   }
   ->
   file { "/local/data/rutherford/isaac-mongodb-backup.sh":
       mode   => 755,
       owner  => mongodb,
-      group  => mongodb,
+      group  => root,
       source => "puppet:///modules/dtg/isaac/mongodb/isaac-mongodb-backup.sh"
   }
   ->
