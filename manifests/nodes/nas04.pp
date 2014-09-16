@@ -82,6 +82,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     command => "nice rsync -a --delete /mnt/nas02/deviceanalyzer /$pool_name/deviceanalyzer-nas02-backup",
     user    => 'root',
     minute  => cron_minute("deviceanalyzer-nas02-backup"),
+    hour    => cron_hour("deviceanalyzer-nas02-backup"),
     require => [Dtg::Zfs::Fs['deviceanalyzer-nas02-backup'], File_line['mount nas02']],
   }
 
