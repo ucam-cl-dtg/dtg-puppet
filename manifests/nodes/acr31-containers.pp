@@ -20,6 +20,10 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
     unless => "/bin/grep -q '^docker:\\S*www-data' /etc/group",
     command => "/usr/sbin/usermod -aG docker www-data",
   }
+  ->
+  file {"/etc/default/docker.io":
+    content => "/etc/default/docker"
+  }
     
   class { 'dtg::containers::apt_java': stage => 'repos' }
   class {'dtg::firewall::publichttps':} ->
@@ -45,7 +49,7 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
   }
   ->
   exec {"untar-tomcat8":
-    command => "tar zxf /opt/apache-tomcat-${tomcat_version}.tar.gz",
+    command => "tar zxf /opt/apache-tomcat-${tomcat_version}.tar.gz && chown -R www-data /opt/apache-tomcat-${tomcat_version}",
     cwd => "/opt",
     onlyif => "test ! -d /opt/apache-tomcat-${tomcat_version}"
   }
