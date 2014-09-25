@@ -79,3 +79,6 @@
 [submodule "modules/munin/files/contrib"]
 	path = modules/munin/files/contrib
 	url = https://github.com/ucam-cl-dtg/contrib.git
+[submodule "modules/docker"]
+	path = modules/docker
+	url = git@github.com:garethr/garethr-docker.git
