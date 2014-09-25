@@ -106,45 +106,31 @@ class dtg::firewall::git inherits dtg::firewall::default {
     action  => 'accept',
   }
 }
-class dtg::firewall::XtoY ($x,$y,$private) inherits dtg::firewall::default {
-  firewall { '020 redirect $x to $y':
-    dport   => $x,
+class dtg::firewall::80to8080 ($private = true) inherits dtg::firewall::default {
+  firewall { '020 redirect 80 to 8080':
+    dport   => '80',
     table   => 'nat',
     chain   => 'PREROUTING',
     jump    => 'REDIRECT',
     iniface => 'eth0',
-    toports => $y,
+    toports => '8080',
   }
-  firewall { '020 redirect $x to $y localhost':
-    dport   => $x,
+  firewall { '020 redirect 80 to 8080 localhost':
+    dport   => '80',
     table   => 'nat',
     chain   => 'OUTPUT',
     jump    => 'REDIRECT',
-    toports => $7,
+    toports => '8080',
     destination => '127.0.0.1/8',
   }
-  firewall { '020 accept on $y':
+  firewall { '020 accept on 8080':
     proto   => 'tcp',
-    dport   => $y
+    dport   => '8080',
     action  => 'accept',
     source  => $private ? {
       true  => $::local_subnet,
       false => undef,
     }
-  }
-}
-class dtg::firewall::80to8080 ($private=true) {
-  dtg::firewall::XToY {'firewall-80to8080':
-    x = 80,
-    y = 8080,
-    private = $private
-  }
-}
-class dtg::firewall::443to8443 ($private=true) {
-  dtg::firewall::XToY {'firewall-443to8443':
-    x = 443,
-    y = 8443,
-    private = $private
   }
 }
 # The last rule which does the dropping
