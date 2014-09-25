@@ -22,10 +22,14 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
   }
   ->
   file {"/etc/default/docker.io":
-    content => "/etc/default/docker"
+    source => "/etc/default/docker"
+  }
+  ->
+  docker::image { 'ubuntu':
+    image_tag => '14.04'
   }
     
-  class { 'dtg::containers::apt_java': stage => 'repos' }
+  class {'dtg::containers::apt_java': stage => 'repos' }
   class {'dtg::firewall::publichttps':} ->
   class {'dtg::firewall::portforward': src=>"443",dest=>"8443",private=>false}
 
