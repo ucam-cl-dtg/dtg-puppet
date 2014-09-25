@@ -2,6 +2,14 @@
 
 set -e
 
+# To allow servers to disable this from taking effect if this would be dangerous
+if test -r '/etc/default/postupdate-service-restart' -a -f '/etc/default/postupdate-service-restart'
+then
+    source '/etc/default/postupdate-service-restart'
+else
+    ACTION=true
+fi
+
 # Intended to be run from cron to check that all services have been restarted that need to be after an update.
 
 nonefound="Found 0 processes using old versions of upgraded files"
@@ -16,6 +24,9 @@ fi
 if [[ $ckrestart == *"$nonefound"* ]]; then
 	exit 0
 fi
+
+# Disable doing anything on fragile servers
+if [ "$ACTION" = true ]; then
 
 ### Special Cases
 
@@ -96,6 +107,8 @@ if [ ! -z "$services" ]; then
 fi
 
 for service in $services; do sudo service "$service" restart; done
+
+fi # End ACTION
 
 # If there are still things left then this will output text which will be emailed by cron or displayed to the sysadmin
 

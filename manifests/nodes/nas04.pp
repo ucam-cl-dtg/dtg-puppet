@@ -5,8 +5,9 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
   $pool_name = 'dtg-pool0'
   $cl_share = "rw=@${local_subnet}"
-  $dtg_share = "rw=@${dtg_subnet},${desktop_ips}"
+  $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_ips}"
   $secgrp_subnet = '128.232.18.0/24'
+  $pig20_ip = '128.232.64.63'
 
   class {'dtg::zfs': }
 
@@ -14,22 +15,17 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     pool_names => [ $pool_name ]
   }
 
+
   dtg::zfs::fs{'vms':
     pool_name  => $pool_name,
     fs_name    => 'vms',
-    share_opts => 'rw=@128.232.20.18,128.232.20.20,128.232.20.22,128.232.20.24,128.232.20.26',
+    share_opts => 'rw=@128.232.20.18,rw=@128.232.20.20,rw=@128.232.20.22,rw=@128.232.20.24,rw=@128.232.20.26',
   }
 
   dtg::zfs::fs{'shin-backup':
     pool_name  => $pool_name,
     fs_name    => 'shin-backup',
     share_opts => "rw=@shin.cl.cam.ac.uk",
-  }
-
-  dtg::zfs::fs{'deviceanalyzer':
-    pool_name  => $pool_name,
-    fs_name    => 'deviceanalyzer',
-    share_opts => "$dtg_share,$secgrp_subnet,$deviceanalyzer_ip",
   }
 
   dtg::zfs::fs{'abbot-archive':
@@ -43,6 +39,52 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     fs_name    => 'time',
     share_opts => $dtg_share,
   }
+
+
+  dtg::zfs::fs{'deviceanalyzer':
+    pool_name  => $pool_name,
+    fs_name    => 'deviceanalyzer',
+    share_opts => "$dtg_share,rw=@$deviceanalyzer_ip,ro=@$secgrp_subnet,ro=@$pig20_ip",
+  }
+
+  dtg::zfs::fs{ 'deviceanalyzer-nas02-backup':
+    pool_name  => $pool_name,
+    fs_name    => 'deviceanalyzer-nas02-backup',
+    share_opts => 'off',
+  }
+
+  # Mount nas02 in order to back it up.
+  file {'/mnt/nas02':
+    ensure => directory,
+    owner  => 'root',
+  }
+  file {'/mnt/nas02/deviceanalyzer':
+    ensure => directory,
+    owner  => 'root',
+  } ->
+  package {'autofs':
+    ensure => present,
+  } ->
+  file {'/etc/auto.nas02':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => 'a=r',
+    content => 'deviceanalyzer  -ro  nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer',
+  } ->
+  file_line {'mount nas02':
+    line => '/mnt/nas02   /etc/auto.nas02',
+    path => '/etc/auto.master',
+  }
+
+  cron { 'deviceanalyzer-nas02-backup':
+    ensure  => present,
+    command => "nice rsync -a --delete /mnt/nas02/deviceanalyzer /$pool_name/deviceanalyzer-nas02-backup",
+    user    => 'root',
+    minute  => cron_minute("deviceanalyzer-nas02-backup"),
+    require => [Dtg::Zfs::Fs['deviceanalyzer-nas02-backup'], File_line['mount nas02']],
+  }
+
 
   cron { 'zfs_weekly_scrub':
     command => '/sbin/zpool scrub dtg-pool0',
@@ -177,7 +219,15 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     mail_to => "dtg-infra@cl.cam.ac.uk",
     service_name => 'smartmontools',
     devicescan_options => "-m dtg-infra@cl.cam.ac.uk -M daily"
-  }  
+  }
+
+  file {'/etc/default/postupdate-service-restart':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => 'a=r',
+    content => 'ACTION=false',
+  }
 }
 
 if ( $::monitor ) {

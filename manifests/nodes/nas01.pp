@@ -194,16 +194,6 @@ node /nas01/ {
   class { "dtg::backup::host":
     directory => '/data/backups',
   }
-  dtg::backup::hostsetup{'git_repositories':
-    user => 'git',
-    host => 'code.dtg.cl.cam.ac.uk',
-    require => Class["dtg::backup::host"],
-  }
-  dtg::backup::hostsetup{'nexus_repositories':
-    user => 'nexus',
-    host => 'code.dtg.cl.cam.ac.uk',
-    require => Class["dtg::backup::host"],
-  }
 
   user {'weather':
     ensure => 'present',
