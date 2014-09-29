@@ -135,6 +135,7 @@ node /nas01/ {
     export => {
       # host           options
       "${::weather_ip}" => 'rw,sync,root_squash',
+      '128.232.28.41' => 'ro,sync,root_squash',#Tien Han Chua's VM
     },
   }
 
