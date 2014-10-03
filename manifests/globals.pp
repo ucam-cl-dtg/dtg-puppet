@@ -145,7 +145,7 @@ if ( $::fqdn =~ /(monitor|prism).dtg.cl.cam.ac.uk/ ) {
 $unattended_upgrade_notify_emailaddress = $from_address
 
 #Firewall config
-$local_subnet = '128.232.0.0/16'
+$local_subnet = '128.232.0.0/17'
 $dtg_subnet = '128.232.20.0/22'
 
 # Backup config
