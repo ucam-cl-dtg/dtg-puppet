@@ -53,6 +53,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => 'off',
   }
 
+/* Not using this method ATM
   # Mount nas02 in order to back it up.
   file {'/mnt/nas02':
     ensure => directory,
@@ -75,16 +76,16 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   file_line {'mount nas02':
     line => '/mnt/nas02   /etc/auto.nas02',
     path => '/etc/auto.master',
-  }
+  }*/
 
-  /*cron { 'deviceanalyzer-nas02-backup':
+  cron { 'deviceanalyzer-nas02-backup':
     ensure  => present,
-    command => "nice rsync -a --delete /mnt/nas02/deviceanalyzer /$pool_name/deviceanalyzer-nas02-backup",
+    command => "pgrep -c rsync || nice rsync -az --delete --rsync-path='/usr/syno/bin/rsync' nas04@nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer/ /$pool_name/deviceanalyzer-nas02-backup",
     user    => 'root',
     minute  => cron_minute("deviceanalyzer-nas02-backup"),
     hour    => cron_hour("deviceanalyzer-nas02-backup"),
-    require => [Dtg::Zfs::Fs['deviceanalyzer-nas02-backup'], File_line['mount nas02']],
-  }*/
+    require => [Dtg::Zfs::Fs['deviceanalyzer-nas02-backup']],
+  }
 
 
   cron { 'zfs_weekly_scrub':
