@@ -109,6 +109,12 @@ class admin_users {
       keys      => ['Stephen Cummins (Main key) <sacummins@gmail.com>'],
       uid       => 3286,
     }
+    dtg::add_user { 'sak70':
+      real_name => 'Stephan Kollmann',
+      groups    => [],
+      keys      => ['Stephan Kollmann (Computer Laboratory) <sak70@cam.ac.uk>'],
+      uid       => 3361,
+    }
     
 }
 # Admin user ids to be given root on the nodes via monkeysphere
