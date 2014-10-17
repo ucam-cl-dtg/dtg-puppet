@@ -56,6 +56,10 @@ class dtg::entropy::host ($certificate, $private_key, $ca, $crl = false){
     host => true,
     port => '777',
     masterkey => '',
+    stage => $stage,
+  }
+  class { 'sysctl::base':
+    stage => $stage,
   }
 }
 class dtg::entropy::client ($cafile, $host_address, $host_port = '7776', $local_port = '7777') {
