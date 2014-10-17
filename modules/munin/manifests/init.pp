@@ -20,7 +20,7 @@ class munin::gatherer(
     require => Package['munin'],
   }
 
-  apache::site { "munin.conf": 
+  apache::site { "munin":
     content => template("munin/munin.erb")
   }
   file { "/etc/apache2/conf.d/munin":

@@ -175,7 +175,7 @@ class nagios::server inherits nagios::params {
 
   # Setup apache
   class { "apache": }
-  apache::site { "nagios.conf":
+  apache::site { "nagios":
     content => template("nagios/apache/nagios.conf.erb")
   }
   if $nagios_ssl {
