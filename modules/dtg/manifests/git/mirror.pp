@@ -106,6 +106,7 @@ define dtg::git::mirror::repo ($source) {
   cron {"gitmirror-gc-${name}":
     ensure  => present,
     command => "cd /srv/gitmirror/repositories/${name}.git && git repack -a -d --depth=100 --window=100",
+    user    => 'gitmirror',
     hour    => cron_hour($name),
     minute  => cron_minute($name),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
@@ -113,6 +114,7 @@ define dtg::git::mirror::repo ($source) {
   cron {"gitmirror-update-server-info-${name}":
     ensure  => present,
     command => "cd /srv/gitmirror/repositories/${name}.git && git update-server-info",
+    user    => 'gitmirror',
     minute  => cron_minute("${name} update"),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
   }
