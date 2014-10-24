@@ -14,7 +14,15 @@ class dtg::vm {
     owner  => "root",
     group  => "root"
   }
-
+  file {'/etc/init.d/vm-boot.sh':
+    ensure => file,
+    source => 'puppet:///modules/dtg/vm-boot.sh',
+    mode   => '0755',
+  }
+  file {'/etc/rc2.d/S76vm-boot':
+    ensure => 'link',
+    target => '/etc/init.d/vm-boot.sh'
+  }
 }
 # So that we can appy a stage to it
 class dtg::vm::repos {
