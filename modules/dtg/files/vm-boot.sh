@@ -1,4 +1,14 @@
 #! /bin/bash
+### BEGIN INIT INFO
+# Provides:          dtg-vm
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Should-Start:      $named
+# Default-Start:     2 3 4 5
+# Default-Stop:
+# Short-Description: DTG vm properties
+# Description:       Apply puppet on VM start
+### END INIT INFO
 
 PUPPETBARE=/etc/puppet-bare
 BOOTSTRAP="https://raw.github.com/ucam-cl-dtg/dtg-puppet/master/modules/dtg/files/bootstrap.sh"
