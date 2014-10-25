@@ -17,6 +17,8 @@ class dtg::vm {
   file {'/etc/init.d/vm-boot.sh':
     ensure => file,
     source => 'puppet:///modules/dtg/vm-boot.sh',
+    owner  => 'root',
+    group  => 'root',
     mode   => '0755',
   }
   file {'/etc/rc2.d/S76vm-boot':
