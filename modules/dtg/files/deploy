@@ -118,16 +118,11 @@ def upgrade_mc():
     # Remove unusued packages to reduce the chance of falling over
     # during the upgrade
     with show('output'):
-        sudo('rm /var/cache/apt/archives/lock')
-        sudo('rm /var/cache/debconf/*.dat')
-        sudo('apt-get remove -y grub-pc')
         sudo('apt-get -y dist-upgrade')
         sudo('apt-get -y autoremove')
-        # Remove all PPAs. Puppet will add them back after the update.
-        sudo('rm -rf /etc/apt/sources.list.d/')
+        sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
         sudo("sed -i 's/Prompt=lts/Prompt=normal/' /etc/update-manager/release-upgrades")
-        sudo('yes \'\' | ''do-release-upgrade -f DistUpgradeViewNonInteractive')
-
+        sudo('do-release-upgrade -f DistUpgradeViewNonInteractive')
 
 @task
 def security_update():
@@ -157,13 +152,8 @@ def add_remotes(repo, machines):
 def push_config(repo, mc, upgrade, sec_update):
     if mc['VM']:
         execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
-    if upgrade and mc not in ORIGIN:
-        # Run puppet before the upgrade to get any fixes related to the upgrade.
-        execute(run_puppet, hosts=[mc['hostname']])
+    if upgrade:
         execute(upgrade_mc, hosts=[mc['hostname']])
-        # Always rerun puppet after a do-release-upgrade. The upgrade resets
-        # config files.
-        execute(run_puppet, hosts=[mc['hostname']])
     if sec_update:
         execute(security_update, hosts=[mc['hostname']])
     print('Pushing to %s' % mc['name'])
