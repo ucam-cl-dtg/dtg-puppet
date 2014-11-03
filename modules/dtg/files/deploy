@@ -123,17 +123,25 @@ def upgrade_mc():
         sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
         sudo("sed -i 's/Prompt=lts/Prompt=normal/' /etc/update-manager/release-upgrades")
         sudo('do-release-upgrade -f DistUpgradeViewNonInteractive')
+        sudo('apt-get clean')
+        sudo('apt-get autoclean')
 
 @task
 def security_update():
     sudo('apt-get update')
     sudo('unattended-upgrade')
+    sudo('apt-get -y autoremove')
+    sudo('apt-get clean')
+    sudo('apt-get autoclean')
 
 
 def run_puppet():
     with show('output'):
         with cd('/etc/puppet'):
             run('sudo -H puppet apply --modulepath modules manifests/site.pp')
+        sudo('apt-get -y autoremove')
+        sudo('apt-get clean')
+        sudo('apt-get autoclean')
 
 @task
 def post_update_hook():
