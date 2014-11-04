@@ -35,6 +35,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     parameters => 'deny unknown-clients',
   }
   dhcp::host {
+    'inuit':mac => '00:92:58:00:53:c3', ip => '128.232.20.17';
     'puppy0':mac => "00:16:3E:E8:14:1C", ip => "128.232.20.28";
     'puppy1':mac => "00:16:3E:E8:14:1D", ip => "128.232.20.29";
     'puppy2':mac => "00:16:3E:E8:14:1E", ip => "128.232.20.30";
