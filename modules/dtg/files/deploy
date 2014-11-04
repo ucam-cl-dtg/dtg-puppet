@@ -25,8 +25,8 @@ ORIGIN = [ {'name': 'github', 'hostname': 'git@github.com', 'repo_loc':'ucam-cl-
 
 PHYSICAL_MACHINES = [ {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
                       {'name': 'nas04', 'hostname': 'nas04' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
-                      {'name': 'entropy', 'hostname': 'entropy' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False}
-                      {'name': 'rscfl', 'hostname': 'so-22-8' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False}
+                      {'name': 'entropy', 'hostname': 'entropy' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
+                      {'name': 'rscfl', 'hostname': 'so-22-8' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
                       {'name': 'rscfl1', 'hostname': 'so-22-9' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False}
                   ]
 
