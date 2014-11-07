@@ -33,7 +33,7 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
   class {'dtg::firewall::publichttps':} ->
   class {'dtg::firewall::portforward': src=>"443",dest=>"8443",private=>false}
 
-  $packages = ['oracle-java8-installer','libapr1']
+  $packages = ['oracle-java8-installer','libapr1','mongodb']
 
   $tomcat_version = "8.0.12"
   $tomcat_directory = "/opt/apache-tomcat-${tomcat_version}"
