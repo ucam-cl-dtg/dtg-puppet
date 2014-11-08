@@ -125,7 +125,8 @@ class admin_users {
 }
 # Admin user ids to be given root on the nodes via monkeysphere
 $ms_admin_user_ids = [
-  "Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>"
+  'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
+  'Oliver Chick <oc243@cam.ac.uk>'
 ]
 # Keyserver with the public keys to use for monkeysphere
 $ms_keyserver = 'keys.gnupg.net'
