@@ -5,6 +5,10 @@
   <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
   <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
 
+  <GlobalNamingResources>                                                      
+    <Resource auth="Container" description="User database that can be updated and saved" factory="org.apache.catalina.users.MemoryUserDatabaseFactory" name="UserDatabase" pathname="conf/tomcat-users.xml" type="org.apache.catalina.UserDatabase"/>
+  </GlobalNamingResources>
+
   <Service name="Catalina">
     <Connector port="8443" protocol="HTTP/1.1"
                maxThreads="150" SSLEnabled="true" scheme="https" secure="true"
@@ -22,6 +26,9 @@
                prefix="localhost_access_log" suffix=".txt"
                pattern="%h %l %u %t &quot;%r&quot; %s %b" />
 
+	<Realm className="org.apache.catalina.realm.LockOutRealm">
+          <Realm className="org.apache.catalina.realm.UserDatabaseRealm" resourceName="UserDatabase"/>
+        </Realm>
       </Host>
     </Engine>
   </Service>
