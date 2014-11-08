@@ -119,7 +119,7 @@ class admin_users {
       real_name => 'David Turner',
       groups    => [],
       keys      => ['David W. Turner <david.w.turner@cl.cam.ac.uk>'],
-      uid       => 3361,
+      uid       => 3195,
     }
     
 }
