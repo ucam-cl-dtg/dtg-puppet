@@ -213,6 +213,8 @@ def main(args):
     os.environ['GIT_SSH'] = ssh_no_fngr
 
     for mc in machines:
+        if mc in ORIGIN:
+            continue
         try:
             push_config(repo, mc, args.upgrade, args.security_update)
         except GitCommandError:
