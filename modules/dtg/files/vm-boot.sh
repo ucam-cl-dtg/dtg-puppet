@@ -28,6 +28,11 @@ if [ -e /dev/xvdb ] && [ ! -e /dev/xvdb1 ]; then
     mount /local/data
 fi
 
+# Make sure the machine is up-to-date.
+apt-get update
+apt-get -y dist-upgrade
+apt-get -y autoremove
+
 # should we run bootstrap.sh?
 
 if [ ! -d $PUPPETBARE ]; then
