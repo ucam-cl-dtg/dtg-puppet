@@ -62,7 +62,7 @@ node /open-room-map(-\d+)?/ {
   class {'dtg::firewall::publichttp':}
 
   class { 'postgresql::globals':
-    version => '9.1',
+    version => '9.4',
   }
   ->
   class { 'postgresql::server': 
