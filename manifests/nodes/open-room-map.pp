@@ -27,7 +27,7 @@ node /open-room-map(-\d+)?/ {
     artifact_version => $servlet_version,
     artifact_type => "war",
     destination_directory => "/usr/local/share/openroommap-servlet",
-    symlink => "/var/lib/tomcat{$tomcat_version}/webapps/openroommap.war",
+    symlink => "/var/lib/tomcat${tomcat_version}/webapps/openroommap.war",
   }
   
   # Install the openroommap static web tree.  This is hosted by apache
