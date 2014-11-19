@@ -85,7 +85,7 @@ node /berrycider(-\d+)?/ {
   }
 
   class { 'postgresql::globals':
-    version => '9.1',
+    version => '9.4',
   }
   ->  
   class { 'postgresql::server': 
