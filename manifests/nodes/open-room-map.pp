@@ -18,15 +18,16 @@ node /open-room-map(-\d+)?/ {
     repeat => 1,
   }
 
+  $tomcat_version = '8'
   # Install the openroommap servlet code.  This requires tomcat
-  class {'dtg::tomcat': version => '7'}
+  class {'dtg::tomcat': version => $tomcat_version}
   ->
   dtg::nexus::fetch{"download-servlet":
     artifact_name => "open-room-map",
     artifact_version => $servlet_version,
     artifact_type => "war",
     destination_directory => "/usr/local/share/openroommap-servlet",
-    symlink => "/var/lib/tomcat7/webapps/openroommap.war",
+    symlink => "/var/lib/tomcat{$tomcat_version}/webapps/openroommap.war",
   }
   
   # Install the openroommap static web tree.  This is hosted by apache
