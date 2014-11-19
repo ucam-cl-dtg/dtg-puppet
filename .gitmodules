@@ -48,7 +48,7 @@
 	url = https://github.com/lc525/puppet-rvm
 [submodule "modules/postgresql"]
 	path = modules/postgresql
-	url = git://github.com/puppetlabs/puppet-postgresql.git
+	url = git://github.com/ucam-cl-dtg/puppetlabs-postgresql.git
 [submodule "modules/dhcp"]
 	path = modules/dhcp
 	url = git://github.com/puppetlabs/puppetlabs-dhcp.git
