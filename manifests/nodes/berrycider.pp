@@ -8,14 +8,15 @@ node /berrycider(-\d+)?/ {
   $install_directory = "/local/data/webapps"
   
   include 'dtg::minimal'
-  
-  class {'dtg::tomcat': version => '7'}
+
+  $tomcat_version = '8'
+  class {'dtg::tomcat': version => $tomcat_version}
   ->
-  file {'/var/lib/tomcat7/webapps/ROOT/index.html':
+  file {"/var/lib/tomcat${tomcat_version}/webapps/ROOT/index.html":
     ensure => absent
   }
   ->
-  file {'/var/lib/tomcat7/webapps/ROOT/index.jsp':
+  file {"/var/lib/tomcat${tomcat_version}/webapps/ROOT/index.jsp":
     source => 'puppet:///modules/dtg/tomcat/berrycider-redirect.jsp'
   }
   ->
@@ -27,7 +28,7 @@ node /berrycider(-\d+)?/ {
   ->
   file {[$install_directory,'/local/data/handins','/local/data/questions']:
     ensure => directory,
-    group => "tomcat7",
+    group => "tomcat${tomcat_version}",
     mode => "a=xr,ug+wrx,g+s"
   }
   ->
@@ -37,10 +38,10 @@ node /berrycider(-\d+)?/ {
     artifact_version => $dashboard_version,
     artifact_type => "war",
     destination_directory => "$install_directory/ott-dashboard",
-    symlink => "/var/lib/tomcat7/webapps/dashboard.war",
+    symlink => "/var/lib/tomcat${tomcat_version}/webapps/dashboard.war",
   }
   ->
-  file {'/var/lib/tomcat7/conf/Catalina/localhost/dashboard.xml':
+  file {'/var/lib/tomcat${tomcat_version}/conf/Catalina/localhost/dashboard.xml':
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
   ->
@@ -50,10 +51,10 @@ node /berrycider(-\d+)?/ {
     artifact_version => $handins_version,
     artifact_type => "war",
     destination_directory => "$install_directory/ott-handins",
-    symlink => "/var/lib/tomcat7/webapps/handins.war",
+    symlink => "/var/lib/tomcat${tomcat_version}/webapps/handins.war",
   }
   ->
-  file {'/var/lib/tomcat7/conf/Catalina/localhost/handins.xml':
+  file {"/var/lib/tomcat${tomcat_version}/conf/Catalina/localhost/handins.xml":
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
   ->
@@ -63,10 +64,10 @@ node /berrycider(-\d+)?/ {
     artifact_version => $questions_version,
     artifact_type => "war",
     destination_directory => "$install_directory/ott-questions",
-    symlink => "/var/lib/tomcat7/webapps/questions.war",
+    symlink => "/var/lib/tomcat${tomcat_version}/webapps/questions.war",
   }
   ->
-  file {'/var/lib/tomcat7/conf/Catalina/localhost/questions.xml':
+  file {"/var/lib/tomcat${tomcat_version}/conf/Catalina/localhost/questions.xml":
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
   ->
@@ -76,10 +77,10 @@ node /berrycider(-\d+)?/ {
     artifact_version => $signups_version,
     artifact_type => "war",
     destination_directory => "$install_directory/ott-signups",
-    symlink => "/var/lib/tomcat7/webapps/signups.war",
+    symlink => "/var/lib/tomcat${tomcat_version}/webapps/signups.war",
   }
   ->
-  file {'/var/lib/tomcat7/conf/Catalina/localhost/signups.xml':
+  file {"/var/lib/tomcat${tomcat_version}/conf/Catalina/localhost/signups.xml":
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
 

@@ -44,7 +44,7 @@ node /urop2014(-\d+)?.dtg.cl.cam.ac.uk/ {
   User<|title == sac92 |> { groups +>[ 'adm' ]}
 
   # Specific config
-  class {'dtg::tomcat': version => '7'}
+  class {'dtg::tomcat': version => '8'}
   class {'dtg::tomcat::raven':}
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::80to8080': private => false}
