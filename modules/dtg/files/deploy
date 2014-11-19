@@ -120,11 +120,13 @@ def upgrade_mc():
     # Remove unusued packages to reduce the chance of falling over
     # during the upgrade
     with show('output'):
+        # Disable fancy progress bars during the update, as they break fabric.
+        sudo('rm /etc/apt/apt.conf.d/99progressbar')
         sudo('apt-get -y dist-upgrade')
         sudo('apt-get -y autoremove')
         sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
         sudo("sed -i 's/Prompt=lts/Prompt=normal/' /etc/update-manager/release-upgrades")
-        sudo('do-release-upgrade -f DistUpgradeViewNonInteractive')
+        sudo('echo "y\n\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\n" | DEBIAN_FRONTEND=noninteractive | do-release-upgrade -f DistUpgradeViewNonInteractive')
         sudo('apt-get clean')
         sudo('apt-get autoclean')
 
