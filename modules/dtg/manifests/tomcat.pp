@@ -1,4 +1,4 @@
-class dtg::tomcat ($version = '6'){
+class dtg::tomcat ($version = '8'){
   $tomcat = "tomcat$version"
   package { $tomcat:
     ensure => installed,
