@@ -26,51 +26,52 @@ class dtg::jenkins {
   package {['jenkins-tomcat','jenkins-cli']:
     ensure => installed,
   }
+  $tomcat_version = '8'
   # Package installation actually creates this user and group
-  group {'tomcat6':
+  group {"tomcat${tomcat_version}":
     ensure  => present,
     require => Package['jenkins-tomcat'],
   }
-  user  {'tomcat6':
+  user  {"tomcat${tomcat_version}":
     ensure => present,
-    gid    => 'tomcat6',
+    gid    => "tomcat${tomcat_version}",
   }
   sudoers::allowed_command{ 'jenkins':
     command          => '/usr/sbin/cowbuilder, /usr/sbin/chroot',
-    user             => 'tomcat6',
+    user             => "tomcat${tomcat_version}",
     require_password => false,
     comment          => 'Allow tomcat to build debian packages using cowbuilder in a chroot',
   }
-  file { '/usr/share/tomcat6/.config/':
+  file { "/usr/share/tomcat${tomcat_version}/.config/":
     ensure => directory,
-    owner  => 'tomcat6',
-    group  => 'tomcat6',
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
     mode   => '0775',
     require => Package['jenkins-tomcat'],
   }
-  file { '/usr/share/tomcat6/.m2/':
+  file { "/usr/share/tomcat${tomcat_version}/.m2/":
     ensure => directory,
-    owner  => 'tomcat6',
-    group  => 'tomcat6',
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
     mode   => '0775',
     require => Package['jenkins-tomcat'],
   }
-  file { '/usr/share/tomcat6/.android/':
+  file { "/usr/share/tomcat${tomcat_version}/.android/":
     ensure => directory,
-    owner  => 'tomcat6',
-    group  => 'tomcat6',
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
     mode   => '0775',
   }
-  file { '/usr/share/tomcat6/.ssh/':
+  file { "/usr/share/tomcat${tomcat_version}/.ssh/":
     ensure => directory,
-    owner  => 'tomcat6',
-    group  => 'tomcat6',
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
     mode   => '0700',
   }
-  file { '/usr/share/tomcat6/.ssh/config':
+  file { "/usr/share/tomcat${tomcat_version}/.ssh/config":
     ensure => file,
-    owner  => 'tomcat6',
-    group  => 'tomcat6',
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
     mode   => '0644',
   }
   wget::fetch { "download-gradle-plugin":
@@ -87,7 +88,7 @@ class dtg::jenkins {
   #TODO(drt24) Default to java7
   # Modify /etc/jenkins/debian_glue to point at precise and have main and universe components
   # Restore jenkins jobs from backups
-  # /usr/share/tomcat6/{.ssh/{id_rsa,id_rsa.pub},.m2/settings.xml,.android/debug.keystore} need to be got from secrets server
+  # /usr/share/tomcat${tomcat_version}/{.ssh/{id_rsa,id_rsa.pub},.m2/settings.xml,.android/debug.keystore} need to be got from secrets server
 }
 # So that we can appy a stage to it
 class dtg::jenkins::repos {
