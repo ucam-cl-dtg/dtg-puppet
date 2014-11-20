@@ -41,7 +41,7 @@ node /berrycider(-\d+)?/ {
     symlink => "/var/lib/tomcat${tomcat_version}/webapps/dashboard.war",
   }
   ->
-  file {'/var/lib/tomcat${tomcat_version}/conf/Catalina/localhost/dashboard.xml':
+  file {"/var/lib/tomcat${tomcat_version}/conf/Catalina/localhost/dashboard.xml":
     source => 'puppet:///modules/dtg/tomcat/berrycider-context.xml'
   }
   ->
