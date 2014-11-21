@@ -74,6 +74,31 @@ class dtg::jenkins {
     group  => "tomcat${tomcat_version}",
     mode   => '0644',
   }
+  file { "/usr/share/tomcat${tomcat_version}/.jenkins":
+    ensure => directory,
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
+    mode   => '0775',
+  }
+  file { "/usr/share/tomcat${tomcat_version}/.jenkins/cache":
+    ensure => directory,
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
+    mode   => '0775',
+  }
+  file { "/usr/share/tomcat${tomcat_version}/.jenkins/cache/jars":
+    ensure => directory,
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
+    mode   => '0775',
+  }
+
+  file { "/srv/repository/":
+    ensure => directory,
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
+    mode   => '0775',
+  }
   wget::fetch { "download-gradle-plugin":
     source => "\"https://updates.jenkins-ci.org/download/plugins/gradle/1.21/gradle.hpi\"",
     destination => "/var/lib/jenkins/plugins/gradle.hpi",
