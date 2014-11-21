@@ -93,6 +93,20 @@ class dtg::jenkins {
     mode   => '0775',
   }
 
+# Set up a redirect to the jenkins app
+  file { "/var/lib/tomcat${tomcat_version}/webapps/ROOT/index.html":
+    ensure => absent,
+  }
+  file { "/var/lib/tomcat${tomcat_version}/webapps/ROOT/index.jsp":
+    ensure => file,
+    content => '<%
+response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
+%>',
+    owner =>  "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
+    mode   => '0644',
+  }
+
   file { "/srv/repository/":
     ensure => directory,
     owner  => "tomcat${tomcat_version}",
