@@ -122,30 +122,30 @@ def upgrade_mc():
     with show('output'):
         # Disable fancy progress bars during the update, as they break fabric.
         sudo('rm /etc/apt/apt.conf.d/99progressbar')
-        sudo('apt-get -y dist-upgrade')
-        sudo('apt-get -y autoremove')
+        sudo('apt-get -y -q dist-upgrade')
+        sudo('apt-get -y -q autoremove')
         sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
         sudo("sed -i 's/Prompt=lts/Prompt=normal/' /etc/update-manager/release-upgrades")
         sudo('echo "y\n\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\n" | DEBIAN_FRONTEND=noninteractive | do-release-upgrade -f DistUpgradeViewNonInteractive')
-        sudo('apt-get clean')
-        sudo('apt-get autoclean')
+        sudo('apt-get -q clean')
+        sudo('apt-get -q autoclean')
 
 @task
 def security_update():
-    sudo('apt-get update')
+    sudo('apt-get -q update')
     sudo('unattended-upgrade')
-    sudo('apt-get -y autoremove')
-    sudo('apt-get clean')
-    sudo('apt-get autoclean')
+    sudo('apt-get -y -q autoremove')
+    sudo('apt-get -q clean')
+    sudo('apt-get -q autoclean')
 
 
 def run_puppet():
     with show('output'):
         with cd('/etc/puppet'):
             run('sudo -H puppet apply --modulepath modules manifests/site.pp')
-        sudo('apt-get -y autoremove')
-        sudo('apt-get clean')
-        sudo('apt-get autoclean')
+        sudo('apt-get -y -q autoremove')
+        sudo('apt-get -q clean')
+        sudo('apt-get -q autoclean')
 
 @task
 def post_update_hook():
