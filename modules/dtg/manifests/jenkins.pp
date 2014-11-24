@@ -20,6 +20,7 @@ class dtg::jenkins {
     'gradle',
     'jenkins-crypto-util', 'jenkins-external-job-monitor', 'jenkins-instance-identity', 'jenkins-memory-monitor', 'jenkins-ssh-cli-auth',
     'python3-markdown', 'mercurial', 'python3-urllib3', 'python3-dateutil', 'python3-numpy', 'python3-uncertainties', # For AVO
+    'python3-matplotlib', 'python3-scipy',# for da-graphing
     ]
   package { $jenkins_job_packages:
     ensure => installed,
