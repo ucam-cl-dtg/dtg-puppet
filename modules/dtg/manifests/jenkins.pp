@@ -19,7 +19,7 @@ class dtg::jenkins {
     'postgresql-client-common','postgresql-client-9.4',
     'gradle',
     'jenkins-crypto-util', 'jenkins-external-job-monitor', 'jenkins-instance-identity', 'jenkins-memory-monitor', 'jenkins-ssh-cli-auth',
-    'python-markdown', 'mercurial'# For AVO
+    'python3-markdown', 'mercurial', 'python3-urllib3', # For AVO
     ]
   package { $jenkins_job_packages:
     ensure => installed,
@@ -137,6 +137,11 @@ response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
   file { '/usr/local/bin/poole.py':
     ensure => link,
     target => '/opt/poole/poole.py',
+  } ->
+  file_line { 'poole python 3':
+    path => '/opt/poole/poole.py',
+    line => '#!/usr/bin/env python3'
+    match => '^#!/usr/bin/env python',
   }
 
   #TODO(drt24) Default to java7
