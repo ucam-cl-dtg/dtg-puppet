@@ -19,7 +19,7 @@ class dtg::jenkins {
     'postgresql-client-common','postgresql-client-9.4',
     'gradle',
     'jenkins-crypto-util', 'jenkins-external-job-monitor', 'jenkins-instance-identity', 'jenkins-memory-monitor', 'jenkins-ssh-cli-auth',
-    'python-markdown'# For AVO
+    'python-markdown', 'mercurial'# For AVO
     ]
   package { $jenkins_job_packages:
     ensure => installed,
