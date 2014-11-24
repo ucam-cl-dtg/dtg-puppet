@@ -144,6 +144,22 @@ response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
     match => '^#!/usr/bin/env python',
   }
 
+  # For DA
+  package {'autofs':
+    ensure => present,
+  } ->
+  file {'/etc/auto.nas04':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => 'a=r',
+    content => 'deviceanalyzer   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer',
+  } ->
+  file_line {'mount nas04':
+    line => '/mnt/nas04   /etc/auto.nas04',
+    path => '/etc/auto.master',
+  }
+
   #TODO(drt24) Default to java7
   # Modify /etc/jenkins/debian_glue to point at precise and have main and universe components
   # Restore jenkins jobs from backups
