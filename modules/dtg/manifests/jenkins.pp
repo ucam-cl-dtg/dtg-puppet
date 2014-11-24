@@ -140,7 +140,7 @@ response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
   } ->
   file_line { 'poole python 3':
     path => '/opt/poole/poole.py',
-    line => '#!/usr/bin/env python3'
+    line => '#!/usr/bin/env python3',
     match => '^#!/usr/bin/env python',
   }
 
