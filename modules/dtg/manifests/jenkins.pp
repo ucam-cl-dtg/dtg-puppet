@@ -18,7 +18,9 @@ class dtg::jenkins {
     'maven',
     'postgresql-client-common','postgresql-client-9.4',
     'gradle',
-    'jenkins-crypto-util', 'jenkins-external-job-monitor', 'jenkins-instance-identity', 'jenkins-memory-monitor', 'jenkins-ssh-cli-auth']
+    'jenkins-crypto-util', 'jenkins-external-job-monitor', 'jenkins-instance-identity', 'jenkins-memory-monitor', 'jenkins-ssh-cli-auth',
+    'python-markdown'# For AVO
+    ]
   package { $jenkins_job_packages:
     ensure => installed,
   }
@@ -124,6 +126,19 @@ response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
     destination => "/var/lib/jenkins/workspace/external/gradle/gradle-1.4-all.zip",
     require => Package['jenkins-tomcat'],
   }
+
+  # For AVO
+  vcsrepo { '/opt/poole':
+    ensure   => present,
+    provider => 'hg',
+    source   => 'http://bitbucket.org/obensonne/poole/',
+    revision => 'py3',
+  } ->
+  file { '/usr/local/bin/poole.py':
+    ensure => link,
+    target => '/opt/poole/poole.py',
+  }
+
   #TODO(drt24) Default to java7
   # Modify /etc/jenkins/debian_glue to point at precise and have main and universe components
   # Restore jenkins jobs from backups
