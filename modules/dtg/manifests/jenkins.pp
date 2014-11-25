@@ -10,6 +10,7 @@ class dtg::jenkins {
   }
   #packages required by jenkins jobs
   $jenkins_job_packages = [# One line per job's install list
+    'graphviz',
     'inkscape',
     'openjdk-7-jdk',
     'reprepro','git-buildpackage', 'build-essential', 'cowbuilder', 'cowdancer', 'debootstrap','devscripts','pbuilder',
