@@ -9,9 +9,9 @@ node "dac53.dtg.cl.cam.ac.uk" {
   } ->
   ssh_authorized_key {'dac53 key':
     ensure => present,
-    key => 'AAAAB3NzaC1kc3MAAACBAJbJThHwoXG1li+qJsBehCIXL72kHgqoJc7wWD31/QI6uV+9sK9XE8cQ0bbFN5ZlqoVukXZ7Zlbnn2UVYfQ0ADuH6olXtoFHLbnxnMHXmK0yBEKeyr23tQqzd2hbSd4tCghohdUzODl3xpy/esd7vXbHPUrMGReqEg66D5C22vdZAAAAFQC4d9NGZ7bJgRsG72Ll7mAEGb/kCwAAAIAoq64zMHDLVRXPup/PupSxecBCe+Q4NjSkmAM/PcpLoLXTpECUNNCVnE2eenFMGsuq7BAccoVnmLsCgMK/SdZFTWhi6I4UjD80Vb/1VaO4r6VMhn6ptxWqoBq5YY37/4tIIw20cCiY6kmg/8lBAnIrw8w1CRq82dYuIEH+xid3EwAAAIBU4eHWGBjD20zSPbgDRYWmtwVb/tLC8Ua5oF+d77wtYdwOHn531cAiB41VL2YTraFFCT5zV5Z5kU1NAsofsXEWl364xEpscuohtONE0hsDcaoC5OyIFiQ6j7HJRIpYJO3hWaeULd0MAIc8D117SQqTRj+UU0xDaNTOP2b4H6DXCw==',
+    key => 'AAAB3NzaC1yc2EAAAADAQABAAABAQDM299YV9WPk2Tfvajj79gDPG09BEJ2B1vBpEBPGG2ri1erlHYfN7UCHwGQITh1adBxt0CzuDaTU6AtTxohWvRNvUj8hjVOCjeIb0093Hva0q2yHBNAJ/Ac2bAfDNn28p6DZYTS6nYRxqBNAJbbku3AL9Hvr7YxLLJpYphCT9ro02WuXjOsSM3ixLFnNRDzPxrXm1Uibbhe3e0Ri/3jZToA8zinB5Po5UCIXpnT7phBAyysIZ6NHe0y8ExD5j544l/WZ84QiG/r1vBR9ROgciZ+vTgFCU0j42DiPIwgBuoj2i0/7kLvgSMxrhx4Se0D1iT4xDcTqgTB9AOkjVoreMYJ',
     user => 'dac53',
-    type => 'ssh-dss',
+    type => 'ssh-rsa',
   }
 }
 if ( $::monitor ) {
