@@ -55,10 +55,10 @@ if [[ $ckrestart == *openjdk* ]]; then
 	done
 fi
 
-if [[ $ckrestart == */bin/sleep* ]] || [[ $ckrestart == */bin/login* ]] || [[ $ckrestart == */usr/bin/ssh-agent* ]] || [[ $ckrestart == */sbin/getty* ]] || [[ $ckrestart == */sbin/agetty* ]]; then
+if [[ $ckrestart == */bin/sleep* ]] || [[ $ckrestart == */bin/login* ]] || [[ $ckrestart == */bin/sulogin* ]] || [[ $ckrestart == */usr/bin/ssh-agent* ]] || [[ $ckrestart == */sbin/getty* ]] || [[ $ckrestart == */sbin/agetty* ]] || [[ $ckrestart == */sbin/mingetty* ]]; then
 	echo "Need to restart sleep, login, ssh-agent or getty"
 	# Get the list of pids of login and sleep processes, perl puts the newlines back in
-	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's&.*\s\+\([0-9]\+\)\s\+\(\(/bin/login\)\|\(/bin/sleep\)\|\(/usr/bin/ssh-agent\)\|\(/sbin/getty\)\|\(/sbin/agetty\)\).*&\1&' | grep '^[0-9]*$'`
+	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's&.*\s\+\([0-9]\+\)\s\+\(\(/bin/login\)\|\(/bin/sulogin\)\|\(/bin/sleep\)\|\(/usr/bin/ssh-agent\)\|\(/sbin/getty\)\|\(/sbin/agetty\)\|\(/sbin/mingetty\)\).*&\1&' | grep '^[0-9]*$'`
 	# These can safely be killed as login will respawn and sleep will just move something earlier (or in the case it occurs - monkeysphere - just be restarted)
 	for pid in $pids; do
 		echo "Killing: "`ps --pid $pid | tail -n 1`
