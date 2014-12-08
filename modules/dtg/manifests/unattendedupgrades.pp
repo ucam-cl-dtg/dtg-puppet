@@ -8,6 +8,12 @@ class dtg::unattendedupgrades ($unattended_upgrade_notify_emailaddress) {
     owner  => 'root',
     group  => 'adm',
   }
+  file {'/etc/apt/apt.conf.d/20auto-upgrades':
+    ensure => file,
+    source => 'puppet:///modules/dtg/apt/20auto-upgrades',
+    owner  => 'root',
+    group  => 'adm',
+  }
   file {'/etc/apt/apt.conf.d/50unattended-upgrades':
     ensure  => file,
     content => template('dtg/apt/50unattended-upgrades.erb'),
