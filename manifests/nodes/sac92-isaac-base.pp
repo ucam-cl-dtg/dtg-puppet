@@ -1,27 +1,29 @@
 node /(\w+-)?isaac(-\w+)?(.+)?/ {
   include 'dtg::minimal'
   
+  $tomcat_version = '8'
+
   User<|title == sac92 |> { groups +>[ 'adm' ]}
   
   # download api content repo from private repo (TODO)
   file { "/local/data/rutherford/":
     ensure => "directory",
-    owner  => "tomcat7",
-    group  => "tomcat7",
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
     mode   => 644,
   }
   
   file { "/local/data/rutherford/keys/":
     ensure => "directory",
-    owner  => "tomcat7",
-    group  => "tomcat7",
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
     mode   => 640,
   }
   
   file { ["/local/data/rutherford/git-contentstore", "/local/data/rutherford/conf"]:
     ensure => "directory",
-    owner  => "tomcat7",
-    group  => "tomcat7",
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
     mode   => 644,
   }
 
@@ -30,8 +32,8 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     ensure => present,
     provider => git,
     source => 'https://github.com/ucam-cl-dtg/isaac-app.git',
-    owner    => 'tomcat7',
-    group    => 'tomcat7'
+    owner    => "tomcat${tomcat_version}",
+    group    => "tomcat${tomcat_version}"
   }
   ->
   class {'apache::ubuntu': } ->
@@ -45,20 +47,20 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     source => 'puppet:///modules/dtg/apache/isaac-server.conf',
   } 
   
-  class {'dtg::tomcat': version => '7'}
+  class {'dtg::tomcat': version => $tomcat_version}
   ->
-  user { 'tomcat7':
+  user { "tomcat${tomcat_version}":
     shell => '/usr/bin/rssh'
   }
   ->
-  file { "/usr/share/tomcat7/.ssh":
+  file { "/usr/share/tomcat${tomcat_version}/.ssh":
     ensure => "directory",
     owner  => "root",
     group  => "root",
     mode   => 644,
   }
   ->
-  file {'/usr/share/tomcat7/.ssh/authorized_keys':
+  file {"/usr/share/tomcat${tomcat_version}/.ssh/authorized_keys":
     # Note: This will give access to the jenkins server to enable deployments from the CI process.
     ensure => file,
     mode => '0644',        
@@ -67,8 +69,8 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   
   file_line{"tomcat-memory-increase":
     line => 'JAVA_OPTS="-Djava.awt.headless=true -Xms512m -Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC"',
-    path => "/etc/default/tomcat7",
-    notify => Service['tomcat7'],
+    path => "/etc/default/tomcat${tomcat_version}",
+    notify => Service["tomcat${tomcat_version}"],
     match => '^JAVA_OPTS="-Djava\.awt\.headless=true.*'
   }    
   

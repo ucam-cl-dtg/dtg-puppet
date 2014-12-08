@@ -17,7 +17,8 @@ DOM0_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAujx2sop6KNPYr6v/IWEpFITi964
 
 # if there is a /dev/xvdb without partitions, let's use it
 
-if [ -e /dev/xvdb ] && [ ! -e /dev/xvdb1 ]; then
+mounted=`mount | grep /dev/xvdb`
+if [ -e /dev/xvdb ] && [ ! -e /dev/xvdb1 ] && [[ -z $mounted ]]; then
     echo "Partitioning, and creating filesystem on /dev/xvdb"
     (echo n; echo p; echo 1; echo ; echo; echo w) | fdisk /dev/xvdb
     mkfs.ext4 /dev/xvdb1
