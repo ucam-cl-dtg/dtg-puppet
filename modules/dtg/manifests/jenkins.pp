@@ -18,7 +18,6 @@ class dtg::jenkins {
     'mysql-common',
     'maven',
     'postgresql-client-common','postgresql-client-9.4',
-    'gradle',
     'jenkins-crypto-util', 'jenkins-external-job-monitor', 'jenkins-instance-identity', 'jenkins-memory-monitor', 'jenkins-ssh-cli-auth',
     'python3-markdown', 'mercurial', 'python3-urllib3', 'python3-dateutil', 'python3-numpy', 'python3-uncertainties', # For AVO
     'python3-matplotlib', 'python3-scipy', 'python3-cairo', 'python3-cairocffi', 'vnc4server', 'fluxbox', # for da-graphing
@@ -116,17 +115,6 @@ response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
     owner  => "tomcat${tomcat_version}",
     group  => "tomcat${tomcat_version}",
     mode   => '0775',
-  }
-  wget::fetch { "download-gradle-plugin":
-    source => "\"https://updates.jenkins-ci.org/download/plugins/gradle/1.21/gradle.hpi\"",
-    destination => "/var/lib/jenkins/plugins/gradle.hpi",
-    require => Package['jenkins-tomcat'],
-  }
-
-  wget::fetch { "gradlew setup":
-    source => "\"http://services.gradle.org/distributions/gradle-1.4-all.zip\"",
-    destination => "/var/lib/jenkins/workspace/external/gradle/gradle-1.4-all.zip",
-    require => Package['jenkins-tomcat'],
   }
 
   # For AVO

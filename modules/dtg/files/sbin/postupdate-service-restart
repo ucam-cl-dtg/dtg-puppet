@@ -96,6 +96,17 @@ if [[ $ckrestart == */sbin/dhclient* ]] ; then
 	done
 fi
 
+if [[ $ckrestart == */usr/sbin/rpc.idmapd* ]] ; then
+	echo "Need to restart rpd.idmapd"
+	sudo service idmapd restart
+fi
+
+if [[ $ckrestart == */sbin/cgmanager* ]] ; then
+	echo "Need to restart cgmanager"
+	sudo service cgmanager restart
+fi
+
+
 ### Automatic cases
 
 # Try and automatically restart as much as we can
