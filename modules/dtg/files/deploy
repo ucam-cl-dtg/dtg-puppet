@@ -20,7 +20,8 @@ SHA_LENGTH = 9
 
 # This is where we need to push first as it is the canonical place for the source code to be
 ORIGIN = [ {'name': 'github', 'hostname': 'git@github.com', 'repo_loc':'ucam-cl-dtg/dtg-puppet.git', 'VM': False},
-           {'name': 'origin', 'hostname': 'git@code.dtg.cl.cam.ac.uk', 'repo_loc': 'infrastructure/dtg-puppet', 'VM': False}
+           {'name': 'code', 'hostname': 'git@code.dtg.cl.cam.ac.uk', 'repo_loc': 'infrastructure/dtg-puppet', 'VM': False},
+           {'name': 'gitlab', 'hostname': 'git@gitlab.dtg.cl.cam.ac.uk', 'repo_loc': 'infrastructure/dtg-puppet.git', 'VM': False}
          ]
 
 PHYSICAL_MACHINES = [ {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
