@@ -37,4 +37,4 @@ find .git -type d -print0 | xargs -0 sudo chmod --quiet g+s || true
 echo '---- Applying new recipes ----'
 # Need -H so that HOME is set to /root as some stuff gets put there by puppet
 #  e.g. mysql
-sudo -H puppet apply --modulepath modules manifests/site.pp
+sudo -H puppet apply --modulepath modules manifests/nodes/
