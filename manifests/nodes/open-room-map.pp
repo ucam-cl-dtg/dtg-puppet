@@ -174,7 +174,7 @@ node /open-room-map(-\d+)?/ {
   }
 
   cron { update-tiles-snapshot:
-    command => "cd /etc/puppet && puppet apply --verbose --modulepath modules manifests/site.pp 2>&1 >/var/log/puppet/update-log",
+    command => "cd /etc/puppet && puppet apply --verbose --modulepath modules manifests/nodes/ 2>&1 >/var/log/puppet/update-log",
     user    => root,
     hour    => 4,
     minute  => 0
