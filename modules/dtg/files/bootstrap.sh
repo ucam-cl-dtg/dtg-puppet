@@ -39,7 +39,7 @@ printf "git pull --recurse-submodules=yes bare  master\n" >> "$target"
 printf "git submodule sync\n" >> "$target"
 printf "git submodule update --init\n\n" >> "$target"
 printf "echo ---- Applying new recipes ----\n\n" >> "$target"
-printf "sudo -H puppet apply --verbose --modulepath modules manifests/site.pp" >> "$target"
+printf "sudo -H puppet apply --verbose --modulepath modules manifests/nodes/" >> "$target"
 
 chmod 775 hooks/post-update
 

@@ -143,7 +143,7 @@ def security_update():
 def run_puppet():
     with show('output'):
         with cd('/etc/puppet'):
-            run('sudo -H puppet apply --modulepath modules manifests/site.pp')
+            run('sudo -H puppet apply --modulepath modules manifests/nodes/')
         sudo('apt-get -y -q autoremove')
         sudo('apt-get -q clean')
         sudo('apt-get -q autoclean')
