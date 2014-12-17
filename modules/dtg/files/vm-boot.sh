@@ -40,6 +40,11 @@ if [ ! -d $PUPPETBARE ]; then
     wget ${BOOTSTRAP}
     chmod +x bootstrap.sh
     ./bootstrap.sh
+else
+    # Get the latest puppet config from code.dtg.
+    cd /etc/puppet-bare
+    git fetch git://git.dtg.cl.cam.ac.uk/puppet/dtg-puppet.git
+    ./hooks/post-update
 fi
 
 
