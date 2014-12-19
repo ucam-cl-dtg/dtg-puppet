@@ -14,6 +14,8 @@ class dtg::git {
     admin_key => '/home/drt24/drt24.pub',
     require   => File['/home/drt24/drt24.pub'],
   }
+  class {'dtg::git::config::repohost':
+  }
   # class {'dtg::git::gitlab::main':}
 }
 

@@ -8,6 +8,16 @@ class dtg::git::config {
     email     => 'dtg-infra@cl.cam.ac.uk',
   }
 }
+class dtg::git::config::repohost {
+  # Git config things which only want to run on repository hosts
+
+  # This verifies the SHA-1 checksums on all objects on pushes, which slows that down
+  # but also prevents corruption of the repositories
+  exec{'git fsckObjects':
+    command => 'git config --system receive.fsckObjects true',
+    unless => 'git config --get receive.fsckObjects',
+  }
+}
 # $name is the username, $real_name is the name the user is generally known by
 # $email is their email address
 define dtg::git::config::user ($real_name, $email) {
