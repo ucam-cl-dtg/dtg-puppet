@@ -15,6 +15,24 @@ node 'sak70-vpnserver.dtg.cl.cam.ac.uk' {
     action  => 'accept',
   }
 
+  firewall { "033-vpnserver accept esp":
+    proto   => 'esp',
+    action  => 'accept',
+  }
+
+  firewall { "034-vpnserver accept l2tp over ipsec":
+    proto         => 'udp',
+    ipsec_policy  => 'ipsec',
+    ipsec_dir     => 'in',
+    dport         => 'l2tp',
+    action        => 'accept',
+  } 
+
+  firewall { "998 log dropped packets":
+    proto => 'all',
+    jump  => 'LOG',
+  }
+
 }
 if ( $::monitor ) {
   nagios::monitor { 'sak70-vpnserver':
