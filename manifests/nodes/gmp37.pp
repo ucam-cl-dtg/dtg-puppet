@@ -7,9 +7,9 @@ node /gmp37(-\d+)?/ {
     keys      => 'George Panagopoulos (DMGT test) <gmp37@cam.ac.uk>',
     uid       => 3339,
   }
-  firewall { "030 accept 12345":
-    proto   => 'tcp',
-    dport   => 12345,
-    action  => 'accept',
+  firewall { '030 accept 12345':
+    proto  => 'tcp',
+    dport  => 12345,
+    action => 'accept',
   }
 }

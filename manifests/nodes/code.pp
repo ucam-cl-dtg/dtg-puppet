@@ -91,14 +91,14 @@ node 'code.dtg.cl.cam.ac.uk' {
 }
 if ( $::is_backup_server ) {
   dtg::backup::hostsetup{'git_repositories':
-    user => 'git',
-    host => 'code.dtg.cl.cam.ac.uk',
-    require => Class["dtg::backup::host"],
+    user    => 'git',
+    host    => 'code.dtg.cl.cam.ac.uk',
+    require => Class['dtg::backup::host'],
   }
   dtg::backup::hostsetup{'nexus_repositories':
-    user => 'nexus',
-    host => 'code.dtg.cl.cam.ac.uk',
-    require => Class["dtg::backup::host"],
+    user    => 'nexus',
+    host    => 'code.dtg.cl.cam.ac.uk',
+    require => Class['dtg::backup::host'],
   }
 }
 
@@ -109,15 +109,15 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
   nagios::monitor { 'maven':
-    parents    => 'code',
-    address    => 'maven.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'http-servers' ],
+    parents                     => 'code',
+    address                     => 'maven.dtg.cl.cam.ac.uk',
+    hostgroups                  => [ 'http-servers' ],
     include_standard_hostgroups => false,
   }
   nagios::monitor { 'git':
-    parents    => 'code',
-    address    => 'git.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'http-servers' ],
+    parents                     => 'code',
+    address                     => 'git.dtg.cl.cam.ac.uk',
+    hostgroups                  => [ 'http-servers' ],
     include_standard_hostgroups => false,
   }
   munin::gatherer::configure_node { 'code': }

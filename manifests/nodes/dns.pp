@@ -1,9 +1,9 @@
 
 node /dns(-\d+)?/ {
   include 'dtg::minimal'
-  class { "unbound":
-    interface => ["::0","0.0.0.0"],
-    access    => [ $::local_subnet, "::1"],
+  class { 'unbound':
+    interface => ['::0','0.0.0.0'],
+    access    => [ $::local_subnet, '::1'],
   }
   unbound::forward { '.':
     address => [
@@ -16,17 +16,17 @@ node /dns(-\d+)?/ {
       '208.67.220.220'
       ]
   }
-  firewall { "030-dns accept tcp 53 (dns) from CL":
-    proto   => 'tcp',
-    dport   => 53,
-    source  => $::local_subnet,
-    action  => 'accept',
+  firewall { '030-dns accept tcp 53 (dns) from CL':
+    proto  => 'tcp',
+    dport  => 53,
+    source => $::local_subnet,
+    action => 'accept',
   }
-  firewall { "031-dns accept udp 53 (dns) from CL":
-    proto   => 'udp',
-    dport   => 53,
-    source  => $::local_subnet,
-    action  => 'accept',
+  firewall { '031-dns accept udp 53 (dns) from CL':
+    proto  => 'udp',
+    dport  => 53,
+    source => $::local_subnet,
+    action => 'accept',
   }
 }
 if ( $::monitor ) {
