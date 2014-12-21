@@ -116,7 +116,7 @@ def snapshot_mc(mc, commit_id):
         mc['uuid']).split(',')
     if new_snap_name in cur_snaps:
         print('%s already has a snapshot for commit %s. Not snapshotting again'
-              % (mc['name'], commit_id), new_snap_name)
+              % (mc['name'], new_snap_name))
     else:
         print 'Snapshotting %s' % mc['name']
         run('xe vm-snapshot uuid=%s new-name-label=%s' %
