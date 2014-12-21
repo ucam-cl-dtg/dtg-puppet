@@ -220,7 +220,7 @@ def run_latest_puppet():
     """
     with show('output'):
         with cd(PUPPET_BARE):
-            sudo('git fetch https://github.com/ucam-cl-dtg/dtg-puppet.git')
+            sudo('git fetch https://github.com/ucam-cl-dtg/dtg-puppet.git master:master')
             sudo('./hooks/post-update')
 
 
