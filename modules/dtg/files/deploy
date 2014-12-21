@@ -8,7 +8,7 @@ import argparse
 import socket
 import sys
 import os
-from fabric.api import cd, execute, output, run, sudo, env, task, show
+from fabric.api import cd, env, execute, output, parallel, run, sudo, show, task
 from git import GitCommandError, Repo, RemoteProgress
 import random
 import datetime
@@ -100,7 +100,7 @@ def get_machines():
     Get all remote hosts that need updating: git repos, VMs, and physical mcs.
     """
     vms = execute(get_vms, hosts=[DOM0])
-    return ORIGIN + vms[DOM0] + PHYSICAL_MACHINES
+    return vms[DOM0] + PHYSICAL_MACHINES
 
 
 @task
@@ -116,7 +116,7 @@ def snapshot_mc(mc, commit_id):
         mc['uuid']).split(',')
     if new_snap_name in cur_snaps:
         print('%s already has a snapshot for commit %s. Not snapshotting again'
-              % mc['name'], new_snap_name)
+              % (mc['name'], commit_id), new_snap_name)
     else:
         print 'Snapshotting %s' % mc['name']
         run('xe vm-snapshot uuid=%s new-name-label=%s' %
@@ -168,6 +168,7 @@ def snap_gc():
 
 
 @task
+@parallel
 def upgrade_mc():
     """
     Upgrade the base version of Ubuntu to the latest release.
@@ -198,6 +199,7 @@ def upgrade_mc():
 
 
 @task
+@parallel
 def security_update():
     """
     Force machines to apply the latest security update.
@@ -211,16 +213,15 @@ def security_update():
     sudo('apt-get -q autoclean')
 
 
-def run_puppet():
+@parallel
+def run_latest_puppet():
     """
     Manually apply puppet.
     """
     with show('output'):
-        with cd('/etc/puppet'):
-            run('sudo -H puppet apply --modulepath modules manifests/nodes/')
-        sudo('apt-get -y -q autoremove')
-        sudo('apt-get -q clean')
-        sudo('apt-get -q autoclean')
+        with cd(PUPPET_BARE):
+            sudo('git fetch https://github.com/ucam-cl-dtg/dtg-puppet.git')
+            sudo('./hooks/post-update')
 
 
 @task
@@ -246,36 +247,33 @@ def add_remotes(repo, machines):
                            mc['hostname'] + ':' + mc['repo_loc'])
 
 
-def push_config(repo, mc, upgrade, sec_update):
+def push_config(repo, machines, upgrade, sec_update):
     """
     Push the latest updates, puppet, and security updates to the servers.
 
     Args:
         repo: local git repository containing python.
-        mc: machine to apply the updates to.
+        machines: machines to apply the updates to.
+        upgrade: true if an OS upgrade should be run.
         sec_update: true if security updates should be applied.
     """
-    if mc['VM']:
-        execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
-    if upgrade:
-        execute(upgrade_mc, hosts=[mc['hostname']])
-    if sec_update:
-        execute(security_update, hosts=[mc['hostname']])
-    print 'Pushing to %s' % mc['name']
-    handler = RemoteHandler(mc['name'])
-    remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
-    info = remote.push(refspec='master:master', progress=handler)[0]
-    if mc not in ORIGIN:
-        execute(run_puppet, hosts=[mc['hostname']])
-    if info.flags & (info.NEW_TAG | info.NEW_HEAD |
-                     info.UP_TO_DATE | info.FAST_FORWARD):
-        print info.summary
-    else:
-        sys.stderr.write(info.summary)
-        sys.stderr.write("Incorrect flag whilst pushing to %s: %d."
-                         " Terminating.\n" % (mc['name'], info.flags))
-        sys.exit(-1)
+    for mc in machines:
+        if mc['VM']:
+            execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
 
+    hostnames = [x['hostname'] for x in machines]
+
+    if upgrade:
+        execute(upgrade_mc, hosts=hostnames)
+    if sec_update:
+        execute(security_update, hosts=hostnames)
+
+    for mc in ORIGIN:
+        handler = RemoteHandler(mc['name'])
+        remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
+        info = remote.push(refspec='master:master', progress=handler)[0]
+
+    execute(run_latest_puppet, hosts=hostnames)
 
 def main(args):
     """
@@ -295,7 +293,7 @@ def main(args):
 
     repo = Repo('.')
     machines = get_machines()
-    add_remotes(repo, machines)
+    add_remotes(repo, ORIGIN + machines)
 
     if args.machines:
         machines = [x for x in machines if x['name'] in args.machines]
@@ -312,13 +310,8 @@ def main(args):
     # don't care if someone MiTMs us.
     os.environ['GIT_SSH'] = ssh_no_fngr
 
-    for mc in machines:
-        if mc in ORIGIN:
-            continue
-        try:
-            push_config(repo, mc, args.upgrade, args.security_update)
-        except GitCommandError:
-            sys.stderr.write('Cannot push to %s' % mc['name'])
+    push_config(repo, machines, args.upgrade, args.security_update)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
