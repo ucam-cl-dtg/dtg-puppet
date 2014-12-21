@@ -4,11 +4,11 @@ import argparse
 import socket
 import sys
 import os
-from fabric.api import *
-from git import *
+from fabric.api import cd, execute, output, run, sudo, env, task, show
+from git import GitCommandError, Repo, RemoteProgress
 import random
 import datetime
-from datetime import time, timedelta
+from datetime import timedelta
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
@@ -23,24 +23,24 @@ SHA_LENGTH = 9
 # source code to be
 ORIGIN = [
     {'name': 'github', 'hostname': 'git@github.com',
-        'repo_loc': 'ucam-cl-dtg/dtg-puppet.git', 'VM': False},
-           {'name': 'code-repo', 'hostname': 'git@code.dtg.cl.cam.ac.uk',
-               'repo_loc': 'infrastructure/dtg-puppet', 'VM': False},
-           {'name': 'gitlab-repo', 'hostname': 'git@gitlab.dtg.cl.cam.ac.uk',
-               'repo_loc': 'infrastructure/dtg-puppet.git', 'VM': False}
+     'repo_loc': 'ucam-cl-dtg/dtg-puppet.git', 'VM': False},
+    {'name': 'code-repo', 'hostname': 'git@code.dtg.cl.cam.ac.uk',
+     'repo_loc': 'infrastructure/dtg-puppet', 'VM': False},
+    {'name': 'gitlab-repo', 'hostname': 'git@gitlab.dtg.cl.cam.ac.uk',
+     'repo_loc': 'infrastructure/dtg-puppet.git', 'VM': False}
 ]
 
 PHYSICAL_MACHINES = [
-    {'name': 'nas01', 'hostname': 'nas01' +
-        DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
-                      {'name': 'nas04', 'hostname': 'nas04' +
-                          DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
-                      {'name': 'entropy', 'hostname': 'entropy' +
-                          DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
-                      {'name': 'rscfl', 'hostname': 'so-22-8' +
-                          DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False},
-                      {'name': 'rscfl1', 'hostname': 'so-22-9' +
-                          DTG_DOM, 'repo_loc': PUPPET_BARE, 'VM': False}
+    {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc': PUPPET_BARE,
+     'VM': False},
+    {'name': 'nas04', 'hostname': 'nas04' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'entropy', 'hostname': 'entropy' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'rscfl', 'hostname': 'so-22-8' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'rscfl1', 'hostname': 'so-22-9' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False}
 ]
 
 
@@ -51,24 +51,26 @@ class RemoteHandler(RemoteProgress):
         self.vm = vm
 
     def line_dropped(self, line):
-        if (not "Warning: Permanently added" in line) and (line.strip() !=
+        if ("Warning: Permanently added" not in line) and (line.strip() !=
                                                            "remote:"):
-            print("%s: %s" % (self.vm, line))
+            print "%s: %s" % (self.vm, line)
 
     def update(self, op_code, cur_count, max_count=None, message=''):
         if len(message) > 0:
-            print(message)
+            print message
 
 
 @task
 def get_vms():
     uuids = run(
-        'xe vm-list params=uuid power-state=running PV-bootloader=pygrub --minimal').split(',')
+        'xe vm-list params=uuid power-state=running '
+        'PV-bootloader=pygrub --minimal').split(',')
     vms = []
     for uuid in uuids:
         name_label = run('xe vm-list params=name-label uuid=%s --minimal' %
                          uuid).replace(' ', '')
-        ip = run('xe vm-param-get param-name=networks uuid=%s | sed -e \'s_0/ip: __\' -e  \'s/; .*$//\'' %
+        ip = run('xe vm-param-get param-name=networks uuid=%s | '
+                 'sed -e \'s_0/ip: __\' -e  \'s/; .*$//\'' %
                  uuid)
         try:
             hostname = socket.gethostbyaddr(ip)[0]
@@ -77,9 +79,9 @@ def get_vms():
             continue
 
         vms.append({'name': name_label, 'hostname': hostname,
-                   'repo_loc': PUPPET_BARE, 'VM': True, 'uuid': uuid})
-    # Randomize the order of vms. Otherwise we will starve the vms at the end of the list
-    # if lick doesn't finish running
+                    'repo_loc': PUPPET_BARE, 'VM': True, 'uuid': uuid})
+    # Randomize the order of vms. Otherwise we will starve the vms at the
+    # end of the list if lick doesn't finish running
     random.shuffle(vms)
     return vms
 
@@ -94,20 +96,21 @@ def snapshot_mc(mc, commit_id):
     assert mc['VM']
 
     new_snap_name = commit_id[0:SHA_LENGTH]
-    cur_snaps = run('xe snapshot-list  snapshot-of=%s params=name-label --minimal' %
-                    mc['uuid']).split(',')
+    cur_snaps = run(
+        'xe snapshot-list  snapshot-of=%s params=name-label --minimal' %
+        mc['uuid']).split(',')
     if new_snap_name in cur_snaps:
-        print('%s already has a snapshot for commit %s. Not snapshotting again' %
-              (mc['name'], new_snap_name))
+        print('%s already has a snapshot for commit %s. Not snapshotting again'
+              % mc['name'], new_snap_name)
     else:
-        print('Snapshotting %s' % mc['name'])
+        print 'Snapshotting %s' % mc['name']
         run('xe vm-snapshot uuid=%s new-name-label=%s' %
             (mc['uuid'], new_snap_name))
 
 
-def is_hex(str):
+def is_hex(val):
     try:
-        int(str, 16)
+        int(val, 16)
     except ValueError:
         return False
     return True
@@ -119,23 +122,22 @@ def snap_gc():
     snap_names = run('xe snapshot-list params=name-label --minimal').split(',')
     snap_times = run(
         'xe snapshot-list params=snapshot-time --minimal').split(',')
-    snap_times = map(lambda x:
-                     datetime.datetime.strptime(x, '%Y%m%dT%H:%M:%SZ'),
-                     snap_times)
+    snap_times = [datetime.datetime.strptime(x, '%Y%m%dT%H:%M:%SZ') for x in
+                  snap_times]
     keys = ('uuid', 'name', 'time')
     snaps = ([dict(zip(keys, data)) for data in
               zip(snap_uuids, snap_names, snap_times)])
 
     # filter out those snapshots where the timestamp field is > 14 days old
-    snaps = filter(lambda x: x['time'] <
-                   datetime.datetime.today() - timedelta(days=14), snaps)
+    snaps = [x for x in snaps if x['time'] < datetime.datetime.today()
+             - timedelta(days=14)]
 
     # filter out snapshots whose name is not $SHA_LENGTH digits of hex
-    snaps = filter(lambda x: is_hex(x['name']) and
-                   len(x['name']) == SHA_LENGTH, snaps)
+    snaps = [x for x in snaps if is_hex(x['name']) and
+             len(x['name']) == SHA_LENGTH]
 
     if snaps:
-        print('Destroying %d old snapshots' % len(snaps))
+        print 'Destroying %d old snapshots' % len(snaps)
 
     for snap in snaps:
         run('xe snapshot-uninstall force=true uuid=%s' % snap['uuid'])
@@ -151,10 +153,12 @@ def upgrade_mc():
         sudo('apt-get -y -q dist-upgrade')
         sudo('apt-get -y -q autoremove')
         sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
+        sudo("sed -i 's/Prompt=lts/Prompt=normal/' "
+             "/etc/update-manager/release-upgrades")
         sudo(
-            "sed -i 's/Prompt=lts/Prompt=normal/' /etc/update-manager/release-upgrades")
-        sudo(
-            'echo "y\n\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\n" | DEBIAN_FRONTEND=noninteractive | do-release-upgrade -f DistUpgradeViewNonInteractive')
+            'echo "y\n\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\n" | '
+            'DEBIAN_FRONTEND=noninteractive | '
+            'do-release-upgrade -f DistUpgradeViewNonInteractive')
         sudo('apt-get -q clean')
         sudo('apt-get -q autoclean')
 
@@ -187,11 +191,11 @@ def add_remotes(repo, machines):
     Delete all remotes, then add those listed in `machines'
     """
     for remote in repo.remotes:
-        if (remote.name.startswith(REMOTE_PREFIX)):
+        if remote.name.startswith(REMOTE_PREFIX):
             repo.delete_remote(remote)
     for mc in machines:
-        repo.create_remote(REMOTE_PREFIX + '_' + mc[
-                           'name'], mc['hostname'] + ':' + mc['repo_loc'])
+        repo.create_remote(REMOTE_PREFIX + '_' + mc['name'],
+                           mc['hostname'] + ':' + mc['repo_loc'])
 
 
 def push_config(repo, mc, upgrade, sec_update):
@@ -201,19 +205,19 @@ def push_config(repo, mc, upgrade, sec_update):
         execute(upgrade_mc, hosts=[mc['hostname']])
     if sec_update:
         execute(security_update, hosts=[mc['hostname']])
-    print('Pushing to %s' % mc['name'])
+    print 'Pushing to %s' % mc['name']
     handler = RemoteHandler(mc['name'])
     remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
     info = remote.push(refspec='master:master', progress=handler)[0]
-    if not mc in ORIGIN:
+    if mc not in ORIGIN:
         execute(run_puppet, hosts=[mc['hostname']])
     if info.flags & (info.NEW_TAG | info.NEW_HEAD |
                      info.UP_TO_DATE | info.FAST_FORWARD):
-        print(info.summary)
+        print info.summary
     else:
         sys.stderr.write(info.summary)
-        sys.stderr.write("Incorrect flag whilst pushing to %s: %d. Terminating.\n"
-                         % (mc['name'], info.flags))
+        sys.stderr.write("Incorrect flag whilst pushing to %s: %d."
+                         " Terminating.\n" % (mc['name'], info.flags))
         sys.exit(-1)
 
 
@@ -235,7 +239,7 @@ def main(args):
     add_remotes(repo, machines)
 
     if args.machines:
-        machines = filter(lambda m: m['name'] in args.machines, machines)
+        machines = [x for x in machines if m['name'] in args.machines]
     if not machines:
         sys.stderr.write("No machines to apply puppet to")
         sys.exit(-1)
@@ -259,18 +263,22 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description='Pushes the master branch of dtg-puppet, as found on github all over the world')
-    parser.add_argument(
-        '--boot', help='Boot linux machines that are currently turned off.')
-    parser.add_argument(
-        '--do-release-upgrade', action='store_true', dest='upgrade',
-                        help='Upgrade the version of Ubuntu before applying the puppet config')
+        description='Pushes the master branch of dtg-puppet, as found on '
+        'github all over the world')
+    parser.add_argument('--boot',
+                        help='Boot linux machines that are currently'
+                        ' turned off.')
+    parser.add_argument('--do-release-upgrade', action='store_true',
+                        dest='upgrade',
+                        help='Upgrade the version of Ubuntu before '
+                        'applying the puppet config')
     parser.add_argument('--no-snap-gc', action='store_true',
                         dest='no_snap_gc', help='Do not remove old snapshots')
     parser.add_argument('--security-update', action='store_true',
-                        dest='security_update', help='Apply all security updates immediately')
-    parser.add_argument(
-        'machines', nargs='?', help='Limit the machines that the lick is applied to')
+                        dest='security_update',
+                        help='Apply all security updates immediately')
+    parser.add_argument('machines', nargs='?',
+                        help='Limit the machines that the lick is applied to')
 
     args = parser.parse_args()
     main(args)
