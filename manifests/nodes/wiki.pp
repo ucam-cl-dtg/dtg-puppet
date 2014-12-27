@@ -1,6 +1,6 @@
 node 'wiki.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
-  include 'dtg::git_wiki' 
+  include 'dtg::git_wiki'
 }
 if ( $::monitor ) {
   nagios::monitor { 'wiki':

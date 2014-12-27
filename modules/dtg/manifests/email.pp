@@ -7,9 +7,9 @@ class dtg::email {
   }
   # Set sending address for root to dtg-infra
   file_line {'rootemail':
-    ensure => present,
-    path   => '/etc/email-addresses',
-    line   => 'root: dtg-infra@cl.cam.ac.uk',
+    ensure  => present,
+    path    => '/etc/email-addresses',
+    line    => 'root: dtg-infra@cl.cam.ac.uk',
     require => Package['exim'],
   }
 

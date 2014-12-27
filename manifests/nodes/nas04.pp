@@ -25,13 +25,13 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'shin-backup':
     pool_name  => $pool_name,
     fs_name    => 'shin-backup',
-    share_opts => "rw=@shin.cl.cam.ac.uk",
+    share_opts => 'rw=@shin.cl.cam.ac.uk',
   }
 
   dtg::zfs::fs{'nakedscientists':
     pool_name  => $pool_name,
     fs_name    => 'nakedscientists',
-    share_opts => "rw=@131.111.39.72,rw=@131.111.39.84,rw=@131.111.39.87",
+    share_opts => 'rw=@131.111.39.72,rw=@131.111.39.84,rw=@131.111.39.87',
   }
 
   dtg::zfs::fs{'abbot-archive':
@@ -50,7 +50,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'deviceanalyzer':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer',
-    share_opts => "$dtg_share,rw=@$deviceanalyzer_ip,ro=@$secgrp_subnet,ro=@$pig20_ip",
+    share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},ro=@${secgrp_subnet},ro=@${pig20_ip}",
   }
 
   dtg::zfs::fs{ 'deviceanalyzer-nas02-backup':
@@ -59,37 +59,60 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => 'off',
   }
 
-/* Not using this method ATM
-  # Mount nas02 in order to back it up.
-  file {'/mnt/nas02':
-    ensure => directory,
-    owner  => 'root',
-  }
-  file {'/mnt/nas02/deviceanalyzer':
-    ensure => directory,
-    owner  => 'root',
-  } ->
-  package {'autofs':
-    ensure => present,
-  } ->
-  file {'/etc/auto.nas02':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => 'a=r',
-    content => 'deviceanalyzer  -ro  nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer',
-  } ->
-  file_line {'mount nas02':
-    line => '/mnt/nas02   /etc/auto.nas02',
-    path => '/etc/auto.master',
-  }*/
+# Not using this method ATM
+
+#   # Mount nas02 in order to back it up.
+
+#   file {'/mnt/nas02':
+
+#     ensure => directory,
+
+#     owner  => 'root',
+
+#   }
+
+#   file {'/mnt/nas02/deviceanalyzer':
+
+#     ensure => directory,
+
+#     owner  => 'root',
+
+#   } ->
+
+#   package {'autofs':
+
+#     ensure => present,
+
+#   } ->
+
+#   file {'/etc/auto.nas02':
+
+#     ensure => file,
+
+#     owner  => 'root',
+
+#     group  => 'root',
+
+#     mode   => 'a=r',
+
+#     content => 'deviceanalyzer  -ro  nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer',
+
+#   } ->
+
+#   file_line {'mount nas02':
+
+#     line => '/mnt/nas02   /etc/auto.nas02',
+
+#     path => '/etc/auto.master',
+
+#   }
 
   cron { 'deviceanalyzer-nas02-backup':
     ensure  => present,
-    command => "pgrep -c rsync || nice rsync -az --delete --rsync-path='/usr/syno/bin/rsync' nas04@nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer/ /$pool_name/deviceanalyzer-nas02-backup",
+    command => "pgrep -c rsync || nice rsync -az --delete --rsync-path='/usr/syno/bin/rsync' nas04@nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer/ /${pool_name}/deviceanalyzer-nas02-backup",
     user    => 'root',
-    minute  => cron_minute("deviceanalyzer-nas02-backup"),
-    hour    => cron_hour("deviceanalyzer-nas02-backup"),
+    minute  => cron_minute('deviceanalyzer-nas02-backup'),
+    hour    => cron_hour('deviceanalyzer-nas02-backup'),
     require => [Dtg::Zfs::Fs['deviceanalyzer-nas02-backup']],
   }
 
@@ -111,18 +134,18 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $statd_port          = 662
   $statd_outgoing_port = 2020
 
-  augeas { "nfs-kernel-server":
-    context => "/files/etc/default/nfs-kernel-server",
+  augeas { 'nfs-kernel-server':
+    context => '/files/etc/default/nfs-kernel-server',
     changes => [
-                "set LOCKD_TCPPORT $lockd_tcpport",
-                "set LOCKD_UDPPORT $lockd_udpport",
-                "set MOUNTD_PORT $mountd_port",
-                "set RQUOTAD_PORT $rquotad_port",
-                "set STATD_PORT $statd_port",
-                "set STATD_OUTGOING_PORT $statd_outgoing_port",
-                "set RPCMOUNTDOPTS \"'--manage-gids --port $mountd_port'\"",
+                "set LOCKD_TCPPORT ${lockd_tcpport}",
+                "set LOCKD_UDPPORT ${lockd_udpport}",
+                "set MOUNTD_PORT ${mountd_port}",
+                "set RQUOTAD_PORT ${rquotad_port}",
+                "set STATD_PORT ${statd_port}",
+                "set STATD_OUTGOING_PORT ${statd_outgoing_port}",
+                "set RPCMOUNTDOPTS \"'--manage-gids --port ${mountd_port}'\"",
                 ],
-    notify => Service['nfs-kernel-server']
+    notify  => Service['nfs-kernel-server']
   }
   dtg::firewall::nfs {'nfs access from dtg':
     source          => $::local_subnet,
@@ -148,38 +171,38 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     statd_port      => $statd_port,
   }
 
-  augeas { "default_grub":
-    context => "/files/etc/default/grub",
+  augeas { 'default_grub':
+    context => '/files/etc/default/grub',
     changes => [
-                "set GRUB_RECORDFAIL_TIMEOUT 2",
-                "set GRUB_HIDDEN_TIMEOUT 0",
-                "set GRUB_TIMEOUT 2"
+                'set GRUB_RECORDFAIL_TIMEOUT 2',
+                'set GRUB_HIDDEN_TIMEOUT 0',
+                'set GRUB_TIMEOUT 2'
                 ],
   }
 
-  file {"/etc/update-motd.d/10-help-text":
+  file {'/etc/update-motd.d/10-help-text':
     ensure => absent
   }
   
-  file {"/etc/update-motd.d/50-landscape-sysinfo":
+  file {'/etc/update-motd.d/50-landscape-sysinfo':
     ensure => absent
   }
   
-  file{"/etc/update-motd.d/20-disk-info":
+  file{'/etc/update-motd.d/20-disk-info':
     source => 'puppet:///modules/dtg/motd/nas04-disk-info'
   }
   
-  class { "smartd": 
-    mail_to => "dtg-infra@cl.cam.ac.uk",
-    service_name => 'smartmontools',
-    devicescan_options => "-m dtg-infra@cl.cam.ac.uk -M daily"
+  class { 'smartd':
+    mail_to            => 'dtg-infra@cl.cam.ac.uk',
+    service_name       => 'smartmontools',
+    devicescan_options => '-m dtg-infra@cl.cam.ac.uk -M daily'
   }
 
   file {'/etc/default/postupdate-service-restart':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => 'a=r',
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 'a=r',
     content => 'ACTION=false',
   }
 }

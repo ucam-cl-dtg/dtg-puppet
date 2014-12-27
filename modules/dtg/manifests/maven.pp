@@ -78,15 +78,15 @@ class dtg::maven::nexus (
   exec {'nexus_download':
     unless    => "test -d ${nexus_dir}",
     command   => "curl -o '${download_to}' '${download_url}'",
-    creates   => "${download_to}",
+    creates   => $download_to,
     logoutput => 'on_failure',
     require   => [File['/srv/nexus/'], Package['curl']],
   }
   file {$download_to:
-    ensure => file,
+    ensure  => file,
     owner   => 'root',
-    group  => 'root',
-    mode   => '0444',
+    group   => 'root',
+    mode    => '0444',
     require => Exec['nexus_download'],
   }
   exec {'nexus_extract':
@@ -99,16 +99,16 @@ class dtg::maven::nexus (
     require   => [Exec['nexus_download'], File[$download_to], Package['tar']],
   }
   file {'/srv/nexus/nexus/':
-    ensure => link,
-    target => $nexus_dir,
+    ensure  => link,
+    target  => $nexus_dir,
     require => Exec['nexus_extract'],
   }
   file {'/srv/nexus/nexus/conf/nexus.properties':
-    ensure => file,
-    source => 'puppet:///modules/dtg/nexus/conf/nexus.properties',
-    owner  => 'nexus',
-    group  => 'nexus',
-    mode   => '0744',
+    ensure  => file,
+    source  => 'puppet:///modules/dtg/nexus/conf/nexus.properties',
+    owner   => 'nexus',
+    group   => 'nexus',
+    mode    => '0744',
     require => File['/srv/nexus/nexus/'],
   }
   # Start nexus on reboot
@@ -172,9 +172,9 @@ class dtg::maven::sshmirror (
     group  => 'root',
     mode   => '0755',
   }
-  monkeysphere::authorized_user_ids { "maven":
+  monkeysphere::authorized_user_ids { 'maven':
     user_ids => $monkeysphere_keyids,
-    dest_dir => "/home/maven/.monkeysphere",
+    dest_dir => '/home/maven/.monkeysphere',
   }
   # Directory to chroot the maven user to and to mount the sshmirror files into
   file {'/srv/maven-sshmirror':
@@ -194,8 +194,8 @@ class dtg::maven::sshmirror (
     target => '/',
   }
   file {'/srv/maven-sshmirror/mirror':
-    ensure => directory, # Don't specify owner or group as will change when mounted
-    mode   => '0755',
+    ensure  => directory, # Don't specify owner or group as will change when mounted
+    mode    => '0755',
     require => File['/srv/maven-sshmirror'],
   } ->
   file_line{'mount sshmirror ro':
@@ -209,7 +209,7 @@ class dtg::maven::sshmirror (
     source => 'puppet:///modules/dtg/nexus/sshmirrormount.conf',
   } ->
   exec {'sshmirror ensure mounted':
-    path   => "/usr/bin:/usr/sbin:/bin:/sbin",
+    path    => '/usr/bin:/usr/sbin:/bin:/sbin',
     command => 'start sshmirrormount',
     unless  => 'mount | grep /srv/maven-sshmirror/mirror | grep ro >/dev/null'
   }
@@ -219,6 +219,6 @@ Match User maven
     ChrootDirectory /srv/maven-sshmirror
     ForceCommand internal-sftp
 ',
-    before => File['sshd_config'],
+    before  => File['sshd_config'],
   }
 }

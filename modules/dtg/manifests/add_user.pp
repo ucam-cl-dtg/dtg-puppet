@@ -8,40 +8,40 @@ define dtg::add_user ( $real_name, $groups = '', $keys = undef, $uid) {
     $email = "${username}@cam.ac.uk"
 
     user { $username:
-        ensure  => present,
-        comment => "${real_name} <${email}>",
-        home    => "/home/$username",
-        shell   => "/bin/bash",
-        groups  => $groups,
-        uid     => $uid,
+        ensure     => present,
+        comment    => "${real_name} <${email}>",
+        home       => "/home/${username}",
+        shell      => '/bin/bash',
+        groups     => $groups,
+        uid        => $uid,
         membership => 'minimum',
-        password => '*',
+        password   => '*',
     }
 
     group { $username:
         require => User[$username],
-        gid => $uid,
+        gid     => $uid,
     }
 
-    file { "/home/$username/":
+    file { "/home/${username}/":
         ensure  => directory,
         owner   => $username,
         group   => $username,
-        mode    => 755,
+        mode    => '0755',
         require => [ User[$username], Group[$username] ],
     }
 
     # If the user has gpg key ids specified then use them
     if ($keys != undef) {
-        monkeysphere::authorized_user_ids { "$username":
+        monkeysphere::authorized_user_ids { $username:
             user_ids => $keys,
-            dest_dir => "/home/$username/.monkeysphere",
+            dest_dir => "/home/${username}/.monkeysphere",
         }
     }
     # Configure git
-    dtg::git::config::user{"${username}":
+    dtg::git::config::user{$username:
         email     => $email,
         real_name => $real_name,
-        require   => File["/home/$username/"],
+        require   => File["/home/${username}/"],
     }
 }

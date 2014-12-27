@@ -31,21 +31,21 @@ class dtg::git::gitolite ($admin_key, $repo_group = 'git', $repo_mode = undef, $
   }
   group {'git': ensure => present,}
   user {'git':
-    ensure  => present,
-    home    => '/srv/git/',
-    gid     => 'git',
-    comment => 'Git Version Control',
-    shell   => '/bin/bash',
+    ensure   => present,
+    home     => '/srv/git/',
+    gid      => 'git',
+    comment  => 'Git Version Control',
+    shell    => '/bin/bash',
     password => '*',#no password but key based login
   }
-  file { [ "/local", "/local/data" ]:
+  file { [ '/local', '/local/data' ]:
     ensure => directory,
   }
   file {'/local/data/git':
-    ensure => directory,
-    owner  => 'git',
-    group  => 'git',
-    mode   => '2755',
+    ensure  => directory,
+    owner   => 'git',
+    group   => 'git',
+    mode    => '2755',
     require => File['/local','/local/data'],
   }
   file {'/srv/git/':
@@ -54,17 +54,17 @@ class dtg::git::gitolite ($admin_key, $repo_group = 'git', $repo_mode = undef, $
   }
   #TODO(drt24)  restore from backups
   file {'/usr/share/gitolite/conf/example.gitolite.rc':
-    ensure => file,
-    source => 'puppet:///modules/dtg/example.gitolite.rc',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
+    ensure  => file,
+    source  => 'puppet:///modules/dtg/example.gitolite.rc',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
     require => Package['gitolite'],
   }
   file {'/usr/share/gitolite/hooks/common/post-receive':
-    ensure => file,
-    source => 'puppet:///modules/dtg/post-receive-email.hook',
-    mode   => '0755',
+    ensure  => file,
+    source  => 'puppet:///modules/dtg/post-receive-email.hook',
+    mode    => '0755',
     require => Package['gitolite'],
   }
   exec {'setup-gitolite':
@@ -111,7 +111,7 @@ class dtg::git::gitlab::pre {
   }
   # Use ruby 1.9.1 to provide ruby
   dtg::alternatives{'ruby':
-    linkto => '/usr/bin/ruby1.9.1',
+    linkto  => '/usr/bin/ruby1.9.1',
     require => Package['ruby1.9.1','ruby1.9.1-dev'],
   }
   group {'gitlab': ensure => 'present',}
@@ -163,9 +163,9 @@ class dtg::git::gitlab::main {
     require  => File['/srv/gitlab/'],
   }
   file {'/srv/gitlab/gitlab/tmp/':
-    ensure => directory,
-    owner  => 'gitlab',
-    group  => 'gitlab',
+    ensure  => directory,
+    owner   => 'gitlab',
+    group   => 'gitlab',
     require => Vcsrepo['/srv/gitlab/gitlab/'],
   }
   $gitlab_from_address = $::from_address
@@ -179,7 +179,7 @@ class dtg::git::gitlab::main {
   # Remove the provided one and replace it with one containing
   # the correct email and a randomly generated password
   file {'/srv/gitlab/gitlab/db/fixtures/production/001_admin.rb':
-    ensure => 'absent',
+    ensure  => 'absent',
     require => Vcsrepo['/srv/gitlab/gitlab/'],
   }
   file {'/srv/gitlab/gitlab/db/fixtures/production/002_admin.rb':
@@ -197,7 +197,7 @@ class dtg::git::gitlab::main {
   }
   class { 'mysql': }
   class { 'mysql::ruby': }
-  $gitlabpassword = "gitlabpassword"#TODO(drt24) generate this automatically without overwriting on every run
+  $gitlabpassword = 'gitlabpassword'#TODO(drt24) generate this automatically without overwriting on every run
   mysql::db { 'gitlabhq_production':
     user     => 'gitlab',
     password => $gitlabpassword,
@@ -230,11 +230,11 @@ class dtg::git::gitlab::main {
     require => [File['/srv/gitlab/gitlab/config/database.yml','/srv/gitlab/gitlab/db/fixtures/production/001_admin.rb','/srv/gitlab/gitlab/db/fixtures/production/002_admin.rb'],Exec['install gitlab bundle'],Mysql::Db['gitlabhq_production']],
   }
   file {'/usr/share/gitolite/hooks/common/post-receive':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
-    source => 'file:///srv/gitlab/gitlab/lib/hooks/post-receive',
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    source  => 'file:///srv/gitlab/gitlab/lib/hooks/post-receive',
     require => [Package['gitolite'],Vcsrepo['/srv/gitlab/gitlab/']],
   }
   exec {'start gitlab':
@@ -255,7 +255,7 @@ class dtg::git::gitlab::main {
     owner   => 'gitlab',
     group   => 'gitlab',
     mode    => '0775',
-    require => Vcsrepo['/srv/gitlab/gitlab/'], 
+    require => Vcsrepo['/srv/gitlab/gitlab/'],
   }
   exec {'run unicorn process':
     command => 'sudo -u gitlab -g gitlab -H bundle exec unicorn_rails -c config/unicorn.rb -E production -D',

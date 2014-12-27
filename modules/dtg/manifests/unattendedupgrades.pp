@@ -24,7 +24,7 @@ class dtg::unattendedupgrades ($unattended_upgrade_notify_emailaddress) {
     ensure => present,
     owner  => 'root',
     group  => 'root',
-    mode    => '0755',
+    mode   => '0755',
   }
   package {'debian-goodies':
     ensure => installed,

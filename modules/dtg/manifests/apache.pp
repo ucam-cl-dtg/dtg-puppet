@@ -2,7 +2,7 @@
 class dtg::apache::raven ($server_description) {
   class {'dtg::apache::raven::repos': stage => 'repos'}
   package {'libapache2-mod-ucam-webauth':
-    ensure => present,
+    ensure  => present,
     require => [ Apt::Ppa['ppa:ucam-cl-dtg/ucam'], Package['apache']],
   }
   #TODO(drt24): specify server description in raven config

@@ -5,7 +5,7 @@ class dtg::jenkins {
   class {'dtg::jenkins::repos': stage => 'repos'}
   # To help build debian packages in jenkins
   package {'jenkins-debian-glue':
-    ensure => present,
+    ensure  => present,
     require => Apt::Ppa['ppa:ucam-cl-dtg/jenkins'],
   }
   #packages required by jenkins jobs
@@ -46,17 +46,17 @@ class dtg::jenkins {
     comment          => 'Allow tomcat to build debian packages using cowbuilder in a chroot',
   }
   file { "/usr/share/tomcat${tomcat_version}/.config/":
-    ensure => directory,
-    owner  => "tomcat${tomcat_version}",
-    group  => "tomcat${tomcat_version}",
-    mode   => '0775',
+    ensure  => directory,
+    owner   => "tomcat${tomcat_version}",
+    group   => "tomcat${tomcat_version}",
+    mode    => '0775',
     require => Package['jenkins-tomcat'],
   }
   file { "/usr/share/tomcat${tomcat_version}/.m2/":
-    ensure => directory,
-    owner  => "tomcat${tomcat_version}",
-    group  => "tomcat${tomcat_version}",
-    mode   => '0775',
+    ensure  => directory,
+    owner   => "tomcat${tomcat_version}",
+    group   => "tomcat${tomcat_version}",
+    mode    => '0775',
     require => Package['jenkins-tomcat'],
   }
   file { "/usr/share/tomcat${tomcat_version}/.android/":
@@ -101,16 +101,16 @@ class dtg::jenkins {
     ensure => absent,
   }
   file { "/var/lib/tomcat${tomcat_version}/webapps/ROOT/index.jsp":
-    ensure => file,
+    ensure  => file,
     content => '<%
 response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
 %>',
-    owner =>  "tomcat${tomcat_version}",
-    group  => "tomcat${tomcat_version}",
-    mode   => '0644',
+    owner   =>  "tomcat${tomcat_version}",
+    group   => "tomcat${tomcat_version}",
+    mode    => '0644',
   }
 
-  file { "/srv/repository/":
+  file { '/srv/repository/':
     ensure => directory,
     owner  => "tomcat${tomcat_version}",
     group  => "tomcat${tomcat_version}",
@@ -129,8 +129,8 @@ response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
     target => '/opt/poole/poole.py',
   } ->
   file_line { 'poole python 3':
-    path => '/opt/poole/poole.py',
-    line => '#!/usr/bin/env python3',
+    path  => '/opt/poole/poole.py',
+    line  => '#!/usr/bin/env python3',
     match => '^#!/usr/bin/env python',
   }
 
@@ -139,10 +139,10 @@ response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
     ensure => present,
   } ->
   file {'/etc/auto.nas04':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => 'a=r',
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 'a=r',
     content => 'deviceanalyzer   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer',
   } ->
   file_line {'mount nas04':

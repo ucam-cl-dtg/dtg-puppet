@@ -70,9 +70,9 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   # ensure webapps directory is writeable by the non-standard 'www-data' user
   file { '/var/lib/jetty8/webapps':
     ensure => directory,
-    owner => 'www-data',
-    group => 'www-data',
-    mode  => '0755',
+    owner  => 'www-data',
+    group  => 'www-data',
+    mode   => '0755',
   }
 }
 if ( $::monitor ) {
