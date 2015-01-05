@@ -15,19 +15,19 @@ node /acr31-camfort(-\d+)?/ {
     ensure => installed,
   }
 
-  file{"/usr/local/camfort-webapp-bare":
+  file{'/usr/local/camfort-webapp-bare':
     ensure => directory,
-    owner => acr31,
+    owner  => acr31,
   }
 
-  file{"/usr/local/camfort-webapp":
+  file{'/usr/local/camfort-webapp':
     ensure => directory,
-    owner => acr31,
+    owner  => acr31,
   }
 
-  file{"/usr/local/camfort-webapp/workspaces":
+  file{'/usr/local/camfort-webapp/workspaces':
     ensure => directory,
-    owner => www-data,
+    owner  => www-data,
   }
 
   # scp /home/acr31/git/camfort/camfort/camfort camfort.dtg.cl.cam.ac.uk:/usr/local/camfort-webapp

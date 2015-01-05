@@ -1,7 +1,7 @@
 node 'jenkins-master.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   class { 'dtg::jenkins': }
-  class { 'sonar': version => '3.2'}
+  class { 'sonarqube': version => '4.5.1'}
 }
 
 

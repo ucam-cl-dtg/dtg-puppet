@@ -15,10 +15,10 @@ node 'weather.dtg.cl.cam.ac.uk' {
     ensure => present,
   } ->
   file {'/etc/auto.nas01':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => 'a=r',
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 'a=r',
     content => 'nas01	nas01.dtg.cl.cam.ac.uk:/data/weather',
   } ->
   file_line {'mount nas01':

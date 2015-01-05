@@ -9,10 +9,10 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   # open up ports 80,443,2468
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
-  firewall { "030-xmlsocketserver accept tcp 2468 (xmlsocketserver) from anywhere":
-    proto   => 'tcp',
-    dport   => 2468,
-    action  => 'accept',
+  firewall { '030-xmlsocketserver accept tcp 2468 (xmlsocketserver) from anywhere':
+    proto  => 'tcp',
+    dport  => 2468,
+    action => 'accept',
   }
 
   # Packages which should be installed
@@ -24,14 +24,14 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
 
   # mount nas02 on startup
   file_line { 'mount nas02':
-  	line => 'nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
-  	path => '/etc/fstab', 
+    line => 'nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
+    path => '/etc/fstab',
   }
 
   # mount nas04 on startup
   file_line { 'mount nas04':
-  	line => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer /nas4 nfs defaults 0 0',
-  	path => '/etc/fstab', 
+    line => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer /nas4 nfs defaults 0 0',
+    path => '/etc/fstab',
   }
 
   # set up nginx and jetty config
@@ -40,39 +40,39 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   }
   file {'/etc/nginx/sites-enabled/deviceanalyzer.nginx.conf':
     ensure => file,
-    owner => 'root',
-    group => 'root',
-    mode  => '0644',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
     source => 'puppet:///modules/dtg/deviceanalyzer/deviceanalyzer.nginx.conf',
   }
   file {'/etc/default/jetty8':
     ensure => file,
-    owner => 'root',
-    group => 'root',
-    mode  => '0644',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
     source => 'puppet:///modules/dtg/deviceanalyzer/jetty8',
   }
   file {'/etc/init.d/xmlsocketserver':
     ensure => file,
-    owner => 'root',
-    group => 'root',
-    mode  => '0755',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
     source => 'puppet:///modules/dtg/deviceanalyzer/xmlsocketserver.initd',
   }
   file {'/etc/network/interfaces':
     ensure => file,
-    owner => 'root',
-    group => 'root',
-    mode  => '0644',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
     source => 'puppet:///modules/dtg/deviceanalyzer/interfaces',
   }
 
   # ensure webapps directory is writeable by the non-standard 'www-data' user
   file { '/var/lib/jetty8/webapps':
-  	ensure => directory,
-  	owner => 'www-data',
-    group => 'www-data',
-    mode  => '0755',
+    ensure => directory,
+    owner  => 'www-data',
+    group  => 'www-data',
+    mode   => '0755',
   }
 }
 if ( $::monitor ) {

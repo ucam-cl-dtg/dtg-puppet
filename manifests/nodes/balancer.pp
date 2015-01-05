@@ -18,10 +18,10 @@ node /balancer(-\d+)?/ {
     source => 'puppet:///modules/dtg/apache/balancer.conf',
   }->
   # download static pages from public repository
-  vcsrepo { "/var/www-balancer":
-    ensure => present,
+  vcsrepo { '/var/www-balancer':
+    ensure   => present,
     provider => git,
-    source => 'https://github.com/ucam-cl-dtg/isaac-balancer-www',
+    source   => 'https://github.com/ucam-cl-dtg/isaac-balancer-www',
     owner    => 'root',
     group    => 'root'
   }
@@ -33,7 +33,7 @@ node /balancer(-\d+)?/ {
   ->
   file_line { 'rssh-allow-sftp':
     line => 'allowsftp',
-    path => '/etc/rssh.conf', 
+    path => '/etc/rssh.conf',
   }
 }
 

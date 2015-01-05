@@ -26,7 +26,7 @@ $name_servers = [ '128.232.20.43',
 # Id certifiers people who can sign other users keys to certify them
 class ms_id_certifiers {
   monkeysphere::add_id_certifier {
-    "drt24": keyid => "5017A1EC0B2908E3CF647CCD551435D5D74933D9"
+    'drt24': keyid => '5017A1EC0B2908E3CF647CCD551435D5D74933D9'
   }
   monkeysphere::add_id_certifier {
     'drt24-laptop': keyid => 'EA14782BFF32D5B8464B92D7B2FB14CF18EB83B1'
@@ -65,10 +65,10 @@ class admin_users {
         uid       => 2814,
     }
     dtg::add_user { 'acr31':
-        real_name  => 'Andrew Rice',
-        groups     => ['adm', 'dtg-adm'],
-        keys       => 'Andrew Rice <acr31@cam.ac.uk>',
-        uid        => 2132,
+        real_name => 'Andrew Rice',
+        groups    => ['adm', 'dtg-adm'],
+        keys      => 'Andrew Rice <acr31@cam.ac.uk>',
+        uid       => 2132,
     }
 #    dtg::add_user { 'dtw30':
 #        real_name  => 'Daniel Wagner',

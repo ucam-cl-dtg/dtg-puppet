@@ -4,12 +4,12 @@ class aptrepository($repository) {
   class { 'apt':
     purge_sources_list => true,
     fancy_progress     => true,
-    stage => $stage,
+    stage              => $stage,
   }
   # Include main repository
   apt::source { 'main':
     location => $repository,
-    repos => 'main restricted universe multiverse',
+    repos    => 'main restricted universe multiverse',
   }
   # Security updates
   apt::source { 'security':

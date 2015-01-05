@@ -1,7 +1,7 @@
 class dtg::zfs {
   class {'dtg::zfs::repos': stage => 'repos'}
   package {'ubuntu-zfs':
-    ensure => present,
+    ensure  => present,
     require => Apt::Ppa['ppa:zfs-native/stable'],
   }
 

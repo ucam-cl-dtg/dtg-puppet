@@ -11,23 +11,23 @@ class dtg::confsrv {
     home => '/srv/puppet-conf'
   }
   file {'/srv/puppet-conf':
-    ensure  => directory,
-    owner   => 'puppet-conf',
-    group   => 'puppet-conf',
-    mode    => '2755',
+    ensure => directory,
+    owner  => 'puppet-conf',
+    group  => 'puppet-conf',
+    mode   => '2755',
   }
   group {'dtg-servers':}
   file {'/srv/puppet-conf/dtg-servers':
-    ensure  => directory,
-    owner   => 'puppet-conf',
-    group   => 'dtg-servers',
-    mode    => '2750',
+    ensure => directory,
+    owner  => 'puppet-conf',
+    group  => 'dtg-servers',
+    mode   => '2750',
   }
   file {'/srv/puppet-conf/dtg-servers/keys/':
-    ensure  => 'directory',
-    owner   => 'puppet-conf',
-    group   => 'dtg-servers',
-    mode    => '2750',
+    ensure => 'directory',
+    owner  => 'puppet-conf',
+    group  => 'dtg-servers',
+    mode   => '2750',
   }
 }
 # Use a if $::fqdn to put this in the node file for servers
@@ -38,7 +38,7 @@ define dtg::confsrv::client ( $keyids ) {
   $host = $title
   group { $host :}
   user { $host :
-    gid => $host,
+    gid    => $host,
     groups => [ 'dtg-servers' ],
   }
   monkeysphere::authorized_user_ids { $host :

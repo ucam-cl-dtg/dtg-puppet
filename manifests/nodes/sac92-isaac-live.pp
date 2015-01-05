@@ -1,9 +1,9 @@
 if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
-  file { ["/usr/share/isaac/", "/usr/share/isaac/.ssh"]:
-    ensure => "directory",
-    owner  => "isaac",
-    group  => "root",
-    mode   => 644,
+  file { ['/usr/share/isaac/', '/usr/share/isaac/.ssh']:
+    ensure => 'directory',
+    owner  => 'isaac',
+    group  => 'root',
+    mode   => '0644',
   }
 
   file {'/usr/share/isaac/.ssh/authorized_keys':
@@ -23,9 +23,9 @@ if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
 
 if ( $::is_backup_server ) {
   dtg::backup::hostsetup{'isaac_physics_db':
-    user => 'isaac',
-    host => 'isaac-live.dtg.cl.cam.ac.uk',
-    require => Class["dtg::backup::host"],
+    user    => 'isaac',
+    host    => 'isaac-live.dtg.cl.cam.ac.uk',
+    require => Class['dtg::backup::host'],
   }
 }
 

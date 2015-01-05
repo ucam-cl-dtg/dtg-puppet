@@ -9,7 +9,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   if $manageapt {
     class { 'aptrepository':
       repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
-      stage => 'repos'
+      stage      => 'repos'
     }
   }
 
@@ -36,51 +36,51 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   }
 
   class { 'monkeysphere::sshd':
-    max_startups => "",
-    agent_forwarding => 'yes', 
-    tcp_forwarding => 'yes', 
-    x11_forwarding => 'yes',
-    listen_address => [ '0.0.0.0', '::' ],
+    max_startups         => '',
+    agent_forwarding     => 'yes',
+    tcp_forwarding       => 'yes',
+    x11_forwarding       => 'yes',
+    listen_address       => [ '0.0.0.0', '::' ],
     
     # Set use_pam to yes so that we trigger the pam_motd printing module
     # We leave Passwords and ChallengeResponse set to no
-    use_pam => 'yes',
+    use_pam              => 'yes',
 
     # sometimes we need to give ad-hoc access to people not in monkeysphere.  This turns on
     # the normal authorized_keys file if we need it
-    authorized_keys_file             => "/var/lib/monkeysphere/authorized_keys/%u .ssh/authorized_keys",
+    authorized_keys_file => '/var/lib/monkeysphere/authorized_keys/%u .ssh/authorized_keys',
   }
 
   class { 'dtg::git::config': }
-  class { "etckeeper": require => Class['dtg::git::config'] }
-  class { "ntp": servers => $ntp_servers, package_ensure => latest, }
+  class { 'etckeeper': require => Class['dtg::git::config'] }
+  class { 'ntp': servers => $ntp_servers, package_ensure => latest, }
   # Get entropy then do gpg and then monkeysphere
   class { 'dtg::entropy': stage => 'entropy-host' }
   class { 'dtg::entropy::client':
-    cafile  => '/usr/local/share/ssl/cafile',
+    cafile       => '/usr/local/share/ssl/cafile',
     host_address => 'entropy.dtg.cl.cam.ac.uk',
-    stage => 'entropy',
-    require => File['/usr/local/share/ssl/cafile'],
+    stage        => 'entropy',
+    require      => File['/usr/local/share/ssl/cafile'],
   }
 
   # Make it possible to send email (if correct from address is used)
   class { 'dtg::email': }
 
-  class { "gpg": }
-  class { "monkeysphere":
+  class { 'gpg': }
+  class { 'monkeysphere':
     require => Class['dtg::email'],
   }
   # create hourly cron job to update users authorized_user_id files
-  $ms_min = random_number(60) 
-  file { "/etc/cron.d/monkeysphere":
+  $ms_min = random_number(60)
+  file { '/etc/cron.d/monkeysphere':
     content => template('monkeysphere/monkeysphere.erb'),
-    owner => root,
-    group => root,
+    owner   => root,
+    group   => root,
     replace => no,
-    mode => 0644
+    mode    => '0644'
   }
   # ensure our ssh key is imported into the monkeysphere
-  monkeysphere::import_key { "main": }
+  monkeysphere::import_key { 'main': }
   monkeysphere::publish_server_keys { 'main':}
 ## This stuff is important but currently broken TODO(drt24) fix it.
 #  gpg::private_key {'root':
@@ -109,24 +109,24 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
 #  }
 
   # Add the certifiers who sign the users
-  class { "ms_id_certifiers": }
-  monkeysphere::authorized_user_ids { "root":
+  class { 'ms_id_certifiers': }
+  monkeysphere::authorized_user_ids { 'root':
     user_ids => $ms_admin_user_ids
   }
   # Create the admin users
-  class { "admin_users":
+  class { 'admin_users':
     require => Class['dtg::email'],
   }
   # Allow admin users to push puppet config
   if $adm_sudoers {
-    group { "adm": ensure => present }
+    group { 'adm': ensure => present }
     # Make admin users admin users
     sudoers::allowed_command{ 'adm':
-      command => 'ALL',
-      group   => 'adm',
-      run_as  => 'ALL',
+      command          => 'ALL',
+      group            => 'adm',
+      run_as           => 'ALL',
       require_password => false,
-      comment => 'Allow members of the admin group to use sudo to get root on low-security boxes',
+      comment          => 'Allow members of the admin group to use sudo to get root on low-security boxes',
     }
   }
   else {
@@ -134,18 +134,18 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
       ensure => absent,
     }
   }
-  group { "dtg-admin": ensure => present }
+  group { 'dtg-admin': ensure => present }
   # Make dtg-admin users have root on all high-security boxes (eg nas0{1,4})
   sudoers::allowed_command{ 'dtg-adm':
-      command => 'ALL',
-      group   => 'dtg-adm',
-      run_as  => 'ALL',
+      command          => 'ALL',
+      group            => 'dtg-adm',
+      run_as           => 'ALL',
       require_password => false,
-      comment => 'Allow members of the dtg-admin group to use sudo to get root on high-security boxes',
+      comment          => 'Allow members of the dtg-admin group to use sudo to get root on high-security boxes',
     }
   class { 'dtg::unattendedupgrades':
     unattended_upgrade_notify_emailaddress => $::unattended_upgrade_notify_emailaddress,
-    require => Class['dtg::email'],
+    require                                => Class['dtg::email'],
   }
 
   # Monitor using munin
@@ -157,9 +157,9 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   }
   # Add read only filesystem detection plugin
   file {'/usr/share/munin/plugins/fs_readonly':
-    ensure => file,
-    source => 'puppet:///modules/dtg/munin/fs_readonly',
-    mode   => '0755',
+    ensure  => file,
+    source  => 'puppet:///modules/dtg/munin/fs_readonly',
+    mode    => '0755',
     require => Package['munin-node'],
   }
   munin::node::plugin{'fs_readonly':}
