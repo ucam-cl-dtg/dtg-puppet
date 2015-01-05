@@ -104,6 +104,10 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
     encoding => 'UTF-8',
     grant    => 'ALL'
   }
+  dtg::firewall::postgres{'deviceanalyzer':
+    source      => $deviceanalyzer_ip,
+    source_name => 'deviceanalyzer',
+  }
 
 }
 
