@@ -75,10 +75,51 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
     mode   => '0755',
   }
 }
+
+node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
+
+  include 'dtg::minimal'
+  class { 'postgresql::globals':
+    version => '9.4',
+  }
+  ->
+  class { 'postgresql::server':
+    ip_mask_deny_postgres_user => '0.0.0.0/0',
+    ip_mask_allow_all_users    => '127.0.0.1/32',
+    listen_addresses           => '*',
+    ipv4acls                   => ['hostssl all all 127.0.0.1/32 md5',
+                                   'host androidusage androidusage 128.232.98.188/32 md5']
+  }
+  ->
+  postgresql::server::db{'androidusage':
+    user     => 'androidusage',
+    password => 'androidusage',
+    encoding => 'UTF-8',
+    grant    => 'ALL'
+  }
+  ->
+  postgresql::server::db{'androidstats':
+    user     => 'androidstats',
+    password => 'J4s98AK0w',
+    encoding => 'UTF-8',
+    grant    => 'ALL'
+  }
+  dtg::firewall::postgres{'deviceanalyzer':
+    source      => $deviceanalyzer_ip,
+    source_name => 'deviceanalyzer',
+  }
+
+}
+
 if ( $::monitor ) {
   nagios::monitor { 'hound4':
     parents    => '',
     address    => 'hound4.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers' ],
+  }
+  nagios::monitor { 'deviceanalyzer-database':
+    parents    => 'nas04',
+    address    => 'deviceanalyzer-database.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
   nagios::monitor { 'deviceanalyzer':

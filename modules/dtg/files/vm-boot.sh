@@ -53,7 +53,9 @@ fi
 # monkeysphere. We also generate a new fingerprint
 
 if [ $(echo $HOSTNAME | grep puppy) ]; then
-    ssh-keygen -l -f /etc/ssh/ssh_host_rsa_key.pub
+    rm -rf /etc/ssh/ssh_host_*
+    ssh-keygen -t ed25519 -h -f /etc/ssh/ssh_host_ed25519_key < /dev/null
+    ssh-keygen -t rsa -b 4096 -h -f /etc/ssh/ssh_host_rsa_key < /dev/null
 
     mkdir -p /root/.ssh/
     echo "${DOM0_PUBLIC_KEY}" >> $AUTHORIZED_KEYS

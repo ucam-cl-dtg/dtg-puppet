@@ -1,7 +1,7 @@
 #iptables firewalling for nodes
 # Default setup
 class dtg::firewall::default {
-  # These defaults ensure that the persistence command is executed after 
+  # These defaults ensure that the persistence command is executed after
   # every change to the firewall, and that pre & post classes are run in the
   # right order to avoid potentially locking you out of your box during the
   # first puppet run.
@@ -106,6 +106,19 @@ class dtg::firewall::git inherits dtg::firewall::default {
     action => 'accept',
   }
 }
+
+define dtg::firewall::postgres ($source, $source_name) {
+
+  require dtg::firewall::default
+
+  firewall { "014 accept postgres requests from $source_name":
+    proto  => 'tcp',
+    dport  => '5432',
+    action => 'accept',
+    source => $source,
+  }
+}
+
 class dtg::firewall::80to8080 ($private = true) inherits dtg::firewall::default {
   firewall { '020 redirect 80 to 8080':
     dport   => '80',
