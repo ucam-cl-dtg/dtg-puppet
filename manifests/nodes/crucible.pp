@@ -53,14 +53,15 @@ node 'crucible.dtg.cl.cam.ac.uk' {
       path => '/etc/environment',
       line => 'FISHEYE_INST="/var/lib/crucible_data"',
    }
-  ->
-  file { '/var/lib/crucible_data/config.xml':
-    ensure => present,
-    source => '/usr/share/crucible_home/fecru-3.4.4/config.xml',
-    owner  => 'crucible',
-    group  => 'crucible',
-    mode   => '0755',
-  }
+# only required on initial installation
+#  ->
+#  file { '/var/lib/crucible_data/config.xml':
+#    ensure => present,
+#    source => '/usr/share/crucible_home/fecru-3.4.4/config.xml',
+#    owner  => 'crucible',
+#    group  => 'crucible',
+#    mode   => '0755',
+#  }
 
   firewall { '020 redirect 80 to 8060':
     dport   => '80',
