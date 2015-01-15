@@ -102,8 +102,8 @@ def get_machines():
     vms = execute(get_vms, hosts=[DOM0])
     return vms[DOM0] + PHYSICAL_MACHINES
 
-
 @task
+@parallel
 def snapshot_mc(mc, commit_id):
     """
     Snapshot a VM using commit_id as a snapshot name.
