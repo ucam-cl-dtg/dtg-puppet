@@ -22,6 +22,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => 'rw=@128.232.20.18,rw=@128.232.20.20,rw=@128.232.20.22,rw=@128.232.20.24,rw=@128.232.20.26',
   }
 
+  dtg::zfs::fs{'isos':
+    pool_name  => $pool_name,
+    fs_name    => 'isos',
+    share_opts => "ro=@${dtg_subnet}",
+  }
+
   dtg::zfs::fs{'shin-backup':
     pool_name  => $pool_name,
     fs_name    => 'shin-backup',
