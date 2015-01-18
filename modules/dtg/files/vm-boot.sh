@@ -31,7 +31,7 @@ fi
 
 # Make sure the machine is up-to-date.
 apt-get update
-apt-get -y dist-upgrade
+apt-get -y --no-install-recommends dist-upgrade
 apt-get -y autoremove
 
 # should we run bootstrap.sh?
