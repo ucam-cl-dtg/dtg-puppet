@@ -179,6 +179,9 @@ def upgrade_mc():
     with show('output'):
         # Disable fancy progress bars during the update, as they break fabric.
         sudo('rm /etc/apt/apt.conf.d/99progressbar')
+        # Remove any out of date packages before trying to upgrade.
+        sudo("apt-show-versions | grep -v uptodate | sed 's/:.*$//' |"
+             ' xargs sudo apt-get -y -q remove')
         # Ensure the current version is up to date, as there may be a new
         # version of the updater.
         sudo('apt-get update')
@@ -194,6 +197,9 @@ def upgrade_mc():
             'echo "y\n\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\n" | '
             'DEBIAN_FRONTEND=noninteractive | '
             'do-release-upgrade -f DistUpgradeViewNonInteractive')
+        # Remove any out of date packages after upgrading.
+        sudo("apt-show-versions | grep -v uptodate | sed 's/:.*$//' |"
+             ' xargs sudo apt-get -y -q remove')
         # Clean up apt.
         sudo('apt-get -q clean')
         sudo('apt-get -q autoclean')
