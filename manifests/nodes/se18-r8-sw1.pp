@@ -3,6 +3,6 @@ if ( $::monitor ) {
   nagios::monitor { 'se18-r8-sw1':
     parents    => '',
     address    => 'se18-r8-sw1.net.cl.cam.ac.uk',
-    hostgroups => [ 'http-servers', 'https-servers' ],
+    hostgroups => [],
   }
 }
