@@ -17,7 +17,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
                   'runit', 'apg', 'emacs24-nox', 'htop', 'nfs-common',
                   'iptables-persistent', 'command-not-found', 'mlocate',
-                  'bash-completion']
+                  'bash-completion', 'linux-image-generic']
   package {
     $packagelist:
       ensure => installed
