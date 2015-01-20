@@ -102,7 +102,6 @@ def get_machines():
     vms = execute(get_vms, hosts=[DOM0])
     return vms[DOM0] + PHYSICAL_MACHINES
 
-@task
 @parallel
 def snapshot_mc(mc, commit_id):
     """
@@ -167,7 +166,6 @@ def snap_gc():
         run('xe snapshot-uninstall force=true uuid=%s' % snap['uuid'])
 
 
-@task
 @parallel
 def upgrade_mc():
     """
@@ -181,7 +179,7 @@ def upgrade_mc():
         # Ensure the current version is up to date, as there may be a new
         # version of the updater.
         sudo('apt-get update')
-        sudo('apt-get -y -q dist-upgrade')
+        sudo('apt-get -y -q --no-install-recommends dist-upgrade')
         # Try to get free space on the disk.
         sudo('apt-get -y -q autoremove')
         sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
@@ -192,13 +190,12 @@ def upgrade_mc():
         sudo(
             'echo "y\n\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\n" | '
             'DEBIAN_FRONTEND=noninteractive | '
-            'do-release-upgrade -f DistUpgradeViewNonInteractive')
+            'do-release-upgrade -d -f DistUpgradeViewNonInteractive')
         # Clean up apt.
         sudo('apt-get -q clean')
         sudo('apt-get -q autoclean')
 
 
-@task
 @parallel
 def security_update():
     """
