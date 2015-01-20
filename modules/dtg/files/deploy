@@ -190,7 +190,7 @@ def upgrade_mc():
         sudo(
             'echo "y\n\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\n" | '
             'DEBIAN_FRONTEND=noninteractive | '
-            'do-release-upgrade -d -f DistUpgradeViewNonInteractive')
+            'do-release-upgrade -f DistUpgradeViewNonInteractive')
         # Clean up apt.
         sudo('apt-get -q clean')
         sudo('apt-get -q autoclean')
