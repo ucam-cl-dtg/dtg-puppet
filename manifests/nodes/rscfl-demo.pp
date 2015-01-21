@@ -1,5 +1,6 @@
 node 'rscfl-demo.dtg.cl.cam.ac.uk' {
   class { 'dtg::firewall::80to8080': }
+  class { 'dtg::firewall::publichttp': }
 }
 
 if ( $::monitor ) {
