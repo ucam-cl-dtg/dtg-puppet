@@ -169,7 +169,7 @@ def snap_gc():
         run('xe snapshot-uninstall force=true uuid=%s' % snap['uuid'])
 
 
-@parallel
+@parallel(pool_size=8)
 def upgrade_mc():
     """
     Upgrade the base version of Ubuntu to the latest release.
@@ -194,8 +194,8 @@ def upgrade_mc():
              "/etc/update-manager/release-upgrades")
         # Desperately try to do a non-interactive upgrade.
         sudo(
-            'echo "y\n\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\n" | '
-            'DEBIAN_FRONTEND=noninteractive | '
+            'yes | '
+            'DEBIAN_FRONTEND=noninteractive '
             'do-release-upgrade -f DistUpgradeViewNonInteractive')
         # Remove any out of date packages after upgrading.
         sudo("apt-show-versions | grep -v uptodate | sed 's/:.*$//' |"
@@ -205,7 +205,7 @@ def upgrade_mc():
         sudo('apt-get -q autoclean')
 
 
-@parallel
+@parallel(pool_size=8)
 def security_update():
     """
     Force machines to apply the latest security update.
@@ -219,14 +219,14 @@ def security_update():
     sudo('apt-get -q autoclean')
 
 
-@parallel
+@parallel(pool_size=8)
 def run_latest_puppet():
     """
     Manually apply puppet.
     """
     with show('output'):
         with cd(PUPPET_BARE):
-            sudo('git fetch https://github.com/ucam-cl-dtg/dtg-puppet.git master:master')
+            sudo('git fetch --quiet https://github.com/ucam-cl-dtg/dtg-puppet.git master:master')
             sudo('./hooks/post-update')
 
 
