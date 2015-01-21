@@ -43,7 +43,7 @@ if [ ! -d $PUPPETBARE ]; then
 else
     # Get the latest puppet config from code.dtg.
     cd /etc/puppet-bare
-    git fetch git://git.dtg.cl.cam.ac.uk/puppet/dtg-puppet.git
+    git fetch --quiet git://git.dtg.cl.cam.ac.uk/puppet/dtg-puppet.git
     ./hooks/post-update
 fi
 
