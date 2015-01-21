@@ -194,8 +194,8 @@ def upgrade_mc():
              "/etc/update-manager/release-upgrades")
         # Desperately try to do a non-interactive upgrade.
         sudo(
-            'echo "y\n\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\ny\n" | '
-            'DEBIAN_FRONTEND=noninteractive | '
+            'yes | '
+            'DEBIAN_FRONTEND=noninteractive '
             'do-release-upgrade -f DistUpgradeViewNonInteractive')
         # Remove any out of date packages after upgrading.
         sudo("apt-show-versions | grep -v uptodate | sed 's/:.*$//' |"
