@@ -169,7 +169,7 @@ def snap_gc():
         run('xe snapshot-uninstall force=true uuid=%s' % snap['uuid'])
 
 
-@parallel
+@parallel(pool_size=8)
 def upgrade_mc():
     """
     Upgrade the base version of Ubuntu to the latest release.
@@ -205,7 +205,7 @@ def upgrade_mc():
         sudo('apt-get -q autoclean')
 
 
-@parallel
+@parallel(pool_size=8)
 def security_update():
     """
     Force machines to apply the latest security update.
@@ -219,7 +219,7 @@ def security_update():
     sudo('apt-get -q autoclean')
 
 
-@parallel
+@parallel(pool_size=8)
 def run_latest_puppet():
     """
     Manually apply puppet.
