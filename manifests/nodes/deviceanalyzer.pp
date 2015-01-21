@@ -117,11 +117,11 @@ if ( $::monitor ) {
     address    => 'hound4.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
-  nagios::monitor { 'deviceanalyzer-database':
-    parents    => 'nas04',
-    address    => 'deviceanalyzer-database.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
-  }
+#  nagios::monitor { 'deviceanalyzer-database':
+#    parents    => 'nas04',
+#    address    => 'deviceanalyzer-database.dtg.cl.cam.ac.uk',
+#    hostgroups => [ 'ssh-servers' ],
+#  }
   nagios::monitor { 'deviceanalyzer':
     parents    => ['nas04', 'nas02'],
     address    => 'deviceanalyzer.cl.cam.ac.uk',
