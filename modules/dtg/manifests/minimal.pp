@@ -180,6 +180,15 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     require => Sshkey['localhost'],
   }
 
+  # Disable ipv6 privacy extensions so that machines have predictable ipv6 addresses
+  file {'/etc/sysctl.d/11-ipv6-privacy.conf':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    source => 'puppet:///modules/dtg/11-ipv6-privacy.conf'
+  }
+
   # Keep stuff put in at bootstrap up to date
   file {'/etc/puppet':
     ensure => directory,
