@@ -35,6 +35,13 @@ node 'sak70-vpnserver.dtg.cl.cam.ac.uk' {
     action => 'accept',
   }    
 
+  firewall { "101-vpnserver accept 8081 over vpn":
+    proto  => 'tcp',
+    dport  => 8081,
+    destination   => '192.168.111.1',
+    action => 'accept',
+  }
+
   firewall { "998 log dropped packets":
     proto => 'all',
     jump  => 'LOG',
