@@ -31,8 +31,8 @@ node 'sak70-vpnserver.dtg.cl.cam.ac.uk' {
   firewall { "100-vpnserver accept 8080 over vpn":
     proto  => 'tcp',
     dport  => 8080,
-    dest   => '192.168.111.1'
-    action => 'accept'
+    dest   => '192.168.111.1',
+    action => 'accept',
   }    
 
   firewall { "998 log dropped packets":
