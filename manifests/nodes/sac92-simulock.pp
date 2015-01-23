@@ -5,6 +5,7 @@ node 'sac92-simulock.dtg.cl.cam.ac.uk' {
     real_name => 'Richard Allitt',
     groups    => [ 'adm' ],
     keys      => '',
+    uid       => 3253,
   } ->
   ssh_authorized_key {'rsa33_key_windows':
     ensure => present,
