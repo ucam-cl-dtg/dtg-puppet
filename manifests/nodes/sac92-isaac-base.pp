@@ -77,7 +77,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   
   class {'dtg::firewall::publichttp':}
 
-  $packages = ['maven2','openjdk-7-jdk','rssh','mongodb']
+  $packages = ['maven2','openjdk-7-jdk','rssh','mongodb','logwatch']
   package{$packages:
     ensure => installed
   }
