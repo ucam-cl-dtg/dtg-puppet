@@ -116,7 +116,7 @@ class admin_users {
     }
     dtg::add_user { 'sac92':
       real_name => 'Stephen Cummins',
-      groups    => [],
+      groups    => [ 'adm' ],
       keys      => ['Stephen Cummins (Main key) <sacummins@gmail.com>'],
       uid       => 3286,
     }

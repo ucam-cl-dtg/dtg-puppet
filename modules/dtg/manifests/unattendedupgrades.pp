@@ -39,6 +39,11 @@ class dtg::unattendedupgrades ($unattended_upgrade_notify_emailaddress) {
   file_line {'apt postupdate-service-restart':
     ensure => present,
     path   => '/etc/cron.daily/apt',
+    line   => 'output=`postupdate-service-restart 2>&1` || echo $output',
+  }
+  file_line {'old apt postupdate-service-restart':
+    ensure => absent,
+    path   => '/etc/cron.daily/apt',
     line   => 'postupdate-service-restart',
   }
   file {'/usr/local/etc/':
