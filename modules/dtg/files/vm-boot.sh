@@ -29,24 +29,40 @@ if [ -e /dev/xvdb ] && [ ! -e /dev/xvdb1 ] && [[ -z $mounted ]]; then
     mount /local/data
 fi
 
-# Make sure the machine is up-to-date.
-apt-get update
-apt-get -y --no-install-recommends dist-upgrade
-apt-get -y autoremove
 
-# should we run bootstrap.sh?
 
-if [ ! -d $PUPPETBARE ]; then
-    wget ${BOOTSTRAP}
-    chmod +x bootstrap.sh
-    ./bootstrap.sh
-else
-    # Get the latest puppet config from code.dtg.
-    cd /etc/puppet-bare
-    git fetch --quiet git://git.dtg.cl.cam.ac.uk/puppet/dtg-puppet.git
-    ./hooks/post-update
+# Find the time since apt-get last successfully updated.
+now=$(date +"%s")
+last_apt=$(stat -c %Y /var/lib/apt/periodic/update-success-stamp)
+diff=$(($now-$last_apt))
+
+if [[ $diff -gt 86400 ]]; then
+
+	# As apt hasn't been run successfully for more than a day, the machine
+        # has probably been shutdown for a while, so apply latest updates and
+	# run puppet.
+
+	# We don't run this on every boot or else a boot storm kills
+	# performance.
+	apt-get update
+	apt-get -y --no-install-recommends dist-upgrade
+	apt-get -y autoremove
+
+	if [ -d $PUPPETBARE ]; then
+		# Get the latest puppet config from code.dtg if we have already
+		# applied puppet to this machine.
+
+		cd /etc/puppet-bare
+		git fetch --quiet git://git.dtg.cl.cam.ac.uk/puppet/dtg-puppet.git
+		./hooks/post-update
+	fi
 fi
 
+if [ ! -d $PUPPETBARE ]; then
+	wget $BOOTSTRAP
+	chmod +x bootstrap.sh
+	./bootstrap.sh
+fi
 
 # if the hostname is puppy* then we want to import dom0's key so
 # scripts can SSH in and sort this out. We don't want dom0 to
