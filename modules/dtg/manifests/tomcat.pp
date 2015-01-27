@@ -1,4 +1,5 @@
 class dtg::tomcat ($version = '8'){
+#TODO set a sane heap space in /etc/default/tomcat$version or performance will be terrible
   $tomcat = "tomcat${version}"
   package { $tomcat:
     ensure => installed,
