@@ -6,6 +6,8 @@ node 'weather.dtg.cl.cam.ac.uk' {
   class { 'dtg::minimal': manageapt => false, }
   class {'dtg::firewall::publichttp':}
 
+  User<|title == 'dwt27' |> { groups +>[ 'adm' ]}
+
   # Mount nas01 in order to ship backups there.
   file {'/mnt/nas01':
     ensure => directory,
