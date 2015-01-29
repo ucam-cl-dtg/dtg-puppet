@@ -16,22 +16,51 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   }
 
   # Packages which should be installed
-  $packagelist = ['openjdk-7-jdk', 'jetty8', 'nginx']
+  $packagelist = ['openjdk-7-jdk', 'jetty8', 'nginx', 'autofs']
   package {
     $packagelist:
       ensure => installed
   }
 
+  file {'/etc/auto.mnt':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 'a=r',
+    content => 'nas01   nas01.dtg.cl.cam.ac.uk:/data/deviceanalyzer
+nas02   nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer
+nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer ',
+  } ->
+  file_line {'mount nas':
+    line => '/mnt   /etc/auto.mnt',
+    path => '/etc/auto.master',
+  }
+
+  file {'/nas1':
+    ensure => link,
+    target => '/mnt/nas01',
+  }
+  file {'/nas2':
+    ensure => link,
+    target => '/mnt/nas02',
+  }
+  file {'/nas4':
+    ensure => link,
+    target => '/mnt/nas04',
+  }
+
   # mount nas02 on startup
   file_line { 'mount nas02':
-    line => 'nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
-    path => '/etc/fstab',
+    line   => 'nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
+    path   => '/etc/fstab',
+    ensure => absent,
   }
 
   # mount nas04 on startup
   file_line { 'mount nas04':
-    line => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer /nas4 nfs defaults 0 0',
-    path => '/etc/fstab',
+    line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer /nas4 nfs defaults 0 0',
+    path   => '/etc/fstab',
+    ensure => absent,
   }
 
   # set up nginx and jetty config
