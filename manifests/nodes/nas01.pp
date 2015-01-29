@@ -153,6 +153,12 @@ node /nas01/ {
                 ],
   }
 
+  file {'/data/deviceanalyzer':
+    ensure => directory,
+    owner  => 'www-data',
+    group  => 'www-data',
+    mode   => 'ug=rwx,o=rx',
+  }
 
 }
 
