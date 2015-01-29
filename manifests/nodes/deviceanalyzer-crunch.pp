@@ -1,19 +1,19 @@
 #Configuration for deviceanalyzer related stuff
 
-$dtw30_crunch0_ips = dnsLookup('dtw30-crunch0.dtg.cl.cam.ac.uk')
-$dtw30_crunch0_ip = $dtw30_crunch0_ips[0]
-$dtw30_crunch1_ips = dnsLookup('dtw30-crunch1.dtg.cl.cam.ac.uk')
-$dtw30_crunch1_ip = $dtw30_crunch1_ips[0]
-$dtw30_crunch2_ips = dnsLookup('dtw30-crunch2.dtg.cl.cam.ac.uk')
-$dtw30_crunch2_ip = $dtw30_crunch2_ips[0]
-$dtw30_crunch3_ips = dnsLookup('dtw30-crunch3.dtg.cl.cam.ac.uk')
-$dtw30_crunch3_ip = $dtw30_crunch3_ips[0]
-$dtw30_crunch4_ips = dnsLookup('dtw30-crunch4.dtg.cl.cam.ac.uk')
-$dtw30_crunch4_ip = $dtw30_crunch4_ips[0]
+$deviceanalyzer_crunch0_ips = dnsLookup('deviceanalyzer-crunch0.dtg.cl.cam.ac.uk')
+$deviceanalyzer_crunch0_ip = $deviceanalyzer_crunch0_ips[0]
+$deviceanalyzer_crunch1_ips = dnsLookup('deviceanalyzer-crunch1.dtg.cl.cam.ac.uk')
+$deviceanalyzer_crunch1_ip = $deviceanalyzer_crunch1_ips[0]
+$deviceanalyzer_crunch2_ips = dnsLookup('deviceanalyzer-crunch2.dtg.cl.cam.ac.uk')
+$deviceanalyzer_crunch2_ip = $deviceanalyzer_crunch2_ips[0]
+$deviceanalyzer_crunch3_ips = dnsLookup('deviceanalyzer-crunch3.dtg.cl.cam.ac.uk')
+$deviceanalyzer_crunch3_ip = $deviceanalyzer_crunch3_ips[0]
+$deviceanalyzer_crunch4_ips = dnsLookup('deviceanalyzer-crunch4.dtg.cl.cam.ac.uk')
+$deviceanalyzer_crunch4_ip = $deviceanalyzer_crunch4_ips[0]
 
-$dtw30_crunch_ips = "${dtw30_crunch0_ip},${dtw30_crunch1_ip},${dtw30_crunch2_ip},${dtw30_crunch3_ip},${dtw30_crunch4_ip}"
+$deviceanalyzer_crunch_ips = "${deviceanalyzer_crunch0_ip},${deviceanalyzer_crunch1_ip},${deviceanalyzer_crunch2_ip},${deviceanalyzer_crunch3_ip},${deviceanalyzer_crunch4_ip}"
 
-node /dtw30-crunch(\d+)?.dtg.cl.cam.ac.uk/ {
+node /deviceanalyzer-crunch(\d+)?.dtg.cl.cam.ac.uk/ {
   include 'dtg::minimal'
 
   firewall { '031-statserver accept tcp 4567 (statserver) from dtg':
@@ -63,10 +63,10 @@ node /dtw30-crunch(\d+)?.dtg.cl.cam.ac.uk/ {
   }
 }
 if ( $::monitor ) {
-  nagios::monitor { 'dtw30-crunch0':
+  nagios::monitor { 'deviceanalyzer-crunch0':
     parents    => 'nas04',
-    address    => 'dtw30-crunch0.dtg.cl.cam.ac.uk',
+    address    => 'deviceanalyzer-crunch0.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],#TODO(drt24) monitor the statsserver
   }
-  munin::gatherer::configure_node { 'dtw30-crunch0': }
+  munin::gatherer::configure_node { 'deviceanalyzer-crunch0': }
 }
