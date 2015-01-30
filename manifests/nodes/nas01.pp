@@ -58,7 +58,7 @@ node /nas01/ {
 
   dtg::firewall::nfs {'nfs access from deviceanalyzer':
     source          => $::deviceanalyzer_ip,
-    source_name     => 'dtg',
+    source_name     => 'deviceanalyzer',
     portmapper_port => $portmapper_port,
     nfs_port        => $nfs_port,
     lockd_tcpport   => $lockd_tcpport,
