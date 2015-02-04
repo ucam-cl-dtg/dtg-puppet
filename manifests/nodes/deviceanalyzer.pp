@@ -106,6 +106,8 @@ nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer ',
 }
 
 node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
+# MAC: 00:0e:0c:bc:0e:e4
+# IPv4: 128.232.23.47
 
   include 'dtg::minimal'
   class { 'postgresql::globals':
