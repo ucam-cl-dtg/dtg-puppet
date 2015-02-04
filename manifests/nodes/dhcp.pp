@@ -1,7 +1,6 @@
 node 'dhcp.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 
-  $dns_name_servers = join($::name_servers, ' ')
   class { 'network::interfaces':
     interfaces => {
       'eth0' => {
@@ -9,7 +8,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
         'address'         => '128.232.20.36',
         'netmask'         => '255.255.252.0',
         'gateway'         => '128.232.20.1',
-        'dns-nameservers' => $dns_name_servers,
+        'dns-nameservers' => $::dns_name_servers,
       }
     },
     auto       => ['eth0'],

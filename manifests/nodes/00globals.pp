@@ -23,6 +23,8 @@ $name_servers = [ '128.232.20.43',
                   '128.232.1.2',
                   '128.232.1.3' ]
 
+$dns_name_servers = join($::name_servers, ' ')
+
 # Id certifiers people who can sign other users keys to certify them
 class ms_id_certifiers {
   monkeysphere::add_id_certifier {
