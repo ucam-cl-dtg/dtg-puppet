@@ -219,5 +219,11 @@ if ( $::monitor ) {
     address    => 'nas04.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
+  nagios::monitor { 'nas04-bmc':
+    parents    => 'se18-r8-sw1',
+    address    => 'nas04-bmc.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers' ],
+  }
+
   munin::gatherer::configure_node { 'nas04': }
 }
