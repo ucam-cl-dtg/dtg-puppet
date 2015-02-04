@@ -140,6 +140,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     'puppy93':mac => '00:16:3E:E8:14:44', ip => '128.232.20.157';
     'puppy94':mac => '00:16:3E:E8:14:45', ip => '128.232.20.158';
     'puppy95':mac => '00:16:3E:E8:14:46', ip => '128.232.20.159';
+    'deviceanalyzer-database':mac => '00:0E:0C:BC:0E:E4', ip => '128.232.23.47';
   }
 }
 

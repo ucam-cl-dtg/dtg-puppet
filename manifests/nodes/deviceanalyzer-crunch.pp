@@ -16,6 +16,8 @@ $deviceanalyzer_crunch_ips = "${deviceanalyzer_crunch0_ip},${deviceanalyzer_crun
 node /deviceanalyzer-crunch(\d+)?.dtg.cl.cam.ac.uk/ {
   include 'dtg::minimal'
 
+  User<|title == 'dh526' |> { groups +>[ 'adm' ]}
+
   firewall { '031-statserver accept tcp 4567 (statserver) from dtg':
     proto  => 'tcp',
     dport  => 4567,

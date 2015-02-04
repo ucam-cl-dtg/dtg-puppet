@@ -56,6 +56,18 @@ node /nas01/ {
     statd_port      => $statd_port,
   }
 
+  dtg::firewall::nfs {'nfs access from deviceanalyzer':
+    source          => $::deviceanalyzer_ip,
+    source_name     => 'deviceanalyzer',
+    portmapper_port => $portmapper_port,
+    nfs_port        => $nfs_port,
+    lockd_tcpport   => $lockd_tcpport,
+    lockd_udpport   => $lockd_udpport,
+    mountd_port     => $mountd_port,
+    rquotad_port    => $rquotad_port,
+    statd_port      => $statd_port,
+  }
+
   nfs::export{"/data":
     export => {
       # host           options
@@ -63,6 +75,7 @@ node /nas01/ {
       "${::grapevine_ip}" => 'rw,sync,root_squash',
       "${::shin_ip}" => 'rw,sync,root_squash',
       "${::earlybird_ip}" => 'rw,sync,root_squash',
+      "${::deviceanalyzer_ip}" => 'rw,sync,root_squash',
     },
   }
   ->
