@@ -21,7 +21,7 @@ node /nas01/ {
     source => 'puppet:///modules/dtg/fancontrol/nas01'
   }
 
-  class { 'network::interfaces':
+/*  class { 'network::interfaces':
     interfaces => {
       'eth0' => {
         'method'      => 'manual',
@@ -46,7 +46,7 @@ node /nas01/ {
     },
     auto       => ['eth0', 'eth1', 'bond0'],
   }
-
+*/
   $portmapper_port     = 111
   $nfs_port            = 2049
   $lockd_tcpport       = 32803
