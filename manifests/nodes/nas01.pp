@@ -1,6 +1,8 @@
 node /nas01/ {
   class { 'dtg::minimal': adm_sudoers => false }
 
+  dtg::kernelmodule::add{"bonding": }
+
   # Its important to probe these modules in this particular order because it affects which device id they get, which in turn affects the fancontrol config
   dtg::kernelmodule::add{"coretemp": }
   ->
@@ -19,6 +21,32 @@ node /nas01/ {
     source => 'puppet:///modules/dtg/fancontrol/nas01'
   }
 
+/*  class { 'network::interfaces':
+    interfaces => {
+      'eth0' => {
+        'method'      => 'manual',
+        'bond-master' => 'bond0',
+      },
+      'eth1' => {
+        'method'      => 'manual',
+        'bond-master' => 'bond0',
+      },
+      'bond0' => {
+        'method'          => 'static',
+        'address'         => '128.232.20.12',
+        'netmask'         => '255.255.252.0',
+        'gateway'         => '128.232.20.1',
+        'dns-nameservers' => $::dns_name_servers,
+        'dns-search'      => 'dtg.cl.cam.ac.uk',
+        'bond-mode'       => '4',
+        'bond-miimon'     => '100',
+        'bond-lacp-rate'  => '1',
+        'bond-slaves'     => 'eth0 eth1'
+      }
+    },
+    auto       => ['eth0', 'eth1', 'bond0'],
+  }
+*/
   $portmapper_port     = 111
   $nfs_port            = 2049
   $lockd_tcpport       = 32803
