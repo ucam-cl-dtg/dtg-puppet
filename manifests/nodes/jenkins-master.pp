@@ -1,4 +1,4 @@
-node 'jenkins-master.dtg.cl.cam.ac.uk' {
+node /jenkins-master(-\d+)?/ {
   include 'dtg::minimal'
   class { 'dtg::jenkins': }
   class { 'sonarqube': version => '4.5.1'}
