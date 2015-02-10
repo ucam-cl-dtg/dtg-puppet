@@ -85,3 +85,6 @@
 [submodule "modules/puppet-sonarqube"]
 	path = modules/sonarqube
 	url = https://github.com/maestrodev/puppet-sonarqube.git
+[submodule "modules/distcc"]
+	path = modules/distcc
+	url = https://github.com/ucam-cl-dtg/puppet-distcc.git

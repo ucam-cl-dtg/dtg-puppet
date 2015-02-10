@@ -1,7 +1,6 @@
 node 'dhcp.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 
-  $dns_name_servers = join($::name_servers, ' ')
   class { 'network::interfaces':
     interfaces => {
       'eth0' => {
@@ -9,7 +8,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
         'address'         => '128.232.20.36',
         'netmask'         => '255.255.252.0',
         'gateway'         => '128.232.20.1',
-        'dns-nameservers' => $dns_name_servers,
+        'dns-nameservers' => $::dns_name_servers,
       }
     },
     auto       => ['eth0'],
@@ -43,6 +42,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     'collar1':mac => '00:80:a3:a3:10:c9', ip => '128.232.22.129';
     'inuit':mac => '00:92:58:00:53:c3', ip => '128.232.20.17';
     'spaniel':mac => 'b8:27:eb:bc:d7:cb', ip => '128.232.20.96';
+    'fluffy':mac => '00:04:4b:26:fa:34', ip => '128.232.20.97';
     'puppy0':mac => '00:16:3E:E8:14:1C', ip => '128.232.20.28';
     'puppy1':mac => '00:16:3E:E8:14:1D', ip => '128.232.20.29';
     'puppy2':mac => '00:16:3E:E8:14:1E', ip => '128.232.20.30';
