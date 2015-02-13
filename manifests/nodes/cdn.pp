@@ -1,12 +1,16 @@
 node 'cdn.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
+  # this script uses the guide here for installing varnish with apache (guide includes http and https)
+  # http://blog.ajnicholls.com/varnish-apache-and-https/
 
+  # port configuration
   $apache_http_port = '8080'
   $varnish_http_port = '80'
   $packages = ['varnish']
 
+  # Nasty hack to stop apache listening on port 80.
   $apache_port = $apache_http_port
-  
+
   class {'apache::ubuntu': } ->
   apache::module {'cgi':} ->
   apache::module {'headers':} ->
@@ -41,6 +45,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
 
   file_line{'varnish-setup-backend':
     line   => ".port = \"${apache_http_port}\";",
+    notify => Service["varnish"],
     path   => "/etc/varnish/default.vcl",
     match  => '^\.port.*'
   }
@@ -60,3 +65,11 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   class {'dtg::firewall::publichttp':}
 }
 
+if ( $::monitor ) {
+  nagios::monitor { 'cdn':
+    parents    => 'nas04',
+    address    => 'cdn.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers' ],
+  }
+  munin::gatherer::configure_node { 'cdn': }
+}
