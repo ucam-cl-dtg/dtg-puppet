@@ -2,6 +2,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 
   $apache_http_port = '8080'
+  $varnish_http_port = '80'
   
   class {'apache::ubuntu': } ->
   apache::module {'cgi':} ->
@@ -32,9 +33,9 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   }
 
   file_line{'varnish-setup-backend':
-    line   => "port = '${apache_http_port}'",
+    line   => ".port = \"${apache_http_port}\"",
     path   => "/etc/varnish/default.vcl",
-    match  => "^port.*"
+    match  => "\.port.*"
   }
   ->
   file_line{'varnish-setup-http-listening-port':
