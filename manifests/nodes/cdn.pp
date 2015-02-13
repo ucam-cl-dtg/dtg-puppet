@@ -16,6 +16,9 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   apache::module {'headers':} ->
   apache::module {'rewrite':} ->
   apache::module {'expires':} ->
+  apache::site {'cdn-apache':
+    source => 'puppet:///modules/dtg/apache/cdn.conf',
+  }  
   file_line{'apache-port-configure-http':
     line   => "Listen ${apache_http_port}",
     path   => "/etc/apache2/ports.conf",
@@ -41,6 +44,13 @@ node 'cdn.dtg.cl.cam.ac.uk' {
       ensure  => "running",
       enable  => "true",
       require => Package["varnish"],
+  }
+
+  file { '/var/www/vendor':
+    ensure => 'directory',
+    owner  => "root",
+    group  => "root",
+    mode   => '0644',
   }
 
   file_line{'varnish-setup-backend':
