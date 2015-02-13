@@ -53,12 +53,26 @@ node 'cdn.dtg.cl.cam.ac.uk' {
     mode   => '0644',
   }
 
-  file_line{'varnish-setup-backend':
-    line   => ".port = \"${apache_http_port}\";",
-    notify => Service["varnish"],
-    path   => "/etc/varnish/default.vcl",
-    match  => '^\.port.*'
+  file { '/etc/varnish/cdn.vcl':
+      mode   => '0755',
+      owner  => root,
+      group  => root,
+      source => 'puppet:///modules/dtg/cdn/varnish/cdn.vcl'
   }
+  ->
+  file_line{'configure-varnish-vcl':
+    notify => Service["varnish"],
+    line   => "-f /etc/varnish/cdn.vcl \\",
+    path   => "/etc/default/varnish",
+    match  => ".*-f /etc/varnish/.*\.vcl \\.*"
+  }
+  ->
+  file_line{'configure-varnish-memory':
+    notify => Service["varnish"],
+    line   => "-s malloc,512m\"",
+    path   => "/etc/default/varnish",
+    match  => '.*-s malloc,.*"'
+  }  
   ->
   file_line{'varnish-setup-http-listening-port':
     notify => Service["varnish"],
