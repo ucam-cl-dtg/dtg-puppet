@@ -34,6 +34,9 @@ sub vcl_backend_response {
     # Here you clean the response headers, removing silly Set-Cookie headers
     # and other mistakes your backend does.
   	
+  	# remove any cookies from outgoing response
+	unset beresp.http.Set-Cookie;
+
   	# cache everything for 30 minutes, ignoring any cache headers
   	set beresp.ttl = 30m;
 }
