@@ -5,6 +5,8 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   $varnish_http_port = '80'
   $packages = ['varnish']
 
+  $apache_port = $apache_http_port
+  
   class {'apache::ubuntu': } ->
   apache::module {'cgi':} ->
   apache::module {'headers':} ->
