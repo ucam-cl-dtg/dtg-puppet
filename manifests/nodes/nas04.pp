@@ -70,7 +70,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{ 'bayncore':
     pool_name  => $pool_name,
     fs_name    => 'bayncore',
-    share_opts => '${dtg_share},${saluki_share}',
+    share_opts => "${dtg_share},${saluki_share}",
   }
   
 
