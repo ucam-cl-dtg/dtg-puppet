@@ -11,4 +11,10 @@ node /build-(\d+)?/ {
     dport   => 3632,
     action  => 'accept',
   }
+
+  firewall { "032-build accept avahi udp 5353":
+    proto   => 'udp',
+    dport   => 5353,
+    action  => 'accept',
+  }
 }
