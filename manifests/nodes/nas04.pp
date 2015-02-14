@@ -65,6 +65,15 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => 'off',
   }
 
+  $saluki_share = "rw=@128.232.98.206,@128.232.98.207"
+  
+  dtg::zfs::fs{ 'bayncore':
+    pool_name  => $pool_name,
+    fs_name    => 'bayncore',
+    share_opts => "${dtg_share},${saluki_share}",
+  }
+  
+
 # Not using this method ATM
 
 #   # Mount nas02 in order to back it up.

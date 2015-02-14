@@ -17,7 +17,8 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
                   'runit', 'apg', 'emacs24-nox', 'htop', 'nfs-common',
                   'iptables-persistent', 'command-not-found', 'mlocate',
-                  'bash-completion', 'linux-image-generic', 'apt-show-versions']
+                  'bash-completion', 'linux-image-generic', 'apt-show-versions',
+                  'iotop']
   package {
     $packagelist:
       ensure => installed
@@ -187,6 +188,18 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     group  => 'root',
     mode   => '0644',
     source => 'puppet:///modules/dtg/11-ipv6-privacy.conf'
+  }
+
+  # Attempt to make DNS more robust by timing out quickly and retrying enough times that we will hit all of the configured DNS servers before failing
+  file { '/etc/resolvconf/resolv.conf.d/tail':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => 'u+rw,go+r',
+  }
+  file_line { 'resolv.conf dns options':
+    path => '/etc/resolvconf/resolv.conf.d/tail',
+    line => 'options timeout:1 attempts:4',
   }
 
   # Keep stuff put in at bootstrap up to date
