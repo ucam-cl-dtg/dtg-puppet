@@ -15,7 +15,7 @@ vcl 4.0;
 # Default backend definition. Set this to point to your content server.
 backend default {
     .host = "127.0.0.1";
-	.port = "8080";
+    .port = "8080";
 }
 
 sub vcl_recv {
@@ -25,7 +25,7 @@ sub vcl_recv {
     # rewriting the request, etc.
   	
   	# remove cookies as we don't care on a CDN
-    unset req.http.Cookie;    
+    unset req.http.Cookie;
 }
 
 sub vcl_backend_response {
@@ -35,10 +35,10 @@ sub vcl_backend_response {
     # and other mistakes your backend does.
   	
   	# remove any cookies from outgoing response
-	unset beresp.http.Set-Cookie;
+    unset beresp.http.Set-Cookie;
 
-  	# cache everything for 30 minutes, ignoring any cache headers
-  	set beresp.ttl = 30m;
+  	# cache everything for 1 week, ignoring any cache headers
+  	set beresp.ttl = 1w;
 }
 
 sub vcl_deliver {

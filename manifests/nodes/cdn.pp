@@ -64,7 +64,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
     notify => Service["varnish"],
     line   => "-f /etc/varnish/cdn.vcl \\",
     path   => "/etc/default/varnish",
-    match  => ".*-f /etc/varnish/.*\.vcl \\.*"
+    match  => ".*-f /etc/varnish/.*vcl \\.*"
   }
   ->
   file_line{'configure-varnish-memory':
