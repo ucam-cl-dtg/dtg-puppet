@@ -51,14 +51,37 @@ define bayncore_ssh_user($real_name,$uid) {
 }
 
 define bayncore_setup() {
+  service { "autofs":
+    ensure  => "running",
+    enable  => "true",
+    require => Package["autofs"],
+  }
+
   file {'/bayncore':
     ensure => directory,
   }
   ->
+  file {'/etc/auto.mnt':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 'a=r',
+    content => 'bayncore    nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore ',
+  }
+  ->
+  package { 'autofs':
+  }
+  ->
+  file_line {'mount nas':
+    line => '/mnt   /etc/auto.mnt',
+    path => '/etc/auto.master',
+    notify => Service['autofs'],
+  }
+  ->        
   file_line { 'mount nas04':
     line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore /bayncore nfs defaults 0 0',
     path   => '/etc/fstab',
-    ensure => present,
+    ensure => absent,
   }
 
   bayncore_ssh_user {'rogerphilp':
@@ -146,7 +169,7 @@ node /saluki(\d+)?/ {
 
   bayncore_setup { 'saluki-users': }
   ->
-  nfs::export{["/home","/bayncore"]:
+  nfs::export{["/home","/mnt/bayncore"]:
     export => {
       "172.31.0.0/16" => "rw,no_subtree_check,insecure,no_root_squash",
     },
