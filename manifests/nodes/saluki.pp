@@ -57,7 +57,7 @@ define bayncore_setup() {
     refreshonly => true,
   }
   
-  file {'/bayncore':
+  file {'/mnt/bayncore':
     ensure => directory,
   }
   ->
