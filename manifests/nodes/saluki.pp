@@ -151,9 +151,31 @@ node /saluki(\d+)?/ {
     source => '172.31.0.0/16'
   }
 
+  firewall { '051 nat 172.31.0.0/16':
+    chain    => 'POSTROUTING',
+    jump     => 'MASQUERADE',
+    proto    => 'all',
+    outiface => "eth0",
+    source   => '172.31.0.0/16',
+    table    => 'nat',
+  }
+
+  exec { "ipforward":
+    command => "/bin/echo 1 > /proc/sys/net/ipv4/ip_forward",
+    unless => "/bin/grep 1 /proc/sys/net/ipv4/ip_forward",
+  }
+
+  augeas { "sysctl-ipforward":
+    context => "/files/etc/sysctl.conf",
+    changes => [
+                "set net.ipv4.ip_forward 1"
+                ],
+  }
+    
+  
   bayncore_setup { 'saluki-users': }
   ->
-  nfs::export{["/home","/mnt/bayncore"]:
+  nfs::export{["/home"]:
     export => {
       "172.31.0.0/16" => "rw,no_subtree_check,insecure,no_root_squash",
     },
