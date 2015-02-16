@@ -1,10 +1,26 @@
 define bayncore_ssh_user($real_name,$uid) {
   $username = $title
-  dtg::add_user { $username:
-    real_name => $real_name,
-    groups    => ['adm'],
-    keys      => [],
-    uid       => $uid,
+  user { $username:
+    ensure     => present,
+    comment    => "${real_name} <${email}>",
+    home       => "/home/${username}",
+    shell      => '/bin/bash',
+    groups     => [],
+    uid        => $uid,
+    membership => 'minimum',
+    password   => '*',
+  }
+  ->
+  group { $username:
+    require => User[$username],
+    gid     => $uid,
+  }
+  ->
+  file { "/home/${username}/":
+    ensure  => directory,
+    owner   => $username,
+    group   => $username,
+    mode    => '0755',
   }
   ->
   file {"/home/${username}/.ssh/":
@@ -15,9 +31,8 @@ define bayncore_ssh_user($real_name,$uid) {
   }
   ->
   exec {"gen-${username}-sshkey":
-    command => "sudo -H -u ${user} -g ${user} ssh-keygen -q -N '' -t rsa -f /home/${username}/.ssh/id_rsa",
+    command => "sudo -H -u ${username} -g ${username} ssh-keygen -q -N '' -t rsa -f /home/${username}/.ssh/id_rsa",
     creates => "/home/${username}/.ssh/id_rsa",
-    require => File["/home/${username}/.ssh/"],
   }
   ->
   file {"/home/${username}/.ssh/authorized_keys":
@@ -27,16 +42,15 @@ define bayncore_ssh_user($real_name,$uid) {
     mode => '0600',
   }
   ->
-  file_line {"${username} local key":
-    line => file("/home/${username}/.ssh/id_rsa.pub"),
-    path => "/home/${username}/.ssh/authorized_keys",
-    ensure => present
-  } 
+  exec {"${username}-add-authkey":
+    command => "/bin/cat /home/${username}/.ssh/id_rsa.pub >> /home/${username}/.ssh/authorized_keys",
+    unless => "/bin/grep \"`/bin/cat /home/${username}/.ssh/id_rsa.pub`\" /home/${username}/.ssh/authorized_keys",
+    user => $username,
+    group => $username,
+  }
 }
 
 define bayncore_setup() {
-  include 'nfs::server'
-
   file {'/bayncore':
     ensure => directory,
   }
@@ -116,6 +130,8 @@ define bayncore_setup() {
 
 node /saluki(\d+)?/ {
   include 'dtg::minimal'
+
+  include 'nfs::server'
 
   $packages = ['build-essential','linux-headers-generic','alien','libstdc++6:i386']
 
