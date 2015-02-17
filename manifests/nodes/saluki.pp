@@ -132,7 +132,21 @@ define bayncore_setup() {
     user   => 'manelfernandez',
     type   => 'ssh-rsa',
     name   => 'manel@manel-ubuntu',
-  }  
+  }
+
+  bayncore_ssh_user {'richardpaul':
+    real_name => "Richard Paul (Bayncore)",
+    uid       => 20002
+  }
+  ->
+  ssh_authorized_key {'richardpaul key 1':
+    ensure => present,
+    key    => "AAAAB3NzaC1yc2EAAAABJQAAAIEAlbMOGZcVLDqz8WpbaUo1NQ95eIiFGT5uKPvGOQhqI/c6D90Vi26CdASoiQGj8hwgLoolbnI8ZWiZYJpeXJZgWQ61IlMMyuQ2fa84+5uuQsM6t1YwAKl+BB+yU4iTi/N0XlQM1XSZgJmCVckyh97/vpJ/q2QE4w2e46jBjv8jjRs=",
+    user   => 'richardpaul',
+    type   => 'ssh-rsa',
+    name   => 'rsa-key-20150217',
+  }
+            
 }
 
 node /saluki(\d+)?/ {
