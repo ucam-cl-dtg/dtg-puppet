@@ -56,6 +56,10 @@ define bayncore_setup() {
     command => "/bin/mount -a",
     refreshonly => true,
   }
+
+  package {["gfortran"]:
+    ensure => installed,
+  }
   
   file {'/mnt/bayncore':
     ensure => directory,
