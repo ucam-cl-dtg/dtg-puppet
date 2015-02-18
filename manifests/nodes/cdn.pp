@@ -43,7 +43,22 @@ node 'cdn.dtg.cl.cam.ac.uk' {
     notify => Service["apache2"],
     match  => '<VirtualHost \*:.*>'
   }   
-  
+  ->
+  file { "/etc/apache2/cdn-config":
+    ensure => "directory",
+    owner  => "root",
+    group  => "root",
+    mode   => 755,
+  }
+  ->
+  file { '/etc/apache2/cdn-config/apache-cdn-rules.conf':
+      mode   => '0755',
+      owner  => root,
+      group  => root,
+      source => 'puppet:///modules/dtg/cdn/apache-cdn-rules.conf',
+      notify => Service["apache2"]
+  }
+
   exec { 'stop-apache':
     command  => 'service apache2 stop'
   }
