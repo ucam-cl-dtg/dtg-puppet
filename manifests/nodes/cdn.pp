@@ -10,6 +10,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   $varnish_http_port = '9080'
   $varnish_ssl_port = '9443'
   
+  # pound deals with the SSL encryption and decryption.
   $pound_http_port = '80'
   $pound_ssl_port = '443'
 
@@ -25,6 +26,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
     source => 'puppet:///modules/dtg/apache/cdn.conf',
   } 
 
+  # Configure apache so that it works with pound and varnish
   file_line{'apache-port-configure-http':
     line   => "Listen ${apache_http_port}",
     path   => "/etc/apache2/ports.conf",
@@ -58,7 +60,15 @@ node 'cdn.dtg.cl.cam.ac.uk' {
       source => 'puppet:///modules/dtg/cdn/apache-cdn-rules.conf',
       notify => Service["apache2"]
   }
+  ->
+  file { '/var/www/vendor':
+    ensure => 'directory',
+    owner  => "root",
+    group  => "root",
+    mode   => '0644',
+  }  
 
+  # stop apache so that we can use its old ports for pound
   exec { 'stop-apache':
     command  => 'service apache2 stop'
   }
@@ -88,13 +98,6 @@ node 'cdn.dtg.cl.cam.ac.uk' {
       ensure  => "running",
       enable  => "true",
       require => Package["pound"],
-  }
-
-  file { '/var/www/vendor':
-    ensure => 'directory',
-    owner  => "root",
-    group  => "root",
-    mode   => '0644',
   }
 
   file { '/etc/pound/pound.cfg':
