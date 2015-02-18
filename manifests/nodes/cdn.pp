@@ -124,6 +124,8 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   }
 
   class {'dtg::firewall::publichttp':}
+
+  class {'dtg::firewall::publichttps':}
 }
 
 if ( $::monitor ) {
