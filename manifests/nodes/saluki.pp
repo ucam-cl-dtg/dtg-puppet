@@ -1,10 +1,26 @@
 define bayncore_ssh_user($real_name,$uid) {
   $username = $title
-  dtg::add_user { $username:
-    real_name => $real_name,
-    groups    => ['adm'],
-    keys      => [],
-    uid       => $uid,
+  user { $username:
+    ensure     => present,
+    comment    => "${real_name} <${email}>",
+    home       => "/home/${username}",
+    shell      => '/bin/bash',
+    groups     => [],
+    uid        => $uid,
+    membership => 'minimum',
+    password   => '*',
+  }
+  ->
+  group { $username:
+    require => User[$username],
+    gid     => $uid,
+  }
+  ->
+  file { "/home/${username}/":
+    ensure  => directory,
+    owner   => $username,
+    group   => $username,
+    mode    => '0755',
   }
   ->
   file {"/home/${username}/.ssh/":
@@ -15,9 +31,8 @@ define bayncore_ssh_user($real_name,$uid) {
   }
   ->
   exec {"gen-${username}-sshkey":
-    command => "sudo -H -u ${user} -g ${user} ssh-keygen -q -N '' -t rsa -f /home/${username}/.ssh/id_rsa",
+    command => "sudo -H -u ${username} -g ${username} ssh-keygen -q -N '' -t rsa -f /home/${username}/.ssh/id_rsa",
     creates => "/home/${username}/.ssh/id_rsa",
-    require => File["/home/${username}/.ssh/"],
   }
   ->
   file {"/home/${username}/.ssh/authorized_keys":
@@ -27,24 +42,34 @@ define bayncore_ssh_user($real_name,$uid) {
     mode => '0600',
   }
   ->
-  file_line {"${username} local key":
-    line => file("/home/${username}/.ssh/id_rsa.pub"),
-    path => "/home/${username}/.ssh/authorized_keys",
-    ensure => present
-  } 
+  exec {"${username}-add-authkey":
+    command => "/bin/cat /home/${username}/.ssh/id_rsa.pub >> /home/${username}/.ssh/authorized_keys",
+    unless => "/bin/grep \"`/bin/cat /home/${username}/.ssh/id_rsa.pub`\" /home/${username}/.ssh/authorized_keys",
+    user => $username,
+    group => $username,
+  }
 }
 
 define bayncore_setup() {
-  include 'nfs::server'
 
-  file {'/bayncore':
+  exec { "remount":
+    command => "/bin/mount -a",
+    refreshonly => true,
+  }
+
+  package {["gfortran"]:
+    ensure => installed,
+  }
+  
+  file {'/mnt/bayncore':
     ensure => directory,
   }
   ->
   file_line { 'mount nas04':
-    line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore /bayncore nfs defaults 0 0',
+    line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore /mnt/bayncore nfs defaults 0 0',
     path   => '/etc/fstab',
     ensure => present,
+    notify => Exec["remount"],
   }
 
   bayncore_ssh_user {'rogerphilp':
@@ -111,11 +136,27 @@ define bayncore_setup() {
     user   => 'manelfernandez',
     type   => 'ssh-rsa',
     name   => 'manel@manel-ubuntu',
-  }  
+  }
+
+  bayncore_ssh_user {'richardpaul':
+    real_name => "Richard Paul (Bayncore)",
+    uid       => 20002
+  }
+  ->
+  ssh_authorized_key {'richardpaul key 1':
+    ensure => present,
+    key    => "AAAAB3NzaC1yc2EAAAABJQAAAIEAlbMOGZcVLDqz8WpbaUo1NQ95eIiFGT5uKPvGOQhqI/c6D90Vi26CdASoiQGj8hwgLoolbnI8ZWiZYJpeXJZgWQ61IlMMyuQ2fa84+5uuQsM6t1YwAKl+BB+yU4iTi/N0XlQM1XSZgJmCVckyh97/vpJ/q2QE4w2e46jBjv8jjRs=",
+    user   => 'richardpaul',
+    type   => 'ssh-rsa',
+    name   => 'rsa-key-20150217',
+  }
+            
 }
 
 node /saluki(\d+)?/ {
   include 'dtg::minimal'
+
+  include 'nfs::server'
 
   $packages = ['build-essential','linux-headers-generic','alien','libstdc++6:i386']
 
@@ -128,9 +169,31 @@ node /saluki(\d+)?/ {
     source => '172.31.0.0/16'
   }
 
+  firewall { '051 nat 172.31.0.0/16':
+    chain    => 'POSTROUTING',
+    jump     => 'MASQUERADE',
+    proto    => 'all',
+    outiface => "eth0",
+    source   => '172.31.0.0/16',
+    table    => 'nat',
+  }
+
+  exec { "ipforward":
+    command => "/bin/echo 1 > /proc/sys/net/ipv4/ip_forward",
+    unless => "/bin/grep 1 /proc/sys/net/ipv4/ip_forward",
+  }
+
+  augeas { "sysctl-ipforward":
+    context => "/files/etc/sysctl.conf",
+    changes => [
+                "set net.ipv4.ip_forward 1"
+                ],
+  }
+    
+  
   bayncore_setup { 'saluki-users': }
   ->
-  nfs::export{["/home","/bayncore"]:
+  nfs::export{["/home"]:
     export => {
       "172.31.0.0/16" => "rw,no_subtree_check,insecure,no_root_squash",
     },
@@ -144,21 +207,13 @@ node /naps-bayncore/ {
   
   bayncore_setup { 'naps-bayncore': }
 
+  package{$packages:
+    ensure => installed,
+  }
   
 }
 
 if ( $::monitor ) {
-  nagios::monitor { 'saluki1':
-    parents    => 'se18-r8-sw1',
-    address    => 'saluki1.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
-  }
   munin::gatherer::configure_node { 'saluki1': }
-
-  nagios::monitor { 'saluki2':
-    parents    => 'se18-r8-sw1',
-    address    => 'saluki2.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
-  }
   munin::gatherer::configure_node { 'saluki2': }
 }
