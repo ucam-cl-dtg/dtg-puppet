@@ -12,10 +12,17 @@
 # new 4.0 format.
 vcl 4.0;
 
+import std;
+
 # Default backend definition. Set this to point to your content server.
 backend default {
     .host = "127.0.0.1";
     .port = "8080";
+}
+
+backend default_ssl{
+    .host = "127.0.0.1";
+    .port = "8443";
 }
 
 sub vcl_recv {
@@ -23,7 +30,15 @@ sub vcl_recv {
     # 
     # Typically you clean up the request here, removing cookies you don't need,
     # rewriting the request, etc.
-  	
+
+    # Set the director to cycle between web servers.
+    if (std.port(server.ip) == 9443) {
+      set req.backend_hint = default_ssl;
+    }
+    else {
+      set req.backend_hint = default;
+    }
+
   	# remove cookies as we don't care on a CDN
     unset req.http.Cookie;
 }
