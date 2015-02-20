@@ -34,6 +34,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     parameters => 'deny unknown-clients',
   }
   dhcp::host {
+    'rscfl-vguest-0':mac => '00:16:3F:00:00:00', ip=> '128.232.22.50';
     'rscfl-10g-0':mac => '00:0f:53:16:0f:ec', ip=> '128.232.22.18';
     'rscfl-10g-1':mac => '00:0f:53:08:cf:c4', ip => '128.232.22.19';
     'so-22-8':mac => '00:1e:67:59:8b:6f', ip => '128.232.22.8';
