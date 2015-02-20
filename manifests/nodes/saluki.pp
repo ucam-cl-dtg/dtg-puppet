@@ -145,10 +145,10 @@ define bayncore_setup() {
   ->
   ssh_authorized_key {'richardpaul key 1':
     ensure => present,
-    key    => "AAAAB3NzaC1yc2EAAAABJQAAAIEAlbMOGZcVLDqz8WpbaUo1NQ95eIiFGT5uKPvGOQhqI/c6D90Vi26CdASoiQGj8hwgLoolbnI8ZWiZYJpeXJZgWQ61IlMMyuQ2fa84+5uuQsM6t1YwAKl+BB+yU4iTi/N0XlQM1XSZgJmCVckyh97/vpJ/q2QE4w2e46jBjv8jjRs=",
+    key    => "AAAAB3NzaC1yc2EAAAABJQAAAIEAp3Le2fGXZ2Id15pDoeVUrzkpwEDsbJXzi4m1GkXttlhOy39LZr1WgMAe8SKXJ6iC4kETlTjDd9giLO/nf7kEtqJQ/aMbo4VtJZL2E5PaAU6eH7NumnAi1P/mjRU990Ng2wMi2Heccy0Y7W0VjQ9hatj6v6S1GF8gc/FZeG3d1qc=",
     user   => 'richardpaul',
     type   => 'ssh-rsa',
-    name   => 'rsa-key-20150217',
+    name   => 'rsa-key-20150220',
   }
             
 }
