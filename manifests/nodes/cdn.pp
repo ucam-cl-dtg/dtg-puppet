@@ -5,8 +5,14 @@ node 'cdn.dtg.cl.cam.ac.uk' {
 
   # port configuration
   $apache_http_port = '8080'
-  $varnish_http_port = '80'
-  $packages = ['varnish']
+  $apache_ssl_port = '8443'
+
+  $varnish_http_port = '9080'
+  $varnish_ssl_port = '9443'
+  
+  # pound deals with the SSL encryption and decryption.
+  $pound_http_port = '80'
+  $pound_ssl_port = '443'
 
   # Nasty hack to stop apache listening on port 80.
   $apache_port = $apache_http_port
@@ -18,11 +24,19 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   apache::module {'expires':} ->
   apache::site {'cdn-apache':
     source => 'puppet:///modules/dtg/apache/cdn.conf',
-  }  
+  } 
+
+  # Configure apache so that it works with pound and varnish
   file_line{'apache-port-configure-http':
     line   => "Listen ${apache_http_port}",
     path   => "/etc/apache2/ports.conf",
     match  => '^Listen 80.*$'
+  } 
+  ->
+  file_line{'apache-port-configure-ssl':
+    line   => "Listen ${apache_ssl_port}",
+    path   => "/etc/apache2/ports.conf",
+    match  => '^Listen .*443.*$'
   } 
   ->
   file_line{'apache-port-configure-http-virtual-directory':
@@ -30,29 +44,70 @@ node 'cdn.dtg.cl.cam.ac.uk' {
     path   => "/etc/apache2/sites-available/000-default.conf",
     notify => Service["apache2"],
     match  => '<VirtualHost \*:.*>'
-  } 
+  }   
   ->
+  file { "/etc/apache2/cdn-config":
+    ensure => "directory",
+    owner  => "root",
+    group  => "root",
+    mode   => 755,
+  }
+  ->
+  file { '/etc/apache2/cdn-config/apache-cdn-rules.conf':
+      mode   => '0755',
+      owner  => root,
+      group  => root,
+      source => 'puppet:///modules/dtg/cdn/apache-cdn-rules.conf',
+      notify => Service["apache2"]
+  }
+  ->
+  file { '/var/www/vendor':
+    ensure => 'directory',
+    owner  => "root",
+    group  => "root",
+    mode   => '0644',
+  }  
+
+  # stop apache so that we can use its old ports for pound
   exec { 'stop-apache':
     command  => 'service apache2 stop'
   }
   ->
-  package{$packages:
+  package{ 'varnish':
     ensure => installed
   }
   ->
+  package{ 'pound':
+    ensure => installed
+  }  
+  ->
+  file_line{'pound-startup':
+    line   => "startup=1",
+    path   => "/etc/default/pound",
+    match  => '^startup.*$',
+    notify => Service["pound"]
+  }
+
   service { "varnish":
       ensure  => "running",
       enable  => "true",
       require => Package["varnish"],
   }
 
-  file { '/var/www/vendor':
-    ensure => 'directory',
-    owner  => "root",
-    group  => "root",
-    mode   => '0644',
+  service { "pound":
+      ensure  => "running",
+      enable  => "true",
+      require => Package["pound"],
   }
 
+  file { '/etc/pound/pound.cfg':
+      mode   => '0755',
+      owner  => root,
+      group  => root,
+      source => 'puppet:///modules/dtg/cdn/pound/pound.cfg',
+      notify => Service["pound"]
+  }
+  ->
   file { '/etc/varnish/cdn.vcl':
       mode   => '0755',
       owner  => root,
@@ -64,7 +119,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
     notify => Service["varnish"],
     line   => "-f /etc/varnish/cdn.vcl \\",
     path   => "/etc/default/varnish",
-    match  => ".*-f /etc/varnish/.*\.vcl \\.*"
+    match  => ".*-f /etc/varnish/.*vcl \\.*"
   }
   ->
   file_line{'configure-varnish-memory':
@@ -74,9 +129,9 @@ node 'cdn.dtg.cl.cam.ac.uk' {
     match  => '.*-s malloc,.*"'
   }  
   ->
-  file_line{'varnish-setup-http-listening-port':
+  file_line{'varnish-setup-http-listening-ports':
     notify => Service["varnish"],
-    line   => "DAEMON_OPTS=\"-a :${varnish_http_port} \\",
+    line   => "DAEMON_OPTS=\"-a :${varnish_http_port},:${varnish_ssl_port} \\",
     path   => "/etc/default/varnish",
     match  => "^DAEMON_OPTS=.*"
   }
@@ -87,6 +142,8 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   }
 
   class {'dtg::firewall::publichttp':}
+
+  class {'dtg::firewall::publichttps':}
 }
 
 if ( $::monitor ) {
