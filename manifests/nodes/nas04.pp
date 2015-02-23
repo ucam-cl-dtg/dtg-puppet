@@ -37,7 +37,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'nakedscientists':
     pool_name  => $pool_name,
     fs_name    => 'nakedscientists',
-    share_opts => 'rw=@131.111.39.72,rw=@131.111.39.84,rw=@131.111.39.87',
+    share_opts => 'rw=@131.111.39.72,rw=@131.111.39.84,rw=@131.111.39.87,rw=@131.111.39.103',
   }
 
   dtg::zfs::fs{'abbot-archive':
@@ -174,8 +174,8 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     statd_port      => $statd_port,
   }
   dtg::firewall::nfs {'nfs access from nakedscientists':
-    source          => '131.111.39.64/27',
-    #131.111.39.64 - 131.111.39.95 which covers the three IP addresses we need to let through
+    source          => '131.111.39.64/26',
+    #131.111.39.65 - 131.111.39.126 which covers the four IP addresses we need to let through
     source_name     => 'nakedscientists',
     portmapper_port => $portmapper_port,
     nfs_port        => $nfs_port,
