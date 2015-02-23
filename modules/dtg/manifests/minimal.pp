@@ -164,6 +164,14 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     require => Package['munin-node'],
   }
   munin::node::plugin{'fs_readonly':}
+  munin::node::plugin{'df_abs':}
+
+  if ($virtual == 'physical') {
+    munin::node::plugin{'hddtemp_smartctl':}
+    munin::node::plugin{'sensors_fan': target => 'sensors'}
+    munin::node::plugin{'sensors_temp': target => 'sensors'}
+    munin::node::plugin{'sensors_volt': target => 'sensors'}
+  }
 
   # Include default firewall rules
   class { 'dtg::firewall': }
