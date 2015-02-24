@@ -12,7 +12,14 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   class {'dtg::zfs': }
 
   class {'zfs_auto_snapshot':
-    pool_names => [ $pool_name ]
+    fs_names => [ "${pool_names}/abbot-archive",
+                  "${pool_name}/bayncore",
+                  "${pool_name}/deviceanalyzer-nas02-backup",
+                  "${pool_name}/shin-backup",
+                  "${pool_names}/rscfl",
+                  "${pool_names}/time",
+                  "${pool_name}/vms",
+                  ]
   }
 
 
