@@ -168,9 +168,9 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
 
   if ($virtual == 'physical') {
     munin::node::plugin{'hddtemp_smartctl':}
-    munin::node::plugin{'sensors_fan': target => 'sensors'}
-    munin::node::plugin{'sensors_temp': target => 'sensors'}
-    munin::node::plugin{'sensors_volt': target => 'sensors'}
+    munin::node::plugin{'sensors_fan': target => 'sensors_'}
+    munin::node::plugin{'sensors_temp': target => 'sensors_'}
+    munin::node::plugin{'sensors_volt': target => 'sensors_'}
   }
 
   # Include default firewall rules
