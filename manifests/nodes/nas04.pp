@@ -19,44 +19,44 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'vms':
     pool_name  => $pool_name,
     fs_name    => 'vms',
-    share_opts => 'rw=@128.232.20.18,rw=@128.232.20.20,rw=@128.232.20.22,rw=@128.232.20.24,rw=@128.232.20.26',
+    share_opts => 'rw=@128.232.20.18,rw=@128.232.20.20,rw=@128.232.20.22,rw=@128.232.20.24,rw=@128.232.20.26,async',
   }
 
   dtg::zfs::fs{'isos':
     pool_name  => $pool_name,
     fs_name    => 'isos',
-    share_opts => "ro=@${dtg_subnet}",
+    share_opts => "ro=@${dtg_subnet},async",
   }
 
   dtg::zfs::fs{'shin-backup':
     pool_name  => $pool_name,
     fs_name    => 'shin-backup',
-    share_opts => 'rw=@shin.cl.cam.ac.uk',
+    share_opts => 'rw=@shin.cl.cam.ac.uk,async',
   }
 
   dtg::zfs::fs{'nakedscientists':
     pool_name  => $pool_name,
     fs_name    => 'nakedscientists',
-    share_opts => 'rw=@131.111.39.72,rw=@131.111.39.84,rw=@131.111.39.87,rw=@131.111.39.103',
+    share_opts => 'rw=@131.111.39.72,rw=@131.111.39.84,rw=@131.111.39.87,rw=@131.111.39.103,async',
   }
 
   dtg::zfs::fs{'abbot-archive':
     pool_name  => $pool_name,
     fs_name    => 'abbot-archive',
-    share_opts => $dtg_share,
+    share_opts => "$dtg_share,async",
   }
 
   dtg::zfs::fs{'time':
     pool_name  => $pool_name,
     fs_name    => 'time',
-    share_opts => $dtg_share,
+    share_opts => "$dtg_share,async",
   }
 
 
   dtg::zfs::fs{'deviceanalyzer':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer',
-    share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},ro=@${secgrp_subnet},ro=@${pig20_ip}",
+    share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},ro=@${secgrp_subnet},ro=@${pig20_ip},async",
   }
 
   dtg::zfs::fs{ 'deviceanalyzer-nas02-backup':
@@ -70,7 +70,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{ 'bayncore':
     pool_name  => $pool_name,
     fs_name    => 'bayncore',
-    share_opts => "${dtg_share},${saluki_share}",
+    share_opts => "${dtg_share},${saluki_share},async",
   }
   
 
