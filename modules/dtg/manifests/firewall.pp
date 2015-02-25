@@ -67,6 +67,12 @@ class dtg::firewall::pre inherits dtg::firewall::default {
     source => $::munin_server_ip,
     action => 'accept',
   }
+  firewall { '005 accept nfs client':
+    proto  => 'tcp',
+    dport  => $::nfs_client_port,
+    source => $::local_subnet,
+    action => 'accept',
+  }
 }
 class dtg::firewall::publichttp inherits dtg::firewall::default {
   firewall { '010 accept all http':

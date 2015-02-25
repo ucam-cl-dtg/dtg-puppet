@@ -198,6 +198,14 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     source => 'puppet:///modules/dtg/11-ipv6-privacy.conf'
   }
 
+  file {'/etc/modprobe.d/options-nfs.conf':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    content => "options nfs callback_tcpport=$::nfs_client_port",
+  }
+
   # Attempt to make DNS more robust by timing out quickly and retrying enough times that we will hit all of the configured DNS servers before failing
   file { '/etc/resolvconf/resolv.conf.d/tail':
     ensure => file,
