@@ -188,3 +188,5 @@ if ( $::fqdn in $backup_hosts ) {
 } else {
   $is_backup_server = false
 }
+
+$nfs_client_port = 1025
