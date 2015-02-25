@@ -71,4 +71,8 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers' ],#TODO(drt24) monitor the statsserver
   }
   munin::gatherer::configure_node { 'deviceanalyzer-crunch0': }
+  munin::gatherer::configure_node { 'deviceanalyzer-crunch1': }
+  munin::gatherer::configure_node { 'deviceanalyzer-crunch2': }
+  munin::gatherer::configure_node { 'deviceanalyzer-crunch3': }
+  munin::gatherer::configure_node { 'deviceanalyzer-crunch4': }
 }
