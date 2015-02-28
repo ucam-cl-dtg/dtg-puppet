@@ -220,6 +220,10 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     devicescan_options => '-m dtg-infra@cl.cam.ac.uk -M daily'
   }
 
+  package { 'scsitools':
+    ensure => installed,
+  }
+
   file {'/etc/default/postupdate-service-restart':
     ensure  => file,
     owner   => 'root',
