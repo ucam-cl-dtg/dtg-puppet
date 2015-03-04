@@ -5,7 +5,8 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
   $pool_name = 'dtg-pool0'
   $cl_share = "rw=@${local_subnet}"
-  $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_ips}"
+  $desktop_share = join($desktop_ips, ',rw=@')
+  $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_share}"
   $secgrp_subnet = '128.232.18.0/24'
   $pig20_ip = '128.232.64.63'
 
