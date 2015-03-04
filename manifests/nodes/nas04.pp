@@ -66,6 +66,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},ro=@${secgrp_subnet},ro=@${pig20_ip},async",
   }
 
+  dtg::zfs::fs{'deviceanalyzer-datadivider':
+    pool_name  => $pool_name,
+    fs_name    => 'deviceanalyzer',
+    share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},async",
+  }
+
   dtg::zfs::fs{ 'deviceanalyzer-nas02-backup':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-nas02-backup',
