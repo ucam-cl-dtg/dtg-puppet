@@ -68,7 +68,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
   dtg::zfs::fs{'deviceanalyzer-datadivider':
     pool_name  => $pool_name,
-    fs_name    => 'deviceanalyzer',
+    fs_name    => 'deviceanalyzer-datadivider',
     share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},async",
   }
 
