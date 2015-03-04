@@ -131,10 +131,10 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
   cron { 'deviceanalyzer-nas02-backup':
     ensure  => present,
-    command => "pgrep -c rsync || nice rsync -az --delete --rsync-path='/usr/syno/bin/rsync' nas04@nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer/ /${pool_name}/deviceanalyzer-nas02-backup",
+    command => "pgrep -c rsync || nice -n 18 rsync -az --delete --rsync-path='/usr/syno/bin/rsync' nas04@nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer/ /${pool_name}/deviceanalyzer-nas02-backup",
     user    => 'root',
     minute  => cron_minute('deviceanalyzer-nas02-backup'),
-    hour    => cron_hour('deviceanalyzer-nas02-backup'),
+    hour    => '1',
     require => [Dtg::Zfs::Fs['deviceanalyzer-nas02-backup']],
   }
 
