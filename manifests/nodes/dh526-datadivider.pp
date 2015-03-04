@@ -24,7 +24,7 @@ node 'dh526-datadivider.dtg.cl.cam.ac.uk' {
   file_line {'mount nas':
     line => '/mnt   /etc/auto.mnt',
     path => '/etc/auto.master',
-  }	
+  }
 
 }
 
