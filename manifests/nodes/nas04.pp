@@ -5,7 +5,8 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
   $pool_name = 'dtg-pool0'
   $cl_share = "rw=@${local_subnet}"
-  $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_ips}"
+  $desktop_share = join($desktop_ips_array, ',rw=@')
+  $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_share}"
   $secgrp_subnet = '128.232.18.0/24'
   $pig20_ip = '128.232.64.63'
 
@@ -19,6 +20,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
                   "${pool_name}/rscfl",
                   "${pool_name}/time",
                   "${pool_name}/vms",
+                  "${pool_name}/rwandadataset",
                   ]
   }
 
@@ -66,6 +68,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},ro=@${secgrp_subnet},ro=@${pig20_ip},async",
   }
 
+  dtg::zfs::fs{'deviceanalyzer-datadivider':
+    pool_name  => $pool_name,
+    fs_name    => 'deviceanalyzer-datadivider',
+    share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},async",
+  }
+
   dtg::zfs::fs{ 'deviceanalyzer-nas02-backup':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-nas02-backup',
@@ -79,7 +87,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     fs_name    => 'bayncore',
     share_opts => "${dtg_share},${saluki_share},async",
   }
-  
+
+  dtg::zfs::fs{'rwandadataset':
+    pool_name => $pool_name,
+    fs_name => 'rwandadataset',
+    share_opts => 'rw=@128.232.20.51,rw=@128.232.20.37,rw=@128.232.20.57,rw=@128.232.20.45,async',
+  }
 
 # Not using this method ATM
 
@@ -131,10 +144,10 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
   cron { 'deviceanalyzer-nas02-backup':
     ensure  => present,
-    command => "pgrep -c rsync || nice rsync -az --delete --rsync-path='/usr/syno/bin/rsync' nas04@nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer/ /${pool_name}/deviceanalyzer-nas02-backup",
+    command => "pgrep -c rsync || nice -n 18 rsync -az --delete --rsync-path='/usr/syno/bin/rsync' nas04@nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer/ /${pool_name}/deviceanalyzer-nas02-backup",
     user    => 'root',
     minute  => cron_minute('deviceanalyzer-nas02-backup'),
-    hour    => cron_hour('deviceanalyzer-nas02-backup'),
+    hour    => '1',
     require => [Dtg::Zfs::Fs['deviceanalyzer-nas02-backup']],
   }
 
