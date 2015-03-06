@@ -20,6 +20,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
                   "${pool_name}/rscfl",
                   "${pool_name}/time",
                   "${pool_name}/vms",
+                  "${pool_name}/rwandadataset",
                   ]
   }
 
@@ -86,7 +87,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     fs_name    => 'bayncore',
     share_opts => "${dtg_share},${saluki_share},async",
   }
-  
+
+  dtg::zfs::fs{'rwandadataset':
+    pool_name => $pool_name,
+    fs_name => 'rwandadataset',
+    share_opts => 'rw=@128.232.20.51,rw=@128.232.20.37,rw=@128.232.20.57,rw=@128.232.20.45,async',
+  }
 
 # Not using this method ATM
 
