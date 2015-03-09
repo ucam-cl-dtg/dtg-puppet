@@ -130,26 +130,3 @@ node 'york-staging.dtg.cl.cam.ac.uk' {
     ensure => 'running'
   }
 }
-
-class dtg::apt_elasticsearch {
-  apt::key { 'elasticsearch-key':
-    key        =>'D88E42B4',
-    key_source => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-  }
-
-  apt::source { 'elasticsearch-source':
-        location    => 'http://packages.elasticsearch.org/elasticsearch/1.0/debian',
-        release     => 'stable',
-        repos       => 'main',
-        include_src => false,
-        key         =>'D88E42B4',
-        key_source  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-  }
-
-  apt::source { 'elasticsearch-logstash':
-        location    => 'http://packages.elasticsearch.org/logstash/1.3/debian',
-        release     => 'stable',
-        repos       => 'main',
-        include_src => false
-  }
-}
