@@ -150,7 +150,8 @@ if ( $::monitor ) {
   nagios::monitor { 'cdn':
     parents    => 'nas04',
     address    => 'cdn.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => ['ssh-servers', 'http-servers', 'https-servers'],
   }
+  
   munin::gatherer::configure_node { 'cdn': }
 }

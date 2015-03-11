@@ -238,4 +238,12 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     mode   => '0775',
     source => 'puppet:///modules/dtg/post-update.hook',
   }
+  file {'/etc/init/failsafe.conf':
+    ensure => file,
+    owner  => 'root',
+    group  => 'adm',
+    mode   => '0644',
+    source => 'puppet:///modules/dtg/failsafe.conf',
+  }
+
 }
