@@ -103,6 +103,14 @@ define bayncore_setup() {
   ->
   ssh_authorized_key {'rogerphilp key 4':
     ensure => present,
+    key    => "AAAAB3NzaC1yc2EAAAABJQAAAQEApnN1Dwz9HF4O2nw96dAEn+J0jFSk4gAGLHmgQkawl1AtT3HJSP7WhAVX4y6iKpTdvE3ZVVLg6+HBkyp9TpOaDLOk98Az9w2I04uhPbY1GB5f3ClGiXyFC0bJl/o+HY8oW3MAy9kLjZeXDoqBZqeAIsP2L7WBonTomyPhdy1SmSZKQ6vWJd7ZuMPBWuyRD6jyEeCGJE1bJH6J/1u6DZOereN86O66IwFng4OhQ93Z5OYRi7Os6QgQHAlT4yssw+hJmXH+M35RVMUbt6hi9JarAhJ0yatAnDnrzG3JjYSFBwFKOKqdr0bSeNsKRR4oB0di9l4sZ4g3NfKVKSBB1uBlNw==",
+    user   => 'rogerphilp',
+    type   => 'ssh-rsa',
+    name   => 'rsa-key-20150217',
+  }
+  ->
+  ssh_authorized_key {'rogerphilp key 5':
+    ensure => present,
     key    => "AAAAB3NzaC1yc2EAAAABJQAAAQEAsJp1ORRaLLNEk++ZmPFOoP0BktKlOgfMPfLq6KPhFUXUcQpFIY+WDh2RyRYbHB62eyKtj7dgtJn0zmM1PCen1CMENEKraky+lMsvOTOENGuVErmLyed6TMoBZbAXl7FgLXjMxZrccQELmwt13Mx0R7D7rYlh35YaXlQ6HGgVZ0jHyewKQATVW8Qx/SpFwGwKFywRswxawm/0JwVjU4uyrkTFIIg02coEHdT3g/M91XMjxn8gKShfBuHeiZghNC+z8Cx4cgfprIxTSJqgu1th92B5GHTz1aEAoDYO86pmEGU9YCxcXc5yCLTCtSGE8MHfmp+FVVJ1CDPLScxdqqESmw==",
     user   => 'rogerphilp',
     type   => 'ssh-rsa',
@@ -137,6 +145,14 @@ define bayncore_setup() {
     type   => 'ssh-rsa',
     name   => 'manel@manel-ubuntu',
   }
+  ->
+  ssh_authorized_key {'manelfernandez key 4':
+    ensure => present,
+    key    => "AAAAB3NzaC1yc2EAAAADAQABAAABAQC1FSp9o8s0Ct6QS8EieL17aI6e5RPXr2xaqZcsxMI5NI3wT6fKImKuIcGgDfcBREwxXQdE23R/j8lTB586Yp0skYmLnF3+P47v0P+RvS4taVCnzNVZAsgH9QVG0DCOHgJNlZ0MEfw5kLIczD4/1YfXEtq+5xiEOgmZjkj/k7TQ9qwENZcitcH4yxc4IDBfwVvvc5OAvkxY10+xFJoewNUe/06LbkbFc/8qa4gnRr5Qp/mmdmlBFqjIQlD6w91TghWA0pGLYXktwn2cJ8KZam4Ufa9ydBKj+3g3z98/A6vwHKu7E7kYDTxtc/rFhjQ2Dxqs88kUjCJlknez+CeRzovd"
+    user   => 'manelfernandez',
+    type   => 'ssh-rsa',
+    name   => 'manelfernandez@naps-bayncore',
+  }
 
   bayncore_ssh_user {'richardpaul':
     real_name => "Richard Paul (Bayncore)",
@@ -145,12 +161,27 @@ define bayncore_setup() {
   ->
   ssh_authorized_key {'richardpaul key 1':
     ensure => present,
+    key    => "AAAAB3NzaC1yc2EAAAABJQAAAIEAlbMOGZcVLDqz8WpbaUo1NQ95eIiFGT5uKPvGOQhqI/c6D90Vi26CdASoiQGj8hwgLoolbnI8ZWiZYJpeXJZgWQ61IlMMyuQ2fa84+5uuQsM6t1YwAKl+BB+yU4iTi/N0XlQM1XSZgJmCVckyh97/vpJ/q2QE4w2e46jBjv8jjRs=",
+    user   => 'richardpaul',
+    type   => 'ssh-rsa',
+    name   => 'rsa-key-20150217'
+  }
+  ->
+  ssh_authorized_key {'richardpaul key 2':
+    ensure => present,
     key    => "AAAAB3NzaC1yc2EAAAABJQAAAIEAp3Le2fGXZ2Id15pDoeVUrzkpwEDsbJXzi4m1GkXttlhOy39LZr1WgMAe8SKXJ6iC4kETlTjDd9giLO/nf7kEtqJQ/aMbo4VtJZL2E5PaAU6eH7NumnAi1P/mjRU990Ng2wMi2Heccy0Y7W0VjQ9hatj6v6S1GF8gc/FZeG3d1qc=",
     user   => 'richardpaul',
     type   => 'ssh-rsa',
     name   => 'rsa-key-20150220',
   }
-            
+  ->
+  ssh_authorized_key {'richardpaul key 3':
+    ensure => present,
+    key    => "AAAAB3NzaC1yc2EAAAABJQAAAIBm0jD2NXcLGYdLCIG0+6Szf0eYJAyhMjuIrBXaxYoN2U1LKnu1GRntHLssTQBs17Tvf+lgtMy79NMw6hCcY9ztRVaVGQb73zBDLlCyvtP477qbRQSa1gmuls4mOnrfrO9FAXkhkqC6ZhuXzeD8LRaEVKrGoSZV3rshlmFNTZnvuQ==",
+    user   => 'richardpaul',
+    type   => 'ssh-rsa',
+    name   => 'rsa-key-20150227',
+  }         
 }
 
 node /saluki(\d+)?/ {
