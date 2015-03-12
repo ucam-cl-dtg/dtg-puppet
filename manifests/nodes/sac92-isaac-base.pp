@@ -140,7 +140,7 @@ class dtg::apt_elasticsearch {
   }
 
   apt::source { 'elasticsearch-source':
-        location    => 'http://packages.elasticsearch.org/elasticsearch/1.0/debian',
+        location    => 'http://packages.elasticsearch.org/elasticsearch/1.4/debian',
         release     => 'stable',
         repos       => 'main',
         include_src => false,
