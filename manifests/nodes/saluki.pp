@@ -148,7 +148,7 @@ define bayncore_setup() {
   ->
   ssh_authorized_key {'manelfernandez key 4':
     ensure => present,
-    key    => "AAAAB3NzaC1yc2EAAAADAQABAAABAQC1FSp9o8s0Ct6QS8EieL17aI6e5RPXr2xaqZcsxMI5NI3wT6fKImKuIcGgDfcBREwxXQdE23R/j8lTB586Yp0skYmLnF3+P47v0P+RvS4taVCnzNVZAsgH9QVG0DCOHgJNlZ0MEfw5kLIczD4/1YfXEtq+5xiEOgmZjkj/k7TQ9qwENZcitcH4yxc4IDBfwVvvc5OAvkxY10+xFJoewNUe/06LbkbFc/8qa4gnRr5Qp/mmdmlBFqjIQlD6w91TghWA0pGLYXktwn2cJ8KZam4Ufa9ydBKj+3g3z98/A6vwHKu7E7kYDTxtc/rFhjQ2Dxqs88kUjCJlknez+CeRzovd"
+    key    => "AAAAB3NzaC1yc2EAAAADAQABAAABAQC1FSp9o8s0Ct6QS8EieL17aI6e5RPXr2xaqZcsxMI5NI3wT6fKImKuIcGgDfcBREwxXQdE23R/j8lTB586Yp0skYmLnF3+P47v0P+RvS4taVCnzNVZAsgH9QVG0DCOHgJNlZ0MEfw5kLIczD4/1YfXEtq+5xiEOgmZjkj/k7TQ9qwENZcitcH4yxc4IDBfwVvvc5OAvkxY10+xFJoewNUe/06LbkbFc/8qa4gnRr5Qp/mmdmlBFqjIQlD6w91TghWA0pGLYXktwn2cJ8KZam4Ufa9ydBKj+3g3z98/A6vwHKu7E7kYDTxtc/rFhjQ2Dxqs88kUjCJlknez+CeRzovd",
     user   => 'manelfernandez',
     type   => 'ssh-rsa',
     name   => 'manelfernandez@naps-bayncore',
