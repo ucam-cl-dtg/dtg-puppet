@@ -19,7 +19,8 @@ node 'dh526-datadivider.dtg.cl.cam.ac.uk' {
     group   => 'root',
     mode    => 'a=r',
     content => 'nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider
-        		deviceanalyzer   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer'
+nas01   nas01.dtg.cl.cam.ac.uk:/data/deviceanalyzer-datadivider
+deviceanalyzer   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer'
   } ->
   file_line {'mount nas':
     line => '/mnt   /etc/auto.mnt',
