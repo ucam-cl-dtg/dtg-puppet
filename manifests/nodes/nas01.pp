@@ -201,6 +201,13 @@ node /nas01/ {
     mode   => 'ug=rwx,o=rx',
   }
 
+  file {'/data/deviceanalyzer-datadivider':
+    ensure => directory,
+    owner  => 'www-data', 
+    group  => 'www-data',
+    mode   => 'ug=rwx,o=rx',
+  }
+
 }
 
 if ( $::monitor ) {
