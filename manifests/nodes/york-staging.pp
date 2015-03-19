@@ -1,9 +1,7 @@
-node /(\w+-)?isaac(-\w+)?(.+)?/ {
+node 'york-staging.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   
   $tomcat_version = '8'
-
-  User<|title == sac92 |> { groups +>[ 'adm' ]}
   
   # download api content repo from private repo (TODO)
   file { '/local/data/rutherford/':
@@ -43,8 +41,8 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   apache::module {'expires':} ->
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
-  apache::site {'isaac-server':
-    source => 'puppet:///modules/dtg/apache/isaac-server.conf',
+  apache::site {'york-staging':
+    source => 'puppet:///modules/dtg/apache/york-staging.conf',
   }
   
   class {'dtg::tomcat': version => $tomcat_version}
@@ -130,28 +128,5 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   ->
   service { 'elasticsearch':
     ensure => 'running'
-  }
-}
-
-class dtg::apt_elasticsearch {
-  apt::key { 'elasticsearch-key':
-    key        =>'D88E42B4',
-    key_source => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-  }
-
-  apt::source { 'elasticsearch-source':
-        location    => 'http://packages.elasticsearch.org/elasticsearch/1.4/debian',
-        release     => 'stable',
-        repos       => 'main',
-        include_src => false,
-        key         =>'D88E42B4',
-        key_source  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-  }
-
-  apt::source { 'elasticsearch-logstash':
-        location    => 'http://packages.elasticsearch.org/logstash/1.3/debian',
-        release     => 'stable',
-        repos       => 'main',
-        include_src => false
   }
 }

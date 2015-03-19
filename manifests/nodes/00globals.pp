@@ -122,6 +122,12 @@ class admin_users {
       keys      => ['Stephen Cummins (Main key) <sacummins@gmail.com>'],
       uid       => 3286,
     }
+    dtg::add_user { 'ags46':
+      real_name => 'Alistair Stead',
+      groups    => [ 'adm' ],
+      keys      => ['Alistair Stead <ags46@cam.ac.uk>'],
+      uid       => 2815,
+    }
     dtg::add_user { 'sak70':
       real_name => 'Stephan Kollmann',
       groups    => [],
