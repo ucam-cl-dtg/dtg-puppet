@@ -215,9 +215,9 @@ def security_update():
     """
     sudo('apt-get -q update')
     sudo('unattended-upgrade')
-    sudo('apt-get -y -q autoremove')
-    sudo('apt-get -q clean')
-    sudo('apt-get -q autoclean')
+    sudo('nice apt-get -y -q autoremove')
+    sudo('nice apt-get -q clean')
+    sudo('nice apt-get -q autoclean')
 
 
 @parallel(pool_size=8)
@@ -228,7 +228,7 @@ def run_latest_puppet():
     with show('output'):
         with cd(PUPPET_BARE):
             sudo('git fetch --quiet https://github.com/ucam-cl-dtg/dtg-puppet.git master:master')
-            sudo('./hooks/post-update')
+            sudo('nice ./hooks/post-update')
 
 
 @task
@@ -239,7 +239,7 @@ def post_update_hook():
     This does more than calling run_puppet, such as ensuring that
     /etc/puppet is the latest version.
     """
-    run('/etc/puppet-bare/hooks/post-update')
+    run('nice /etc/puppet-bare/hooks/post-update')
 
 
 def add_remotes(repo, machines):
