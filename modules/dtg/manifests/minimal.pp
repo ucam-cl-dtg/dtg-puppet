@@ -18,7 +18,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
                   'runit', 'apg', 'emacs24-nox', 'htop', 'nfs-common',
                   'iptables-persistent', 'command-not-found', 'mlocate',
                   'bash-completion', 'linux-image-generic', 'apt-show-versions',
-                  'iotop']
+                  'iotop', 'byobu']
   package {
     $packagelist:
       ensure => installed
