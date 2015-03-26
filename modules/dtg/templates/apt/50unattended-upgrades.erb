@@ -18,6 +18,10 @@ Unattended-Upgrade::Package-Blacklist {
 // must be installed or anything that provides /usr/bin/mail.
 Unattended-Upgrade::Mail "<%= @unattended_upgrade_notify_emailaddress %>";
 
+Unattended-Upgrade::MailOnlyOnError "true";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+
+
 // Do automatic removal of new unused dependencies after the upgrade
 // (equivalent to apt-get autoremove)
 //Unattended-Upgrade::Remove-Unused-Dependencies "false";
