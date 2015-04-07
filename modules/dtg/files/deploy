@@ -215,6 +215,7 @@ def security_update():
     """
     sudo('apt-get -q update')
     sudo('unattended-upgrade')
+    sudo('nice apt-get -y -q --no-install-recommends dist-upgrade')
     sudo('nice apt-get -y -q autoremove')
     sudo('nice apt-get -q clean')
     sudo('nice apt-get -q autoclean')
