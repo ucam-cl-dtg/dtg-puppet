@@ -21,6 +21,8 @@ REMOTE_PREFIX = 'lick'
 
 PUPPET_BARE = '/etc/puppet-bare'
 
+POOL_SIZE = 6
+
 SHA_LENGTH = 9
 
 # This is where we need to push first as it is the canonical place for the
@@ -106,7 +108,7 @@ def get_machines():
     vms = execute(get_vms, hosts=[DOM0])
     return vms[DOM0] + PHYSICAL_MACHINES
 
-@parallel
+@parallel(pool_size=POOL_SIZE)
 def snapshot_mc(mc, commit_id):
     """
     Snapshot a VM using commit_id as a snapshot name.
@@ -170,7 +172,7 @@ def snap_gc():
         run('xe snapshot-uninstall force=true uuid=%s' % snap['uuid'])
 
 
-@parallel(pool_size=8)
+@parallel(pool_size=POOL_SIZE)
 def upgrade_mc():
     """
     Upgrade the base version of Ubuntu to the latest release.
@@ -206,7 +208,7 @@ def upgrade_mc():
         sudo('apt-get -q autoclean')
 
 
-@parallel(pool_size=8)
+@parallel(pool_size=POOL_SIZE)
 def security_update():
     """
     Force machines to apply the latest security update.
@@ -221,7 +223,7 @@ def security_update():
     sudo('nice apt-get -q autoclean')
 
 
-@parallel(pool_size=8)
+@parallel(pool_size=POOL_SIZE)
 def run_latest_puppet():
     """
     Manually apply puppet.
