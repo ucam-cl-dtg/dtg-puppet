@@ -141,6 +141,26 @@ node 'cdn.dtg.cl.cam.ac.uk' {
     refreshonly => true
   }
 
+  vcsrepo { '/etc/cdn-bare':
+    ensure   => bare,
+    provider => git,
+    source   => 'https://github.com/ucam-cl-dtg/dtg-cdn',
+    owner    => 'root',
+    group    => 'root'
+  }
+  ->
+  file { '/etc/cdn-bare/hooks/post-update':
+    ensure => 'file',
+    owner  => "root",
+    group  => "adm",
+    mode   => '0775',
+    source => 'puppet:///modules/dtg/cdn/post-update-cdn.hook',
+  }  
+  ->
+  exec { 'run-cdn-hook':
+    command  => '/etc/cdn-bare/hooks/post-update'
+  }
+
   class {'dtg::firewall::publichttp':}
 
   class {'dtg::firewall::publichttps':}
