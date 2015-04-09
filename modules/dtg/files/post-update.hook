@@ -31,7 +31,7 @@ git submodule --quiet update --init
 # permissions from user to group, set group sticky
 sudo chmod -R --quiet g+u . .git || true
 sudo chgrp -R --quiet adm . .git || true
-find . -type d -print0 | xargs -0 sudo chmod --quiet g+s || true
+find . -type d -print0 | xargs -0 -s 256 sudo chmod --quiet g+s || true
 find .git -type d -print0 | xargs -0 sudo chmod --quiet g+s || true
 
 # Delete any files that are not part of the git repository

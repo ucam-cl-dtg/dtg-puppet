@@ -46,7 +46,7 @@ chmod 775 hooks/post-update
 # Ensure sensible permissions for bare repository
 chmod -R g+u .
 chgrp -R adm .
-find . -type d -print0 | xargs -0 chmod g+s
+find . -type d -print0 | xargs -0 -s 256 chmod g+s
 
 # add  as a remote to real puppet repo
 cd /etc/puppet
@@ -59,7 +59,7 @@ git submodule update --init
 # Ensure sensible permissions for checked out repository
 chmod -R g+u . .git
 chgrp -R adm . .git
-find . -type d -print0 | xargs -0 chmod g+s
+find . -type d -print0 | xargs -0 -s 256 chmod g+s
 find .git -type d -print0 | xargs -0 chmod g+s
 chmod -R g+u .git # otherwise not necessarily covered
 chgrp -R adm .git
