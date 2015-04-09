@@ -60,13 +60,6 @@ node 'cdn.dtg.cl.cam.ac.uk' {
       source => 'puppet:///modules/dtg/cdn/apache-cdn-rules.conf',
       notify => Service["apache2"]
   }
-  ->
-  file { '/var/www/vendor':
-    ensure => 'directory',
-    owner  => "root",
-    group  => "root",
-    mode   => '0644',
-  }  
 
   # stop apache so that we can use its old ports for pound
   exec { 'stop-apache':
@@ -139,6 +132,27 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   exec { 'start-apache':
     command  => 'service apache2 start',
     refreshonly => true
+  }
+
+  vcsrepo { '/etc/cdn-bare':
+    ensure   => bare,
+    provider => git,
+    source   => 'https://github.com/ucam-cl-dtg/dtg-cdn',
+    owner    => 'root',
+    group    => 'root'
+  }
+  ->
+  file { '/etc/cdn-bare/hooks/post-update':
+    ensure => 'file',
+    owner  => "root",
+    group  => "adm",
+    mode   => '0775',
+    source => 'puppet:///modules/dtg/cdn/post-update-cdn.hook',
+  }  
+  ->
+  exec { 'run-cdn-hook':
+    command  => '/etc/cdn-bare/hooks/post-update',
+    creates => '/var/www/.git',
   }
 
   class {'dtg::firewall::publichttp':}
