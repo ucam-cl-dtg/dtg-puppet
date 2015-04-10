@@ -149,7 +149,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   file { '/etc/cdn-bare/hooks/post-update':
     ensure => 'file',
     owner  => "root",
-    gsshroup  => "adm",
+    group  => "adm",
     mode   => '0775',
     source => 'puppet:///modules/dtg/cdn/post-update-cdn.hook',
   }  
