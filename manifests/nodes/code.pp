@@ -65,6 +65,10 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'puppet/modules/wget': source => 'git://github.com/maestrodev/puppet-wget.git'}
   dtg::git::mirror::repo{'puppet/modules/postgresql': source => 'git://github.com/puppetlabs/puppet-postgresql.git'}
 
+  # cdn
+  dtg::git::mirror::repo{'cdn/dtg-cdn': source => 'git://code.dtg.cl.cam.ac.uk:isaac/cdn'}
+
+
   #time project - transport
   dtg::git::mirror::repo{'time/batchupdaters': source => 'git@code.dtg.cl.cam.ac.uk:time/batchupdaters'}
   dtg::git::mirror::repo{'time/minibus': source => 'git@code.dtg.cl.cam.ac.uk:time/minibus'}
