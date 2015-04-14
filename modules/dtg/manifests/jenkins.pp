@@ -143,7 +143,8 @@ response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
     owner   => 'root',
     group   => 'root',
     mode    => 'a=r',
-    content => 'deviceanalyzer   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer',
+    content => 'deviceanalyzer   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer
+deviceanalyzer-graphing   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-graphing',
   } ->
   file_line {'mount nas04':
     line => '/mnt/nas04   /etc/auto.nas04',
