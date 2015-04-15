@@ -29,7 +29,8 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
     mode    => 'a=r',
     content => 'nas01   nas01.dtg.cl.cam.ac.uk:/data/deviceanalyzer
 nas02   nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer
-nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer ',
+nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer
+nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
   } ->
   file_line {'mount nas':
     line => '/mnt   /etc/auto.mnt',
@@ -48,6 +49,11 @@ nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer ',
     ensure => link,
     target => '/mnt/nas04',
   }
+  file {'/nas4-index':
+    ensure => link,
+    target => '/mnt/nas04-index',
+  }
+
 
   # mount nas02 on startup
   file_line { 'mount nas02':
