@@ -20,7 +20,7 @@ class dtg::jenkins {
     'postgresql-client-common','postgresql-client-9.4',
     'jenkins-crypto-util', 'jenkins-external-job-monitor', 'jenkins-instance-identity', 'jenkins-memory-monitor', 'jenkins-ssh-cli-auth',
     'python3-markdown', 'mercurial', 'python3-urllib3', 'python3-dateutil', 'python3-numpy', 'python3-uncertainties', # For AVO
-    'python3-matplotlib', 'python3-scipy', 'python3-cairo', 'python3-cairocffi', 'vnc4server', 'fluxbox', # for da-graphing
+    'python3-matplotlib', 'python3-scipy', 'python3-cairo', 'python3-cairocffi', 'vnc4server', 'fluxbox', 'python3-dev', 'python3-jsonpickle', # for da-graphing
     ]
   package { $jenkins_job_packages:
     ensure => installed,
@@ -143,7 +143,8 @@ response.sendRedirect("http://dtg-ci.cl.cam.ac.uk/jenkins/");
     owner   => 'root',
     group   => 'root',
     mode    => 'a=r',
-    content => 'deviceanalyzer   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer',
+    content => 'deviceanalyzer   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer
+deviceanalyzer-graphing   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-graphing',
   } ->
   file_line {'mount nas04':
     line => '/mnt/nas04   /etc/auto.nas04',

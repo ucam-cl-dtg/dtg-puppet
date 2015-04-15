@@ -16,6 +16,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     fs_names => [ "${pool_name}/abbot-archive",
                   "${pool_name}/bayncore",
                   "${pool_name}/deviceanalyzer-nas02-backup",
+                  "${pool_name}/deviceanalyzer-graphing",
                   "${pool_name}/shin-backup",
                   "${pool_name}/rscfl",
                   "${pool_name}/time",
@@ -72,6 +73,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-datadivider',
     share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},async",
+  }
+
+  dtg::zfs::fs{'deviceanalyzer-graphing':
+    pool_name  => $pool_name,
+    fs_name    => 'deviceanalyzer-graphing',
+    share_opts => "${dtg_share},async",
   }
 
   dtg::zfs::fs{ 'deviceanalyzer-nas02-backup':

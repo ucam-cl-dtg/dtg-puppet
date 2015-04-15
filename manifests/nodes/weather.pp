@@ -27,6 +27,16 @@ node 'weather.dtg.cl.cam.ac.uk' {
     line => '/mnt	/etc/auto.nas01',
     path => '/etc/auto.master',
   }
+
+  # Temporarily disable service restarts so that
+  # postgres restarts stop killing everything.
+  file {'/etc/default/postupdate-service-restart':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 'a=r',
+    content => 'ACTION=false',
+  }
 }
 
 if ( $::monitor ) {
