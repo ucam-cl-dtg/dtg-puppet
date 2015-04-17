@@ -47,6 +47,24 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     source => 'puppet:///modules/dtg/apache/isaac-server.conf',
   }
   
+  class { 'postgresql::globals':
+    version => '9.4',
+  }
+  ->
+  class { 'postgresql::server':
+    ip_mask_deny_postgres_user => '0.0.0.0/0',
+    ip_mask_allow_all_users    => '127.0.0.1/32',
+    listen_addresses           => '*',
+    ipv4acls                   => ['hostssl all all 127.0.0.1/32 md5']
+  }
+  ->
+  postgresql::server::db{'rutherford':
+    user     => 'rutherford',
+    password => 'rutherf0rd',
+    encoding => 'UTF-8',
+    grant    => 'ALL'
+  }
+
   class {'dtg::tomcat': version => $tomcat_version}
   ->
   user { "tomcat${tomcat_version}":
