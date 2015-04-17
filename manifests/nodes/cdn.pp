@@ -3,6 +3,8 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   # this script uses the guide here for installing varnish with apache (guide includes http and https)
   # http://blog.ajnicholls.com/varnish-apache-and-https/
 
+  User<|title == ags46 |> { groups +>[ 'adm' ]}
+
   # port configuration
   $apache_http_port = '8080'
   $apache_ssl_port = '8443'
