@@ -245,6 +245,13 @@ node /naps-bayncore/ {
 }
 
 if ( $::monitor ) {
+
+  nagios::monitor { 'naps-bayncore':
+    parents    => 'nas04',
+    address    => 'naps-bayncore.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers'],
+  }
+  
   munin::gatherer::configure_node { 'saluki1': }
   munin::gatherer::configure_node { 'saluki2': }
 }

@@ -35,11 +35,12 @@ node /acr31-camfort(-\d+)?/ {
   
 }
 
-#if ( $::monitor ) {
-#  nagios::monitor { 'camfort':
-#    parents    => '',
-#    address    => 'camfort.dtg.cl.cam.ac.uk',
-#    hostgroups => [ 'ssh-servers' , 'http-servers' ],
-#  }
-#  munin::gatherer::configure_node { 'camfort': }
-#}
+if ( $::monitor ) {
+  nagios::monitor { 'naps-camfort':
+    parents    => 'nas04',
+    address    => 'naps-camfort.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers', 'http-servers'],
+  }
+  
+  munin::gatherer::configure_node { 'naps-camfort': }
+}
