@@ -139,11 +139,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   vcsrepo { '/etc/cdn-bare':
     ensure   => bare,
     provider => git,
-    source   => {
-      "origin"        => 'git://github.com/ucam-cl-dtg/dtg-cdn',
-      "code_remote" => 'git://code.dtg.cl.cam.ac.uk:isaac/cdn',
-      "mirror_remote" => 'git://git.dtg.cl.cam.ac.uk:isaac/cdn'
-    },
+    source   => 'git://github.com/ucam-cl-dtg/dtg-cdn',
     owner    => 'root',
     group    => 'root'
   }
