@@ -194,6 +194,8 @@ def upgrade_mc():
         # Try to get free space on the disk.
         sudo('apt-get -y -q autoremove')
         sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
+        with cd('/etc/apt/sources.list.d/'):
+            sudo('find . ! -name main.list ! -name security.list ! -name updates.list -delete')
         # Ensure do-release-upgrade doesn't just want to use LTS versions.
         sudo("sed -i 's/Prompt=lts/Prompt=normal/' "
              "/etc/update-manager/release-upgrades")
