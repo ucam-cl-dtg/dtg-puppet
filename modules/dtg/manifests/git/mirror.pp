@@ -82,6 +82,8 @@ class dtg::git::mirror::server {
   }
   #EXTENSION(drt24) this uses a dumb backend for http git but there is a clever
   # backend we could use instead which would be more efficient
+
+  package {'git-remote-hg': ensure => 'installed',}
 }
 
 # Mirror to $name the repository accessible at $source
