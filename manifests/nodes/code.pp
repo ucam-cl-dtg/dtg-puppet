@@ -67,7 +67,7 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'puppet/modules/postgresql': source => 'git://github.com/puppetlabs/puppet-postgresql.git'}
 
   # cdn
-  dtg::git::mirror::repo{'isaac/cdn': source => 'git://code.dtg.cl.cam.ac.uk:isaac/cdn'}
+  dtg::git::mirror::repo{'isaac/cdn': source => 'git@code.dtg.cl.cam.ac.uk:isaac/cdn'}
 
 
   #time project - transport
