@@ -38,6 +38,7 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'lib/pom': source => 'git@code.dtg.cl.cam.ac.uk:lib/pom'}
   dtg::git::mirror::repo{'lib/regexp': source => 'git@code.dtg.cl.cam.ac.uk:lib/regexp'}
   dtg::git::mirror::repo{'lib/snowdon': source => 'git@code.dtg.cl.cam.ac.uk:lib/snowdon'}
+  dtg::git::mirror::repo{'lib/openpyxl': source => 'hg::https://bitbucket.org/openpyxl/openpyxl'}
 
   # android
   dtg::git::mirror::repo{'android/audio/hertz': source => 'git@code.dtg.cl.cam.ac.uk:android/audio/hertz'}
@@ -66,7 +67,7 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'puppet/modules/postgresql': source => 'git://github.com/puppetlabs/puppet-postgresql.git'}
 
   # cdn
-  dtg::git::mirror::repo{'isaac/cdn': source => 'git://code.dtg.cl.cam.ac.uk:isaac/cdn'}
+  dtg::git::mirror::repo{'isaac/cdn': source => 'git@code.dtg.cl.cam.ac.uk:isaac/cdn'}
 
 
   #time project - transport
