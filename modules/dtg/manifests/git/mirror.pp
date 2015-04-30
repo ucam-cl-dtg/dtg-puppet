@@ -84,6 +84,14 @@ class dtg::git::mirror::server {
   # backend we could use instead which would be more efficient
 
   package {'git-remote-hg': ensure => 'installed',}
+  file {'/srv/gitmirror/.hgrc': # Stop the use of git-remote-hg producing noise
+    ensure  => file,
+    owner   => 'gitmirror',
+    group   => 'gitmirror',
+    mode    => '0644',
+    content => '[ui]
+quiet = True',
+  }
 }
 
 # Mirror to $name the repository accessible at $source
