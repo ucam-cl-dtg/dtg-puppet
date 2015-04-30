@@ -113,7 +113,7 @@ class admin_users {
     dtg::add_user { 'sa497':
       real_name => 'Sherif Akoush',
       groups    => [],
-      keys      => [],
+      keys      => ['sa497 <sa497@cam.ac.uk>'],
       uid       => 2412,
     }
     dtg::add_user { 'sac92':
