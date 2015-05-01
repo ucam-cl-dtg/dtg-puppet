@@ -14,8 +14,15 @@ if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
   }
   ->
   dtg::backup::serversetup{'Mongodb backup':
-    backup_directory   => '/local/data/rutherford/database-backup',
-    script_destination => '/usr/share/isaac/backup',
+    backup_directory   => '/local/data/rutherford/database-backup/mongodb',
+    script_destination => '/usr/share/isaac/mongodb-backup',
+    user               => 'isaac',
+    home               => '/usr/share/isaac/',
+  }
+  ->
+  dtg::backup::serversetup{'Postgresql backup':
+    backup_directory   => '/local/data/rutherford/database-backup/postgresql',
+    script_destination => '/usr/share/isaac/postgres-backup',
     user               => 'isaac',
     home               => '/usr/share/isaac/',
   }
