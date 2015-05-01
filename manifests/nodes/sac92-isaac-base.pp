@@ -119,7 +119,8 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     home   => '/usr/share/isaac'
   }
 
-  file { '/local/data/rutherford/database-backup':
+  # MongoDB Backup
+  file { '/local/data/rutherford/database-backup/mongodb':
     ensure => 'directory',
     owner  => 'mongodb',
     group  => 'root',
@@ -139,6 +140,29 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     hour    => 0,
     minute  => 0
   }
+
+  #Postgres Backup
+  file { '/local/data/rutherford/database-backup/postgresql':
+    ensure => 'directory',
+    owner  => 'postgres',
+    group  => 'root',
+    mode   => '0755',
+  }
+  ->
+  file { '/local/data/rutherford/isaac-postgres-backup.sh':
+      mode   => '0755',
+      owner  => postgres,
+      group  => root,
+      source => 'puppet:///modules/dtg/isaac/postgres/isaac-postgres-backup.sh'
+  }
+  ->
+  cron {'isaac-backups':
+    command => '/local/data/rutherford/isaac-postgres-backup.sh',
+    user    => postgres,
+    hour    => 0,
+    minute  => 0
+  }
+
 
   class { 'dtg::apt_elasticsearch': stage => 'repos' }
   package { ['elasticsearch']:
