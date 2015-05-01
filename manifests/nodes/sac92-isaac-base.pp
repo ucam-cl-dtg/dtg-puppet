@@ -134,7 +134,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
       source => 'puppet:///modules/dtg/isaac/mongodb/isaac-mongodb-backup.sh'
   }
   ->
-  cron {'isaac-backups':
+  cron {'isaac-backup-mongodb':
     command => '/local/data/rutherford/isaac-mongodb-backup.sh',
     user    => mongodb,
     hour    => 0,
@@ -156,7 +156,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
       source => 'puppet:///modules/dtg/isaac/postgres/isaac-postgres-backup.sh'
   }
   ->
-  cron {'isaac-backups':
+  cron {'isaac-backup-postgresql':
     command => '/local/data/rutherford/isaac-postgres-backup.sh',
     user    => postgres,
     hour    => 0,
