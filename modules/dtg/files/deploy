@@ -194,14 +194,20 @@ def upgrade_mc():
         # Try to get free space on the disk.
         sudo('apt-get -y -q autoremove')
         sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
+        with cd('/etc/apt/sources.list.d/'):
+            sudo('find . ! -name main.list ! -name security.list ! -name updates.list -delete')
         # Ensure do-release-upgrade doesn't just want to use LTS versions.
         sudo("sed -i 's/Prompt=lts/Prompt=normal/' "
              "/etc/update-manager/release-upgrades")
         # Desperately try to do a non-interactive upgrade.
+        sudo('apt-get -q -y purge stunnel4')
+        sudo('rm -rf /etc/stunnel')
+        sudo('echo \'DPkg::options { "--force-confdef"; "--force-confnew"; }\' > /etc/apt/apt.conf.d/90-dtg-upgrade')
         sudo(
             'yes | '
             'DEBIAN_FRONTEND=noninteractive '
-            'do-release-upgrade -f DistUpgradeViewNonInteractive')
+            'do-release-upgrade -d -f DistUpgradeViewNonInteractive')
+        sudo('rm -rf /etc/apt/apt.conf.d/90-dtg-upgrade')
         # Remove any out of date packages after upgrading.
         sudo("apt-show-versions | grep -v uptodate | sed 's/:.*$//' |"
              ' xargs sudo apt-get -y -q remove')

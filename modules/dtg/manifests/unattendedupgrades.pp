@@ -1,7 +1,10 @@
 
 # Setup unattended security updates using the specified email address
 # to notify when these occur (and tell about the need to reboot)
-class dtg::unattendedupgrades ($unattended_upgrade_notify_emailaddress) {
+class dtg::unattendedupgrades (
+  $unattended_upgrade_notify_emailaddress,
+  $mail_only_on_error = true,
+  ) {
   file {'/etc/apt/apt.conf.d/10periodic':
     ensure => file,
     source => 'puppet:///modules/dtg/apt/10periodic',
