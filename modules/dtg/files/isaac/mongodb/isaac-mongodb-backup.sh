@@ -21,7 +21,7 @@ PASSWORD=""
 
 # Set where database backups will be stored
 # keyword DATE gets replaced by the current date, you can use it in either path below
-BACKUP_PATH="/local/data/rutherford/database-backup" # do not include trailing slash
+BACKUP_PATH="/local/data/rutherford/database-backup/mongodb" # do not include trailing slash
 
 # Get todays date to use in filename of backup output
 TODAYS_DATE=`date "+%Y-%m-%d"`
