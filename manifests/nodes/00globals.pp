@@ -41,6 +41,9 @@ class ms_id_certifiers {
 group { 'dtg-adm' :
   ensure => present
 }
+group { 'rscfl' :
+  ensure => present,
+}
 class admin_users {
     dtg::add_user { 'drt24':
         real_name => 'Daniel Thomas',
@@ -50,19 +53,19 @@ class admin_users {
     }
     dtg::add_user { 'oc243':
         real_name => 'Oliver Chick',
-        groups    => [ 'adm', 'dtg-adm' ],
+        groups    => [ 'adm', 'dtg-adm', 'rscfl'],
         keys      => 'Oliver Chick <oc243@cam.ac.uk>',
         uid       => 2834,
     }
     dtg::add_user { 'lc525':
         real_name => 'Lucian Carata',
-        groups    => ['adm'],
+        groups    => ['adm', 'rscfl'],
         keys      => 'Lucian Carata <lc525@cam.ac.uk>',
         uid       => 2925,
     }
     dtg::add_user { 'jas250':
         real_name => 'James Snee',
-        groups    => ['adm'],
+        groups    => ['adm', 'rscfl'],
         keys      => 'James Snee <jas250@cam.ac.uk>',
         uid       => 2814,
     }
@@ -106,7 +109,7 @@ class admin_users {
     }
     dtg::add_user { 'rss39':
       real_name => 'Ripduman Sohan',
-      groups    => [ 'adm' ],
+      groups    => ['adm', 'rscfl'],
       keys      => ['Ripduman Sohan (Cambridge Key) <ripduman.sohan@cl.cam.ac.uk>'],
       uid       => 2134,
     }

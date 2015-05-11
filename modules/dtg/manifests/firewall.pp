@@ -249,6 +249,14 @@ define dtg::firewall::nfs ($source, $source_name, $portmapper_port, $nfs_port, $
   }
 }
 
+class dtg::firewall::avahi inherits dtg::firewall::default {
+  firewall { '040-build accept avahi udp 5353':
+    proto  => 'udp',
+    dport  => 5353,
+    action => 'accept',
+  }
+}
+
 # The last rule which does the dropping
 class dtg::firewall::post inherits dtg::firewall::default {
   firewall { '999 drop all':
