@@ -2,8 +2,7 @@ class aptrepository($repository) {
   # Manage apt sources lists
   #  Use puppet to manage sources.list but allow manual stuff inside sources.list.d
   class { 'apt':
-    purge_sources_list => true,
-    fancy_progress     => true,
+    purge => { 'sources.list' => true },
     stage              => $stage,
   }
   # Include main repository
