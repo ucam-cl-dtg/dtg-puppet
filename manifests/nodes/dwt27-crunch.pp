@@ -5,8 +5,10 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
 
   $packagelist = ['python2.7', 'python-pip', 'python-virtualenv',
                   'python-numpy', 'python-scipy',
-                  'libatlas3gf-base', 'libblas3gf', 'libdsdp-5.8gf',
-                  'libfftw3-3', 'liblapack3gf']
+                  'libatlas3gf-base', 'libdsdp-5.8gf',
+                  'libfftw3-3',
+                  'liblapack3gf', 'liblapack-dev',
+                  'libblas3gf', 'libblas-dev']
   package {
     $packagelist:
         ensure => present
