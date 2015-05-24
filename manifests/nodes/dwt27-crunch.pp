@@ -8,7 +8,8 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
                   'libatlas3gf-base', 'libdsdp-5.8gf',
                   'libfftw3-3',
                   'liblapack3gf', 'liblapack-dev',
-                  'libblas3gf', 'libblas-dev']
+                  'libblas3gf', 'libblas-dev',
+                  'python-zmq']
   package {
     $packagelist:
         ensure => present
