@@ -27,7 +27,7 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
     mode => '0664',
     source => 'puppet:///modules/dtg/dwt27-crunch/requirements.txt',
   } ->
-  file { '/home/dwt27/ipc/setup_venv.sh',
+  file { '/home/dwt27/ipc/setup_venv.sh':
     ensure => file,
     owner => 'dwt27',
     group => 'dwt27',
