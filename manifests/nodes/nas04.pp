@@ -48,7 +48,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'dwt27':
     pool_name  => $pool_name,
     fs_name    => 'dwt27',
-    share_opts => 'rw=@monnow.cl.cam.ac.uk,rw=@dwt27-crunch.dtg.cl.cam.ac.uk',
+    share_opts => 'rw=@monnow.cl.cam.ac.uk,rw=@dwt27-crunch.dtg.cl.cam.ac.uk,async',
   }
 
   dtg::zfs::fs{'nakedscientists':
