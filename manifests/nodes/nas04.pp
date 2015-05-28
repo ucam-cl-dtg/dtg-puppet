@@ -17,6 +17,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
                   "${pool_name}/bayncore",
                   "${pool_name}/deviceanalyzer-nas02-backup",
                   "${pool_name}/deviceanalyzer-graphing",
+                  "${pool_name}/dwt27",
                   "${pool_name}/shin-backup",
                   "${pool_name}/rscfl",
                   "${pool_name}/time",
@@ -42,6 +43,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     pool_name  => $pool_name,
     fs_name    => 'shin-backup',
     share_opts => 'rw=@shin.cl.cam.ac.uk,async',
+  }
+
+  dtg::zfs::fs{'dwt27':
+    pool_name  => $pool_name,
+    fs_name    => 'dwt27',
+    share_opts => 'rw=@monnow.cl.cam.ac.uk,rw=@dwt27-crunch.dtg.cl.cam.ac.uk,async',
   }
 
   dtg::zfs::fs{'nakedscientists':
