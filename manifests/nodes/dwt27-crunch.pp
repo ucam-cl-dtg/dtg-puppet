@@ -40,5 +40,23 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
     user => 'dwt27',
     group => 'dwt27',
     creates => '/home/dwt27/ipc/venv'
+  } ->
+  file { '/home/dwt27/nas04':
+    ensure => directory,
+    owner => 'dwt27',
+    group => 'dwt27',
+    mode => '0775',
+  } ->
+  mount { 'nas04':
+    name => '/home/dwt27/nas04',
+    ensure => mounted,
+    atboot => true,
+    device => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/dwt27',
+    fstype => 'nfs',
+    options => 'defaults',
   }
+#  file_line { 'mount nas04':
+#    line => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/dwt27 /home/dwt27/nas04 defaults 0 0',
+#    path => '/etc/fstab',
+#  }
 }
