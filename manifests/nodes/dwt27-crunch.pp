@@ -10,10 +10,12 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
                   'liblapack3gf', 'liblapack-dev',
                   'libblas3gf', 'libblas-dev',
                   'python-zmq',]
+# Install appropriate packages
   package {
     $packagelist:
         ensure => present
   } ->
+# Install files from puppet
   file { '/home/dwt27/ipc':
     ensure => directory,
     owner => 'dwt27',
@@ -34,6 +36,14 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
     mode => '0775',
     source => 'puppet:///modules/dtg/dwt27-crunch/setup_venv.sh',
   } ->
+  file { '/home/dwt27/ipc/start_ipc.sh',
+    ensure => file,
+    owner => 'dwt27',
+    group => 'dwt27',
+    mode => '0775',
+    source => 'puppet:///modules/dtg/dwt27-crunch/start_ipc.sh',
+  } ->
+# Setup VirtualEnv
   exec { 'setup_venv':
     command => '/home/dwt27/ipc/setup_venv.sh',
     cwd => '/home/dwt27/ipc/',
@@ -41,6 +51,7 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
     group => 'dwt27',
     creates => '/home/dwt27/ipc/venv'
   } ->
+# Setup nas04 mount
   file { '/home/dwt27/nas04':
     ensure => directory,
     owner => 'dwt27',
@@ -55,8 +66,10 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
     fstype => 'nfs',
     options => 'defaults',
   }
-#  file_line { 'mount nas04':
-#    line => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/dwt27 /home/dwt27/nas04 defaults 0 0',
-#    path => '/etc/fstab',
-#  }
+# Setup cluster cronjob.
+  cron { 'start_cluster':
+    command => "/home/dwt27/ipc/start_ipc.sh"
+    ensure => present,
+    user => 'dwt27',
+    minute => '*',
 }
