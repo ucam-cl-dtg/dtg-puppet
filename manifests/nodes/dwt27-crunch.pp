@@ -83,6 +83,6 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
     incl => '/etc/crontab',
     lens => 'Cron.lns',
     changes => 'set MAILTO dwt27@cl.cam.ac.uk',
-    onlyif => 'get MAILTO == dtg-infra@cl.cam.ac.uk,
+    onlyif => 'get MAILTO == dtg-infra@cl.cam.ac.uk',
   }
 }
