@@ -72,4 +72,5 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
     ensure => present,
     user => 'dwt27',
     minute => '*',
+  }
 }
