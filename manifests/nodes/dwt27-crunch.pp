@@ -14,7 +14,9 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
   package {
     $packagelist:
         ensure => present
-  } ->
+  }
+
+
 # Install files from puppet
   file { '/home/dwt27/ipc':
     ensure => directory,
@@ -50,7 +52,8 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
     user => 'dwt27',
     group => 'dwt27',
     creates => '/home/dwt27/ipc/venv'
-  } ->
+  }
+
 # Setup nas04 mount
   file { '/home/dwt27/nas04':
     ensure => directory,
@@ -66,11 +69,20 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
     fstype => 'nfs',
     options => 'defaults',
   }
+
 # Setup cluster cronjob.
   cron { 'start_cluster':
     command => '/home/dwt27/ipc/start_ipc.sh',
     ensure => present,
     user => 'dwt27',
     minute => '*',
+  }
+
+# Check cron error emails go to me, not dtg-infra
+  augeas {'rootcontabmailtome':
+    incl => '/etc/crontab',
+    lens => 'Cron.lns',
+    changes => 'set MAILTO dwt27@cl.cam.ac.uk',
+    onlyif => 'get MAILTO == dtg-infra@cl.cam.ac.uk,
   }
 }
