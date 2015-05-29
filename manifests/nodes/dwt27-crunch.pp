@@ -68,7 +68,7 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
   }
 # Setup cluster cronjob.
   cron { 'start_cluster':
-    command => "/home/dwt27/ipc/start_ipc.sh"
+    command => '/home/dwt27/ipc/start_ipc.sh',
     ensure => present,
     user => 'dwt27',
     minute => '*',
