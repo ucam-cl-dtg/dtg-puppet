@@ -85,7 +85,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'deviceanalyzer-graphing':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-graphing',
-    share_opts => "${dtg_share},async",
+    share_opts => "${dtg_share},ro=@isis.cl.cam.ac.uk,async",
   }
 
   dtg::zfs::fs{ 'deviceanalyzer-nas02-backup':
