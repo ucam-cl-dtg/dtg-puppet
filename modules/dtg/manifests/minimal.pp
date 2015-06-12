@@ -7,9 +7,17 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   stage {'repos': before => Stage['entropy-host'] }
   # Manage apt sources lists
   if $manageapt {
-    class { 'aptrepository':
-      repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
-      stage      => 'repos'
+    if $::operatingsystem == 'Ubuntu' {
+      class { 'aptrepository':
+        repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
+        stage      => 'repos'
+      }
+    }
+    if $::operatingsystem == 'Debian' {
+      class { 'aptrepository':
+        repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/debian/',
+        stage      => 'repos'
+      }
     }
   }
 

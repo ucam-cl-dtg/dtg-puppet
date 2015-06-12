@@ -2,8 +2,7 @@ $weather_ips = dnsLookup('weather.dtg.cl.cam.ac.uk')
 $weather_ip = $weather_ips[0]
 
 node 'weather.dtg.cl.cam.ac.uk' {
-  # We don't have a local mirror of debian to point at
-  class { 'dtg::minimal': manageapt => false, }
+  class { 'dtg::minimal': }
   class {'dtg::firewall::publichttp':}
 
   User<|title == 'dwt27' |> { groups +>[ 'adm' ]}
