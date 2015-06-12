@@ -30,9 +30,8 @@ class aptrepository($repository) {
   if $::operatingsystem == 'Debian' {
     # Include backports for Debian
       apt::source { 'backports':
-      location => $repository
+      location => $repository,
       release => "${::lsbdistcodename}-backports",
-
       repos    => 'main restricted universe multiverse',
     }
   }
