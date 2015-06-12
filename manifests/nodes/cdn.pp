@@ -65,7 +65,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
 
   # stop apache so that we can use its old ports for pound
   exec { 'stop-apache':
-    command  => 'service apache2 stop'
+    command  => 'sudo systemctl stop apache2'
   }
   ->
   package{ 'varnish':
@@ -132,7 +132,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   }
   ->
   exec { 'start-apache':
-    command  => 'service apache2 start',
+    command  => 'sudo systemctl start apache2',
     refreshonly => true
   }
 
