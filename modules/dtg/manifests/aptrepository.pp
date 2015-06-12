@@ -27,4 +27,12 @@ class aptrepository($repository) {
     release  => "${::lsbdistcodename}-updates",
     repos    => 'main restricted universe multiverse',
   }
+  if $::operatingsystem == 'Debian' {
+    # Include backports for Debian
+      apt::source { 'backports':
+      location => "${::lsbdistcodename}-backports",
+      repos    => 'main restricted universe multiverse',
+    }
+  }
+
 }

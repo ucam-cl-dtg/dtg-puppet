@@ -17,10 +17,19 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
                   'runit', 'apg', 'emacs24-nox', 'htop', 'nfs-common',
                   'iptables-persistent', 'command-not-found', 'mlocate',
-                  'bash-completion', 'linux-image-generic', 'apt-show-versions',
-                  'iotop', 'byobu']
+                  'bash-completion', 'apt-show-versions', 'iotop', 'byobu']
   package {
     $packagelist:
+      ensure => installed
+  }
+ 
+  $os_extralist = ['linux-image-generic']
+  if $::operatingsystem == 'Debian' {
+    $os_extralist = ['linux-image']
+  }  
+
+  package {
+    $os_extralist:
       ensure => installed
   }
 
