@@ -232,11 +232,11 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
       group  => 'root',
       mode   => 'u+rw,go+r',
     }
-  }
 
-  file_line { 'resolv.conf dns options':
-    path => '/etc/resolvconf/resolv.conf.d/tail',
-    line => 'options timeout:1 attempts:4',
+    file_line { 'resolv.conf dns options':
+      path => '/etc/resolvconf/resolv.conf.d/tail',
+      line => 'options timeout:1 attempts:4',
+    }
   }
 
   # Keep stuff put in at bootstrap up to date
