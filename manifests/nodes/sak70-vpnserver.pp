@@ -42,7 +42,7 @@ node 'sak70-vpnserver.dtg.cl.cam.ac.uk' {
     action => 'accept',
   }
 
-  firewall { "998 log dropped packets":
+  firewall { "998 log all remaining packets":
     proto => 'all',
     jump  => 'LOG',
   }
