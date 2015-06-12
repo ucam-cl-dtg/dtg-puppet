@@ -22,12 +22,12 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     $packagelist:
       ensure => installed
   }
- 
+
   if $::operatingsystem == 'Debian' {
     $os_extralist = []
   } else {
     $os_extralist = ['linux-image-generic']
-  } 
+  }
 
   package {
     $os_extralist:
