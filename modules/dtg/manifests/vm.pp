@@ -1,8 +1,10 @@
 class dtg::vm {
   class {'dtg::vm::repos': stage => 'repos'}
-  package {'xe-guest-utilities':
-    ensure  => latest,
-    require => Apt::Ppa['ppa:retrosnub/xenserver-support'],
+  if $::operatingsystem == 'Ubuntu' {
+    package {'xe-guest-utilities':
+      ensure  => latest,
+      require => Apt::Ppa['ppa:retrosnub/xenserver-support'],
+    }
   }
   package {'mingetty':
     ensure => latest,
@@ -30,7 +32,7 @@ class dtg::vm {
 class dtg::vm::repos {
   # This is Malcolm Scott's ppa containing xe-guest-utilities which installs
   # XenServer tools which we want on every VM.
-  if $::operatingsystem == 'Ubuntu' { 
+  if $::operatingsystem == 'Ubuntu' {
     apt::ppa {'ppa:retrosnub/xenserver-support': }
   }
 }
