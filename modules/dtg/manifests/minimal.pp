@@ -23,7 +23,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
 
   # Packages which should be installed on all servers
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
-                  'runit', 'apg', 'emacs24-nox', 'htop', 'nfs-common',
+                  'runit', 'apg', 'htop', 'nfs-common',
                   'iptables-persistent', 'command-not-found', 'mlocate',
                   'bash-completion', 'apt-show-versions', 'iotop', 'byobu']
   package {
@@ -34,7 +34,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   if $::operatingsystem == 'Debian' {
     $os_extralist = []
   } else {
-    $os_extralist = ['linux-image-generic']
+    $os_extralist = ['linux-image-generic', 'emacs24-nox']
   }
 
   package {
