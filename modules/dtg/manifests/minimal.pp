@@ -32,7 +32,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   }
 
   if $::operatingsystem == 'Debian' {
-    $os_extralist = ['linux-image']
+    $os_extralist = []
   } else {
     $os_extralist = ['linux-image-generic']
   }
@@ -224,13 +224,16 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     content => "options nfs callback_tcpport=$::nfs_client_port",
   }
 
-  # Attempt to make DNS more robust by timing out quickly and retrying enough times that we will hit all of the configured DNS servers before failing
-  file { '/etc/resolvconf/resolv.conf.d/tail':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => 'u+rw,go+r',
+  if $::operatingsystem != 'Debian' {
+    # Attempt to make DNS more robust by timing out quickly and retrying enough times that we will hit all of the configured DNS servers before failing
+    file { '/etc/resolvconf/resolv.conf.d/tail':
+      ensure => file,
+      owner  => 'root',
+      group  => 'root',
+      mode   => 'u+rw,go+r',
+    }
   }
+
   file_line { 'resolv.conf dns options':
     path => '/etc/resolvconf/resolv.conf.d/tail',
     line => 'options timeout:1 attempts:4',
