@@ -260,7 +260,7 @@ class dtg::firewall::avahi inherits dtg::firewall::default {
 # The last rule which does the dropping
 class dtg::firewall::post inherits dtg::firewall::default {
   firewall { '999 drop all':
-    ensure => absent
+    ensure => absent,
     proto  => 'all',
     action => 'drop',
     before => undef,
