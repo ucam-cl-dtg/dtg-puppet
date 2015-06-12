@@ -1,1 +1,363 @@
-deploy
+#! /usr/bin/env python2.7
+
+"""
+Deploy the latest puppet, security fixes or Ubuntu release to all puppies.
+"""
+
+import argparse
+import socket
+import sys
+import os
+from fabric.api import cd, env, execute, output, parallel, run, sudo, show, task
+from git import GitCommandError, Repo, RemoteProgress
+import random
+import datetime
+from datetime import timedelta
+
+DTG_DOM = '.dtg.cl.cam.ac.uk'
+
+DOM0 = 'root@husky0' + DTG_DOM
+REMOTE_PREFIX = 'lick'
+
+PUPPET_BARE = '/etc/puppet-bare'
+
+POOL_SIZE = 6
+
+SHA_LENGTH = 9
+
+# This is where we need to push first as it is the canonical place for the
+# source code to be
+ORIGIN = [
+    {'name': 'github', 'hostname': 'git@github.com',
+     'repo_loc': 'ucam-cl-dtg/dtg-puppet.git', 'VM': False},
+    {'name': 'code-repo', 'hostname': 'git@code.dtg.cl.cam.ac.uk',
+     'repo_loc': 'infrastructure/dtg-puppet', 'VM': False},
+    {'name': 'gitlab-repo', 'hostname': 'git@gitlab.dtg.cl.cam.ac.uk',
+     'repo_loc': 'infrastructure/dtg-puppet.git', 'VM': False}
+]
+
+PHYSICAL_MACHINES = [
+    {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc': PUPPET_BARE,
+     'VM': False},
+    {'name': 'nas04', 'hostname': 'nas04' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'entropy', 'hostname': 'entropy' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'wolf0', 'hostname': 'wolf0' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'wolf1', 'hostname': 'wolf1' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'wolf2', 'hostname': 'wolf2' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'spaniel', 'hostname': 'spaniel' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'saluki1', 'hostname': 'saluki1' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'saluki2', 'hostname': 'saluki2' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+]
+
+
+class RemoteHandler(RemoteProgress):
+    """
+    Prints output from the pre-receive handler, stripping irrelevant bits.
+    """
+    def __init__(self, vm):
+        super(RemoteHandler, self).__init__()
+        self.vm = vm
+
+    def line_dropped(self, line):
+        if ("Warning: Permanently added" not in line) and (line.strip() !=
+                                                           "remote:"):
+            print "%s: %s" % (self.vm, line)
+
+    def update(self, op_code, cur_count, max_count=None, message=''):
+        if len(message) > 0:
+            print message
+
+
+@task
+def get_vms():
+    """
+    Get a list of virtual machines on the husky servers.
+    """
+    uuids = run(
+        'xe vm-list params=uuid power-state=running '
+        'PV-bootloader=pygrub --minimal').split(',')
+    vms = []
+    for uuid in uuids:
+        name_label = run('xe vm-list params=name-label uuid=%s --minimal' %
+                         uuid).replace(' ', '')
+        ip = run('xe vm-param-get param-name=networks uuid=%s | '
+                 'sed -e \'s_0/ip: __\' -e  \'s/; .*$//\'' %
+                 uuid)
+        try:
+            hostname = socket.gethostbyaddr(ip)[0]
+        except socket.error:
+            sys.stderr.write("Unable to lookup hostname of %s\n" % name_label)
+            continue
+
+        vms.append({'name': name_label, 'hostname': hostname,
+                    'repo_loc': PUPPET_BARE, 'VM': True, 'uuid': uuid})
+    # Randomize the order of vms. Otherwise we will starve the vms at the
+    # end of the list if lick doesn't finish running
+    random.shuffle(vms)
+    return vms
+
+
+def get_machines():
+    """
+    Get all remote hosts that need updating: git repos, VMs, and physical mcs.
+    """
+    vms = execute(get_vms, hosts=[DOM0])
+    return vms[DOM0] + PHYSICAL_MACHINES
+
+@parallel(pool_size=POOL_SIZE)
+def snapshot_mc(mc, commit_id):
+    """
+    Snapshot a VM using commit_id as a snapshot name.
+    """
+    assert mc['VM']
+
+    new_snap_name = commit_id[0:SHA_LENGTH]
+    cur_snaps = run(
+        'xe snapshot-list  snapshot-of=%s params=name-label --minimal' %
+        mc['uuid']).split(',')
+    if new_snap_name in cur_snaps:
+        print('%s already has a snapshot for commit %s. Not snapshotting again'
+              % (mc['name'], new_snap_name))
+    else:
+        print 'Snapshotting %s' % mc['name']
+        run('xe vm-snapshot uuid=%s new-name-label=%s' %
+            (mc['uuid'], new_snap_name))
+
+
+def is_hex(val):
+    """
+    Determines if val is a hex-encoded string.
+    """
+    try:
+        int(val, 16)
+    except ValueError:
+        return False
+    return True
+
+
+@task
+def snap_gc():
+    """
+    Deletes old snapshots that were created by the lick script.
+
+    Any lick snapshot that is older than 14 days is removed to save space,
+    and keep the snapshot chain low to aid performance.
+    """
+    snap_uuids = run('xe snapshot-list params=uuid --minimal').split(',')
+    snap_names = run('xe snapshot-list params=name-label --minimal').split(',')
+    snap_times = run(
+        'xe snapshot-list params=snapshot-time --minimal').split(',')
+    snap_times = [datetime.datetime.strptime(x, '%Y%m%dT%H:%M:%SZ') for x in
+                  snap_times]
+    keys = ('uuid', 'name', 'time')
+    snaps = ([dict(zip(keys, data)) for data in
+              zip(snap_uuids, snap_names, snap_times)])
+
+   # filter out those snapshots where the timestamp field is > 14 days old
+    snaps = [x for x in snaps if x['time'] < datetime.datetime.today()
+             - timedelta(days=14)]
+
+    # filter out snapshots whose name is not $SHA_LENGTH digits of hex
+    snaps = [x for x in snaps if is_hex(x['name']) and
+             len(x['name']) == SHA_LENGTH]
+
+    if snaps:
+        print 'Destroying %d old snapshots' % len(snaps)
+
+    for snap in snaps:
+        run('xe snapshot-uninstall force=true uuid=%s' % snap['uuid'])
+
+
+@parallel(pool_size=POOL_SIZE)
+def upgrade_mc():
+    """
+    Upgrade the base version of Ubuntu to the latest release.
+    """
+    # Remove unusued packages to reduce the chance of falling over
+    # during the upgrade
+    with show('output'):
+        # Disable fancy progress bars during the update, as they break fabric.
+        sudo('rm /etc/apt/apt.conf.d/99progressbar')
+        # Remove any out of date packages before trying to upgrade.
+        sudo("apt-show-versions | grep :amd64 | grep -v uptodate | sed 's/:.*$//' |"
+             ' xargs sudo apt-get -y -q remove')
+        # Ensure the current version is up to date, as there may be a new
+        # version of the updater.
+        sudo('apt-get update')
+        sudo('apt-get -y -q --no-install-recommends dist-upgrade')
+        # Try to get free space on the disk.
+        sudo('apt-get -y -q autoremove')
+        sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
+        with cd('/etc/apt/sources.list.d/'):
+            sudo('find . ! -name main.list ! -name security.list ! -name updates.list -delete')
+        # Ensure do-release-upgrade doesn't just want to use LTS versions.
+        sudo("sed -i 's/Prompt=lts/Prompt=normal/' "
+             "/etc/update-manager/release-upgrades")
+        # Desperately try to do a non-interactive upgrade.
+        sudo('apt-get -q -y purge stunnel4')
+        sudo('rm -rf /etc/stunnel')
+        sudo('echo \'DPkg::options { "--force-confdef"; "--force-confnew"; }\' > /etc/apt/apt.conf.d/90-dtg-upgrade')
+        sudo(
+            'yes | '
+            'DEBIAN_FRONTEND=noninteractive '
+            'do-release-upgrade -f DistUpgradeViewNonInteractive')
+        sudo('rm -rf /etc/apt/apt.conf.d/90-dtg-upgrade')
+        # Remove any out of date packages after upgrading.
+        sudo("apt-show-versions | grep :amd64 | grep -v uptodate | "
+             "sed 's/:.*$//' |"
+             ' xargs sudo apt-get -y -q remove')
+        # Clean up apt.
+        sudo('apt-get -q clean')
+        sudo('apt-get -q autoclean')
+
+
+@parallel(pool_size=POOL_SIZE)
+def security_update():
+    """
+    Force machines to apply the latest security update.
+
+    For when waiting for unattended upgrades is too risky.
+    """
+    sudo('apt-get -q update')
+    sudo('unattended-upgrade')
+    sudo('nice apt-get -y -q --no-install-recommends dist-upgrade')
+    sudo('nice apt-get -y -q autoremove')
+    sudo('nice apt-get -q clean')
+    sudo('nice apt-get -q autoclean')
+
+
+@parallel(pool_size=POOL_SIZE)
+def run_latest_puppet():
+    """
+    Manually apply puppet.
+    """
+    with show('output'):
+        with cd(PUPPET_BARE):
+            sudo('git fetch --quiet https://github.com/ucam-cl-dtg/dtg-puppet.git master:master')
+            sudo('nice ./hooks/post-update')
+
+
+@task
+def post_update_hook():
+    """
+    Apply the post_update hook manually to force a puppet refresh.
+
+    This does more than calling run_puppet, such as ensuring that
+    /etc/puppet is the latest version.
+    """
+    run('nice /etc/puppet-bare/hooks/post-update')
+
+
+def add_remotes(repo, machines):
+    """
+    Delete all remotes, then add those listed in `machines'
+    """
+    for remote in repo.remotes:
+        if remote.name.startswith(REMOTE_PREFIX):
+            repo.delete_remote(remote)
+    for mc in machines:
+        repo.create_remote(REMOTE_PREFIX + '_' + mc['name'],
+                           mc['hostname'] + ':' + mc['repo_loc'])
+
+
+def push_config(repo, machines, upgrade, sec_update):
+    """
+    Push the latest updates, puppet, and security updates to the servers.
+
+    Args:
+        repo: local git repository containing python.
+        machines: machines to apply the updates to.
+        upgrade: true if an OS upgrade should be run.
+        sec_update: true if security updates should be applied.
+    """
+    for mc in machines:
+        if mc['VM']:
+            execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
+
+    hostnames = [x['hostname'] for x in machines]
+
+    if upgrade:
+        execute(upgrade_mc, hosts=hostnames)
+    if sec_update:
+        execute(security_update, hosts=hostnames)
+
+    for mc in ORIGIN:
+        handler = RemoteHandler(mc['name'])
+        remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
+        info = remote.push(refspec='master:master', progress=handler)[0]
+        if not (info.flags & (info.NEW_TAG | info.NEW_HEAD | info.UP_TO_DATE |
+                              info.FAST_FORWARD)):
+            sys.stderr.write(info.summary)
+            sys.stderr.write("Incorrect flag whilst pushing to %s: %d. "
+                             "Terminating.\n" % (mc['name'], info.flags))
+            sys.exit(-1)
+
+    execute(run_latest_puppet, hosts=hostnames)
+
+def main(args):
+    """
+    Update DTG machines.
+    """
+    output['running'] = False
+    output['stdout'] = False
+    ssh_no_fngr = "%s/%s" % (os.getcwd(), 'ssh-no-fingerprint')
+    try:
+        with open(ssh_no_fngr):
+            pass
+    except IOError:
+        sys.stderr.write('You must lick from modules/dtg/files')
+        sys.exit(1)
+
+    env.warn_only = True
+
+    repo = Repo('.')
+    machines = get_machines()
+    add_remotes(repo, ORIGIN + machines)
+
+    if args.machines:
+        machines = [x for x in machines if x['name'] in args.machines]
+    if not machines:
+        sys.stderr.write("No machines to apply puppet to")
+        sys.exit(-1)
+
+    # Remove old lick-generated snapshots, or else they build up
+    if not args.no_snap_gc:
+        execute(snap_gc, hosts=[DOM0])
+
+    # Set GIT_SSH to point to the wrapper around SSH that stops hostkey checks.
+    # We don't need to check hostkeys as we're only pushing at hosts, so we
+    # don't care if someone MiTMs us.
+    os.environ['GIT_SSH'] = ssh_no_fngr
+
+    push_config(repo, machines, args.upgrade, args.security_update)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='Pushes the master branch of dtg-puppet, as found on '
+        'github all over the world')
+    parser.add_argument('--boot',
+                        help='Boot linux machines that are currently'
+                        ' turned off.')
+    parser.add_argument('--do-release-upgrade', action='store_true',
+                        dest='upgrade',
+                        help='Upgrade the version of Ubuntu before '
+                        'applying the puppet config')
+    parser.add_argument('--no-snap-gc', action='store_true',
+                        dest='no_snap_gc', help='Do not remove old snapshots')
+    parser.add_argument('--security-update', action='store_true',
+                        dest='security_update',
+                        help='Apply all security updates immediately')
+    parser.add_argument('machines', nargs='?',
+                        help='Limit the machines that the lick is applied to')
+
+    args = parser.parse_args()
+    main(args)
