@@ -188,7 +188,8 @@ def upgrade_mc():
         # Disable fancy progress bars during the update, as they break fabric.
         sudo('rm /etc/apt/apt.conf.d/99progressbar')
         # Remove any out of date packages before trying to upgrade.
-        sudo("apt-show-versions | grep :amd64 | grep -v uptodate | sed 's/:.*$//' |"
+        sudo("apt-show-versions | grep :amd64 | grep -v uptodate |"
+             " grep -v xe-guest-utilities | sed 's/:.*$//' |"
              ' xargs sudo apt-get -y -q remove')
         # Ensure the current version is up to date, as there may be a new
         # version of the updater.
