@@ -13,6 +13,7 @@ from git import GitCommandError, Repo, RemoteProgress
 import random
 import datetime
 from datetime import timedelta
+import time
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
@@ -217,6 +218,9 @@ def upgrade_mc():
         # Clean up apt.
         sudo('apt-get -q clean')
         sudo('apt-get -q autoclean')
+        sudo('reboot')
+        # Wait for machine to reboot.
+        time.sleep(30)
 
 
 @parallel(pool_size=POOL_SIZE)
