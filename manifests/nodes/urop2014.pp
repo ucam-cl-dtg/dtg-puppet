@@ -51,10 +51,5 @@ node /urop2014(-\d+)?.dtg.cl.cam.ac.uk/ {
 
 }
 if ( $::monitor ) {
-  nagios::monitor { 'urop2014':
-    parents    => 'nas04',
-    address    => 'urop2014.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
-  }
   munin::gatherer::configure_node { 'urop2014': }
 }

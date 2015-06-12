@@ -149,6 +149,12 @@ class admin_users {
       keys      => ['Daniel Hintze <daniel@hintze-it.de>'],
       uid       => 3451,
     }
+    dtg::add_user { 'dac53':
+      real_name => 'Diana Vasile',
+      groups    => ['adm'],
+      keys      => ['Diana Vasile <dac53@cam.ac.uk>'],
+      uid       => 3252,
+    }
 
 }
 # Admin user ids to be given root on the nodes via monkeysphere
@@ -199,3 +205,13 @@ if ( $::fqdn in $backup_hosts ) {
 }
 
 $nfs_client_port = 1025
+
+
+
+# Override Service definition until we are on a new enough puppet to know about ubuntu and systemd
+
+if $::operatingsystem == 'Ubuntu' and $::operatingsystemmajrelease == "15.04" {
+  Service {
+    provider => systemd,
+  }
+}

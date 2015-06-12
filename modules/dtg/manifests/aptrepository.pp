@@ -2,8 +2,7 @@ class aptrepository($repository) {
   # Manage apt sources lists
   #  Use puppet to manage sources.list but allow manual stuff inside sources.list.d
   class { 'apt':
-    purge_sources_list => true,
-    fancy_progress     => true,
+    purge => { 'sources.list' => true },
     stage              => $stage,
   }
   # Include main repository
@@ -28,4 +27,12 @@ class aptrepository($repository) {
     release  => "${::lsbdistcodename}-updates",
     repos    => 'main restricted universe multiverse',
   }
+  if $::operatingsystem == 'Debian' {
+    # Include backports for Debian
+      apt::source { 'backports':
+      location => "${::lsbdistcodename}-backports",
+      repos    => 'main restricted universe multiverse',
+    }
+  }
+
 }

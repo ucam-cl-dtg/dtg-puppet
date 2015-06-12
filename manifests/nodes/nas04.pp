@@ -17,6 +17,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
                   "${pool_name}/bayncore",
                   "${pool_name}/deviceanalyzer-nas02-backup",
                   "${pool_name}/deviceanalyzer-graphing",
+                  "${pool_name}/dwt27",
                   "${pool_name}/shin-backup",
                   "${pool_name}/rscfl",
                   "${pool_name}/time",
@@ -42,6 +43,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     pool_name  => $pool_name,
     fs_name    => 'shin-backup',
     share_opts => 'rw=@shin.cl.cam.ac.uk,async',
+  }
+
+  dtg::zfs::fs{'dwt27':
+    pool_name  => $pool_name,
+    fs_name    => 'dwt27',
+    share_opts => 'rw=@monnow.cl.cam.ac.uk,rw=@dwt27-crunch.dtg.cl.cam.ac.uk,async',
   }
 
   dtg::zfs::fs{'nakedscientists':
@@ -78,7 +85,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'deviceanalyzer-graphing':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-graphing',
-    share_opts => "${dtg_share},async",
+    share_opts => "${dtg_share},ro=@isis.cl.cam.ac.uk,async",
   }
 
   dtg::zfs::fs{ 'deviceanalyzer-nas02-backup':
@@ -149,14 +156,14 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
 #   }
 
-#  cron { 'deviceanalyzer-nas02-backup':
-#    ensure  => present,
-#    command => "pgrep -c rsync || nice -n 18 rsync -az --delete --rsync-path='/usr/syno/bin/rsync' nas04@nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer/ /${pool_name}/deviceanalyzer-nas02-backup",
-#    user    => 'root',
-#    minute  => cron_minute('deviceanalyzer-nas02-backup'),
-#    hour    => '1',
-#    require => [Dtg::Zfs::Fs['deviceanalyzer-nas02-backup']],
-#  }
+  cron { 'deviceanalyzer-nas02-backup':
+    ensure  => present,
+    command => "pgrep -c rsync || nice -n 18 rsync -az --delete --rsync-path='/usr/syno/bin/rsync' nas04@nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer/ /${pool_name}/deviceanalyzer-nas02-backup",
+    user    => 'root',
+    minute  => cron_minute('deviceanalyzer-nas02-backup'),
+    hour    => '1',
+    require => [Dtg::Zfs::Fs['deviceanalyzer-nas02-backup']],
+  }
 
 
   cron { 'zfs_weekly_scrub':

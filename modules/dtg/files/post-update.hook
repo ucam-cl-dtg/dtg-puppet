@@ -10,6 +10,13 @@ hostname -f
 echo '---- Pulling changes into /etc/puppet -----'
 
 cd /etc/puppet
+
+# Try to ensure that we will be able to do the rest of this script
+sudo chmod -R --quiet g+u . .git || true
+sudo chgrp -R --quiet adm . .git || true
+find . -type d -print0 | xargs -0 -s 256 sudo chmod --quiet g+s || true
+find .git -type d -print0 | xargs -0 sudo chmod --quiet g+s || true
+
 unset GIT_DIR
 
 # First pull updates without the submodules - this gives us a chance

@@ -13,6 +13,7 @@ from git import GitCommandError, Repo, RemoteProgress
 import random
 import datetime
 from datetime import timedelta
+import time
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
@@ -43,9 +44,11 @@ PHYSICAL_MACHINES = [
      'repo_loc': PUPPET_BARE, 'VM': False},
     {'name': 'entropy', 'hostname': 'entropy' + DTG_DOM,
      'repo_loc': PUPPET_BARE, 'VM': False},
-    {'name': 'rscfl', 'hostname': 'so-22-8' + DTG_DOM,
+    {'name': 'wolf0', 'hostname': 'wolf0' + DTG_DOM,
      'repo_loc': PUPPET_BARE, 'VM': False},
-    {'name': 'rscfl1', 'hostname': 'so-22-9' + DTG_DOM,
+    {'name': 'wolf1', 'hostname': 'wolf1' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'wolf2', 'hostname': 'wolf2' + DTG_DOM,
      'repo_loc': PUPPET_BARE, 'VM': False},
     {'name': 'spaniel', 'hostname': 'spaniel' + DTG_DOM,
      'repo_loc': PUPPET_BARE, 'VM': False},
@@ -159,7 +162,7 @@ def snap_gc():
     snaps = ([dict(zip(keys, data)) for data in
               zip(snap_uuids, snap_names, snap_times)])
 
-    # filter out those snapshots where the timestamp field is > 14 days old
+   # filter out those snapshots where the timestamp field is > 14 days old
     snaps = [x for x in snaps if x['time'] < datetime.datetime.today()
              - timedelta(days=14)]
 
@@ -185,7 +188,7 @@ def upgrade_mc():
         # Disable fancy progress bars during the update, as they break fabric.
         sudo('rm /etc/apt/apt.conf.d/99progressbar')
         # Remove any out of date packages before trying to upgrade.
-        sudo("apt-show-versions | grep -v uptodate | sed 's/:.*$//' |"
+        sudo("apt-show-versions | grep :amd64 | grep -v uptodate | sed 's/:.*$//' |"
              ' xargs sudo apt-get -y -q remove')
         # Ensure the current version is up to date, as there may be a new
         # version of the updater.
@@ -206,14 +209,18 @@ def upgrade_mc():
         sudo(
             'yes | '
             'DEBIAN_FRONTEND=noninteractive '
-            'do-release-upgrade -d -f DistUpgradeViewNonInteractive')
+            'do-release-upgrade -f DistUpgradeViewNonInteractive')
         sudo('rm -rf /etc/apt/apt.conf.d/90-dtg-upgrade')
         # Remove any out of date packages after upgrading.
-        sudo("apt-show-versions | grep -v uptodate | sed 's/:.*$//' |"
+        sudo("apt-show-versions | grep :amd64 | grep -v uptodate | "
+             "sed 's/:.*$//' |"
              ' xargs sudo apt-get -y -q remove')
         # Clean up apt.
         sudo('apt-get -q clean')
         sudo('apt-get -q autoclean')
+        sudo('reboot')
+        # Wait for machine to reboot.
+        time.sleep(30)
 
 
 @parallel(pool_size=POOL_SIZE)
