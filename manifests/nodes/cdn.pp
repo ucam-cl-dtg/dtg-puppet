@@ -3,6 +3,8 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   # this script uses the guide here for installing varnish with apache (guide includes http and https)
   # http://blog.ajnicholls.com/varnish-apache-and-https/
 
+  # Note for new systemctl we need to use a combination of the following guides: https://wiki.archlinux.org/index.php/Varnish and http://deshack.net/how-to-varnish-listen-port-80-systemd/
+
   User<|title == ags46 |> { groups +>[ 'adm' ]}
 
   # port configuration
