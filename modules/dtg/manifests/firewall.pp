@@ -269,5 +269,6 @@ class dtg::firewall::post inherits dtg::firewall::default {
     proto  => 'all',
     action => 'reject',
     before => undef,
+    reject => 'icmp-admin-prohibited',
   }
 }
