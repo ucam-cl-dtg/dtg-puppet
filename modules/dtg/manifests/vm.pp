@@ -7,12 +7,6 @@ class dtg::vm {
     }
   }
 
-  file { '/etc/init/hvc0.conf':
-    source => 'puppet:///modules/dtg/hvc0.conf',
-    ensure => present,
-    owner  => 'root',
-    group  => 'root'
-  }
   file {'/etc/init.d/vm-boot.sh':
     ensure => file,
     source => 'puppet:///modules/dtg/vm-boot.sh',
