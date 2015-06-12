@@ -30,5 +30,7 @@ class dtg::vm {
 class dtg::vm::repos {
   # This is Malcolm Scott's ppa containing xe-guest-utilities which installs
   # XenServer tools which we want on every VM.
-  apt::ppa {'ppa:retrosnub/xenserver-support': }
+  if $::operatingsystem == 'Ubuntu' { 
+    apt::ppa {'ppa:retrosnub/xenserver-support': }
+  }
 }
