@@ -79,15 +79,8 @@ node 'africa01.cl.cam.ac.uk' {
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
 
-  apt::source { 'debian_main':
-    comment  => 'debian packages for HW RAID',
-    location => 'http://hwraid.le-vert.net/debian',
-    release  => 'main',
-    repos    => 'lucid',
-    include  => {
-    'src' => true,
-    'deb' => true,
-    },
+  class {'apt::source::megaraid':
+    stage => "repos"
   }
 
 #$packages = ['maven2','openjdk-7-jdk','rssh','mongodb','logwatch']
@@ -104,5 +97,13 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers' ],
   }
   munin::gatherer::configure_node { 'africa01': }
+}
+
+class apt::source::megaraid {
+    apt::source { 'megaraid':
+    location => "http://hwraid.le-vert.net/debian",
+    repos => "main",
+    key_source => "http://hwraid.le-vert.net/debian/hwraid.le-vert.net.gpg.key"
+    }
 }
 
