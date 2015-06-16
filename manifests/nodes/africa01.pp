@@ -83,7 +83,7 @@ node 'africa01.cl.cam.ac.uk' {
     stage => "repos"
   }
 
-  $packagelist = ['megacli', 'bison' , 'flex', 'autoconf' , 'pkg-config' , 'libglib2.0-dev', 'libpcap-dev']
+  $packagelist = ['megacli', 'bison' , 'flex', 'autoconf' , 'pkg-config' , 'libglib2.0-dev', 'libpcap-dev' , 'mountall']
   package {
 	    $packagelist:
           ensure => installed
