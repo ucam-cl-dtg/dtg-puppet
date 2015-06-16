@@ -1,9 +1,18 @@
 node 'africa01.cl.cam.ac.uk' {
-  #include 'dtg::minimal'
+  include 'dtg::minimal'
   include 'nfs::server'  
 
-  class {'dtg::minimal': }
+
   class {'dtg::zfs': }
+
+
+  cron { 'zfs_weekly_scrub':
+    command => '/sbin/zpool scrub data-pool0',
+    user    => 'root',
+    minute  => 0,
+    hour    => 0,
+    weekday => 1,
+  }
 
   $portmapper_port     = 111
   $nfs_port            = 2049
@@ -28,7 +37,7 @@ node 'africa01.cl.cam.ac.uk' {
     notify  => Service['nfs-kernel-server']
   }
   dtg::firewall::nfs {'nfs access from dtg':
-    source          => $::local_subnet,
+    source          => '128.232.20.0/22',
     source_name     => 'dtg',
     portmapper_port => $portmapper_port,
     nfs_port        => $nfs_port,
@@ -37,7 +46,37 @@ node 'africa01.cl.cam.ac.uk' {
     mountd_port     => $mountd_port,
     rquotad_port    => $rquotad_port,
     statd_port      => $statd_port,
-  }  
+  }
+
+  firewall { 'hadoop from specific machines':
+    action => 'accept',
+    source => 'sa497-crunch-0.dtg.cl.cam.ac.uk'
+  }
+  firewall { 'hadoop from specific machines':
+    action => 'accept',
+    source => 'sa497-crunch-1.dtg.cl.cam.ac.uk'
+  }
+  firewall { 'hadoop from specific machines':
+    action => 'accept',
+    source => 'sa497-crunch-2.dtg.cl.cam.ac.uk'
+  }
+  firewall { 'hadoop from specific machines':
+    action => 'accept',
+    source => 'sa497-crunch-3.dtg.cl.cam.ac.uk'
+  }
+  firewall { 'hadoop from specific machines':
+    action => 'accept',
+    source => 'vm-sr-nile0.cl.cam.ac.uk',
+  }
+  firewall { 'hadoop from specific machines':
+    action => 'accept',
+    source => 'vm-sr-nile1.cl.cam.ac.uk',
+  }
+  firewall { 'hadoop from specific machines':
+    action => 'accept',
+    source => 'vm-sr-nile2.cl.cam.ac.uk',
+  }
+
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
 
