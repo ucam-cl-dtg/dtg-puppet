@@ -2,7 +2,7 @@ class dtg::zfs {
   class {'dtg::zfs::repos': stage => 'repos'}
   package {'ubuntu-zfs':
     ensure  => present,
-    require => [ Apt::Ppa['ppa:zfs-native/stable'], Package['munin-node']],
+    require => [ Package["linux-headers-$kernelrelease"], Apt::Ppa['ppa:zfs-native/stable'], Package['munin-node']],
   }
 
   # zfs includes this config file to let unpriviliged users run read only ZFS commands.
