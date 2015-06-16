@@ -76,9 +76,9 @@ node 'africa01.cl.cam.ac.uk' {
     action => 'accept',
     source => 'vm-sr-nile2.cl.cam.ac.uk',
   }
-  firewall { '001 accept all anya.ad.cl.cam.ac.uk':
+  firewall { '001 accept all ANYA.ad.cl.cam.ac.uk':
     action => 'accept',
-    source => 'anya.ad.cl.cam.ac.uk',
+    source => 'ANYA.ad.cl.cam.ac.uk',
     provider => ip6tables,
   }
 
