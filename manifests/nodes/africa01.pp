@@ -79,7 +79,6 @@ node 'africa01.cl.cam.ac.uk' {
   firewall { '001 accept all 128.232.29.5':
     action => 'accept',
     source => '128.232.29.5',
-    provider => ip6tables,
   }
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
