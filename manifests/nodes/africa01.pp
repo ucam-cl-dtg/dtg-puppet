@@ -83,10 +83,12 @@ node 'africa01.cl.cam.ac.uk' {
     stage => "repos"
   }
 
-#$packages = ['maven2','openjdk-7-jdk','rssh','mongodb','logwatch']
-#package{$packages:
-#ensure => installed
-#}
+  $packagelist = ['megacli']
+  package {
+	    $packagelist:
+          ensure => installed
+  }
+
 
 }
 
