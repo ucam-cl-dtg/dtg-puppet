@@ -77,8 +77,23 @@ node 'africa01.cl.cam.ac.uk' {
     source => 'vm-sr-nile2.cl.cam.ac.uk',
   }
 
-
   User<|title == sa497 |> { groups +>[ 'adm' ]}
+
+  apt::source { 'debian_main':
+    comment  => 'debian packages for HW RAID',
+    location => 'http://hwraid.le-vert.net/debian',
+    release  => 'main',
+    repos    => 'lucid',
+    include  => {
+    'src' => true,
+    'deb' => true,
+    },
+  }
+
+#$packages = ['maven2','openjdk-7-jdk','rssh','mongodb','logwatch']
+#package{$packages:
+#ensure => installed
+#}
 
 }
 
