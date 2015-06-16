@@ -76,10 +76,9 @@ node 'africa01.cl.cam.ac.uk' {
     action => 'accept',
     source => 'vm-sr-nile2.cl.cam.ac.uk',
   }
-  firewall { '001 accept all anya.ad.cl.cam.ac.uk':
+  firewall { '001 accept all 128.232.29.5':
     action => 'accept',
-    source => 'anya.ad.cl.cam.ac.uk',
-    provider => iptables,
+    source => '128.232.29.5',
   }
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
