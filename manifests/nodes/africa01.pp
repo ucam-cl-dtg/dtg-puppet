@@ -48,31 +48,31 @@ node 'africa01.cl.cam.ac.uk' {
     statd_port      => $statd_port,
   }
 
-  firewall { 'hadoop from specific machines':
+  firewall { 'hadoop from crunch 0':
     action => 'accept',
     source => 'sa497-crunch-0.dtg.cl.cam.ac.uk'
   }
-  firewall { 'hadoop from specific machines':
+  firewall { 'hadoop from crunch 1':
     action => 'accept',
     source => 'sa497-crunch-1.dtg.cl.cam.ac.uk'
   }
-  firewall { 'hadoop from specific machines':
+  firewall { 'hadoop from crunch 2':
     action => 'accept',
     source => 'sa497-crunch-2.dtg.cl.cam.ac.uk'
   }
-  firewall { 'hadoop from specific machines':
+  firewall { 'hadoop from crunch 3':
     action => 'accept',
     source => 'sa497-crunch-3.dtg.cl.cam.ac.uk'
   }
-  firewall { 'hadoop from specific machines':
+  firewall { 'hadoop from nile0':
     action => 'accept',
     source => 'vm-sr-nile0.cl.cam.ac.uk',
   }
-  firewall { 'hadoop from specific machines':
+  firewall { 'hadoop from nile1':
     action => 'accept',
     source => 'vm-sr-nile1.cl.cam.ac.uk',
   }
-  firewall { 'hadoop from specific machines':
+  firewall { 'hadoop from nile2':
     action => 'accept',
     source => 'vm-sr-nile2.cl.cam.ac.uk',
   }
