@@ -1,7 +1,8 @@
 node 'africa01.cl.cam.ac.uk' {
-  include 'dtg::minimal'
+  #include 'dtg::minimal'
   include 'nfs::server'  
 
+  class {'dtg::minimal': }
   class {'dtg::zfs': }
 
   $portmapper_port     = 111
