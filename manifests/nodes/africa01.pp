@@ -79,6 +79,7 @@ node 'africa01.cl.cam.ac.uk' {
   firewall { '001 accept all anya.ad.cl.cam.ac.uk':
     action => 'accept',
     source => 'anya.ad.cl.cam.ac.uk',
+    provider => ip6tables,
   }
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
