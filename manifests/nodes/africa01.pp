@@ -38,6 +38,8 @@ node 'africa01.cl.cam.ac.uk' {
     statd_port      => $statd_port,
   }  
 
+  User<|title == sa497 |> { groups +>[ 'adm' ]}
+
 }
 
 if ( $::monitor ) {
