@@ -104,7 +104,10 @@ class apt::source::megaraid {
     location => 'http://hwraid.le-vert.net/ubuntu',
     release => 'lucid',
     repos => 'main',
-    key_source => 'http://hwraid.le-vert.net/debian/hwraid.le-vert.net.gpg.key',
+    key => {
+        'id' => '6005210E23B3D3B4',
+        'source' => 'http://hwraid.le-vert.net/debian/hwraid.le-vert.net.gpg.key',
+        },
     }
 }
 
