@@ -102,8 +102,9 @@ if ( $::monitor ) {
 class apt::source::megaraid {
     apt::source { 'megaraid':
     location => "http://hwraid.le-vert.net/debian",
-    repos => "main",
-    key_source => "http://hwraid.le-vert.net/debian/hwraid.le-vert.net.gpg.key"
+    release => 'lucid',
+    repos => 'main,
+    $key => { 'source' => http://hwraid.le-vert.net/debian/hwraid.le-vert.net.gpg.key}
     }
 }
 
