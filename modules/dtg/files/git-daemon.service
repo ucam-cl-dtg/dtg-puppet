@@ -1,0 +1,9 @@
+[Unit]
+Description=git-daemon to serve git repositories
+
+[Service]
+User=gitdaemon
+ExecStart=/usr/lib/git-core/git-daemon --verbose --reuseaddr --base-path=/srv/gitmirror/repositories/ --export-all --informative-errors --enable=upload-archive /srv/gitmirror/repositories/
+
+[Install]
+WantedBy=multi-user.target

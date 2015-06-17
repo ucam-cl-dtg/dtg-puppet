@@ -5,7 +5,7 @@ set -e
 
 # Install puppet
 echo "Installing puppet-common and git-core"
-apt-get -y install puppet-common git-core runit python-software-properties \
+apt-get -y install puppet-common git-core python-software-properties \
     software-properties-common ruby-hiera
 
 # From mfpl-puppet/modules/mayfirst/files/freepuppet/frepuppet-init

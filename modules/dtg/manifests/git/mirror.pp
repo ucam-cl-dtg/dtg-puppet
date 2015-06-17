@@ -48,19 +48,18 @@ class dtg::git::mirror::server {
     home       => '/srv/gitmirror/',
   }
   package {'git-daemon-run': ensure => 'present',}
-  file {'/etc/service/git-daemon/run':
+  file {'/etc/systemd/system/git-daemon.service':
     ensure  => file,
-    source  => 'puppet:///modules/dtg/git-daemon-run',
+    source  => 'puppet:///modules/dtg/git-daemon.service',
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
     notify  => Service['git-daemon'],
-    require => [Package['runit'],File['/srv/gitmirror/repositories/']],
+    require => File['/srv/gitmirror/repositories/'],
   }
   service {'git-daemon':
     ensure   => running,
-    provider => 'runit',
-    require  => [Package['git-daemon-run','runit'],File['/etc/service/git-daemon/run']],
+    require  => [Package['git-daemon-run'], File['/etc/systemd/system/git-daemon.service']],
   }
   class {'dtg::firewall::git':}
   package {'gitweb': ensure => 'installed',}

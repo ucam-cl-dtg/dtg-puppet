@@ -23,7 +23,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
 
   # Packages which should be installed on all servers
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
-                  'runit', 'apg', 'htop', 'nfs-common',
+                  'apg', 'htop', 'nfs-common',
                   'iptables-persistent', 'command-not-found', 'mlocate',
                   'bash-completion', 'apt-show-versions', 'iotop', 'byobu']
   package {
