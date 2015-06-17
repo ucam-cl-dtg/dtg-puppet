@@ -1,0 +1,4 @@
+cvxopt>=1.1.6
+cvxpy>=0.1
+
+ipython>=3.0.0
