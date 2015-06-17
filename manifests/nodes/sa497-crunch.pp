@@ -44,6 +44,11 @@ node /sa497-crunch(-\d+)?/ {
         source => '128.232.29.5',
     }
 
+    firewall { '001 accept all africa01.cl.cam.ac.uk':
+        action => 'accept',
+        source => 'africa01.cl.cam.ac.uk'
+    }
+
     $packagelist = [ 'bison' , 'flex', 'autoconf' , 'pkg-config' , 'libglib2.0-dev', 'libpcap-dev' , 'mountall' , ' liblz4-tool']
     package {
         $packagelist:
