@@ -84,7 +84,8 @@ class dtg::git::gollum::main {
     mode    => '0775',
     require => Vcsrepo['/srv/gollum/'],
   }
-  apache::module{'headers': ensure => present }
+  class{'apache':} ->
+  apache::module{'headers': ensure => present } ->
   apache::site{'gollum':
     source => 'puppet:///modules/dtg/gollum/apache.conf'
   }
