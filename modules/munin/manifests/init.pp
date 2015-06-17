@@ -83,5 +83,14 @@ class munin::node (
     require => Package["munin-node"],
     notify => Service[ "munin-node"]
   }
-  
+  # Overrides for default content of munin-node so that we don't get noise from filesystems coming and going
+  file { '/etc/munin/plugin-conf.d/z-overrides':
+    ensure => file,
+    content => '[df*]
+env.warning 92
+env.critical 98
+env.exclude none unknown binfmt_misc debugfs devtmpfs fuse.gvfs-fuse-daemon iso9660 ramfs romfs rpc_pipefs squashfs tmpfs udf',
+    require => Package["munin-node"],
+    notify => Service[ "munin-node"],
+  }
 }

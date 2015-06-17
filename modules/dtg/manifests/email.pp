@@ -13,6 +13,14 @@ class dtg::email {
     require => Package['exim'],
   }
 
+  # Set sending address for munin to dtg-infra
+  file_line {'muninemail':
+    ensure  => present,
+    path    => '/etc/email-addresses',
+    line    => 'munin: dtg-infra@cl.cam.ac.uk',
+    require => Package['exim'],
+  }
+
   # Set mailto for cron job emails
   augeas {'rootcrontabmailtoinsert':
     incl    => '/etc/crontab',

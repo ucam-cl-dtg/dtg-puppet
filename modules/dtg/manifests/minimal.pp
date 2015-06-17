@@ -7,20 +7,38 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   stage {'repos': before => Stage['entropy-host'] }
   # Manage apt sources lists
   if $manageapt {
-    class { 'aptrepository':
-      repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
-      stage      => 'repos'
+    if $::operatingsystem == 'Ubuntu' {
+      class { 'aptrepository':
+        repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
+        stage      => 'repos'
+      }
+    }
+    if $::operatingsystem == 'Debian' {
+      class { 'aptrepository':
+        repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/debian/',
+        stage      => 'repos'
+      }
     }
   }
 
   # Packages which should be installed on all servers
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
-                  'runit', 'apg', 'emacs24-nox', 'htop', 'nfs-common',
+                  'apg', 'htop', 'nfs-common',
                   'iptables-persistent', 'command-not-found', 'mlocate',
-                  'bash-completion', 'linux-image-generic', 'apt-show-versions',
-                  'iotop', 'byobu']
+                  'bash-completion', 'apt-show-versions', 'iotop', 'byobu']
   package {
     $packagelist:
+      ensure => installed
+  }
+
+  if $::operatingsystem == 'Debian' {
+    $os_extralist = []
+  } else {
+    $os_extralist = ['linux-image-generic', 'emacs24-nox']
+  }
+
+  package {
+    $os_extralist:
       ensure => installed
   }
 
@@ -206,16 +224,19 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     content => "options nfs callback_tcpport=$::nfs_client_port",
   }
 
-  # Attempt to make DNS more robust by timing out quickly and retrying enough times that we will hit all of the configured DNS servers before failing
-  file { '/etc/resolvconf/resolv.conf.d/tail':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => 'u+rw,go+r',
-  }
-  file_line { 'resolv.conf dns options':
-    path => '/etc/resolvconf/resolv.conf.d/tail',
-    line => 'options timeout:1 attempts:4',
+  if $::operatingsystem != 'Debian' {
+    # Attempt to make DNS more robust by timing out quickly and retrying enough times that we will hit all of the configured DNS servers before failing
+    file { '/etc/resolvconf/resolv.conf.d/tail':
+      ensure => file,
+      owner  => 'root',
+      group  => 'root',
+      mode   => 'u+rw,go+r',
+    }
+
+    file_line { 'resolv.conf dns options':
+      path => '/etc/resolvconf/resolv.conf.d/tail',
+      line => 'options timeout:1 attempts:4',
+    }
   }
 
   # Keep stuff put in at bootstrap up to date

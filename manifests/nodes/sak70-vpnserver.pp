@@ -28,12 +28,31 @@ node 'sak70-vpnserver.dtg.cl.cam.ac.uk' {
     action        => 'accept',
   } 
 
-  firewall { "998 log dropped packets":
+  firewall { "100-vpnserver accept 8080 over vpn":
+    proto  => 'tcp',
+    dport  => 8080,
+    destination   => '192.168.111.1',
+    action => 'accept',
+  }    
+
+  firewall { "101-vpnserver accept 8081 over vpn":
+    proto  => 'tcp',
+    dport  => 8081,
+    destination   => '192.168.111.1',
+    action => 'accept',
+  }
+
+  firewall { "998 log all remaining packets":
     proto => 'all',
     jump  => 'LOG',
   }
 
 }
 if ( $::monitor ) {
+#  nagios::monitor { 'sak70-vpnserver':
+#    parents    => 'nas04',
+#    address    => 'sak70-vpnserver.dtg.cl.cam.ac.uk',
+#    hostgroups => [ 'ssh-servers' ],
+#  }
   munin::gatherer::configure_node { 'sak70-vpnserver': }
 }

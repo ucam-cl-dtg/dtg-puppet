@@ -1,4 +1,4 @@
-node 'wolf0.dtg.cl.cam.ac.uk' {
+node /wolf(\d+)?/ {
   include 'dtg::minimal'
 
   class { 'dtg::rscfl': }
@@ -6,4 +6,10 @@ node 'wolf0.dtg.cl.cam.ac.uk' {
 
 if ( $::monitor ) {
   munin::gatherer::configure_node { 'wolf0': }
+}
+if ( $::monitor ) {
+  munin::gatherer::configure_node { 'wolf1': }
+}
+if ( $::monitor ) {
+  munin::gatherer::configure_node { 'wolf2': }
 }
