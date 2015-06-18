@@ -49,7 +49,7 @@ node /sa497-crunch(-\d+)?/ {
         source => 'africa01.cl.cam.ac.uk'
     }
 
-    $packagelist = [ 'bison' , 'flex', 'autoconf' , 'pkg-config' , 'libglib2.0-dev', 'libpcap-dev' , 'mountall' , ' liblz4-tool']
+    $packagelist = [ 'bison' , 'flex', 'autoconf' , 'pkg-config' , 'libglib2.0-dev', 'libpcap-dev' , 'mountall' , 'liblz4-tool']
     package {
         $packagelist:
         ensure => installed
