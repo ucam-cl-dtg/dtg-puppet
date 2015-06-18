@@ -18,6 +18,15 @@ node /deviceanalyzer-crunch(\d+)?.dtg.cl.cam.ac.uk/ {
 
   User<|title == 'dh526' |> { groups +>[ 'adm' ]}
 
+  firewall { '020 redirect 80 to 4567':
+    dport   => '80',
+    table   => 'nat',
+    chain   => 'PREROUTING',
+    jump    => 'REDIRECT',
+    iniface => 'eth0',
+    toports => '4567',
+  }
+
   firewall { '031-statserver accept tcp 4567 (statserver) from dtg':
     proto  => 'tcp',
     dport  => 4567,
@@ -45,7 +54,7 @@ node /deviceanalyzer-crunch(\d+)?.dtg.cl.cam.ac.uk/ {
   }
 
   # Packages which should be installed
-  $packagelist = ['openjdk-7-jre-headless']
+  $packagelist = ['openjdk-8-jre-headless']
   package {
     $packagelist:
       ensure => installed
@@ -68,7 +77,7 @@ if ( $::monitor ) {
   nagios::monitor { 'deviceanalyzer-crunch0':
     parents    => 'nas04',
     address    => 'deviceanalyzer-crunch0.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],#TODO(drt24) monitor the statsserver
+    hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
   munin::gatherer::configure_node { 'deviceanalyzer-crunch0': }
   munin::gatherer::configure_node { 'deviceanalyzer-crunch1': }
