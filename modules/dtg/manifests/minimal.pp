@@ -23,7 +23,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
 
   # Packages which should be installed on all servers
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
-                  'runit', 'apg', 'htop', 'nfs-common',
+                  'apg', 'htop', 'nfs-common',
                   'iptables-persistent', 'command-not-found', 'mlocate',
                   'bash-completion', 'apt-show-versions', 'iotop', 'byobu']
   package {
@@ -43,7 +43,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   }
 
   # Packages that should not be installed on a server
-  $banned_packages = ['sl', 'emacs23-common', 'emacs23-bin-common', 'whoopsie', 'locate']
+  $banned_packages = ['sl', 'emacs23-common', 'emacs23-bin-common', 'whoopsie', 'locate', 'runit']
 
   package {
     $banned_packages:
