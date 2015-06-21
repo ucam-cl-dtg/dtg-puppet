@@ -34,7 +34,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   if $::operatingsystem == 'Debian' {
     $os_extralist = []
   } else {
-    $os_extralist = ['linux-image-generic', 'emacs24-nox']
+    $os_extralist = ['linux-image-generic']
   }
 
   package {
