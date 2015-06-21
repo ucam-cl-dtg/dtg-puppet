@@ -328,6 +328,10 @@ def main(args):
     add_remotes(repo, ORIGIN + machines)
 
     if args.machines:
+        # If only one machine is specified then we need it to be a
+        # one element list.
+        if isinstance(args.machines, str):
+            args.machines = [args.machines]
         machines = [x for x in machines if x['name'] in args.machines]
     if not machines:
         sys.stderr.write("No machines to apply puppet to")
