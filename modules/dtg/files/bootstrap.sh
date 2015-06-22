@@ -40,8 +40,8 @@ printf "git submodule sync\n" >> "$target"
 printf "git submodule update --init\n\n" >> "$target"
 printf "sudo chmod -R --quiet g+u . .git || true\n\n" >> "$target"
 printf "sudo chgrp -R --quiet adm . .git || true\n\n" >> "$target"
-printf "find . -type d -print0 | xargs -0 -s 256 sudo chmod --quiet g+s || true\n\n" >> "$target"
-printf "find .git -type d -print0 | xargs -0 sudo chmod --quiet g+s || true\n\n" >> "$target"
+printf "find . -type d -print0 | sudo xargs -0 -s 256 chmod --quiet g+s || true\n\n" >> "$target"
+printf "find .git -type d -print0 | sudo xargs -0 -s 256 chmod --quiet g+s || true\n\n" >> "$target"
 printf "echo ---- Applying new recipes ----\n\n" >> "$target"
 printf "sudo -H puppet apply --verbose --modulepath modules manifests/nodes/" >> "$target"
 
@@ -64,7 +64,7 @@ git submodule update --init
 chmod -R g+u . .git
 chgrp -R adm . .git
 find . -type d -print0 | xargs -0 -s 256 chmod g+s
-find .git -type d -print0 | xargs -0 chmod g+s
+find .git -type d -print0 | xargs -0 -s 256 chmod g+s
 chmod -R g+u .git # otherwise not necessarily covered
 chgrp -R adm .git
 
