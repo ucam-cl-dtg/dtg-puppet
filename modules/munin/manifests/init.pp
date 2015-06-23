@@ -87,9 +87,11 @@ class munin::node (
   file { '/etc/munin/plugin-conf.d/z-overrides':
     ensure => file,
     content => '[df*]
-env.warning 92
-env.critical 98
-env.exclude none unknown binfmt_misc debugfs devtmpfs fuse.gvfs-fuse-daemon iso9660 ramfs romfs rpc_pipefs squashfs tmpfs udf',
+    env.warning 92
+    env.critical 98
+    env.exclude none unknown binfmt_misc debugfs devtmpfs fuse.gvfs-fuse-daemon iso9660 ramfs romfs rpc_pipefs squashfs tmpfs udf
+[diskstats]
+    env.exclude none unknown ok',
     require => Package["munin-node"],
     notify => Service[ "munin-node"],
   }
