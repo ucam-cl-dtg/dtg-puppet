@@ -127,6 +127,13 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     mode   => '0755',
   }
   ->
+    file { '/local/data/rutherford/database-backup/combined':
+    ensure => 'directory',
+    owner  => 'postgres',
+    group  => 'root',
+    mode   => '0755',
+  }
+  ->
   file { '/local/data/rutherford/isaac-database-backup.sh':
       mode   => '0755',
       owner  => postgres,
