@@ -135,4 +135,4 @@ fi
 
 
 #Remove old zips after the specified time period
-#find $GLOBAL_BACKUP_PATH -type f -prune -mtime +$DAYS_TO_KEEP_BACKUPS -exec rm -f {} \;
+find $GLOBAL_BACKUP_PATH -type f -prune -mtime +$DAYS_TO_KEEP_BACKUPS -exec rm -f {} \;
