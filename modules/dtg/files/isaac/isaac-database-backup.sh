@@ -97,7 +97,7 @@ fi
 POSTGRES_BACKUP_DIR="/local/data/rutherford/database-backup/postgresql/"
 POSTGRES_TMP_BACKUP_DIR=$POSTGRES_BACKUP_DIR"tmp"
 
-POSTGRES_DATABASES=`psql -l -t | cut -d'|' -f1 | sed -e 's/ //g' -e '/^$/d'`
+POSTGRES_DATABASES=`psql -U postgres -l -t | cut -d'|' -f1 | sed -e 's/ //g' -e '/^$/d'`
 
 #Clean and make a tmp dir
 if [ -d $POSTGRES_TMP_BACKUP_DIR ]; then
@@ -113,7 +113,7 @@ for i in $POSTGRES_DATABASES; do
   	backuppath=$POSTGRES_BACKUP_DIR"/"$i\_$TODAYS_DATE
   	tmppath=$POSTGRES_TMP_BACKUP_DIR"/"$i\_$TODAYS_DATE
     echo Dumping $i to $tmppath
-    pg_dump -Fc $i > $tmppath
+    pg_dump -U postgres -Fc $i > $tmppath
 
     if [ -f "$tmppath" ]; then
     	echo "=> Success: saved "$i"to `du -sh $tmppath`"; echo;
