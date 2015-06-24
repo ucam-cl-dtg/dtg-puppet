@@ -263,22 +263,22 @@ class dtg::firewall::hadoopcluster inherits dtg::firewall::default {
 
     firewall { '001 accept all sa497-crunch-0.dtg.cl.cam.ac.uk':
         action => 'accept',
-        source => 'sa497-crunch-0.dtg.cl.cam.ac.uk'
+        source => 'sa497-crunch-0.dtg.cl.cam.ac.uk',
     }
 
     firewall { '001 accept all sa497-crunch-1.dtg.cl.cam.ac.uk':
         action => 'accept',
-        source => 'sa497-crunch-1.dtg.cl.cam.ac.uk'
+        source => 'sa497-crunch-1.dtg.cl.cam.ac.uk',
     }
 
     firewall { '001 accept all sa497-crunch-2.dtg.cl.cam.ac.uk':
         action => 'accept',
-        source => 'sa497-crunch-2.dtg.cl.cam.ac.uk'
+        source => 'sa497-crunch-2.dtg.cl.cam.ac.uk',
     }
 
     firewall { '001 accept all sa497-crunch-3.dtg.cl.cam.ac.uk':
         action => 'accept',
-        source => 'sa497-crunch-3.dtg.cl.cam.ac.uk'
+        source => 'sa497-crunch-3.dtg.cl.cam.ac.uk',
     }
 
     firewall { '001 accept all vm-sr-nile0.cl.cam.ac.uk':
@@ -304,7 +304,7 @@ class dtg::firewall::hadoopcluster inherits dtg::firewall::default {
 
     firewall { '001 accept all africa01.cl.cam.ac.uk':
         action => 'accept',
-    source => 'africa01.cl.cam.ac.uk'
+        source => 'africa01.cl.cam.ac.uk',
     }
 
 }

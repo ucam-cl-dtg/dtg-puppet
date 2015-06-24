@@ -2,6 +2,7 @@ node 'africa01.cl.cam.ac.uk' {
   include 'dtg::minimal'
   include 'nfs::server'  
 
+  class { 'dtg::firewall::hadoopcluster': }
 
   class {'dtg::zfs': }
 
@@ -48,38 +49,6 @@ node 'africa01.cl.cam.ac.uk' {
 #    statd_port      => $statd_port,
 #  }
 
-  firewall { '001 accept all sa497-crunch-0.dtg.cl.cam.ac.uk':
-    action => 'accept',
-    source => 'sa497-crunch-0.dtg.cl.cam.ac.uk'
-  }
-  firewall { '001 accept all sa497-crunch-1.dtg.cl.cam.ac.uk':
-    action => 'accept',
-    source => 'sa497-crunch-1.dtg.cl.cam.ac.uk'
-  }
-  firewall { '001 accept all sa497-crunch-2.dtg.cl.cam.ac.uk':
-    action => 'accept',
-    source => 'sa497-crunch-2.dtg.cl.cam.ac.uk'
-  }
-  firewall { '001 accept all sa497-crunch-3.dtg.cl.cam.ac.uk':
-    action => 'accept',
-    source => 'sa497-crunch-3.dtg.cl.cam.ac.uk'
-  }
-  firewall { '001 accept all vm-sr-nile0.cl.cam.ac.uk':
-    action => 'accept',
-    source => 'vm-sr-nile0.cl.cam.ac.uk',
-  }
-  firewall { '001 accept all vm-sr-nile1.cl.cam.ac.uk':
-    action => 'accept',
-    source => 'vm-sr-nile1.cl.cam.ac.uk',
-  }
-  firewall { '001 accept all vm-sr-nile2.cl.cam.ac.uk':
-    action => 'accept',
-    source => 'vm-sr-nile2.cl.cam.ac.uk',
-  }
-  firewall { '001 accept all 128.232.29.5':
-    action => 'accept',
-    source => '128.232.29.5',
-  }
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
 
