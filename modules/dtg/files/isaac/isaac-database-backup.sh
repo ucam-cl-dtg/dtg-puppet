@@ -7,11 +7,22 @@
 # https://github.com/controlz/Mongo-db-shell-backup
 #
 # Modified by: Stephen Cummins (2014) - fixed a random substitution error by restructuring the script slightly.
+# Modified by: Alsitair Stead (2015) - added facility for postgres backups 
 # 
 # Creates backup files (bson) of all MongoDb databases on a given server.
 # Default behaviour dumps the mongo database and tars the output into a file
 # named after the current date. ex: 2011-12-19.tar.gz
 #
+
+##################################################################################
+# Mongodb backup 
+##################################################################################
+
+# Global variables
+TAR_BIN_PATH="$(which tar)"
+TODAYS_DATE=`date +%Y-%m-%d`
+DAYS_TO_KEEP_BACKUPS=30 
+
 
 ### Set server settings
 MONGO_HOST="localhost"
@@ -23,19 +34,11 @@ MONGO_PASSWORD=""
 # keyword DATE gets replaced by the current date, you can use it in either path below
 MONGO_BACKUP_PATH="/local/data/rutherford/database-backup/mongodb" # do not include trailing slash
 
-# Get todays date to use in filename of backup output
-TODAYS_DATE=`date "+%Y-%m-%d"`
+
 MONGO_FILE_NAME="isaac-db-backup.$TODAYS_DATE" #defaults to [currentdate].tar.gz ex: 2011-12-19.tar.gz
-
-
-##################################################################################
-# Should not have to edit below this line unless you require special functionality
-# or wish to make improvements to the script
-##################################################################################
 
 # Auto detect unix bin paths, enter these manually if script fails to auto detect
 MONGO_DUMP_BIN_PATH="$(which mongodump)"
-TAR_BIN_PATH="$(which tar)"
 
 # replace DATE with todays date in the backup path
 MONGO_BACKUP_PATH="${MONGO_BACKUP_PATH}"
@@ -86,3 +89,49 @@ else
 	echo "!!!=> Failed to create backup path: $MONGO_BACKUP_PATH"
 
 fi
+
+
+##################################################################################
+# Postgres backup 
+##################################################################################
+POSTGRES_BACKUP_DIR="/local/data/rutherford/database-backup/postgresql/"
+POSTGRES_TMP_BACKUP_DIR=$POSTGRES_BACKUP_DIR"tmp"
+
+POSTGRES_DATABASES=`psql -l -t | cut -d'|' -f1 | sed -e 's/ //g' -e '/^$/d'`
+
+#Clean and make a tmp dir
+if [ -d $POSTGRES_TMP_BACKUP_DIR ]; then
+	rm -Rf $POSTGRES_TMP_BACKUP_DIR
+fi
+mkdir $POSTGRES_TMP_BACKUP_DIR
+
+cd $POSTGRES_BACKUP_DIR
+
+#Iterate through databases ignoring template0 and template1
+for i in $POSTGRES_DATABASES; do
+  if [ "$i" != "template0" ] && [ "$i" != "template1" ]; then
+  	backuppath=$POSTGRES_BACKUP_DIR"/"$i\_$TODAYS_DATE
+  	tmppath=$POSTGRES_TMP_BACKUP_DIR"/"$i\_$TODAYS_DATE
+    echo Dumping $i to $tmppath
+    pg_dump -Fc $i > $tmppath
+
+    if [ -f "$tmppath" ]; then
+    	echo "=> Success: saved "$i"to `du -sh $tmppath`"; echo;
+    else
+    	echo "=> Error: did not save to `$tmppath`"; echo;
+    fi
+
+  fi
+done
+
+
+#Create zip of files in tmp directory
+FILE_NAME="postgres-"$TODAYS_DATE
+$TAR_BIN_PATH --remove-files -czf $FILE_NAME.tar.gz "tmp" >> /dev/null
+
+if [ -f $POSTGRES_FILE_NAME.tar.gz ]; then
+	echo "=> Success: File "$POSTGRES_FILE_NAME".tar.gz successfully saved"
+fi
+
+#Remove old zips after the specified time period
+find $backup_dir -type f -prune -mtime +$DAYS_TO_KEEP_BACKUPS -exec rm -f {} \;
