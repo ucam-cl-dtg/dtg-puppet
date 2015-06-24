@@ -14,8 +14,8 @@ if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
   }
   ->
   dtg::backup::serversetup{'Mongodb and Postgresql backup':
-    backup_directory   => '/local/data/rutherford/database-backup/',
-    script_destination => '/usr/share/isaac/database-backup',
+    backup_directory   => '/local/data/rutherford/database-backup/combined',
+    script_destination => '/usr/share/isaac/combined-database-backup',
     user               => 'isaac',
     home               => '/usr/share/isaac/',
   }
