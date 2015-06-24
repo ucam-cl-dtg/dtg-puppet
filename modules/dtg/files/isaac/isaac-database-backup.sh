@@ -71,7 +71,7 @@ if [ -d "$MONGO_BACKUP_PATH" ]; then
 
 		# verify that the file was created
 		if [ -f "$MONGO_FILE_NAME.tar.gz" ]; then
-			echo "=> Success: `du -sh $FILE_NAME.tar.gz`"; echo;
+			echo "=> Success: `du -sh $MONGO_FILE_NAME.tar.gz`"; echo;
 	
 			# forcely remove if files still exist and tar was made successfully
 			# this is done because the --remove-files flag on tar does not always work
@@ -94,6 +94,9 @@ fi
 ##################################################################################
 # Postgres backup 
 ##################################################################################
+POSTGRES_EXECUTE=true
+if [ "$POSTGRES_EXECUTE" = true ]; then
+
 POSTGRES_BACKUP_DIR="/local/data/rutherford/database-backup/postgresql/"
 POSTGRES_TMP_BACKUP_DIR=$POSTGRES_BACKUP_DIR"tmp"
 
@@ -113,7 +116,7 @@ for i in $POSTGRES_DATABASES; do
   	backuppath=$POSTGRES_BACKUP_DIR"/"$i\_$TODAYS_DATE
   	tmppath=$POSTGRES_TMP_BACKUP_DIR"/"$i\_$TODAYS_DATE
     echo Dumping $i to $tmppath
-    pg_dump -U postgres -Fc $i > $tmppath
+    pg_dump -Fc $i > $tmppath
 
     if [ -f "$tmppath" ]; then
     	echo "=> Success: saved "$i"to `du -sh $tmppath`"; echo;
@@ -135,3 +138,4 @@ fi
 
 #Remove old zips after the specified time period
 find $backup_dir -type f -prune -mtime +$DAYS_TO_KEEP_BACKUPS -exec rm -f {} \;
+fi
