@@ -13,16 +13,9 @@ if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
     mode   => '0600',
   }
   ->
-  dtg::backup::serversetup{'Mongodb backup':
-    backup_directory   => '/local/data/rutherford/database-backup/mongodb',
-    script_destination => '/usr/share/isaac/mongodb-backup',
-    user               => 'isaac',
-    home               => '/usr/share/isaac/',
-  }
-  ->
-  dtg::backup::serversetup{'Postgresql backup':
-    backup_directory   => '/local/data/rutherford/database-backup/postgresql',
-    script_destination => '/usr/share/isaac/postgres-backup',
+  dtg::backup::serversetup{'Mongodb and Postgresql backup':
+    backup_directory   => '/local/data/rutherford/database-backup/combined',
+    script_destination => '/usr/share/isaac/combined-database-backup',
     user               => 'isaac',
     home               => '/usr/share/isaac/',
   }

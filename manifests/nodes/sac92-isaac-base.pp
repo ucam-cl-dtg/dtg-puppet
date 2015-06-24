@@ -119,45 +119,30 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     home   => '/usr/share/isaac'
   }
 
-  # MongoDB Backup
-  file { '/local/data/rutherford/database-backup/mongodb':
-    ensure => 'directory',
-    owner  => 'mongodb',
-    group  => 'root',
-    mode   => '0755',
-  }
-  ->
-  file { '/local/data/rutherford/isaac-mongodb-backup.sh':
-      mode   => '0755',
-      owner  => mongodb,
-      group  => root,
-      source => 'puppet:///modules/dtg/isaac/mongodb/isaac-mongodb-backup.sh'
-  }
-  ->
-  cron {'isaac-backup-mongodb':
-    command => '/local/data/rutherford/isaac-mongodb-backup.sh',
-    user    => mongodb,
-    hour    => 0,
-    minute  => 0
-  }
-
-  #Postgres Backup
-  file { '/local/data/rutherford/database-backup/postgresql':
+  #Database Backup
+  file { '/local/data/rutherford/database-backup':
     ensure => 'directory',
     owner  => 'postgres',
     group  => 'root',
     mode   => '0755',
   }
   ->
-  file { '/local/data/rutherford/isaac-postgres-backup.sh':
+    file { '/local/data/rutherford/database-backup/combined':
+    ensure => 'directory',
+    owner  => 'postgres',
+    group  => 'root',
+    mode   => '0755',
+  }
+  ->
+  file { '/local/data/rutherford/isaac-database-backup.sh':
       mode   => '0755',
       owner  => postgres,
       group  => root,
-      source => 'puppet:///modules/dtg/isaac/postgres/isaac-postgres-backup.sh'
+      source => 'puppet:///modules/dtg/isaac/isaac-database-backup.sh'
   }
   ->
-  cron {'isaac-backup-postgresql':
-    command => '/local/data/rutherford/isaac-postgres-backup.sh',
+  cron {'isaac-backup-database':
+    command => '/local/data/rutherford/isaac-database-backup.sh',
     user    => postgres,
     hour    => 0,
     minute  => 0
