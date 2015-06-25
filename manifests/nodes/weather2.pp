@@ -18,7 +18,8 @@ node 'weather2.dtg.cl.cam.ac.uk' {
   }
 
   # Install all our packages
-  $packagelist = ['nginx',]
+  $packagelist = ['nginx', 'python3', 'python3-dev', 'python3-pip',
+                  'python3-virtualenv',]
   package {$packagelist:
         ensure => installed,
   }
@@ -27,6 +28,19 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     enable => true,
   }
 
+  # Setup our weather webapp user
+  group {'weather':
+    ensure => present,
+  } ->
+  user {'weather':
+    ensure => present,
+    shell => '/bin/bash',
+    home => '/srv/weather',
+    password => '*',
+    managehome => true,
+    gid => 'weather',
+    require => Group['weather'],
+  }
 }
 
 # Disable monitoring until things are more stable:
