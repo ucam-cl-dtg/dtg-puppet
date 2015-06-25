@@ -1,5 +1,5 @@
-$weather_ips = dnsLookup('weather2.dtg.cl.cam.ac.uk')
-$weather_ip = $weather_ips[0]
+$weather2_ips = dnsLookup('weather2.dtg.cl.cam.ac.uk')
+$weather2_ip = $weather2_ips[0]
 
 node 'weather2.dtg.cl.cam.ac.uk' {
   class { 'dtg::minimal': }
