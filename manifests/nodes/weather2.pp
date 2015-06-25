@@ -19,12 +19,11 @@ node 'weather2.dtg.cl.cam.ac.uk' {
 
   # Install all our packages
   $packagelist = ['nginx',]
-  package {
-      $packagelist:
-        ensure => installed
+  package {$packagelist:
+        ensure => installed,
   }
   # Ensure nginx starts on boot
-  service {"nginx"
+  service {"nginx":
     enable => true,
   }
 
