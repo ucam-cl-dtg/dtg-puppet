@@ -19,7 +19,8 @@ node 'weather2.dtg.cl.cam.ac.uk' {
 
   # Install all our packages
   $packagelist = ['nginx', 'python3', 'python3-dev', 'python3-pip',
-                  'python-virtualenv', 'python3-virtualenv',]
+                  'python-virtualenv', 'python3-virtualenv',
+                  'libpq5', 'libpq-dev', 'postgresql-client']
   package {$packagelist:
         ensure => installed,
         before => [ Service['nginx'],
