@@ -24,7 +24,8 @@ node 'weather2.dtg.cl.cam.ac.uk' {
   package {$packagelist:
         ensure => installed,
         before => [ Service['nginx'],
-                    Exec['create-venv'],
+                    Exec['create-venv-development'],
+                    Exec['create-venv-production'],
                   ]
   }
   
