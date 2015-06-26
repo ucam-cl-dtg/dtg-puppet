@@ -98,9 +98,8 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     owner => 'root',
     group => 'root',
     mode => '0644',
-    source => 'file:///srv/weather/weather-srv-2/weather.nginx.conf',
+    source => 'puppet:///modules/dtg/weather2/weather.nginx.conf',
     notify => Service['nginx'],
-    require => Vcsrepo['/srv/weather/weather-srv-2'],
   }
   
   # Start up nginx:
