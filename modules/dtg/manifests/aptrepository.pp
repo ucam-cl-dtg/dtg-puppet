@@ -34,11 +34,6 @@ class aptrepository($repository) {
       location => $repository,
       repos => 'main contrib non-free',
     }
-    apt::source {'security':
-      location => $repository,
-      release => "${::lsbdistcodename}-updates",
-      repos => 'main contrib non-free',
-    }
     apt::source {'security-failsafe':
       location => 'http://security.debian.org/debian-security',
       release => "${::lsbdistcodename}/updates",
