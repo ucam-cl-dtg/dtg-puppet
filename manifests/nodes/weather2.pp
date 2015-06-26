@@ -22,12 +22,11 @@ node 'weather2.dtg.cl.cam.ac.uk' {
                   'python-virtualenv', 'python3-virtualenv',]
   package {$packagelist:
         ensure => installed,
-  } -> # Ensure nginx starts on boot
-  service {"nginx":
-    enable => true,
-    ensure => running,
+        before => [ Service['nginx'],
+                    Exec['create-venv'],
+                  ]
   }
-
+  
   # Setup our weather webapp user
   group {'weather':
     ensure => present,
@@ -75,7 +74,7 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     require => Vcsrepo['/srv/weather/weather-srv-2'],
   }
   
-  # Start up the weather service!
+  # Start up the weather service
   service {'weather-service':
     name => 'weather',
     ensure => running,
@@ -83,6 +82,31 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     require => [ Exec['create-venv'],
                  File['upstart-script'],
                  Vcsrepo['/srv/weather/weather-srv-2'],
+               ],
+  }
+
+  # Configure nginx:
+  file {'nginx-disable-default':
+    path => '/etc/nginx/sites-enabled/default',
+    ensure => absent,
+  }
+  file {'nginx-conf':
+    path => '/etc/nginx/sites-enabled/weather.nginx.conf',
+    ensure => file,
+    owner => 'root',
+    group => 'root',
+    mode => '0644',
+    source => 'file:///srv/weather/weather-srv-2/weather.nginx.conf',
+    notify => Service['nginx'],
+    require => Vcsrepo['/srv/weather/weather-srv-2'],
+  }
+  
+  # Start up nginx:
+  service {"nginx":
+    enable => true,
+    ensure => running,
+    require => [ File['nginx-disable-default'],
+                 File['nginx-conf'],
                ],
   }
 }
