@@ -38,6 +38,7 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     password => '*',
     managehome => true,
     gid => 'weather',
+    purge_ssh_keys => true,
   }
 
   # Retrieve the weather server git repository:
@@ -108,6 +109,26 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     require => [ File['nginx-disable-default'],
                  File['nginx-conf'],
                ],
+  }
+
+  # Setup the user for the postgres ssh tunnel
+  group {'postgres-ssh-tunnel':
+    ensure => present,
+  } ->
+  user {'postgres-ssh-tunnel':
+    ensure => present,
+    shell => '/bin/false',
+    home => '/home/postgres-ssh-tunnel',
+    password => '*',
+    managehome => true,
+    gid => 'postgres-ssh-tunnel',
+    purge_ssh_keys => true,
+  } ->
+  ssh_authorized_key {'postgres-ssh-tunnel-key':
+    ensure => present,
+    type => 'ssh-rsa',
+    user => 'postgres-ssh-tunnel',
+    key => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQC1op9dVlbQoguAtT0ciVsgEnI1bcGpYkB1KbuuR1MaStB0PbwgbWbNXtHCW5fLQNUab5r1C2C7RKGGGMG4GeotfsyJcvyrn1kgyZXA0qDQH3G4/gNIXx0V0GuZrMt0hvXsauV1sUQyEePFQJZ9j9VMR9jh7QVM5SAAsBKiufhUmsVwqCrjqPujJ2dtYAhygDlJw4m9sP1Axoqyka82hFotvcq45AgOUZ2f6JAKIbXLpq+osfknXHeBIerFPlZqCR38G73VvkaS6Gz3W0qXq+3d5nhqOdicqzKclb5lMcJCIEAE/C45hRItl4Co+Vcrr7IztNdtdxLhYIGivNVQk91t',
   }
 }
 
