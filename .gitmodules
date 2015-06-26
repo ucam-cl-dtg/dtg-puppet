@@ -31,9 +31,6 @@
 [submodule "modules/wget"]
 	path = modules/wget
 	url = git://github.com/maestrodev/puppet-wget.git
-[submodule "modules/vcsrepo"]
-	path = modules/vcsrepo
-	url = git://github.com/openstack-infra/puppet-vcsrepo.git
 [submodule "modules/mysql"]
 	path = modules/mysql
 	url = git://github.com/puppetlabs/puppetlabs-mysql.git
@@ -88,3 +85,6 @@
 [submodule "modules/distcc"]
 	path = modules/distcc
 	url = https://github.com/ucam-cl-dtg/puppet-distcc.git
+[submodule "modules/vcsrepo"]
+	path = modules/vcsrepo
+	url = https://github.com/puppetlabs/puppetlabs-vcsrepo
