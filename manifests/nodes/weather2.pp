@@ -50,7 +50,9 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     revision => 'master',
     user => 'weather',
     require => User['weather'],
-    notify => Service['weather-service'],  # Restart service upon changes
+    notify => [ File['upstart-script'],
+                Service['weather-service'],
+              ],
   }
   
   # Setup the venv and stuff if required:
@@ -78,9 +80,10 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     name => 'weather',
     ensure => running,
     enable => true,
-    require => Exec['create-venv'],
-    require => File['upstart-script'],
-    require => Vcsrepo['/srv/weather/weather-srv-2'],
+    require => [ Exec['create-venv'],
+                 File['upstart-script'],
+                 Vcsrepo['/srv/weather/weather-srv-2'],
+               ],
   }
 }
 
