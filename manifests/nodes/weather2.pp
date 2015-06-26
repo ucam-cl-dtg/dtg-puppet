@@ -84,7 +84,6 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     require => User['weather'],
   } ->  # Checkout git repo and keep up to date
   vcsrepo {'/srv/weather/development/weather-srv-2':
-    require => Vcsrepo['/srv/weather/weather-srv-2'],
     ensure => latest,
     provider => git,
     source => 'https://github.com/cillian64/dtg-weather-2.git',
