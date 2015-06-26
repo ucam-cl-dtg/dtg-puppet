@@ -42,48 +42,90 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     purge_ssh_keys => true,
   }
 
-  # Retrieve the weather server git repository:
-  vcsrepo {'/srv/weather/weather-srv-2':
+  # Setup the production weather server
+  file {'/srv/weather/production':
+    ensure => directory,
+    owner => 'weather',
+    group => 'weather',
+    require => User['weather'],
+  } ->  # Checkout git repo and keep up to date
+  vcsrepo {'/srv/weather/production/weather-srv-2':
     ensure => latest,
     provider => git,
-    # TODO: move the repository to the ucam-cl-dtg organization
     source => 'https://github.com/cillian64/dtg-weather-2.git',
     revision => 'master',
     user => 'weather',
-    require => User['weather'],
-    notify => [ File['upstart-script'],
-                Service['weather-service'],
+    notify => [ File['upstart-script-production'],
+                Service['weather-service-production'],
               ],
-  }
-  
-  # Setup the venv and stuff if required:
-  exec {'create-venv':
-    creates => '/srv/weather/venv',
-    command => '/srv/weather/weather-srv-2/create_venv.sh',
-    cwd => '/srv/weather/',
+  } ->  # Create venv
+  exec {'create-venv-production':
+    creates => '/srv/weather/production/venv',
+    command => '/srv/weather/production/weather-srv-2/create_venv.sh',
+    cwd => '/srv/weather/production',
     user => 'weather',
     group => 'weather',
-    require => Vcsrepo['/srv/weather/weather-srv-2'],
-  }
-  
-  # Install the upstart script
-  file {'upstart-script':
+  }  # Install service
+  file {'upstart-script-production':
     path => '/etc/init/weather.conf',
     ensure => file,
     owner => 'root',
     group => 'root',
-    source => 'file:///srv/weather/weather-srv-2/upstart_script.conf',
-    require => Vcsrepo['/srv/weather/weather-srv-2'],
+    source => 'puppet:///modules/dtg/weather2/upstart_script.conf',
+    require => Vcsrepo['/srv/weather/production/weather-srv-2'],
   }
   
-  # Start up the weather service
-  service {'weather-service':
+  # Setup the development weather server
+  file {'/srv/weather/development':
+    ensure => directory,
+    owner => 'weather',
+    group => 'weather',
+    require => User['weather'],
+  } ->  # Checkout git repo and keep up to date
+  vcsrepo {'/srv/weather/development/weather-srv-2':
+    require => Vcsrepo['/srv/weather/weather-srv-2'],
+    ensure => latest,
+    provider => git,
+    source => 'https://github.com/cillian64/dtg-weather-2.git',
+    revision => 'development',
+    user => 'weather',
+    notify => [ File['upstart-script-development'],
+                Service['weather-service-development'],
+              ],
+  } ->  # Create venv
+  exec {'create-venv-development':
+    creates => '/srv/weather/development/venv',
+    command => '/srv/weather/development/weather-srv-2/create_venv.sh',
+    cwd => '/srv/weather/development',
+    user => 'weather',
+    group => 'weather',
+  }  # Install service
+  file {'upstart-script-development':
+    path => '/etc/init/weather-dev.conf',
+    ensure => file,
+    owner => 'root',
+    group => 'root',
+    source => 'puppet:///modules/dtg/weather2/upstart_script-dev.conf',
+    require => Vcsrepo['/srv/weather/development/weather-srv-2'],
+  }
+  
+  # Start both weather services
+  service {'weather-service-production':
     name => 'weather',
     ensure => running,
     enable => true,
-    require => [ Exec['create-venv'],
-                 File['upstart-script'],
-                 Vcsrepo['/srv/weather/weather-srv-2'],
+    require => [ Exec['create-venv-production'],
+                 File['upstart-script-production'],
+                 Vcsrepo['/srv/weather/production/weather-srv-2'],
+               ],
+  }
+  service {'weather-service-development':
+    name => 'weather-dev',
+    ensure => running,
+    enable => true,
+    require => [ Exec['create-venv-development'],
+                 File['upstart-script-development'],
+                 Vcsrepo['/srv/weather/development/weather-srv-2'],
                ],
   }
 
@@ -101,6 +143,15 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     source => 'puppet:///modules/dtg/weather2/weather.nginx.conf',
     notify => Service['nginx'],
   }
+  file {'nginx-conf-dev':
+    path => '/etc/nginx/sites-enabled/weather-dev.nginx.conf',
+    ensure => file,
+    owner => 'root',
+    group => 'root',
+    mode => '0644',
+    source => 'puppet:///modules/dtg/weather2/weather-dev.nginx.conf',
+    notify => Service['nginx'],
+  }
   
   # Start up nginx:
   service {"nginx":
@@ -108,6 +159,7 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     ensure => running,
     require => [ File['nginx-disable-default'],
                  File['nginx-conf'],
+                 File['nginx-conf-dev'],
                ],
   }
 
