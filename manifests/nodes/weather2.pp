@@ -117,7 +117,7 @@ node 'weather2.dtg.cl.cam.ac.uk' {
   } ->
   user {'postgres-ssh-tunnel':
     ensure => present,
-    shell => '/bin/false',
+    shell => '/usr/sbin/nologin',
     home => '/home/postgres-ssh-tunnel',
     password => '*',
     managehome => true,
