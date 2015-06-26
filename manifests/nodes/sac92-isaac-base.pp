@@ -161,24 +161,21 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
 }
 
 class dtg::apt_elasticsearch {
-  apt::key { 'elasticsearch-key':
-    key        =>'D88E42B4',
-    key_source => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-  }
-
   apt::source { 'elasticsearch-source':
         location    => 'http://packages.elasticsearch.org/elasticsearch/1.4/debian',
         release     => 'stable',
         repos       => 'main',
-        include_src => false,
-        key         =>'D88E42B4',
-        key_source  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        include     =>  {'src' => false},
+        key         =>  {
+          'id'      => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+          'source'  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        }
   }
 
   apt::source { 'elasticsearch-logstash':
         location    => 'http://packages.elasticsearch.org/logstash/1.3/debian',
         release     => 'stable',
         repos       => 'main',
-        include_src => false
+        include     =>  {'src' => false}
   }
 }
