@@ -9,7 +9,7 @@ node 'africa01.cl.cam.ac.uk' {
   dtg::zfs::fs{'datashare':
     pool_name => 'data-pool0',
     fs_name => 'datashare',
-    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@128.232.29.5,async',
+    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@128.232.29.5,async',
   }
 
 
