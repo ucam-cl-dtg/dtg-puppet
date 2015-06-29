@@ -119,45 +119,30 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     home   => '/usr/share/isaac'
   }
 
-  # MongoDB Backup
-  file { '/local/data/rutherford/database-backup/mongodb':
-    ensure => 'directory',
-    owner  => 'mongodb',
-    group  => 'root',
-    mode   => '0755',
-  }
-  ->
-  file { '/local/data/rutherford/isaac-mongodb-backup.sh':
-      mode   => '0755',
-      owner  => mongodb,
-      group  => root,
-      source => 'puppet:///modules/dtg/isaac/mongodb/isaac-mongodb-backup.sh'
-  }
-  ->
-  cron {'isaac-backup-mongodb':
-    command => '/local/data/rutherford/isaac-mongodb-backup.sh',
-    user    => mongodb,
-    hour    => 0,
-    minute  => 0
-  }
-
-  #Postgres Backup
-  file { '/local/data/rutherford/database-backup/postgresql':
+  #Database Backup
+  file { '/local/data/rutherford/database-backup':
     ensure => 'directory',
     owner  => 'postgres',
     group  => 'root',
     mode   => '0755',
   }
   ->
-  file { '/local/data/rutherford/isaac-postgres-backup.sh':
+    file { '/local/data/rutherford/database-backup/combined':
+    ensure => 'directory',
+    owner  => 'postgres',
+    group  => 'root',
+    mode   => '0755',
+  }
+  ->
+  file { '/local/data/rutherford/isaac-database-backup.sh':
       mode   => '0755',
       owner  => postgres,
       group  => root,
-      source => 'puppet:///modules/dtg/isaac/postgres/isaac-postgres-backup.sh'
+      source => 'puppet:///modules/dtg/isaac/isaac-database-backup.sh'
   }
   ->
-  cron {'isaac-backup-postgresql':
-    command => '/local/data/rutherford/isaac-postgres-backup.sh',
+  cron {'isaac-backup-database':
+    command => '/local/data/rutherford/isaac-database-backup.sh',
     user    => postgres,
     hour    => 0,
     minute  => 0
@@ -176,24 +161,21 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
 }
 
 class dtg::apt_elasticsearch {
-  apt::key { 'elasticsearch-key':
-    key        =>'D88E42B4',
-    key_source => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
-  }
-
   apt::source { 'elasticsearch-source':
         location    => 'http://packages.elasticsearch.org/elasticsearch/1.4/debian',
         release     => 'stable',
         repos       => 'main',
-        include_src => false,
-        key         =>'D88E42B4',
-        key_source  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        include     =>  {'src' => false},
+        key         =>  {
+          'id'      => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+          'source'  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        }
   }
 
   apt::source { 'elasticsearch-logstash':
         location    => 'http://packages.elasticsearch.org/logstash/1.3/debian',
         release     => 'stable',
         repos       => 'main',
-        include_src => false
+        include     =>  {'src' => false}
   }
 }

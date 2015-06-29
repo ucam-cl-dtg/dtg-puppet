@@ -5,35 +5,49 @@ class aptrepository($repository) {
     purge => { 'sources.list' => true },
     stage              => $stage,
   }
-  # Include main repository
-  apt::source { 'main':
-    location => $repository,
-    repos    => 'main restricted universe multiverse',
-  }
-  # Security updates
-  apt::source { 'security':
-    location => $repository,
-    release  => "${::lsbdistcodename}-security",
-    repos    => 'main restricted universe multiverse',
-  }
-  apt::source { 'security-failsafe':
-    location => 'http://security.ubuntu.com/ubuntu',
-    release  => "${::lsbdistcodename}-security",
-    repos    => 'main restricted universe multiverse',
-  }
-  # Bugfix updates
-  apt::source { 'updates':
-    location => $repository,
-    release  => "${::lsbdistcodename}-updates",
-    repos    => 'main restricted universe multiverse',
-  }
-  if $::operatingsystem == 'Debian' {
-    # Include backports for Debian
-      apt::source { 'backports':
+  if $::operatingsystem == 'Ubuntu' {
+    # Include main repository
+    apt::source { 'main':
       location => $repository,
-      release => "${::lsbdistcodename}-backports",
+      repos    => 'main restricted universe multiverse',
+    }
+    # Security updates
+    apt::source { 'security':
+      location => $repository,
+      release  => "${::lsbdistcodename}-security",
+      repos    => 'main restricted universe multiverse',
+    }
+    apt::source { 'security-failsafe':
+      location => 'http://security.ubuntu.com/ubuntu',
+      release  => "${::lsbdistcodename}-security",
+      repos    => 'main restricted universe multiverse',
+    }
+    # Bugfix updates
+    apt::source { 'updates':
+      location => $repository,
+      release  => "${::lsbdistcodename}-updates",
       repos    => 'main restricted universe multiverse',
     }
   }
-
+  if $::operatingsystem == 'Debian' {
+    apt::source {'main':
+      location => $repository,
+      repos => 'main contrib non-free',
+    }
+    apt::source {'security-failsafe':
+      location => 'http://security.debian.org/debian-security',
+      release => "${::lsbdistcodename}/updates",
+      repos => 'main contrib non-free',
+    }
+    apt::source {'backports':
+      location => $repository,
+      release => "${::lsbdistcodename}-backports",
+      repos    => 'main contrib non-free',
+    }
+    apt::source {'updates':
+      location => $repository,
+      release => "${::lsbdistcodename}-updates",
+      repos => 'main contrib non-free',
+    }
+  }
 }
