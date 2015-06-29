@@ -55,6 +55,18 @@ node 'africa01.cl.cam.ac.uk' {
      statd_port      => $statd_port,
   }
 
+  dtg::firewall::nfs {'nfs access from 128.232.110.196':
+        source          => '128.232.110.196',
+        source_name     => '128.232.110.196',
+        portmapper_port => $portmapper_port,
+        nfs_port        => $nfs_port,
+        lockd_tcpport   => $lockd_tcpport,
+        lockd_udpport   => $lockd_udpport,
+        mountd_port     => $mountd_port,
+        rquotad_port    => $rquotad_port,
+        statd_port      => $statd_port,
+  }
+
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
 
