@@ -9,7 +9,7 @@ node 'africa01.cl.cam.ac.uk' {
   dtg::zfs::fs{'datashare':
     pool_name => 'data-pool0',
     fs_name => 'datashare',
-    share_opts => "ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@anya.ad.cl.cam.ac.uk,async",
+    share_opts => "ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@128.232.29.5,async",
   }
 
 
@@ -67,9 +67,9 @@ node 'africa01.cl.cam.ac.uk' {
         statd_port      => $statd_port,
   }
 
-  dtg::firewall::nfs {'nfs access from anya.ad.cl.cam.ac.uk':
-        source          => 'anya.ad.cl.cam.ac.uk',
-        source_name     => 'anya.ad.cl.cam.ac.uk',
+  dtg::firewall::nfs {'nfs access from 128.232.29.5':
+        source          => '128.232.29.5',
+        source_name     => '128.232.29.5',
         portmapper_port => $portmapper_port,
         nfs_port        => $nfs_port,
         lockd_tcpport   => $lockd_tcpport,
