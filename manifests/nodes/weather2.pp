@@ -49,7 +49,7 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
     'weather2' => 'master',
     'weather2-dev' => 'development',
   }
-  vcsrepo {'/srv/weather/weather-srv/':
+  vcsrepo {'/srv/weather/weather-srv':
     ensure => latest,
     provider => git,
     source => 'https://github.com/cillian64/dtg-weather-2.git',
