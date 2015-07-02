@@ -21,9 +21,20 @@ class dtg::jenkins {
     'jenkins-crypto-util', 'jenkins-external-job-monitor', 'jenkins-instance-identity', 'jenkins-memory-monitor', 'jenkins-ssh-cli-auth',
     'python3-markdown', 'mercurial', 'python3-urllib3', 'python3-dateutil', 'python3-numpy', 'python3-uncertainties', # For AVO
     'python3-matplotlib', 'python3-scipy', 'python3-cairo', 'python3-cairocffi', 'vnc4server', 'fluxbox', 'python3-dev', 'python3-jsonpickle', # for da-graphing
+    'ghc', 'alex', 'happy', 'libghc-text-dev', 'libghc-comonad-dev', 'libghc-mtl-dev', 'zlibc', 'zlib1g', 'zlib1g-dev', 'cabal-install', # for camfort and camfort-fixtures
     ]
   package { $jenkins_job_packages:
     ensure => installed,
+  }
+  # Invoking Haskell package manager to install CamFort dependencies
+  ->
+  exec {'update-cabal':
+    command => '/home/jenkins/.cabal/bin/cabal update',
+  } ->
+  exec {'install-cabal-packages':
+    # Check if the dependencies are already installed
+    unless  => '/usr/bin/ghc-pkg list | /bin/sed -ze "s/\n//g" | /bin/grep -o fclabels.*generic-deriving.*language-fortran.*matrix.*syz.*uniplate > /dev/null',
+    command => '/home/jenkins/.cabal/bin/cabal install syz generic-deriving uniplate matrix fclabels language-fortran',
   }
   #packages required by jenkins
   package {['jenkins-tomcat','jenkins-cli']:
