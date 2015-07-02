@@ -46,8 +46,8 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
   # Setup the weather service
   # Checkout appropriate git branch and keep up to date
   $weather_repo_branch = $::hostname ? {
-    'weather' => 'master',
-    'weather-dev' => 'development',
+    'weather2' => 'master',
+    'weather2-dev' => 'development',
   }
   vcsrepo {'/srv/weather/weather-srv/':
     ensure => latest,
