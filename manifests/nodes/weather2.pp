@@ -1,21 +1,21 @@
-$weather2_ips = dnsLookup('weather2.dtg.cl.cam.ac.uk')
-$weather2_ip = $weather2_ips[0]
-
-node 'weather2.dtg.cl.cam.ac.uk' {
+node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
   class { 'dtg::minimal': }
-  class {'dtg::firewall::publichttp':}  # Allow port 80 incoming
 
-  # Make dwt27 have admin on this machine
-  User<|title == 'dwt27' |> { groups +>[ 'adm' ]}
-
-  # Install our interfaces file with weather2's static IP:
-  file {'/etc/network/interfaces':
-    ensure => file,
-    owner => 'root',
-    group => 'root',
-    mode => '0644',
-    source => 'puppet:///modules/dtg/weather2/interfaces',
+  # On weather2, open firewall and setup static IP via ifaces file
+  # weather2-dev keeps its DTG VLAN puppy-IP and closed firewall
+  if ( $::hostname == 'weather2' ) {
+    class {'dtg::firewall::publichttp':}
+    file {'/etc/network/interfaces':
+      ensure => file,
+      owner => 'root',
+      group => 'root',
+      mode => '0644',
+      source => 'puppet:///modules/dtg/weather2/interfaces',
+    }
   }
+
+  # Make dwt27 have admin on these machines
+  User<|title == 'dwt27' |> { groups +>[ 'adm' ]}
 
   # Install all our packages
   $packagelist = ['nginx', 'python3', 'python3-dev', 'python3-pip',
@@ -24,8 +24,8 @@ node 'weather2.dtg.cl.cam.ac.uk' {
   package {$packagelist:
         ensure => installed,
         before => [ Service['nginx'],
-                    Exec['create-venv-development'],
-                    Exec['create-venv-production'],
+                    Exec['create-venv'],
+                    Exec['create-venv'],
                   ]
   }
   
@@ -43,89 +43,46 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     purge_ssh_keys => true,
   }
 
-  # Setup the production weather server
-  file {'/srv/weather/production':
-    ensure => directory,
-    owner => 'weather',
-    group => 'weather',
-    require => User['weather'],
-  } ->  # Checkout git repo and keep up to date
-  vcsrepo {'/srv/weather/production/weather-srv-2':
+  # Setup the weather service
+  # Checkout appropriate git branch and keep up to date
+  $weather_repo_branch = $::hostname ? {
+    'weather' => 'master',
+    'weather-dev' => 'development',
+  }
+  vcsrepo {'/srv/weather/weather-srv/':
     ensure => latest,
     provider => git,
     source => 'https://github.com/cillian64/dtg-weather-2.git',
-    revision => 'master',
+    revision => $weather_repo_branch,
     user => 'weather',
-    notify => [ File['upstart-script-production'],
-                Service['weather-service-production'],
-              ],
+    notify => [ File['upstart-script'], Service['weather-service'] ],
   } ->  # Create venv
-  exec {'create-venv-production':
-    creates => '/srv/weather/production/venv',
-    command => '/srv/weather/production/weather-srv-2/create_venv.sh',
-    cwd => '/srv/weather/production',
+  exec {'create-venv':
+    creates => '/srv/weather/venv',
+    command => '/srv/weather/weather-srv/create_venv.sh',
+    cwd => '/srv/weather/',
     user => 'weather',
     group => 'weather',
-  }  # Install service
-  file {'upstart-script-production':
+  }
+  # Install service
+  file {'upstart-script':
     path => '/etc/init/weather.conf',
     ensure => file,
     owner => 'root',
     group => 'root',
     source => 'puppet:///modules/dtg/weather2/upstart_script.conf',
-    require => Vcsrepo['/srv/weather/production/weather-srv-2'],
+    require => Vcsrepo['/srv/weather/weather-srv'],
   }
   
-  # Setup the development weather server
-  file {'/srv/weather/development':
-    ensure => directory,
-    owner => 'weather',
-    group => 'weather',
-    require => User['weather'],
-  } ->  # Checkout git repo and keep up to date
-  vcsrepo {'/srv/weather/development/weather-srv-2':
-    ensure => latest,
-    provider => git,
-    source => 'https://github.com/cillian64/dtg-weather-2.git',
-    revision => 'development',
-    user => 'weather',
-    notify => [ File['upstart-script-development'],
-                Service['weather-service-development'],
-              ],
-  } ->  # Create venv
-  exec {'create-venv-development':
-    creates => '/srv/weather/development/venv',
-    command => '/srv/weather/development/weather-srv-2/create_venv.sh',
-    cwd => '/srv/weather/development',
-    user => 'weather',
-    group => 'weather',
-  }  # Install service
-  file {'upstart-script-development':
-    path => '/etc/init/weather-dev.conf',
-    ensure => file,
-    owner => 'root',
-    group => 'root',
-    source => 'puppet:///modules/dtg/weather2/upstart_script-dev.conf',
-    require => Vcsrepo['/srv/weather/development/weather-srv-2'],
-  }
   
-  # Start both weather services
-  service {'weather-service-production':
+  # Start the weather services
+  service {'weather-service':
     name => 'weather',
     ensure => running,
     enable => true,
-    require => [ Exec['create-venv-production'],
-                 File['upstart-script-production'],
-                 Vcsrepo['/srv/weather/production/weather-srv-2'],
-               ],
-  }
-  service {'weather-service-development':
-    name => 'weather-dev',
-    ensure => running,
-    enable => true,
-    require => [ Exec['create-venv-development'],
-                 File['upstart-script-development'],
-                 Vcsrepo['/srv/weather/development/weather-srv-2'],
+    require => [ Exec['create-venv'],
+                 File['upstart-script'],
+                 Vcsrepo['/srv/weather/weather-srv'],
                ],
   }
 
@@ -143,24 +100,12 @@ node 'weather2.dtg.cl.cam.ac.uk' {
     source => 'puppet:///modules/dtg/weather2/weather.nginx.conf',
     notify => Service['nginx'],
   }
-  file {'nginx-conf-dev':
-    path => '/etc/nginx/sites-enabled/weather-dev.nginx.conf',
-    ensure => file,
-    owner => 'root',
-    group => 'root',
-    mode => '0644',
-    source => 'puppet:///modules/dtg/weather2/weather-dev.nginx.conf',
-    notify => Service['nginx'],
-  }
   
   # Start up nginx:
-  service {"nginx":
+  service {'nginx':
     enable => true,
     ensure => running,
-    require => [ File['nginx-disable-default'],
-                 File['nginx-conf'],
-                 File['nginx-conf-dev'],
-               ],
+    require => [ File['nginx-disable-default'], File['nginx-conf'] ],
   }
 
   # Setup the user for the postgres ssh tunnel
@@ -186,6 +131,7 @@ node 'weather2.dtg.cl.cam.ac.uk' {
 
 # Disable monitoring until things are more stable:
 #if ( $::monitor ) {
+#  # Note: do not monitor weather2-dev
 #  nagios::monitor { 'weather2':
 #    parents    => 'nas04',
 #    address    => 'weather2.dtg.cl.cam.ac.uk',
