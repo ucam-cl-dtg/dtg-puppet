@@ -157,7 +157,7 @@ class admin_users {
     }
     dtg::add_user { 'mojpc2':
       real_name => 'Mistral Contrastin',
-      groups    => [''],
+      groups    => [],
       keys      => ['Mistral CONTRASTIN <mojpc2@cam.ac.uk>'],
       uid       => 3476,
     }
