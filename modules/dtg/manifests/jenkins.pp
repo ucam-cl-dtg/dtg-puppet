@@ -29,12 +29,12 @@ class dtg::jenkins {
   # Invoking Haskell package manager to install CamFort dependencies
   ->
   exec {'update-cabal':
-    command => '/home/jenkins/.cabal/bin/cabal update',
+    command => '/usr/bin/cabal update',
   } ->
   exec {'install-cabal-packages':
     # Check if the dependencies are already installed
     unless  => '/usr/bin/ghc-pkg list | /bin/sed -ze "s/\n//g" | /bin/grep -o fclabels.*generic-deriving.*language-fortran.*matrix.*syz.*uniplate > /dev/null',
-    command => '/home/jenkins/.cabal/bin/cabal install syz generic-deriving uniplate matrix fclabels language-fortran',
+    command => '/usr/bin/cabal install syz generic-deriving uniplate matrix fclabels language-fortran',
   }
   #packages required by jenkins
   package {['jenkins-tomcat','jenkins-cli']:
