@@ -36,9 +36,13 @@ class dtg::jenkins {
     mode    => '0700'
   } ->
   exec {'update-cabal':
+    user        => "tomcat${tomcat_version}",
+    environment => "HOME=/usr/share/tomcat${tomcat_version}",
     command     => '/usr/bin/cabal update',
   } ->
   exec {'install-cabal-packages':
+    user        => "tomcat${tomcat_version}",
+    environment => "HOME=/usr/share/tomcat${tomcat_version}",
     # Check if the dependencies are already installed
     unless      => '/usr/bin/ghc-pkg list | /bin/sed -ze "s/\n//g" | /bin/grep -o fclabels.*generic-deriving.*language-fortran.*matrix.*syz.*uniplate > /dev/null',
     command     => '/usr/bin/cabal install syz generic-deriving uniplate matrix fclabels language-fortran',
