@@ -29,7 +29,10 @@ class dtg::jenkins {
   }
   # Invoking Haskell package manager to install CamFort dependencies
   ->
-  file {"/usr/share/tomcat${tomcat_version}/.cabal/":
+  file {[
+    "/usr/share/tomcat${tomcat_version}/.cabal/",
+    "/usr/share/tomcat${tomcat_version}/.ghc/",
+    ]:
     ensure  => directory,
     owner   => "tomcat${tomcat_version}",
     group   => "tomcat${tomcat_version}",
