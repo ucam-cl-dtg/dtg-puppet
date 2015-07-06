@@ -3,6 +3,7 @@ class dtg::jenkins {
   class {'dtg::firewall::80to8080': private => false}
   class {'dtg::tomcat::raven':}
   class {'dtg::jenkins::repos': stage => 'repos'}
+  $tomcat_version = '8'
   # To help build debian packages in jenkins
   package {'jenkins-debian-glue':
     ensure  => present,
@@ -28,12 +29,20 @@ class dtg::jenkins {
   }
   # Invoking Haskell package manager to install CamFort dependencies
   ->
+  file {"/usr/share/tomcat${tomcat_version}/.cabal/":
+    ensure  => directory,
+    owner   => "tomcat${tomcat_version}",
+    group   => "tomcat${tomcat_version}",
+    mode    => '0700'
+  } ->
   exec {'update-cabal':
-    environment => 'HOME=/root',
+    user        => "tomcat${tomcat_version}",
+    environment => "HOME=/usr/share/tomcat${tomcat_version}",
     command     => '/usr/bin/cabal update',
   } ->
   exec {'install-cabal-packages':
-    environment => 'HOME=/root',
+    user        => "tomcat${tomcat_version}",
+    environment => "HOME=/usr/share/tomcat${tomcat_version}",
     # Check if the dependencies are already installed
     unless      => '/usr/bin/ghc-pkg list | /bin/sed -ze "s/\n//g" | /bin/grep -o fclabels.*generic-deriving.*language-fortran.*matrix.*syz.*uniplate > /dev/null',
     command     => '/usr/bin/cabal install syz generic-deriving uniplate matrix fclabels language-fortran',
@@ -42,7 +51,6 @@ class dtg::jenkins {
   package {['jenkins-tomcat','jenkins-cli']:
     ensure => installed,
   }
-  $tomcat_version = '8'
   # Package installation actually creates this user and group
   group {"tomcat${tomcat_version}":
     ensure  => present,
