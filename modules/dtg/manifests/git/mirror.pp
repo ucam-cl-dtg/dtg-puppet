@@ -106,7 +106,7 @@ define dtg::git::mirror::repo ($source) {
   }
   cron {"gitmirror-mirror-${name}":
     ensure  => present,
-    command => "cd /srv/gitmirror/repositories/${name}.git && git fetch --quiet origin master:master && git update-server-info",
+    command => "cd /srv/gitmirror/repositories/${name}.git && nice git fetch --quiet origin master:master && nice git update-server-info",
     user    => 'gitmirror',
     hour    => cron_hour("${name}-mirror"),
     minute  => cron_minute("${name}-mirror"),
@@ -114,7 +114,7 @@ define dtg::git::mirror::repo ($source) {
   }
   cron {"gitmirror-gc-${name}":
     ensure  => present,
-    command => "cd /srv/gitmirror/repositories/${name}.git && git fsck --strict && git repack -a -d --depth=100 --window=100",
+    command => "cd /srv/gitmirror/repositories/${name}.git && nice git fsck --strict && nice git repack -a -d --depth=100 --window=100",
     user    => 'gitmirror',
     hour    => cron_hour($name),
     minute  => cron_minute($name),
