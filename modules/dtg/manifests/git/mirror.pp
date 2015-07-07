@@ -47,7 +47,6 @@ class dtg::git::mirror::server {
     require    => Monkeysphere::Auth_capable_user['gitmirror'],
     home       => '/srv/gitmirror/',
   }
-  package {'git-daemon-run': ensure => 'present',}
   file {'/etc/systemd/system/git-daemon.service':
     ensure  => file,
     source  => 'puppet:///modules/dtg/git-daemon.service',
@@ -59,7 +58,7 @@ class dtg::git::mirror::server {
   }
   service {'git-daemon':
     ensure   => running,
-    require  => [Package['git-daemon-run'], File['/etc/systemd/system/git-daemon.service']],
+    require  => [File['/etc/systemd/system/git-daemon.service']],
   }
   class {'dtg::firewall::git':}
   package {'gitweb': ensure => 'installed',}
