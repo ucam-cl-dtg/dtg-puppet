@@ -109,6 +109,7 @@ define dtg::git::mirror::repo ($source) {
     ensure  => present,
     command => "cd /srv/gitmirror/repositories/${name}.git && git fetch --quiet origin master:master && git update-server-info",
     user    => 'gitmirror',
+    hour    => cron_hour("${name}-mirror"),
     minute  => cron_minute("${name}-mirror"),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
   }
@@ -118,13 +119,6 @@ define dtg::git::mirror::repo ($source) {
     user    => 'gitmirror',
     hour    => cron_hour($name),
     minute  => cron_minute($name),
-    require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
-  }
-  cron {"gitmirror-update-server-info-${name}":
-    ensure  => present,
-    command => "cd /srv/gitmirror/repositories/${name}.git && git update-server-info",
-    user    => 'gitmirror',
-    minute  => cron_minute("${name} update"),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
   }
 }
