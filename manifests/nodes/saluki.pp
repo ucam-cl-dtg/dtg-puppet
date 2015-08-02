@@ -38,6 +38,13 @@ define bayncore_setup() {
     ensure => present,
     notify => Exec["remount"],
   }
+  ->
+  file_line { 'mount home':
+    line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore/home /home nfs defaults 0 0',
+    path   => '/etc/fstab',
+    ensure => present,
+    notify => Exec["remount"],
+  }
 
   bayncore_ssh_user {'rogerphilp':
     real_name => "Roger Philp (Bayncore)",
