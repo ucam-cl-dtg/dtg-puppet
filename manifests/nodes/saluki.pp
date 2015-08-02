@@ -15,39 +15,6 @@ define bayncore_ssh_user($real_name,$uid) {
     require => User[$username],
     gid     => $uid,
   }
-  ->
-  file { "/home/${username}/":
-    ensure  => directory,
-    owner   => $username,
-    group   => $username,
-    mode    => '0755',
-  }
-  ->
-  file {"/home/${username}/.ssh/":
-    ensure => directory,
-    owner => $username,
-    group => $username,
-    mode => '0700',
-  }
-  ->
-  exec {"gen-${username}-sshkey":
-    command => "sudo -H -u ${username} -g ${username} ssh-keygen -q -N '' -t rsa -f /home/${username}/.ssh/id_rsa",
-    creates => "/home/${username}/.ssh/id_rsa",
-  }
-  ->
-  file {"/home/${username}/.ssh/authorized_keys":
-    ensure => present,
-    owner => $username,
-    group => $username,
-    mode => '0600',
-  }
-  ->
-  exec {"${username}-add-authkey":
-    command => "/bin/cat /home/${username}/.ssh/id_rsa.pub >> /home/${username}/.ssh/authorized_keys",
-    unless => "/bin/grep \"`/bin/cat /home/${username}/.ssh/id_rsa.pub`\" /home/${username}/.ssh/authorized_keys",
-    user => $username,
-    group => $username,
-  }
 }
 
 define bayncore_setup() {
