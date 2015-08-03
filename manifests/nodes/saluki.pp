@@ -68,7 +68,7 @@ node /saluki(\d+)?/ {
 
   include 'nfs::server'
 
-  $packages = ['build-essential','linux-headers-generic','alien','libstdc++6:i386','vnc4server','bridge-utils']
+  $packages = ['build-essential','linux-headers-generic','alien','libstdc++6:i386','vnc4server','bridge-utils','libgtk2.0-0']
 
   package{$packages:
     ensure => installed,
