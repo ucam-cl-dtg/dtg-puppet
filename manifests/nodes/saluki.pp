@@ -74,17 +74,17 @@ node /saluki(\d+)?/ {
     ensure => installed,
   }
   
-  firewall { '050 accept all 10.0.0.0/16':
+  firewall { '050 accept all 10.0.0.0/8':
     action => 'accept',
-    source => '10.0.0.0/16'
+    source => '10.0.0.0/8'
   }
 
-  firewall { '051 nat 10.0.0.0/16':
+  firewall { '051 nat 10.0.0.0/8':
     chain    => 'POSTROUTING',
     jump     => 'MASQUERADE',
     proto    => 'all',
     outiface => "em1",
-    source   => '10.0.0.0/16',
+    source   => '10.0.0.0/8',
     table    => 'nat',
   }
 
