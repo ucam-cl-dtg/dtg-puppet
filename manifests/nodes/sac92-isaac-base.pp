@@ -35,7 +35,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     owner    => "tomcat${tomcat_version}",
     group    => "tomcat${tomcat_version}"
   }
-  ->
+
   class {'apache::ubuntu': } ->
   apache::module {'cgi':} ->
   apache::module {'headers':} ->
@@ -95,7 +95,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   
   class {'dtg::firewall::publichttp':}
 
-  $packages = ['maven2','openjdk-7-jdk','rssh','mongodb']
+  $packages = ['maven2','openjdk-7-jdk','rssh','mongodb','docker']
   package{$packages:
     ensure => installed
   }
