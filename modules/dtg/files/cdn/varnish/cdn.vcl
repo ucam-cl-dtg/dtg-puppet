@@ -26,6 +26,10 @@ backend default_ssl{
 }
 
 sub vcl_recv {
+    
+    # Strip query params from the request as this service should only be serving static content
+    set req.url = regsub(req.url, "\?.*$", "");
+
     # Happens before we check if we have this in cache already.
     # 
     # Typically you clean up the request here, removing cookies you don't need,
