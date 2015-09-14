@@ -81,8 +81,8 @@ cd $GLOBAL_BACKUP_PATH
 
 
 #Do a dump all to get all databases
-backuppath=$GLOBAL_BACKUP_PATH"/pg_dump_"$TODAYS_DATE
-tmppath=$POSTGRES_TMP_BACKUP_DIR"/pg_dump_"$TODAYS_DATE
+backuppath=$GLOBAL_BACKUP_PATH"/pg_dump_"$TODAYS_DATE".sql"
+tmppath=$POSTGRES_TMP_BACKUP_DIR"/pg_dump_"$TODAYS_DATE".sql"
 echo Dumping all to $tmppath
 pg_dumpall > $tmppath
  if [ -f "$tmppath" ]; then
