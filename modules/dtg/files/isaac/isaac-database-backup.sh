@@ -79,22 +79,17 @@ mkdir $POSTGRES_TMP_BACKUP_DIR
 
 cd $GLOBAL_BACKUP_PATH
 
-#Iterate through databases ignoring template0 and template1
-for i in $POSTGRES_DATABASES; do
-  if [ "$i" != "template0" ] && [ "$i" != "template1" ]; then
-  	backuppath=$GLOBAL_BACKUP_PATH"/"$i\_$TODAYS_DATE
-  	tmppath=$POSTGRES_TMP_BACKUP_DIR"/"$i\_$TODAYS_DATE
-    echo Dumping $i to $tmppath
-    pg_dump -Fc $i > $tmppath
 
-    if [ -f "$tmppath" ]; then
-    	echo "=> Success: saved "$i"to `du -sh $tmppath`"; echo;
-    else
-    	echo "=> Error: did not save to `$tmppath`"; echo;
-    fi
-
-  fi
-done
+#Do a dump all to get all databases
+backuppath=$GLOBAL_BACKUP_PATH"/pg_dump_"$TODAYS_DATE".sql"
+tmppath=$POSTGRES_TMP_BACKUP_DIR"/pg_dump_"$TODAYS_DATE".sql"
+echo Dumping all to $tmppath
+pg_dumpall > $tmppath
+ if [ -f "$tmppath" ]; then
+	echo "=> Success: saved backup to `du -sh $tmppath`"; echo;
+else
+	echo "=> Error: did not save backup to `$tmppath`"; echo;
+fi
 
 
 fi
