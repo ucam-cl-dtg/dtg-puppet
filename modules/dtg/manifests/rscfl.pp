@@ -8,15 +8,9 @@ class dtg::rscfl {
   }
 
   $rscfl_packages = ['python-jinja2', 'systemtap', 'build-essential', 'cmake',
-                    'clang', 'python-pip', 'ccache']
+                    'clang', 'python-pip', 'ccache', 'cna']
   package{$rscfl_packages:
     ensure => installed,
-  }
-  # Setup bash profile for all users
-
-  file {'/etc/.profile':
-    source => 'puppet:///modules/dtg/.profile',
-    ensure => present,
   }
 
 }
