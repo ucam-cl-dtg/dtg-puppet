@@ -1,4 +1,4 @@
-node /(\w+-)?isaac(-\w+)?(.+)?/ {
+node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   include 'dtg::minimal'
   
   $tomcat_version = '8'
