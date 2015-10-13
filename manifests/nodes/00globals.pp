@@ -1,4 +1,4 @@
-# Global configuration settings
+1;3803;0c# Global configuration settings
 
 Exec {
   path      => '/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin',
@@ -143,12 +143,12 @@ class admin_users {
       keys      => ['David W. Turner <david.w.turner@cl.cam.ac.uk>'],
       uid       => 3195,
     }
-    dtg::add_user { 'dh526':
-      real_name => 'Daniel Hintze',
-      groups    => [],
-      keys      => ['Daniel Hintze <daniel@hintze-it.de>'],
-      uid       => 3451,
-    }
+    # dtg::add_user { 'dh526':
+    #   real_name => 'Daniel Hintze',
+    #   groups    => [],
+    #   keys      => ['Daniel Hintze <daniel@hintze-it.de>'],
+    #   uid       => 3451,
+    # }
     dtg::add_user { 'dac53':
       real_name => 'Diana Vasile',
       groups    => ['adm'],
@@ -170,7 +170,7 @@ class admin_users {
     dtg::add_user { 'jp662':
       real_name => 'Jeunese Payne',
       groups    => [],
-      keys      => ['Jeunse Payne <jp662@cam.ac.uk>'],
+      keys      => ['Jeunese Payne <jp662@cam.ac.uk>'],
       uid       => 3284,
     }
 
