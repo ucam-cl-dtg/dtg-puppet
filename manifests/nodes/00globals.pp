@@ -170,7 +170,7 @@ class admin_users {
     dtg::add_user { 'jp662':
       real_name => 'Jeunese Payne',
       groups    => [],
-      keys      => ['Jeunse Payne <jp662@cam.ac.uk>'],
+      keys      => ['Jeunese Payne <jp662@cam.ac.uk>'],
       uid       => 3284,
     }
 
