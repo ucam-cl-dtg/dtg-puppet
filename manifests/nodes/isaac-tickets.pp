@@ -42,6 +42,20 @@ node 'isaac-tickets.dtg.cl.cam.ac.uk' {
     minute  => '*/1'
   }
 
+  # Database Backup
+  file { '/local/data/isaac-tickets':
+    ensure => 'directory',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
+  ->
+  cron {'isaac-backup-database':
+    command => 'find /local/data/isaac-tickets/ -type f -prune -mtime +30 -exec rm -f {} \; ; mysqldump osticket | zip > /local/data/isaac-tickets/db_backup_`date +\%Y-\%m-\%d_\%H-\%M`.zip',
+    user    => root,
+    hour    => 0,
+    minute  => 0
+  }
 
 }
 
@@ -61,3 +75,9 @@ if ( $::monitor ) {
 ##    sudo apt-get install mysql-server libapache2-mod-auth-mysql php5-mysql
 ##    sudo mysql_install_db
 ##    sudo /usr/bin/mysql_secure_installation
+##
+## Also create /root/.my.cnf with the content:
+##
+##    [mysqldump]
+##    user=osticket
+##    password=<whatever>
