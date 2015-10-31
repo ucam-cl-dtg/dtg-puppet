@@ -104,8 +104,8 @@ fi
 cd $ZIP_DIR
 
 # turn dumped files into a single tar file
-echo "$TAR_BIN_PATH --remove-files -czf $ZIP_NAME.tar.gz $TMP_DIR >> /dev/null"
-$TAR_BIN_PATH --remove-files -czf $ZIP_NAME.tar.gz $TMP_DIR >> /dev/null
+echo "$TAR_BIN_PATH --remove-files -czf $ZIP_NAME.tar.gz $ZIP_DIR >> /dev/null"
+$TAR_BIN_PATH --remove-files -czf $ZIP_NAME.tar.gz $ZIP_DIR >> /dev/null
 
 # verify that the file was created
 if [ -f "$ZIP_NAME.tar.gz" ]; then

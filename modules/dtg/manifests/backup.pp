@@ -76,7 +76,7 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
 # The name of the backup will be used as the directory name for the subdir containing the backups
 # user is the user to ssh in as
 # host is the host to ssh into
-define dtg::backup::hostsetup($user, $host) {
+define dtg::backup::hostsetup($user, $host, $weekday) {
   $backupsdirectory = $dtg::backup::host::directory
   $backupsuser      = $dtg::backup::host::user
   $backupskey       = $dtg::backup::host::realkey
@@ -93,7 +93,7 @@ define dtg::backup::hostsetup($user, $host) {
     command => "nice -n 19 /bin/bash -c 'ssh -T -i ${backupskey} ${user}@${host} > ${backupto}/`date +\\%F_\\%T`.tar.bz2'",
     minute  => cron_minute("backup ${name}"),
     hour    => cron_hour("backup ${name}"),
-    weekday => 'Saturday',
+    weekday => $weekday,
     require => File["${backupto}"],
   }
 }
