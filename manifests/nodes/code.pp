@@ -99,12 +99,12 @@ if ( $::is_backup_server ) {
     user    => 'git',
     host    => 'code.dtg.cl.cam.ac.uk',
     require => Class['dtg::backup::host'],
-    weekday => 'saturday',
+    weekday => 'Saturday',
   }
   dtg::backup::hostsetup{'nexus_repositories':
     user    => 'nexus',
     host    => 'code.dtg.cl.cam.ac.uk',
-    weekday => 'saturday',
+    weekday => 'Saturday',
     require => Class['dtg::backup::host'],
   }
 }
