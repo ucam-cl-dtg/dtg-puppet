@@ -141,8 +141,26 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
       source => 'puppet:///modules/dtg/isaac/isaac-database-backup.sh'
   }
   ->
+  file { '/local/data/rutherford/database-backup/isaac-database-backup.log':
+      path => '/local/data/rutherford/database-backup/isaac-database-backup.log',
+      ensure  => present,
+      replace => false,
+      mode   => '0755',
+      owner  => postgres,
+      group  => root,
+      content => "# Database backup log files"
+  }
+  -> 
+  cron {'isaac-backup-postgresql':
+    ensure => absent
+  }
+  -> 
+  cron {'isaac-backup-mongodb':
+    ensure => absent
+  }
+  ->
   cron {'isaac-backup-database':
-    command => '/local/data/rutherford/isaac-database-backup.sh',
+    command => '/local/data/rutherford/isaac-database-backup.sh >> /local/data/rutherford/database-backup/isaac-database-backup.log',
     user    => postgres,
     hour    => 0,
     minute  => 0
