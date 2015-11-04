@@ -44,19 +44,19 @@ ZIP_DIR=$BACKUP_PATH"/combined"
 
 # initialise temporary folders
 [ -d "$TMP_DIR" ] && rm -Rf $TMP_DIR  || mkdir -p $TMP_DIR
-echo "Delete and recreated $TMP_DIR"
+echo "`date` Delete and recreated $TMP_DIR"
 
 # initialize mongo backup directory
 [ -d "$MONGO_TMP_DIR" ] && rm -Rf $MONGO_TMP_DIR  || mkdir -p $MONGO_TMP_DIR
-echo "Delete and recreated $MONGO_TMP_DIR"
+echo "`date` Delete and recreated $MONGO_TMP_DIR"
 
 # initialize postgres backup directory
 [ -d "$POSTGRES_TMP_DIR" ] && rm -Rf $POSTGRES_TMP_DIR  || mkdir -p $POSTGRES_TMP_DIR
-echo "Delete and recreated $POSTGRES_TMP_DIR"
+echo "`date` Delete and recreated $POSTGRES_TMP_DIR"
 
 # initialize output backup directory
-[ -d "$ZIP_DIR" ] && rm -Rf $ZIP_DIR  || mkdir -p $ZIP_DIR
-echo "Delete and recreated $ZIP_DIR"
+[ -d "$ZIP_DIR" ] && mkdir -p $ZIP_DIR
+echo "`date` Checked $ZIP_DIR exists"
 
 
 ##################################################################################
@@ -67,7 +67,7 @@ echo "Delete and recreated $ZIP_DIR"
 if [ -d "$BACKUP_PATH" ]; then
 	cd $BACKUP_PATH
 
-	echo; echo "=> Backing up Mongo Server: $MONGO_HOST:$MONGO_PORT"; echo -n '   ';
+	echo; echo "`date` => Backing up Mongo Server: $MONGO_HOST:$MONGO_PORT"; echo -n '   ';
 	
 	# run dump on mongoDB
 	if [ "$MONGO_USERNAME" != "" -a "$MONGO_PASSWORD" != "" ]; then 
@@ -76,7 +76,7 @@ if [ -d "$BACKUP_PATH" ]; then
 		$MONGO_DUMP_BIN_PATH --host $MONGO_HOST:$MONGO_PORT --out $MONGO_TMP_DIR >> /dev/null 
 	fi
 else
-	echo "!!!=> Failed to create backup path: $BACKUP_PATH"
+	echo "`date` !!!=> Failed to create backup path: $BACKUP_PATH"
 fi
 
 
@@ -91,9 +91,9 @@ tmppath=$POSTGRES_TMP_DIR"/pg_dump_"$TODAYS_DATE".sql"
 echo "Dumping all to $tmppath"
 pg_dumpall > $tmppath
 if [ -f "$tmppath" ]; then
-	echo "=> Success: saved backup to `du -sh $tmppath`"; echo;
+	echo "`date` => Success: saved backup to `du -sh $tmppath`"; echo;
 else
-	echo "=> Error: did not save backup to `$tmppath`"; echo;
+	echo "`date` => Error: did not save backup to `$tmppath`"; echo;
 fi
 
 ##################################################################################
@@ -104,23 +104,25 @@ fi
 cd $ZIP_DIR
 
 # turn dumped files into a single tar file
-echo "$TAR_BIN_PATH --remove-files -czf $ZIP_NAME.tar.gz $ZIP_DIR >> /dev/null"
-$TAR_BIN_PATH --remove-files -czf $ZIP_NAME.tar.gz $ZIP_DIR >> /dev/null
+echo "`date` $TAR_BIN_PATH --remove-files -czf $ZIP_NAME.tar.gz $TMP_DIR >> /dev/null"
+$TAR_BIN_PATH --remove-files -czf $ZIP_NAME.tar.gz $TMP_DIR >> /dev/null
 
 # verify that the file was created
 if [ -f "$ZIP_NAME.tar.gz" ]; then
-	echo "=> Success: `du -sh $ZIP_NAME.tar.gz`"; echo;
+	echo "`date` => Success: `du -sh $ZIP_NAME.tar.gz`"; echo;
 
 	# forcely remove if files still exist and tar was made successfully
 	# this is done because the --remove-files flag on tar does not always work
 	if [ -d "$ZIP_DIR/$ZIP_NAME" ]; then
-		echo "Removing : $ZIP_DIR/$ZIP_NAME"
+		echo "`date` Removing : $ZIP_DIR/$ZIP_NAME"
 		rm -rf "$ZIP_DIR/$ZIP_NAME"
 	fi
 else
-	 echo "!!!=> Failed to create backup file: $ZIP_DIR/$ZIP_NAME.tar.gz"; echo;
+	 echo "`date` !!!=> Failed to create backup file: $ZIP_DIR/$ZIP_NAME.tar.gz"; echo;
 fi
 
 
 #Remove old zips after the specified time period
+echo "`date` Attempting to prune files older than $DAYS_TO_KEEP_BACKUPS days"
+echo "`date` Found and removed `find $ZIP_DIR -type f -prune -mtime +$DAYS_TO_KEEP_BACKUPS | wc -l`"
 find $ZIP_DIR -type f -prune -mtime +$DAYS_TO_KEEP_BACKUPS -exec rm -f {} \;
