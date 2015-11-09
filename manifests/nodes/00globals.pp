@@ -228,7 +228,7 @@ $nfs_client_port = 1025
 
 # Override Service definition until we are on a new enough puppet to know about ubuntu and systemd
 
-if $::operatingsystem == 'Ubuntu' and $::operatingsystemmajrelease == "15.04" {
+if $::operatingsystem == 'Ubuntu' {
   Service {
     provider => systemd,
   }
