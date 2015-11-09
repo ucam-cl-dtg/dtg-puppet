@@ -56,6 +56,9 @@ PHYSICAL_MACHINES = [
      'repo_loc': PUPPET_BARE, 'VM': False},
     {'name': 'saluki2', 'hostname': 'saluki2' + DTG_DOM,
      'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'africa01', 'hostname': 'africa01' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False}
+
 ]
 
 
