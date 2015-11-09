@@ -235,7 +235,7 @@ if $::operatingsystem == 'Ubuntu' {
 }
 
 # Configure git push to deploy
-exec { "git-author-email":
+exec { "git-push-to-deploy":
   command => 'git config receive.denyCurrentBranch updateInstead',
   unless => "git config --get receive.denyCurrentBranch | grep updateInstead",
   cwd => "/etc/puppet",
