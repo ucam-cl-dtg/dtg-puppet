@@ -10,6 +10,11 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $secgrp_subnet = '128.232.18.0/24'
   $pig20_ip = '128.232.64.63'
 
+  # bonded nics
+  dtg::kernelmodule::add{"bonding": }
+  package{'ifenslave':
+    ensure => installed
+  }
   class { 'network::interfaces':
     interfaces => {
       'eth0' => {
