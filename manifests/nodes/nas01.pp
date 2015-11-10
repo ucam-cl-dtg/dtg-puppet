@@ -21,7 +21,7 @@ node /nas01/ {
     source => 'puppet:///modules/dtg/fancontrol/nas01'
   }
 
-/*  class { 'network::interfaces':
+  class { 'network::interfaces':
     interfaces => {
       'eth0' => {
         'method'      => 'manual',
@@ -35,6 +35,8 @@ node /nas01/ {
         'method'          => 'static',
         'address'         => '128.232.20.12',
         'netmask'         => '255.255.252.0',
+        'network'         => '128.232.20.0',
+        'broadcast'       => '128.232.23.255',
         'gateway'         => '128.232.20.1',
         'dns-nameservers' => $::dns_name_servers,
         'dns-search'      => 'dtg.cl.cam.ac.uk',
@@ -46,7 +48,7 @@ node /nas01/ {
     },
     auto       => ['eth0', 'eth1', 'bond0'],
   }
-*/
+
   $portmapper_port     = 111
   $nfs_port            = 2049
   $lockd_tcpport       = 32803
