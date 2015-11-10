@@ -25,7 +25,7 @@ class dtg::git {
 # repo_recurse whether the permission should be applied recursively
 class dtg::git::gitolite ($admin_key, $repo_group = 'git', $repo_mode = undef, $repo_recurse = false){
   # Setup gitolite package
-  $gitolitepackages = ['gitolite']
+  $gitolitepackages = ['gitolite3']
   package {$gitolitepackages :
     ensure => installed,
   }
@@ -59,13 +59,13 @@ class dtg::git::gitolite ($admin_key, $repo_group = 'git', $repo_mode = undef, $
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    require => Package['gitolite'],
+    require => Package['gitolite3'],
   }
   file {'/usr/share/gitolite/hooks/common/post-receive':
     ensure  => file,
     source  => 'puppet:///modules/dtg/post-receive-email.hook',
     mode    => '0755',
-    require => Package['gitolite'],
+    require => Package['gitolite3'],
   }
   exec {'setup-gitolite':
     command => "sudo -H -u git -g git gl-setup ${admin_key}",
@@ -235,7 +235,7 @@ class dtg::git::gitlab::main {
     group   => 'root',
     mode    => '0755',
     source  => 'file:///srv/gitlab/gitlab/lib/hooks/post-receive',
-    require => [Package['gitolite'],Vcsrepo['/srv/gitlab/gitlab/']],
+    require => [Package['gitolite3'],Vcsrepo['/srv/gitlab/gitlab/']],
   }
   exec {'start gitlab':
     command => 'sudo -u gitlab -g gitlab -H bundle exec rails s -e production -d',
