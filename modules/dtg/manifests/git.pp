@@ -53,14 +53,6 @@ class dtg::git::gitolite ($admin_key, $repo_group = 'git', $repo_mode = undef, $
     target => '/local/data/git/',
   }
   #TODO(drt24)  restore from backups
-  file {'/usr/share/gitolite/conf/example.gitolite.rc':
-    ensure  => file,
-    source  => 'puppet:///modules/dtg/example.gitolite.rc',
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    require => Package['gitolite3'],
-  }
   file {'/usr/share/gitolite/hooks/common/post-receive':
     ensure  => file,
     source  => 'puppet:///modules/dtg/post-receive-email.hook',
@@ -68,10 +60,10 @@ class dtg::git::gitolite ($admin_key, $repo_group = 'git', $repo_mode = undef, $
     require => Package['gitolite3'],
   }
   exec {'setup-gitolite':
-    command => "sudo -H -u git -g git gl-setup ${admin_key}",
+    command => "sudo -H -u git -g git gitolite setup -pk ${admin_key}",
     cwd     => '/srv/git/',
     creates => '/srv/git/repositories/',
-    require => File[$admin_key, '/usr/share/gitolite/conf/example.gitolite.rc'],
+    require => File[$admin_key],
   }
   file {'/srv/git/repositories':
     ensure  => directory,
