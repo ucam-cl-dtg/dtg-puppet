@@ -40,6 +40,10 @@ NOT_UBUNTU = 1004
 template = ""
 machine_statuses = {}
 
+OUT_DIR = "%s/public_html/dtg-infra" % os.getenv("HOME")
+OUT_FILE = "%s/lick-%s.html" % (OUT_DIR, str(
+    datetime.datetime.now()).replace(" ", "-"))
+
 # This is where we need to push first as it is the canonical place for the
 # source code to be
 ORIGIN = [
@@ -107,7 +111,7 @@ class RemoteHandler(RemoteProgress):
 
 
 def update_status():
-    with open("/tmp/lick-status.html", "wb") as f:
+    with open(OUT_FILE, "wb") as f:
         f.write(template.render(machine_statuses))
 
 def update_progress(mc, stage):
@@ -121,6 +125,11 @@ def current_task(task):
     machine_statuses["tasks"].append(
         "[%s] %s" % (datetime.datetime.now(), task))
     update_status()
+
+def ensure_dir(d):
+    if not os.path.exists(d):
+        os.makedirs(d)
+
 
 @task
 def get_os_versions():
@@ -403,6 +412,10 @@ def main(args):
     """
     output['running'] = False
     output['stdout'] = False
+
+
+    ensure_dir(OUT_DIR)
+    print("Streaming status to %s" % OUT_FILE)
 
     jinja_env = Environment(loader=FileSystemLoader(os.getcwd()),
                          trim_blocks=True)
