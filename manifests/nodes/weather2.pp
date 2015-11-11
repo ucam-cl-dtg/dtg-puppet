@@ -68,7 +68,7 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
     source => 'https://github.com/cillian64/dtg-weather-2.git',
     revision => $weather_repo_branch,
     user => 'weather',
-    notify => [ File['upstart-script'], Service['weather-service'] ],
+    notify => [ File['systemd-script'], Service['weather-service'] ],
   } ->  # Create venv
   exec {'create-venv':
     creates => '/srv/weather/venv',
@@ -78,12 +78,12 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
     group => 'weather',
   }
   # Install service
-  file {'upstart-script':
-    path => '/etc/init/weather.conf',
+  file {'systemd-script':
+    path => '/etc/systemd/system/weather-service.service',
     ensure => file,
     owner => 'root',
     group => 'root',
-    source => 'puppet:///modules/dtg/weather2/upstart_script.conf',
+    source => 'puppet:///modules/dtg/weather2/systemd_job.service',
     require => Vcsrepo['/srv/weather/weather-srv'],
   }
   
@@ -94,7 +94,7 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
     ensure => running,
     enable => true,
     require => [ Exec['create-venv'],
-                 File['upstart-script'],
+                 File['systemd-script'],
                  Vcsrepo['/srv/weather/weather-srv'],
                ],
   }
