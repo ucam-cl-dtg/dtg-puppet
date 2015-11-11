@@ -5,16 +5,16 @@ Deploy the latest puppet, security fixes or Ubuntu release to all puppies.
 """
 
 import argparse
-from jinja2 import Environment, FileSystemLoader, PackageLoader
+from jinja2 import Environment, FileSystemLoader
 import socket
+from StringIO import StringIO
 import sys
 import os
 from fabric.api import cd, env, execute, output, parallel, run, sudo, show, task
-from git import GitCommandError, Repo, RemoteProgress
+from git import Repo, RemoteProgress
 import random
 import datetime
 from datetime import timedelta
-import time
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
