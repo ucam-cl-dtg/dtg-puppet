@@ -139,7 +139,7 @@ class admin_users {
     }
     dtg::add_user { 'dwt27':
       real_name => 'David Turner',
-      groups    => [],
+      groups    => [ 'weather-adm' ],
       keys      => ['David W. Turner <david.w.turner@cl.cam.ac.uk>'],
       uid       => 3195,
     }

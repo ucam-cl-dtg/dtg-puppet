@@ -21,8 +21,15 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
     }
   }
 
-  # Make dwt27 have admin on these machines
-  User<|title == 'dwt27' |> { groups +>[ 'adm' ]}
+  # Give weather-adm admin on these machines
+  group { 'weather-adm': ensure => present }
+  sudoers::allowed_command{ 'weather-adm':
+    command => 'ALL',
+    group => 'weather-adm',
+    run_as => 'ALL',
+    require_password => false,
+    comment => 'Allow members of weather-adm group root on weather boxes',
+  }
 
   # Install all our packages
   $packagelist = ['nginx', 'python3', 'python3-dev', 'python3-pip',

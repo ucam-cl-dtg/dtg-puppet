@@ -5,7 +5,15 @@ node 'weather.dtg.cl.cam.ac.uk' {
   class { 'dtg::minimal': }
   class {'dtg::firewall::publichttp':}
 
-  User<|title == 'dwt27' |> { groups +>[ 'adm' ]}
+  # Give weather-adm admin on these machines
+  group { 'weather-adm': ensure => present }
+  sudoers::allowed_command{ 'weather-adm':
+    command => 'ALL',
+    group => 'weather-adm',
+    run_as => 'ALL',
+    require_password => false,
+    comment => 'Allow members of weather-adm group root on weather boxes',
+  }
 
   # Mount nas01 in order to ship backups there.
   file {'/mnt/nas01':
