@@ -383,7 +383,16 @@ def push_config(repo, machines, upgrade, sec_update):
     hostnames = [x['hostname'] for x in machines]
 
     if upgrade:
-        execute(upgrade_mc, hosts=hostnames)
+        upgrade_mcs = []
+        for mc in hostnames:
+            versions = execute(get_os_versions, hosts=mc)
+            #            machine_statuses[mc.split(".")[0]]["os"] = version
+            if should_update(mc, versions):
+                upgrade_mcs.append(mc)
+        if upgrade_mcs:
+            execute(upgrade_mc, hosts=upgrade_mcs)
+        return
+
     if sec_update:
         execute(security_update, hosts=hostnames)
 
