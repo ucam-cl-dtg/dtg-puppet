@@ -29,7 +29,7 @@
   </head>
   <body>
     <h1>Puppet lick at {{ deploy_time }}</h1>
-
+    <h2>Licked {{ version }} by {{ licker }}</h2>
     <p>
       <code>
         {% for task in tasks %}
@@ -50,7 +50,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for machine, kv in machines.iteritems() %}
+        {% for kv in machines %}
         <tr class={{ kv.status }}>
           <td>{{ kv.name }}</td>
           <td>{{ kv.is_vm }}</td>
@@ -62,12 +62,12 @@
           </td>
           <td>
             <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#stdout-{{ kv.name }}">
-              stdout <span class="badge">{{ kv.stdout_lines }}</span>
+              stdout <span class="badge">{{ kv.stdout|length }}</span>
             </button>
           </td>
           <td>
             <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#stderr-{{ kv.name }}">
-              stderr <span class="badge">{{ kv.stderr_lines }}</span>
+              stderr <span class="badge">{{ kv.stderr|length }}</span>
             </button>
           </td>
         </tr>
@@ -75,7 +75,7 @@
       </tbody>
     </table>
 
-    {% for machine, kv in machines.iteritems() %}
+    {% for kv in machines %}
     <div class="modal fade" id="stdout-{{ kv.name }}" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -99,7 +99,7 @@
 
     <div class="modal fade" id="stderr-{{ kv.name }}" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content modal-lg">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="myModalLabel">stderr of {{ kv.name }}</h4>

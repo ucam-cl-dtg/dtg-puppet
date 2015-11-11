@@ -31,6 +31,7 @@ SHA_LENGTH = 9
 # Version we should be running
 TARGET_UBUNTU_RELEASE= 1510
 
+# Any VM older than this needs an emergency OS update.
 MINIMUM_UBUNTU_RELEASE= 1504
 
 # If the version is older than this it is probably not Ubuntu.
@@ -38,7 +39,8 @@ MINIMUM_UBUNTU_RELEASE= 1504
 NOT_UBUNTU = 1004
 
 template = ""
-machine_statuses = {}
+machines = []
+lick_status = {}
 
 OUT_DIR = "%s/public_html/dtg-infra" % os.getenv("HOME")
 OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
@@ -46,39 +48,49 @@ OUT_PATH = "%s/%s" % (OUT_DIR, OUT_FILE)
 OUT_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
                                                          OUT_FILE)
 
+
+
+class Machine:
+
+    def __init__(self, name, hostname, repo, is_vm, uuid=None):
+        self.name = name
+        self.hostname = hostname
+        self.repo = repo
+        self.is_vm = is_vm
+        self.uuid=uuid
+
+        self.actions = ["Waiting for update"]
+        self.stdout = []
+        self.stderr = []
+
+
+    def get_jinja_dict():
+        # TODO
+        pass
+
+
 # This is where we need to push first as it is the canonical place for the
 # source code to be
 ORIGIN = [
-    {'name': 'github', 'hostname': 'git@github.com',
-     'repo_loc': 'ucam-cl-dtg/dtg-puppet.git', 'VM': False},
-    {'name': 'code-repo', 'hostname': 'git@code.dtg.cl.cam.ac.uk',
-     'repo_loc': 'infrastructure/dtg-puppet', 'VM': False},
-    {'name': 'gitlab-repo', 'hostname': 'git@gitlab.dtg.cl.cam.ac.uk',
-     'repo_loc': 'infrastructure/dtg-puppet.git', 'VM': False}
+    Machine('github', 'git@github.com',
+            'ucam-cl-dtg/dtg-puppet.git', False),
+    Machine('code-repo', 'git@code.dtg.cl.cam.ac.uk',
+            'infrastructure/dtg-puppet', False),
+    Machine('gitlab-repo', 'git@gitlab.dtg.cl.cam.ac.uk',
+            'infrastructure/dtg-puppet.git', False),
 ]
 
 PHYSICAL_MACHINES = [
-    {'name': 'nas01', 'hostname': 'nas01' + DTG_DOM, 'repo_loc': PUPPET_BARE,
-     'VM': False},
-    {'name': 'nas04', 'hostname': 'nas04' + DTG_DOM,
-     'repo_loc': PUPPET_BARE, 'VM': False},
-    {'name': 'entropy', 'hostname': 'entropy' + DTG_DOM,
-     'repo_loc': PUPPET_BARE, 'VM': False},
-    {'name': 'wolf0', 'hostname': 'wolf0' + DTG_DOM,
-     'repo_loc': PUPPET_BARE, 'VM': False},
-    {'name': 'wolf1', 'hostname': 'wolf1' + DTG_DOM,
-     'repo_loc': PUPPET_BARE, 'VM': False},
-    {'name': 'wolf2', 'hostname': 'wolf2' + DTG_DOM,
-     'repo_loc': PUPPET_BARE, 'VM': False},
-    {'name': 'spaniel', 'hostname': 'spaniel' + DTG_DOM,
-     'repo_loc': PUPPET_BARE, 'VM': False},
-    {'name': 'saluki1', 'hostname': 'saluki1' + DTG_DOM,
-     'repo_loc': PUPPET_BARE, 'VM': False},
-    {'name': 'saluki2', 'hostname': 'saluki2' + DTG_DOM,
-     'repo_loc': PUPPET_BARE, 'VM': False},
-    {'name': 'africa01', 'hostname': 'africa01' + DTG_DOM,
-     'repo_loc': PUPPET_BARE, 'VM': False}
-
+    Machine('nas01','nas01' + DTG_DOM, PUPPET_BARE, False),
+    Machine('nas04','nas04' + DTG_DOM, PUPPET_BARE, False),
+    Machine('entropy','entropy' + DTG_DOM, PUPPET_BARE, False),
+    Machine('wolf0','wolf0' + DTG_DOM, PUPPET_BARE, False),
+    Machine('wolf1','wolf1' + DTG_DOM, PUPPET_BARE, False),
+    Machine('wolf2','wolf2' + DTG_DOM, PUPPET_BARE, False),
+    Machine('spaniel','spaniel' + DTG_DOM, PUPPET_BARE, False),
+    Machine('saluki1','saluki1' + DTG_DOM, PUPPET_BARE, False),
+    Machine('saluki2','saluki2' + DTG_DOM, PUPPET_BARE, False),
+    Machine('africa01','africa01' + DTG_DOM, PUPPET_BARE, False),
 ]
 
 UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn', 'balancer',
@@ -89,55 +101,52 @@ class RemoteHandler(RemoteProgress):
     """
     Prints output from the pre-receive handler, stripping irrelevant bits.
     """
-    def __init__(self, vm):
+    def __init__(self, vm_name):
         super(RemoteHandler, self).__init__()
-        self.vm = vm
+        self.vm = vm_name
 
     def line_dropped(self, line):
         if ("Warning: Permanently added" not in line) and (line.strip() !=
                                                            "remote:"):
             print "%s: %s" % (self.vm, line)
-            status = machine_statuses["machines"][self.vm]
-            status["stderr_lines"] += 1
-            status["stderr"].append(line)
+            self.vm.stderr.append(line)
             update_status()
 
 
     def update(self, op_code, cur_count, max_count=None, message=''):
         if len(message) > 0:
-            status = machine_statuses["machines"][self.vm]
-            status["stderr_lines"] += 1
-            status["stderr"].append(message)
+            self.vm.stderr.append(message)
             update_status()
             print message
 
 
+def get_machine_by_name(name):
+    x = [x for x in machines if x.hostname==name or x.name==name]
+    # Names should be unique
+    return x[0]
+
 def update_status():
     with open(OUT_PATH, "wb") as f:
-        f.write(template.render(machine_statuses))
+        f.write(template.render(lick_status))
 
 
-def machine_err(mc):
-    mc = mc.split(".")[0]
-    machine_statuses["machines"][mc]["status"] = "danger"
+def machine_err(mc_name):
+    mc = get_machine_by_name(mc_name)
+    mc.status = "danger"
 
 
-def machine_succ(mc):
-    mc = mc.split(".")[0]
-    status = machine_statuses["machines"][mc]["status"]
-    if status != "danger":
-        status = "success"
+def machine_succ(mc_name):
+    mc = get_machine_by_name(mc_name)
+    if mc.status != "danger":
+        mc.status = "success"
 
-def update_progress(mc, stage):
-    # Remove .dtg.cl.cam.ac.uk if it's there.
-    mc = mc.split(".")[0]
-    machine_statuses["machines"][mc]["progress"] += 1
-    machine_statuses["machines"][mc]["actions"].append(stage)
-    current_task("[%s] %s" % (mc, stage))
+def update_progress(mc_name, stage):
+    mc = get_machine_by_name(mc_name)
+    mc.actions.append(stage)
+    current_task("[%s] %s" % (mc_name, stage))
 
 def current_task(task):
-    machine_statuses["tasks"].append(
-        "[%s] %s" % (datetime.datetime.now(), task))
+    lick_status["tasks"].append("[%s] %s" % (datetime.datetime.now(), task))
     update_status()
 
 def ensure_dir(d):
@@ -148,16 +157,14 @@ def sudo_capture(cmd):
     stdout = StringIO()
     stderr = StringIO()
     result = sudo(cmd, stdout=stdout, stderr=stderr)
-    status = machine_statuses["machines"][env.host.split(".")[0]]
+    machine = get_machine_by_name(env.host)
     for l in result.split('\n'):
         print l
         if "[1;31m" in l:
             # Puppet's way of writing out errors.
-            status["stderr_lines"] += 1
-            status["stderr"].append(l)
+            machine.stderr.append(l)
         else:
-            status["stdout_lines"] += 1
-            status["stdout"].append(l)
+            machine.stdout.append(l)
     update_status()
     return result.return_code
 
@@ -167,18 +174,18 @@ def get_os_versions():
 
 
 def must_update(mc, versions):
-    version = int(versions[mc["hostname"]])
+    version = int(versions[mc.hostname])
     if version < MINIMUM_UBUNTU_RELEASE:
         return True
     return False
 
 def should_update(mc, versions):
-    version = int(versions[mc["hostname"]])
+    version = int(versions[mc.hostname])
     if version < NOT_UBUNTU:
         return False
     if version < MINIMUM_UBUNTU_RELEASE:
         return True
-    if mc["name"] in UPDATE_BLACKLIST:
+    if mc.name in UPDATE_BLACKLIST:
         return False
     if version < TARGET_UBUNTU_RELEASE:
         return True
@@ -189,7 +196,6 @@ def get_vms():
     """
     Get a list of virtual machines on the husky servers.
     """
-    current_task("Finding list of VMs")
     uuids = run(
         'xe vm-list params=uuid power-state=running '
         'PV-bootloader=pygrub --minimal').split(',')
@@ -218,8 +224,8 @@ def get_vms():
                                  "Check the VM has xe-guest-utilites installed\n"
                                  % name)
                 continue
-        vms.append({'name': name, 'hostname': hostname,
-                    'repo_loc': PUPPET_BARE, 'VM': True, 'uuid': uuids[i]})
+        vms.append(Machine(name, hostname, PUPPET_BARE, True, uuid=uuids[i]))
+
     # Randomize the order of vms. Otherwise we will starve the vms at the
     # end of the list if lick doesn't finish running
     random.shuffle(vms)
@@ -235,44 +241,28 @@ def get_machines():
     return machines
 
 
-def init_status_page_machines(machines):
-    for machine in machines:
-        mc = {}
-        machine_statuses["machines"][machine["name"]] = mc
-        mc["name"] = machine["name"]
-        mc["actions"] = ["Waiting for update"]
-        mc["is_vm"] = "Virtual machine" if machine['VM'] else "Physical machine"
-        mc["progress"] = 1
-        mc["status"] = ""
-        mc["stdout"] = []
-        mc["stderr"] = []
-        mc["stderr_lines"] = 0
-        mc["stdout_lines"] = 0
-    update_status()
-
-
 @task
 def snapshot_mc(mc, commit_id):
     """
     Snapshot a VM using commit_id as a snapshot name.
     """
-    assert mc['VM']
+    assert mc.is_vm
 
     new_snap_name = commit_id[0:SHA_LENGTH]
     cur_snaps = run(
         'xe snapshot-list  snapshot-of=%s params=name-label --minimal' %
-        mc['uuid']).split(',')
+        mc.uuid).split(',')
     if new_snap_name in cur_snaps:
         print('%s already has a snapshot for commit %s. Not snapshotting again'
-              % (mc['name'], new_snap_name))
-        update_progress(mc['name'], "Snapshot already exists for VM")
+              % (mc.name, new_snap_name))
+        update_progress(mc.name, "Snapshot already exists for VM")
     else:
-        print 'Snapshotting %s' % mc['name']
-        update_progress(mc['name'], "Snapshotting")
+        print 'Snapshotting %s' % mc,name
+        update_progress(mc.name, "Snapshotting")
 
         run('xe vm-snapshot uuid=%s new-name-label=%s' %
-            (mc['uuid'], new_snap_name))
-        update_progress(mc['name'], "Snapshotted")
+            (mc.uuid, new_snap_name))
+        update_progress(mc.name, "Snapshotted")
 
 
 def is_hex(val):
@@ -425,14 +415,14 @@ def add_remotes(repo, machines):
         if remote.name.startswith(REMOTE_PREFIX):
             repo.delete_remote(remote)
     for mc in machines:
-        repo.create_remote(REMOTE_PREFIX + '_' + mc['name'],
-                           mc['hostname'] + ':' + mc['repo_loc'])
+        repo.create_remote(REMOTE_PREFIX + '_' + mc.name,
+                           mc.hostname + ':' + mc.repo)
 
 
 def snapshot_machines(machines, commit_id):
     for mc in machines:
-        if mc['VM']:
-            update_progress(mc['name'], "Snapshotting")
+        if mc.is_vm:
+            update_progress(mc.name, "Snapshotting")
             execute(snapshot_mc, mc, commit_id, hosts=[DOM0])
 
 
@@ -440,16 +430,16 @@ def update_machines(machines, friendly_upgrade):
     current_task("Finding machines that should have an OS update.")
     upgrade_mcs = []
     for mc in machines:
-        versions = execute(get_os_versions, hosts=[mc["hostname"]])
-        machine_statuses["machines"][mc["name"]]["os"] = versions[mc["hostname"]]
+        versions = execute(get_os_versions, hosts=[mc.hostname])
+        mc.os = versions[mc.hostname]
         # Some machines must be updated even if we're not using the
         # do-release-upgrade flag as they are insecure.
         if must_update(mc, versions):
-            upgrade_mcs.append(mc["hostname"])
+            upgrade_mcs.append(mc.hostname)
             # Others we want to friendly update.
         elif friendly_upgrade:
             if should_update(mc, versions):
-                upgrade_mcs.append(mc["hostname"])
+                upgrade_mcs.append(mc.hostname)
     if upgrade_mcs:
         execute(upgrade_mc, hosts=upgrade_mcs)
 
@@ -463,21 +453,21 @@ def push_config(repo, machines, sec_update):
         machines: machines to apply the updates to.
         sec_update: true if security updates should be applied.
     """
-    hostnames = [x['hostname'] for x in machines]
+    hostnames = [x.hostname for x in machines]
 
     if sec_update:
         execute(security_update, hosts=hostnames)
 
     for mc in ORIGIN:
-        current_task("Pushing puppet to %s" % mc["name"])
-        handler = RemoteHandler(mc['name'])
-        remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
+        current_task("Pushing puppet to %s" % mc.name)
+        handler = RemoteHandler(mc.name)
+        remote = repo.remotes[REMOTE_PREFIX + '_' + mc.name]
         info = remote.push(refspec='master:master', progress=handler)[0]
         if not (info.flags & (info.NEW_TAG | info.NEW_HEAD | info.UP_TO_DATE |
                               info.FAST_FORWARD)):
             sys.stderr.write(info.summary)
             sys.stderr.write("Incorrect flag whilst pushing to %s: %d. "
-                             "Terminating.\n" % (mc['name'], info.flags))
+                             "Terminating.\n" % (mc.name, info.flags))
             sys.exit(-1)
 
     execute(run_latest_puppet, hosts=hostnames)
@@ -497,9 +487,12 @@ def main(args):
                          trim_blocks=True)
     global template
     template = jinja_env.get_template('deploy-status.html')
-    machine_statuses["deploy_time"] = datetime.datetime.now()
-    machine_statuses["machines"] = {}
-    machine_statuses["tasks"] = []
+    lick_status["deploy_time"] = datetime.datetime.now()
+    lick_status["licker"] = os.getenv("USER")
+    lick_status["version"] = ""
+    lick_status["tasks"] = []
+    lick_status["machines"] = []
+
     current_task("Lick initiatisation")
     update_status()
 
@@ -514,8 +507,10 @@ def main(args):
     env.warn_only = True
 
     repo = Repo('.', search_parent_directories=True)
-    current_task("Initialising list of machines")
+    lick_status["version"] = repo.head.commit.hexsha
+    global machines
     machines = get_machines()
+
     add_remotes(repo, ORIGIN + machines)
 
     if args.machines:
@@ -523,12 +518,12 @@ def main(args):
         # one element list.
         if isinstance(args.machines, str):
             args.machines = [args.machines]
-        machines = [x for x in machines if x['name'] in args.machines]
+        machines = [x for x in machines if x.name in args.machines]
     if not machines:
         sys.stderr.write("No machines to apply puppet to")
         sys.exit(-1)
-
-    init_status_page_machines(machines)
+    lick_status["machines"] = machines
+    update_status()
 
     # Remove old lick-generated snapshots, or else they build up
     if not args.no_snap_gc:
@@ -560,7 +555,7 @@ if __name__ == '__main__':
     parser.add_argument('--security-update', action='store_true',
                         dest='security_update',
                         help='Apply all security updates immediately')
-    parser.add_argument('machines', nargs='?',
+    parser.add_argument('machines', nargs='*',
                         help='Limit the machines that the lick is applied to')
 
     args = parser.parse_args()
