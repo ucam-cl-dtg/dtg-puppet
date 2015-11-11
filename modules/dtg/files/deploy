@@ -139,13 +139,13 @@ def get_os_versions():
 
 
 def must_update(mc, versions):
-    version = int(versions[mc])
+    version = int(versions[mc["name"]])
     if version < MINIMUM_UBUNTU_RELEASE:
         return True
 
 
 def should_update(mc, versions):
-    version = int(versions[mc])
+    version = int(versions[mc["name"]])
     if version < NOT_UBUNTU:
         return False
     if version < MINIMUM_UBUNTU_RELEASE:
@@ -385,9 +385,9 @@ def update_machines(machines, friendly_upgrade):
     current_task("Finding machines that should have an OS update.")
     hostnames = [x['hostname'] for x in machines]
     upgrade_mcs = []
-    for mc in hostnames:
-        versions = execute(get_os_versions, hosts=mc)
-        machine_statuses[mc.split(".")[0]]["os"] = version
+    for mc in machines:
+        versions = execute(get_os_versions, hosts=[mc["hostname"]])
+        machine_statuses["machines"][mc["name"]]["os"] = versions[mc["name"]]
         # Some machines must be updated even if we're not using the
         # do-release-upgrade flag as they are insecure.
         if must_update(mc, versions):
@@ -475,6 +475,8 @@ def main(args):
         sys.stderr.write("No machines to apply puppet to")
         sys.exit(-1)
 
+    init_status_page_machines(machines)
+
     # Remove old lick-generated snapshots, or else they build up
     if not args.no_snap_gc:
         execute(snap_gc, hosts=[DOM0])
@@ -484,8 +486,8 @@ def main(args):
     # don't care if someone MiTMs us.
     os.environ['GIT_SSH'] = ssh_no_fngr
 
-    snapshot_machines(machines)
-    update_machines(machines, args.update)
+    snapshot_machines(machines, repo.head.commit.hexsha)
+    update_machines(machines, args.upgrade)
     push_config(repo, machines,  args.security_update)
 
 
