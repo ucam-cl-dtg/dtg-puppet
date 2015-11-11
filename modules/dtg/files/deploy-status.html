@@ -29,7 +29,7 @@
   </head>
   <body>
     <h1>Puppet lick at {{ deploy_time }}</h1>
-    <h2>Licked {{ version }} by {{ licker }}</h2>
+    <h2>Licked <a href="https://github.com/ucam-cl-dtg/dtg-puppet/commit/{{ version }}">{{ version }}</a> by <a href="/~{{ licker }}">{{ licker }}</a></h2>
     <p>
       <code>
         {% for task in tasks %}
@@ -50,7 +50,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for kv in machines %}
+        {% for kv in machines | sort(kv.name) %}
         <tr class={{ kv.status }}>
           <td>{{ kv.name }}</td>
           <td>{{ kv.is_vm }}</td>

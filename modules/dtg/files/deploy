@@ -6,9 +6,11 @@ Deploy the latest puppet, security fixes or Ubuntu release to all puppies.
 
 import argparse
 from jinja2 import Environment, FileSystemLoader
+import pickle
 import socket
 from StringIO import StringIO
 import sys
+import threading
 import os
 from fabric.api import cd, env, execute, output, parallel, run, sudo, show, task
 from git import Repo, RemoteProgress
@@ -42,13 +44,34 @@ template = ""
 machines = []
 lick_status = {}
 
+orig_pid = os.getpid()
+
 OUT_DIR = "%s/public_html/dtg-infra" % os.getenv("HOME")
 OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
 OUT_PATH = "%s/%s" % (OUT_DIR, OUT_FILE)
 OUT_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
                                                          OUT_FILE)
 
+class Aggregator(threading.Thread):
 
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        global machines
+        UDPSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        UDPSock.bind(("localhost", 7777))
+
+        while True:
+            data = UDPSock.recv(1024)
+            try:
+                new_mc = pickle.loads(data)
+                machines = [x for x in machines if x.name != new_mc.name]
+                machines.append(new_mc)
+            except ValueError:
+                print("Unpickling error")
+                print(data)
+            update_status()
 
 class Machine:
 
@@ -60,13 +83,9 @@ class Machine:
         self.uuid=uuid
 
         self.actions = ["Waiting for update"]
+        self.status = "active"
         self.stdout = []
         self.stderr = []
-
-
-    def get_jinja_dict():
-        # TODO
-        pass
 
 
 # This is where we need to push first as it is the canonical place for the
@@ -94,7 +113,7 @@ PHYSICAL_MACHINES = [
 ]
 
 UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn', 'balancer',
-                    'gitlab', 'weather', 'saluki1']
+                    'weather', 'saluki1']
 
 
 class RemoteHandler(RemoteProgress):
@@ -126,8 +145,18 @@ def get_machine_by_name(name):
     return x[0]
 
 def update_status():
-    with open(OUT_PATH, "wb") as f:
-        f.write(template.render(lick_status))
+    if os.getpid() == orig_pid:
+        # Dump to a file
+        with open(OUT_PATH, "wb") as f:
+            f.write(template.render(lick_status))
+    else:
+    # Send our state to the co-ordinator
+        UDPSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            UDPSock.sendto(pickle.dumps(get_machine_by_name(env.host)),
+                           ("localhost", 7777))
+        except IndexError:
+            is_core_thread = True
 
 
 def machine_err(mc_name):
@@ -257,7 +286,7 @@ def snapshot_mc(mc, commit_id):
               % (mc.name, new_snap_name))
         update_progress(mc.name, "Snapshot already exists for VM")
     else:
-        print 'Snapshotting %s' % mc,name
+        print 'Snapshotting %s' % mc.name
         update_progress(mc.name, "Snapshotting")
 
         run('xe vm-snapshot uuid=%s new-name-label=%s' %
@@ -479,7 +508,7 @@ def main(args):
     output['running'] = False
     output['stdout'] = False
 
-
+    Aggregator().start()
     ensure_dir(OUT_DIR)
     print("Streaming status to %s" % OUT_URL)
 
@@ -505,6 +534,7 @@ def main(args):
         sys.exit(1)
 
     env.warn_only = True
+    env.skip_bad_hosts = True
 
     repo = Repo('.', search_parent_directories=True)
     lick_status["version"] = repo.head.commit.hexsha
