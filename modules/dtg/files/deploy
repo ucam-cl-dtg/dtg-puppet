@@ -5,18 +5,19 @@ Deploy the latest puppet, security fixes or Ubuntu release to all puppies.
 """
 
 import argparse
+import datetime
+from datetime import timedelta
+from fabric.api import cd, env, execute, output, parallel, run, sudo, show, task
+from git import Repo, RemoteProgress
 from jinja2 import Environment, FileSystemLoader
+import os
 import pickle
+import random
 import socket
 from StringIO import StringIO
 import sys
 import threading
-import os
-from fabric.api import cd, env, execute, output, parallel, run, sudo, show, task
-from git import Repo, RemoteProgress
-import random
-import datetime
-from datetime import timedelta
+
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
