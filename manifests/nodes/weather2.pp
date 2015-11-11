@@ -8,27 +8,28 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
     class { 'network::interfaces':
       interfaces => {
         'eth0' => {
-          'method' => 'static',
-          'address' => '128.232.98.211',
-          'netmask' => '255.255.255.0',
-          'network' => '128.232.98.0',
-          'gateway' => '128.232.98.1',
+          'method'          => 'static',
+          'address'         => '128.232.98.211',
+          'netmask'         => '255.255.255.0',
+          'network'         => '128.232.98.0',
+          'gateway'         => '128.232.98.1',
           'dns-nameservers' => $::dns_name_servers,
-          'dns-search' => 'dtg.cl.cam.ac.uk'
+          'dns-search'      => 'dtg.cl.cam.ac.uk'
         }
       },
-      auto => ['eth0'],
+      auto       => ['eth0'],
     }
   }
 
   # Give weather-adm admin on these machines
   group { 'weather-adm': ensure => present }
   sudoers::allowed_command{ 'weather-adm':
-    command => 'ALL',
-    group => 'weather-adm',
-    run_as => 'ALL',
-    require_password => false,
-    comment => 'Allow members of weather-adm group root on weather boxes',
+    command             => 'ALL',
+    group               => 'weather-adm',
+    run_as              => 'ALL',
+    require_password    => false,
+    comment             => 'Allow members of weather-adm group root on weather\
+ boxes',
   }
 
   # Install all our packages
@@ -41,85 +42,84 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
                     Exec['create-venv'],
                   ]
   }
-  
+
   # Setup our weather webapp user
   group {'weather':
     ensure => present,
   } ->
   user {'weather':
-    ensure => present,
-    shell => '/bin/bash',
-    home => '/srv/weather',
-    password => '*',
-    managehome => true,
-    gid => 'weather',
-    purge_ssh_keys => true,
+    ensure          => present,
+    shell           => '/bin/bash',
+    home            => '/srv/weather',
+    password        => '*',
+    managehome      => true,
+    gid             => 'weather',
+    purge_ssh_keys  => true,
   }
 
   # Setup the weather service
   # Checkout appropriate git branch and keep up to date
   $weather_repo_branch = $::hostname ? {
-    'weather2' => 'master',
-    'weather2-dev' => 'development',
+    'weather2'      => 'master',
+    'weather2-dev'  => 'development',
   }
   vcsrepo {'/srv/weather/weather-srv':
-    ensure => latest,
-    provider => git,
-    source => 'https://github.com/cillian64/dtg-weather-2.git',
-    revision => $weather_repo_branch,
-    user => 'weather',
-    notify => [ File['systemd-script'], Service['weather-service'] ],
+    ensure      => latest,
+    provider    => git,
+    source      => 'https://github.com/cillian64/dtg-weather-2.git',
+    revision    => $weather_repo_branch,
+    user        => 'weather',
+    notify      => [ File['systemd-script'], Service['weather-service'] ],
   } ->  # Create venv
   exec {'create-venv':
     creates => '/srv/weather/venv',
     command => '/srv/weather/weather-srv/create_venv.sh',
-    cwd => '/srv/weather/',
-    user => 'weather',
-    group => 'weather',
+    cwd     => '/srv/weather/',
+    user    => 'weather',
+    group   => 'weather',
   }
   # Install service
   file {'systemd-script':
-    path => '/etc/systemd/system/weather-service.service',
-    ensure => file,
-    owner => 'root',
-    group => 'root',
-    source => 'puppet:///modules/dtg/weather2/systemd_job.service',
+    ensure  => file,
+    path    => '/etc/systemd/system/weather-service.service',
+    owner   => 'root',
+    group   => 'root',
+    source  => 'puppet:///modules/dtg/weather2/systemd_job.service',
     require => Vcsrepo['/srv/weather/weather-srv'],
   }
-  
-  
+
   # Start the weather services
   service {'weather-service':
-    name => 'weather',
-    ensure => running,
-    enable => true,
-    require => [ Exec['create-venv'],
-                 File['systemd-script'],
-                 Vcsrepo['/srv/weather/weather-srv'],
-               ],
+    ensure  => running,
+    name    => 'weather',
+    enable  => true,
+    require =>  [ Exec['create-venv'],
+                  File['systemd-script'],
+                  Vcsrepo['/srv/weather/weather-srv'],
+                ],
   }
 
   # Configure nginx:
   file {'nginx-disable-default':
-    path => '/etc/nginx/sites-enabled/default',
-    ensure => absent,
+    ensure  => absent,
+    path    => '/etc/nginx/sites-enabled/default',
     require => Package['nginx'],
   }
   file {'nginx-conf':
-    path => '/etc/nginx/sites-enabled/weather.nginx.conf',
-    ensure => file,
-    owner => 'root',
-    group => 'root',
-    mode => '0644',
-    source => 'puppet:///modules/dtg/weather2/weather.nginx.conf',
-    notify => Service['nginx'],
+    ensure  => file,
+    path    => '/etc/nginx/sites-enabled/weather.nginx.conf',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+    source  => 'puppet:///modules/dtg/weather2/weather.nginx.conf',
+    notify  => Service['nginx'],
     require => Package['nginx'],
   }
-  
+
   # Start up nginx:
   service {'nginx':
-    enable => true,
-    ensure => running,
+    ensure  => running,
+    enable  => true,
     require => [
       File['nginx-disable-default'],
       File['nginx-conf'],
@@ -132,19 +132,23 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
     ensure => present,
   } ->
   user {'postgres-ssh-tunnel':
-    ensure => present,
-    shell => '/usr/sbin/nologin',
-    home => '/home/postgres-ssh-tunnel',
-    password => '*',
-    managehome => true,
-    gid => 'postgres-ssh-tunnel',
-    purge_ssh_keys => true,
+    ensure          => present,
+    shell           => '/usr/sbin/nologin',
+    home            => '/home/postgres-ssh-tunnel',
+    password        => '*',
+    managehome      => true,
+    gid             => 'postgres-ssh-tunnel',
+    purge_ssh_keys  => true,
   } ->
   ssh_authorized_key {'postgres-ssh-tunnel-key':
-    ensure => present,
-    type => 'ssh-rsa',
-    user => 'postgres-ssh-tunnel',
-    key => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQC1op9dVlbQoguAtT0ciVsgEnI1bcGpYkB1KbuuR1MaStB0PbwgbWbNXtHCW5fLQNUab5r1C2C7RKGGGMG4GeotfsyJcvyrn1kgyZXA0qDQH3G4/gNIXx0V0GuZrMt0hvXsauV1sUQyEePFQJZ9j9VMR9jh7QVM5SAAsBKiufhUmsVwqCrjqPujJ2dtYAhygDlJw4m9sP1Axoqyka82hFotvcq45AgOUZ2f6JAKIbXLpq+osfknXHeBIerFPlZqCR38G73VvkaS6Gz3W0qXq+3d5nhqOdicqzKclb5lMcJCIEAE/C45hRItl4Co+Vcrr7IztNdtdxLhYIGivNVQk91t',
+    ensure  => present,
+    type    => 'ssh-rsa',
+    user    => 'postgres-ssh-tunnel',
+    key     => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQC1op9dVlbQoguAtT0ciVsgEnI1bcGpYk\
+B1KbuuR1MaStB0PbwgbWbNXtHCW5fLQNUab5r1C2C7RKGGGMG4GeotfsyJcvyrn1kgyZXA0qDQH3G4\
+/gNIXx0V0GuZrMt0hvXsauV1sUQyEePFQJZ9j9VMR9jh7QVM5SAAsBKiufhUmsVwqCrjqPujJ2dtYA\
+hygDlJw4m9sP1Axoqyka82hFotvcq45AgOUZ2f6JAKIbXLpq+osfknXHeBIerFPlZqCR38G73VvkaS\
+6Gz3W0qXq+3d5nhqOdicqzKclb5lMcJCIEAE/C45hRItl4Co+Vcrr7IztNdtdxLhYIGivNVQk91t',
   }
 }
 
