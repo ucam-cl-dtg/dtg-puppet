@@ -116,6 +116,18 @@ def update_status():
     with open(OUT_PATH, "wb") as f:
         f.write(template.render(machine_statuses))
 
+
+def machine_err(mc):
+    mc = mc.split(".")[0]
+    machine_statuses["machines"][mc]["status"] = "danger"
+
+
+def machine_succ(mc):
+    mc = mc.split(".")[0]
+    status = machine_statuses["machines"][mc]["status"]
+    if status != "danger":
+        status = "success"
+
 def update_progress(mc, stage):
     # Remove .dtg.cl.cam.ac.uk if it's there.
     mc = mc.split(".")[0]
@@ -227,6 +239,7 @@ def init_status_page_machines(machines):
         mc["actions"] = ["Waiting for update"]
         mc["is_vm"] = "Virtual machine" if machine['VM'] else "Physical machine"
         mc["progress"] = 1
+        mc["status"] = ""
         mc["stdout"] = []
         mc["stderr"] = []
         mc["stderr_lines"] = 0

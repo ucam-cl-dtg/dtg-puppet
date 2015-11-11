@@ -51,13 +51,13 @@
       </thead>
       <tbody>
         {% for machine, kv in machines.iteritems() %}
-        <tr>
+        <tr class={{ kv.status }}>
           <td>{{ kv.name }}</td>
           <td>{{ kv.is_vm }}</td>
           <td>{{ kv.os }}</td>
           <td>
             {% for action in kv.actions %}
-            {{ kv.action }}
+            {{ action }} <br />
             {% endfor %}
           </td>
           <td>
