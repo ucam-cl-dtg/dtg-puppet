@@ -161,6 +161,18 @@ class admin_users {
       keys      => ['Mistral CONTRASTIN <mojpc2@cam.ac.uk>'],
       uid       => 3476,
     }
+    dtg::add_user { 'amiae2':
+      real_name => 'Ahmed Elmezeini',
+      groups    => [],
+      keys      => ['Ahmed Elmezeini <amiae2@cam.ac.uk>'],
+      uid       => 3581,
+    }
+    dtg::add_user { 'jp662':
+      real_name => 'Jeunese Payne',
+      groups    => [],
+      keys      => ['Jeunese Payne <jp662@cam.ac.uk>'],
+      uid       => 3284,
+    }
 
 }
 # Admin user ids to be given root on the nodes via monkeysphere
@@ -216,8 +228,15 @@ $nfs_client_port = 1025
 
 # Override Service definition until we are on a new enough puppet to know about ubuntu and systemd
 
-if $::operatingsystem == 'Ubuntu' and $::operatingsystemmajrelease == "15.04" {
+if $::operatingsystem == 'Ubuntu' {
   Service {
     provider => systemd,
   }
+}
+
+# Configure git push to deploy
+exec { "git-push-to-deploy":
+  command => 'git config receive.denyCurrentBranch updateInstead',
+  unless => "git config --get receive.denyCurrentBranch | grep updateInstead",
+  cwd => "/etc/puppet",
 }

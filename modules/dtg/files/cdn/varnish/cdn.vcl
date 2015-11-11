@@ -26,6 +26,10 @@ backend default_ssl{
 }
 
 sub vcl_recv {
+    
+    # Strip query params from the request as this service should only be serving static content
+    set req.url = regsub(req.url, "\?.*$", "");
+
     # Happens before we check if we have this in cache already.
     # 
     # Typically you clean up the request here, removing cookies you don't need,
@@ -39,8 +43,11 @@ sub vcl_recv {
       set req.backend_hint = default;
     }
 
-  	# remove cookies as we don't care on a CDN
+  	# remove headers that may stop us using our cache
     unset req.http.Cookie;
+    unset req.http.Cache-Control;
+    unset req.http.Max-Age;
+    unset req.http.Pragma;
 }
 
 sub vcl_backend_response {
@@ -54,6 +61,7 @@ sub vcl_backend_response {
 
   	# cache everything for 1 week, ignoring any cache headers
   	set beresp.ttl = 1w;
+    set beresp.grace = 1h;
 }
 
 sub vcl_deliver {
@@ -61,4 +69,26 @@ sub vcl_deliver {
     # response to the client.
     # 
     # You can do accounting or modifying the final object here.
+
+    if (obj.hits > 0) {
+        set resp.http.X-Varnish-Cache = "HIT";
+    } else {
+        set resp.http.X-Varnish-Cache = "MISS";
+    }
+}
+
+# enable grace mode - for serving stale content when apache is sick...
+# https://www.varnish-cache.org/docs/4.0/users-guide/vcl-grace.html
+sub vcl_hit {
+   if (obj.ttl >= 0s) {
+       // A pure unadultered hit, deliver it
+       return (deliver);
+   }
+   if (obj.ttl + obj.grace > 0s) {
+       // Object is in grace, deliver it
+       // Automatically triggers a background fetch
+       return (deliver);
+   }
+   // fetch & deliver once we get the result
+   return (fetch);
 }

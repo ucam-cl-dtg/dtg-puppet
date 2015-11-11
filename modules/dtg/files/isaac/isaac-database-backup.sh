@@ -22,11 +22,8 @@
 TAR_BIN_PATH="$(which tar)"
 TODAYS_DATE=`date +%Y-%m-%d`
 DAYS_TO_KEEP_BACKUPS=30 
-GLOBAL_TMP="tmp"
-GLOBAL_ZIP_DIR="combined"
-GLOBAL_ZIP_NAME="isaac-db-backup"$TODAYS_DATE
-GLOBAL_BACKUP_PATH="/local/data/rutherford/database-backup" # do not include trailing slash
-
+ZIP_NAME="isaac-db-backup"$TODAYS_DATE
+BACKUP_PATH="/local/data/rutherford/database-backup" # do not include trailing slash
 
 ### Set server settings
 MONGO_HOST="localhost"
@@ -36,103 +33,96 @@ MONGO_PASSWORD=""
 MONGO_FILE_NAME="isaac-mongodb-backup.$TODAYS_DATE" 
 MONGO_DUMP_BIN_PATH="$(which mongodump)"
 
+# Temporary folders
+TMP_DIR=$BACKUP_PATH"/tmp"
+MONGO_TMP_DIR=$TMP_DIR"/mongodb"
+POSTGRES_TMP_DIR=$TMP_DIR"/postgres"
+ZIP_DIR=$BACKUP_PATH"/combined"
 
 # Create BACKUP_PATH directory if it does not exist
-[ ! -d $GLOBAL_BACKUP_PATH ] && mkdir -p $GLOBAL_BACKUP_PATH || :
+[ ! -d $BACKUP_PATH ] && mkdir -p $BACKUP_PATH
+
+# initialise temporary folders
+[ -d "$TMP_DIR" ] && rm -Rf $TMP_DIR  || mkdir -p $TMP_DIR
+echo "`date` Delete and recreated $TMP_DIR"
+
+# initialize mongo backup directory
+[ -d "$MONGO_TMP_DIR" ] && rm -Rf $MONGO_TMP_DIR  || mkdir -p $MONGO_TMP_DIR
+echo "`date` Delete and recreated $MONGO_TMP_DIR"
+
+# initialize postgres backup directory
+[ -d "$POSTGRES_TMP_DIR" ] && rm -Rf $POSTGRES_TMP_DIR  || mkdir -p $POSTGRES_TMP_DIR
+echo "`date` Delete and recreated $POSTGRES_TMP_DIR"
+
+# initialize output backup directory
+[ -d "$ZIP_DIR" ] && mkdir -p $ZIP_DIR
+echo "`date` Checked $ZIP_DIR exists"
+
+
+##################################################################################
+# Mongodb backup 
+##################################################################################
 
 # Ensure directory exists before dumping to it
-if [ -d "$GLOBAL_BACKUP_PATH" ]; then
+if [ -d "$BACKUP_PATH" ]; then
+	cd $BACKUP_PATH
 
-	cd $GLOBAL_BACKUP_PATH
-	
-	# initialize temp backup directory
-	TMP_BACKUP_DIR="./"$GLOBAL_TMP"/mongodb"
-	
-	echo; echo "=> Backing up Mongo Server: $MONGO_HOST:$MONGO_PORT"; echo -n '   ';
+	echo; echo "`date` => Backing up Mongo Server: $MONGO_HOST:$MONGO_PORT"; echo -n '   ';
 	
 	# run dump on mongoDB
 	if [ "$MONGO_USERNAME" != "" -a "$MONGO_PASSWORD" != "" ]; then 
-		$MONGO_DUMP_BIN_PATH --host $MONGO_HOST:$MONGO_PORT -u $MONGO_USERNAME -p $MONGO_PASSWORD --out $TMP_BACKUP_DIR >> /dev/null
+		$MONGO_DUMP_BIN_PATH --host $MONGO_HOST:$MONGO_PORT -u $MONGO_USERNAME -p $MONGO_PASSWORD --out $MONGO_TMP_DIR >> /dev/null
 	else
-		$MONGO_DUMP_BIN_PATH --host $MONGO_HOST:$MONGO_PORT --out $TMP_BACKUP_DIR >> /dev/null 
+		$MONGO_DUMP_BIN_PATH --host $MONGO_HOST:$MONGO_PORT --out $MONGO_TMP_DIR >> /dev/null 
 	fi
 else
-	echo "!!!=> Failed to create backup path: $GLOBAL_BACKUP_PATH"
+	echo "`date` !!!=> Failed to create backup path: $BACKUP_PATH"
 fi
 
 
 ##################################################################################
 # Postgres backup 
 ##################################################################################
-POSTGRES_EXECUTE=true
-if [ "$POSTGRES_EXECUTE" = true ]; then
-
-POSTGRES_TMP_BACKUP_DIR=$GLOBAL_BACKUP_PATH"/"$GLOBAL_TMP"/postgres"
 
 POSTGRES_DATABASES=`psql -l -t | cut -d'|' -f1 | sed -e 's/ //g' -e '/^$/d'`
 
-#Clean and make a tmp dir
-if [ -d $POSTGRES_TMP_BACKUP_DIR ]; then
-	rm -Rf $POSTGRES_TMP_BACKUP_DIR
+#Do a dump all to get all databases
+tmppath=$POSTGRES_TMP_DIR"/pg_dump_"$TODAYS_DATE".sql"
+echo "Dumping all to $tmppath"
+pg_dumpall > $tmppath
+if [ -f "$tmppath" ]; then
+	echo "`date` => Success: saved backup to `du -sh $tmppath`"; echo;
+else
+	echo "`date` => Error: did not save backup to `$tmppath`"; echo;
 fi
-mkdir $POSTGRES_TMP_BACKUP_DIR
 
-cd $GLOBAL_BACKUP_PATH
-
-#Iterate through databases ignoring template0 and template1
-for i in $POSTGRES_DATABASES; do
-  if [ "$i" != "template0" ] && [ "$i" != "template1" ]; then
-  	backuppath=$GLOBAL_BACKUP_PATH"/"$i\_$TODAYS_DATE
-  	tmppath=$POSTGRES_TMP_BACKUP_DIR"/"$i\_$TODAYS_DATE
-    echo Dumping $i to $tmppath
-    pg_dump -Fc $i > $tmppath
-
-    if [ -f "$tmppath" ]; then
-    	echo "=> Success: saved "$i"to `du -sh $tmppath`"; echo;
-    else
-    	echo "=> Error: did not save to `$tmppath`"; echo;
-    fi
-
-  fi
-done
-
-
-fi
 ##################################################################################
 # Zip up the results and put them in the backup dir 
 ##################################################################################
 # check to see if mongoDb was dumped correctly
 
+cd $ZIP_DIR
 
-if [ -d "$GLOBAL_TMP" ]; then
+# turn dumped files into a single tar file
+echo "`date` $TAR_BIN_PATH --remove-files -czf $ZIP_NAME.tar.gz $TMP_DIR >> /dev/null"
+$TAR_BIN_PATH --remove-files -czf $ZIP_NAME.tar.gz $TMP_DIR >> /dev/null
 
-	if [ -d "$GLOBAL_ZIP_DIR" ]; then
-		cd $GLOBAL_ZIP_DIR
+# verify that the file was created
+if [ -f "$ZIP_NAME.tar.gz" ]; then
+	echo "`date` => Success: `du -sh $ZIP_NAME.tar.gz`"; echo;
 
-		# turn dumped files into a single tar file
-		$TAR_BIN_PATH --remove-files -czf $GLOBAL_ZIP_NAME.tar.gz "../"$GLOBAL_TMP >> /dev/null
-
-		# verify that the file was created
-		if [ -f "$GLOBAL_ZIP_NAME.tar.gz" ]; then
-			echo "=> Success: `du -sh $GLOBAL_ZIP_NAME.tar.gz`"; echo;
-
-			# forcely remove if files still exist and tar was made successfully
-			# this is done because the --remove-files flag on tar does not always work
-			if [ -d "$GLOBAL_BACKUP_PATH/$GLOBAL_ZIP_DIR/$GLOBAL_ZIP_NAME" ]; then
-				rm -rf "$GLOBAL_BACKUP_PATH/$GLOBAL_ZIP_DIR/$GLOBAL_ZIP_NAME"
-			fi
-		else
-			 echo "!!!=> Failed to create backup file: $GLOBAL_BACKUP_PATH/$GLOBAL_ZIP_DIR/$GLOBAL_ZIP_NAME.tar.gz"; echo;
-		fi
-	else
-		echo "!!!=> Failed to add to the dir: $GLOBAL_BACKUP_PATH/$GLOBAL_ZIP_DIR"
+	# forcely remove if files still exist and tar was made successfully
+	# this is done because the --remove-files flag on tar does not always work
+	if [ -d "$ZIP_DIR/$ZIP_NAME" ]; then
+		echo "`date` Removing : $ZIP_DIR/$ZIP_NAME"
+		rm -rf "$ZIP_DIR/$ZIP_NAME"
 	fi
-
-
-else 
-	echo; echo "!!!=> Failed to backup mongoDB"; echo;	
+else
+	 echo "`date` !!!=> Failed to create backup file: $ZIP_DIR/$ZIP_NAME.tar.gz"; echo;
 fi
 
 
 #Remove old zips after the specified time period
-find $GLOBAL_BACKUP_PATH -type f -prune -mtime +$DAYS_TO_KEEP_BACKUPS -exec rm -f {} \;
+echo "`date` Attempting to prune files older than $DAYS_TO_KEEP_BACKUPS days"
+echo "`date` Found and removed `find $ZIP_DIR -type f -prune -mtime +$DAYS_TO_KEEP_BACKUPS | wc -l`"
+find $ZIP_DIR -type f -prune -mtime +$DAYS_TO_KEEP_BACKUPS -exec rm -f {} \;

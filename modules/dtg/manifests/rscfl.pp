@@ -8,26 +8,9 @@ class dtg::rscfl {
   }
 
   $rscfl_packages = ['python-jinja2', 'systemtap', 'build-essential', 'cmake',
-                    'clang', 'python-pip', 'ccache']
+                    'clang', 'python-pip', 'ccache', 'cna']
   package{$rscfl_packages:
     ensure => installed,
-  }
-
-  # Clone upstream linux
-  vcsrepo { '/srv/linux-stable':
-    ensure   => present,
-    provider => git,
-    source   => 'git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git',
-    owner    => 'root',
-    group    => 'rscfl',
-    revision => 'v4.0'
-  }
-
-  # Setup bash profile for all users
-
-  file {'/etc/.profile':
-    source => 'puppet:///modules/dtg/.profile',
-    ensure => present,
   }
 
 }
