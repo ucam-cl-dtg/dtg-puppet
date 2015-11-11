@@ -288,10 +288,11 @@ def upgrade_mc():
         sudo('apt-get -q -y purge stunnel4')
         sudo('rm -rf /etc/stunnel')
         sudo('echo \'DPkg::options { "--force-confdef"; "--force-confnew"; }\' > /etc/apt/apt.conf.d/90-dtg-upgrade')
-        sudo(
-            'yes | '
-            'DEBIAN_FRONTEND=noninteractive '
-            'do-release-upgrade -f DistUpgradeViewNonInteractive')
+        if sudo(
+                'yes | '
+                'DEBIAN_FRONTEND=noninteractive '
+                'do-release-upgrade -f DistUpgradeViewNonInteractive'):
+            return
         sudo('rm -rf /etc/apt/apt.conf.d/90-dtg-upgrade')
         # Remove any out of date packages after upgrading.
         sudo("apt-show-versions | grep :amd64 | grep -v uptodate | "
