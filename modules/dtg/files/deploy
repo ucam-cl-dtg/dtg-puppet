@@ -150,7 +150,7 @@ def should_update(mc, versions):
         return False
     if version < MINIMUM_UBUNTU_RELEASE:
         return True
-    if mc.split(".")[0] in UPDATE_BLACKLIST:
+    if mc["name"] in UPDATE_BLACKLIST:
         return False
     if version < TARGET_UBUNTU_RELEASE:
         return True
@@ -165,21 +165,29 @@ def get_vms():
     uuids = run(
         'xe vm-list params=uuid power-state=running '
         'PV-bootloader=pygrub --minimal').split(',')
+    names = run(
+        'xe vm-list params=name-label power-state=running '
+        'PV-bootloader=pygrub --minimal').split(',')
     vms = []
-    for uuid in uuids:
-        name_label = run('xe vm-list params=name-label uuid=%s --minimal' %
-                         uuid).replace(' ', '')
-        ip = run('xe vm-param-get param-name=networks uuid=%s | '
-                 'sed -e \'s_0/ip: __\' -e  \'s/; .*$//\'' %
-                 uuid)
+    i = 0
+    for name in names:
         try:
-            hostname = socket.gethostbyaddr(ip)[0]
+            hostname = "%s%s" % (name, DTG_DOM)
+            socket.gethostbyname(hostname)
         except socket.error:
-            sys.stderr.write("Unable to lookup hostname of %s\n" % name_label)
-            continue
-
-        vms.append({'name': name_label, 'hostname': hostname,
-                    'repo_loc': PUPPET_BARE, 'VM': True, 'uuid': uuid})
+            sys.stderr.write("%s does not have the CNAME %s%s" % (name, name,
+                                                                  DTG_DOM))
+            ip = run('xe vm-param-get param-name=networks uuid=%s | '
+                     'sed -e \'s_0/ip: __\' -e  \'s/; .*$//\'' %
+                     uuids[i])
+            try:
+                hostname = socket.gethostbyaddr(ip)[0]
+            except socket.error:
+                sys.stderr.write("Unable to lookup hostname of %s\n" % name)
+                continue
+        vms.append({'name': name, 'hostname': hostname,
+                    'repo_loc': PUPPET_BARE, 'VM': True, 'uuid': uuids[i]})
+        i += 1
     # Randomize the order of vms. Otherwise we will starve the vms at the
     # end of the list if lick doesn't finish running
     random.shuffle(vms)
