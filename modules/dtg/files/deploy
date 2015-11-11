@@ -339,19 +339,6 @@ def run_latest_puppet():
             sudo('nice ./hooks/post-update')
     update_progress(env.host, "Applied puppet")
 
-@task
-def post_update_hook():
-    """
-    Apply the post_update hook manually to force a puppet refresh.
-
-    This does more than calling run_puppet, such as ensuring that
-    /etc/puppet is the latest version.
-    """
-    update_progress(env.host, "Running post-update hook manually")
-    run('nice /etc/puppet-bare/hooks/post-update')
-    update_progress(env.host, "Executed hook manually")
-
-
 
 def add_remotes(repo, machines):
     """
