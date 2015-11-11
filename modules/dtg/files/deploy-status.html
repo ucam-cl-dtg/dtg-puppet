@@ -51,13 +51,13 @@
       </thead>
       <tbody>
         {% for machine, kv in machines.iteritems() %}
-        <tr>
+        <tr class={{ kv.status }}>
           <td>{{ kv.name }}</td>
           <td>{{ kv.is_vm }}</td>
           <td>{{ kv.os }}</td>
           <td>
             {% for action in kv.actions %}
-            {{ kv.action }}
+            {{ action }} <br />
             {% endfor %}
           </td>
           <td>
@@ -77,7 +77,7 @@
 
     {% for machine, kv in machines.iteritems() %}
     <div class="modal fade" id="stdout-{{ kv.name }}" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -86,7 +86,7 @@
           <div class="modal-body">
             <code>
               {% for line in kv.stdout %}
-              {{ line }}
+              {{ line }}<br />
               {% endfor %}
             </code>
           </div>
@@ -106,7 +106,9 @@
           </div>
           <div class="modal-body">
             <code>
-              {{ kv.stderr }}
+              {% for line in kv.stderr %}
+              {{ line }}<br />
+              {% endfor %}
             </code>
           </div>
           <div class="modal-footer">

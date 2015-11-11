@@ -82,7 +82,7 @@ PHYSICAL_MACHINES = [
 ]
 
 UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn', 'balancer',
-                    'gitlab', 'weather', 'isaac-staging', 'saluki1']
+                    'gitlab', 'weather', 'saluki1']
 
 
 class RemoteHandler(RemoteProgress):
@@ -116,12 +116,24 @@ def update_status():
     with open(OUT_PATH, "wb") as f:
         f.write(template.render(machine_statuses))
 
+
+def machine_err(mc):
+    mc = mc.split(".")[0]
+    machine_statuses["machines"][mc]["status"] = "danger"
+
+
+def machine_succ(mc):
+    mc = mc.split(".")[0]
+    status = machine_statuses["machines"][mc]["status"]
+    if status != "danger":
+        status = "success"
+
 def update_progress(mc, stage):
     # Remove .dtg.cl.cam.ac.uk if it's there.
     mc = mc.split(".")[0]
     machine_statuses["machines"][mc]["progress"] += 1
     machine_statuses["machines"][mc]["actions"].append(stage)
-    update_status()
+    current_task("[%s] %s" % (mc, stage))
 
 def current_task(task):
     machine_statuses["tasks"].append(
@@ -132,6 +144,22 @@ def ensure_dir(d):
     if not os.path.exists(d):
         os.makedirs(d)
 
+def sudo_capture(cmd):
+    stdout = StringIO()
+    stderr = StringIO()
+    result = sudo(cmd, stdout=stdout, stderr=stderr)
+    status = machine_statuses["machines"][env.host.split(".")[0]]
+    for l in result.split('\n'):
+        print l
+        if "[1;31m" in l:
+            # Puppet's way of writing out errors.
+            status["stderr_lines"] += 1
+            status["stderr"].append(l)
+        else:
+            status["stdout_lines"] += 1
+            status["stdout"].append(l)
+    update_status()
+    return result.return_code
 
 @task
 def get_os_versions():
@@ -169,12 +197,15 @@ def get_vms():
         'xe vm-list params=name-label power-state=running '
         'PV-bootloader=pygrub --minimal').split(',')
     vms = []
-    i = 0
-    for name in names:
+    for i, name in enumerate(names):
+        # Look to see if we have a CNAME that is the same as the name in
+        # XenCentaur
+        hostname = "%s%s" % (name, DTG_DOM)
         try:
-            hostname = "%s%s" % (name, DTG_DOM)
             socket.gethostbyname(hostname)
         except socket.error:
+            # The VM doesn't have a proper CNAME. Sigh.
+            # Reverse DNS its IP address to gets its puppy number.
             sys.stderr.write("%s does not have the CNAME %s%s" % (name, name,
                                                                   DTG_DOM))
             ip = run('xe vm-param-get param-name=networks uuid=%s | '
@@ -183,11 +214,12 @@ def get_vms():
             try:
                 hostname = socket.gethostbyaddr(ip)[0]
             except socket.error:
-                sys.stderr.write("Unable to lookup hostname of %s\n" % name)
+                sys.stderr.write("Unable to lookup hostname of %s."
+                                 "Check the VM has xe-guest-utilites installed\n"
+                                 % name)
                 continue
         vms.append({'name': name, 'hostname': hostname,
                     'repo_loc': PUPPET_BARE, 'VM': True, 'uuid': uuids[i]})
-        i += 1
     # Randomize the order of vms. Otherwise we will starve the vms at the
     # end of the list if lick doesn't finish running
     random.shuffle(vms)
@@ -211,6 +243,7 @@ def init_status_page_machines(machines):
         mc["actions"] = ["Waiting for update"]
         mc["is_vm"] = "Virtual machine" if machine['VM'] else "Physical machine"
         mc["progress"] = 1
+        mc["status"] = ""
         mc["stdout"] = []
         mc["stderr"] = []
         mc["stderr_lines"] = 0
@@ -225,8 +258,6 @@ def snapshot_mc(mc, commit_id):
     """
     assert mc['VM']
 
-    update_progress(mc['name'], "Snapshotting")
-
     new_snap_name = commit_id[0:SHA_LENGTH]
     cur_snaps = run(
         'xe snapshot-list  snapshot-of=%s params=name-label --minimal' %
@@ -234,9 +265,11 @@ def snapshot_mc(mc, commit_id):
     if new_snap_name in cur_snaps:
         print('%s already has a snapshot for commit %s. Not snapshotting again'
               % (mc['name'], new_snap_name))
-        update_progress(mc['name'], "Snapshot exists for VM")
+        update_progress(mc['name'], "Snapshot already exists for VM")
     else:
         print 'Snapshotting %s' % mc['name']
+        update_progress(mc['name'], "Snapshotting")
+
         run('xe vm-snapshot uuid=%s new-name-label=%s' %
             (mc['uuid'], new_snap_name))
         update_progress(mc['name'], "Snapshotted")
@@ -294,46 +327,56 @@ def upgrade_mc():
     """
     # Remove unusued packages to reduce the chance of falling over
     # during the upgrade
+    current_task("Upgrading OS version of %s" % env.host)
     with show('output'):
+        update_progress(env.host, "Cleaning up before OS upgrade")
         # Disable fancy progress bars during the update, as they break fabric.
-        sudo('rm /etc/apt/apt.conf.d/99progressbar')
+        sudo_capture('rm /etc/apt/apt.conf.d/99progressbar')
         # Remove any out of date packages before trying to upgrade.
-        sudo("apt-show-versions | grep :amd64 | grep -v uptodate |"
+        sudo_capture("apt-show-versions | grep :amd64 | grep -v uptodate |"
              " grep -v xe-guest-utilities | sed 's/:.*$//' |"
              ' xargs sudo apt-get -y -q remove')
         # Ensure the current version is up to date, as there may be a new
         # version of the updater.
-        sudo('apt-get update')
-        sudo('apt-get -y -q --no-install-recommends dist-upgrade')
+        update_progress(env.host, "Refreshing apt indexes before OS upgrade")
+        sudo_capture('apt-get update')
+        update_progress(env.host,
+                        "Upgrading current packages before OS upgrade")
+        sudo_capture('apt-get -y -q --no-install-recommends dist-upgrade')
         # Try to get free space on the disk.
-        sudo('apt-get -y -q autoremove')
-        sudo('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
+        update_progress(env.host, "Removing old packages before OS upgrade")
+        # Remove linux-image-extra-* to get more space in /boot
+        sudo_capture('apt-get -y -q remove linux-image-extra*')
+        sudo_capture('apt-get -y -q autoremove')
+        sudo_capture('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
         with cd('/etc/apt/sources.list.d/'):
-            sudo('find . ! -name main.list ! -name security.list ! -name updates.list -delete')
+            sudo_capture('find . ! -name main.list ! -name security.list ! -name updates.list -delete')
         # Ensure do-release-upgrade doesn't just want to use LTS versions.
-        sudo("sed -i 's/Prompt=lts/Prompt=normal/' "
+        sudo_capture("sed -i 's/Prompt=lts/Prompt=normal/' "
              "/etc/update-manager/release-upgrades")
         # Desperately try to do a non-interactive upgrade.
-        sudo('apt-get -q -y purge stunnel4')
-        sudo('rm -rf /etc/stunnel')
-        sudo('echo \'DPkg::options { "--force-confdef"; "--force-confnew"; }\' > /etc/apt/apt.conf.d/90-dtg-upgrade')
-        if sudo(
+        update_progress(env.host, "Removing stunnel before OS upgrade")
+        sudo_capture('apt-get -q -y purge stunnel4')
+        sudo_capture('rm -rf /etc/stunnel')
+        sudo_capture('echo \'DPkg::options { "--force-confdef"; "--force-confnew"; }\' > /etc/apt/apt.conf.d/90-dtg-upgrade')
+        update_progress(env.host, "Attempting OS upgrade")
+        if sudo_capture(
                 'yes | '
                 'DEBIAN_FRONTEND=noninteractive '
                 'do-release-upgrade -f DistUpgradeViewNonInteractive'):
             return
-        sudo('rm -rf /etc/apt/apt.conf.d/90-dtg-upgrade')
+        update_progress(env.host, "OS upgrade successful")
+        update_progress(env.host, "Cleaning up after OS upgrade")
+        sudo_capture('rm -rf /etc/apt/apt.conf.d/90-dtg-upgrade')
         # Remove any out of date packages after upgrading.
-        sudo("apt-show-versions | grep :amd64 | grep -v uptodate | "
+        sudo_capture("apt-show-versions | grep :amd64 | grep -v uptodate | "
              "sed 's/:.*$//' |"
              ' xargs sudo apt-get -y -q remove')
         # Clean up apt.
-        sudo('apt-get -q clean')
-        sudo('apt-get -q autoclean')
-        sudo('reboot')
-        # Wait for machine to reboot.
-        time.sleep(30)
-
+        sudo_capture('apt-get -q clean')
+        sudo_capture('apt-get -q autoclean')
+        sudo_capture('reboot')
+        machine_succ(env.host)
 
 @parallel(pool_size=POOL_SIZE)
 def security_update():
@@ -342,17 +385,16 @@ def security_update():
 
     For when waiting for unattended upgrades is too risky.
     """
-    current_task("Applying update to %s" % env.host)
     update_progress(env.host, "Applying security updates")
 
-    sudo('apt-get -q update')
-    sudo('unattended-upgrade')
-    sudo('nice apt-get -y -q --no-install-recommends dist-upgrade')
-    sudo('nice apt-get -y -q autoremove')
-    sudo('nice apt-get -q clean')
-    sudo('nice apt-get -q autoclean')
+    sudo_capture('apt-get -q update')
+    sudo_capture('unattended-upgrade')
+    sudo_capture('nice apt-get -y -q --no-install-recommends dist-upgrade')
+    sudo_capture('nice apt-get -y -q autoremove')
+    sudo_capture('nice apt-get -q clean')
+    sudo_capture('nice apt-get -q autoclean')
     update_progress(env.host, "Security updates applied")
-
+    machine_succ(env.host)
 
 
 @parallel(pool_size=POOL_SIZE)
@@ -360,14 +402,20 @@ def run_latest_puppet():
     """
     Manually apply puppet.
     """
-    current_task("Applying puppet to %s" % env.host)
     update_progress(env.host, "Applying puppet")
     with show('output'):
         with cd(PUPPET_BARE):
-            sudo('git fetch --quiet https://github.com/ucam-cl-dtg/dtg-puppet.git master:master')
-            sudo('nice ./hooks/post-update')
+            rc = sudo_capture('git fetch --quiet https://github.com/ucam-cl-dtg/'
+                              'dtg-puppet.git master:master')
+            if rc:
+                update_progress(env.host, "Error fetching latest puppet. "
+                                "Running old verison.")
+                machine_err(env.host)
+            rc = sudo_capture('nice ./hooks/post-update')
+            if rc:
+                update_progress(env.host, "Error running puppet.")
     update_progress(env.host, "Applied puppet")
-
+    machine_succ(env.host)
 
 def add_remotes(repo, machines):
     """
@@ -384,9 +432,8 @@ def add_remotes(repo, machines):
 def snapshot_machines(machines, commit_id):
     for mc in machines:
         if mc['VM']:
-            current_task("Snapshotting %s" % mc['name'])
+            update_progress(mc['name'], "Snapshotting")
             execute(snapshot_mc, mc, commit_id, hosts=[DOM0])
-
 
 
 def update_machines(machines, friendly_upgrade):
@@ -421,8 +468,8 @@ def push_config(repo, machines, sec_update):
     if sec_update:
         execute(security_update, hosts=hostnames)
 
-    current_task("Applying puppet")
     for mc in ORIGIN:
+        current_task("Pushing puppet to %s" % mc["name"])
         handler = RemoteHandler(mc['name'])
         remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
         info = remote.push(refspec='master:master', progress=handler)[0]
