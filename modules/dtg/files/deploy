@@ -197,12 +197,15 @@ def get_vms():
         'xe vm-list params=name-label power-state=running '
         'PV-bootloader=pygrub --minimal').split(',')
     vms = []
-    i = 0
-    for name in names:
+    for i, name in enumerate(names):
+        # Look to see if we have a CNAME that is the same as the name in
+        # XenCentaur
+        hostname = "%s%s" % (name, DTG_DOM)
         try:
-            hostname = "%s%s" % (name, DTG_DOM)
             socket.gethostbyname(hostname)
         except socket.error:
+            # The VM doesn't have a proper CNAME. Sigh.
+            # Reverse DNS its IP address to gets its puppy number.
             sys.stderr.write("%s does not have the CNAME %s%s" % (name, name,
                                                                   DTG_DOM))
             ip = run('xe vm-param-get param-name=networks uuid=%s | '
@@ -211,11 +214,12 @@ def get_vms():
             try:
                 hostname = socket.gethostbyaddr(ip)[0]
             except socket.error:
-                sys.stderr.write("Unable to lookup hostname of %s\n" % name)
+                sys.stderr.write("Unable to lookup hostname of %s."
+                                 "Check the VM has xe-guest-utilites installed\n"
+                                 % name)
                 continue
         vms.append({'name': name, 'hostname': hostname,
                     'repo_loc': PUPPET_BARE, 'VM': True, 'uuid': uuids[i]})
-        i += 1
     # Randomize the order of vms. Otherwise we will starve the vms at the
     # end of the list if lick doesn't finish running
     random.shuffle(vms)
