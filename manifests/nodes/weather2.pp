@@ -39,7 +39,6 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
         ensure => installed,
         before => [ Service['nginx'],
                     Exec['create-venv'],
-                    Exec['create-venv'],
                   ]
   }
   
@@ -104,6 +103,7 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
   file {'nginx-disable-default':
     path => '/etc/nginx/sites-enabled/default',
     ensure => absent,
+    require => Package['nginx'],
   }
   file {'nginx-conf':
     path => '/etc/nginx/sites-enabled/weather.nginx.conf',
@@ -113,13 +113,18 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
     mode => '0644',
     source => 'puppet:///modules/dtg/weather2/weather.nginx.conf',
     notify => Service['nginx'],
+    require => Package['nginx'],
   }
   
   # Start up nginx:
   service {'nginx':
     enable => true,
     ensure => running,
-    require => [ File['nginx-disable-default'], File['nginx-conf'] ],
+    require => [
+      File['nginx-disable-default'],
+      File['nginx-conf'],
+      Package['nginx'],
+    ],
   }
 
   # Setup the user for the postgres ssh tunnel
