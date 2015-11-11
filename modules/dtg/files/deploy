@@ -82,7 +82,7 @@ PHYSICAL_MACHINES = [
 ]
 
 UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn', 'balancer',
-                    'gitlab', 'weather', 'isaac-staging', 'saluki1']
+                    'gitlab', 'weather', 'saluki1']
 
 
 class RemoteHandler(RemoteProgress):
