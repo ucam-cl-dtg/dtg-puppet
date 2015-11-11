@@ -5,12 +5,19 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
   # weather2-dev keeps its DTG VLAN puppy-IP and closed firewall
   if ( $::hostname == 'weather2' ) {
     class {'dtg::firewall::publichttp':}
-    file {'/etc/network/interfaces':
-      ensure => file,
-      owner => 'root',
-      group => 'root',
-      mode => '0644',
-      source => 'puppet:///modules/dtg/weather2/interfaces',
+    class { 'network::interfaces':
+      interfaces => {
+        'eth0' => {
+          'method' => 'static',
+          'address' => '128.232.98.211',
+          'netmask' => '255.255.255.0',
+          'network' => '128.232.98.0',
+          'gateway' => '128.232.98.1',
+          'dns-nameservers' => $::dns_name_servers,
+          'dns-search' => 'dtg.cl.cam.ac.uk'
+        }
+      },
+      auto => ['eth0'],
     }
   }
 
