@@ -373,11 +373,11 @@ def add_remotes(repo, machines):
                            mc['hostname'] + ':' + mc['repo_loc'])
 
 
-def snapshot_machines(machines):
+def snapshot_machines(machines, commit_id):
     for mc in machines:
         if mc['VM']:
-            current_task("Snapshotting %s" % mc)
-            execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
+            current_task("Snapshotting %s" % mc['name'])
+            execute(snapshot_mc, mc, commit_id, hosts=[DOM0])
 
 
 
