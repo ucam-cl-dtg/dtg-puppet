@@ -5,15 +5,16 @@ Deploy the latest puppet, security fixes or Ubuntu release to all puppies.
 """
 
 import argparse
+from jinja2 import Environment, FileSystemLoader
 import socket
+from StringIO import StringIO
 import sys
 import os
 from fabric.api import cd, env, execute, output, parallel, run, sudo, show, task
-from git import GitCommandError, Repo, RemoteProgress
+from git import Repo, RemoteProgress
 import random
 import datetime
 from datetime import timedelta
-import time
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
@@ -22,9 +23,28 @@ REMOTE_PREFIX = 'lick'
 
 PUPPET_BARE = '/etc/puppet-bare'
 
-POOL_SIZE = 6
+POOL_SIZE = 12
 
 SHA_LENGTH = 9
+
+# No spaces in release name.
+# Version we should be running
+TARGET_UBUNTU_RELEASE= 1510
+
+MINIMUM_UBUNTU_RELEASE= 1504
+
+# If the version is older than this it is probably not Ubuntu.
+# TODO(oc243) properly read lsb_release
+NOT_UBUNTU = 1004
+
+template = ""
+machine_statuses = {}
+
+OUT_DIR = "%s/public_html/dtg-infra" % os.getenv("HOME")
+OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
+OUT_PATH = "%s/%s" % (OUT_DIR, OUT_FILE)
+OUT_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
+                                                         OUT_FILE)
 
 # This is where we need to push first as it is the canonical place for the
 # source code to be
@@ -56,7 +76,13 @@ PHYSICAL_MACHINES = [
      'repo_loc': PUPPET_BARE, 'VM': False},
     {'name': 'saluki2', 'hostname': 'saluki2' + DTG_DOM,
      'repo_loc': PUPPET_BARE, 'VM': False},
+    {'name': 'africa01', 'hostname': 'africa01' + DTG_DOM,
+     'repo_loc': PUPPET_BARE, 'VM': False}
+
 ]
+
+UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn', 'balancer',
+                    'gitlab', 'weather', 'isaac-staging', 'saluki1']
 
 
 class RemoteHandler(RemoteProgress):
@@ -71,35 +97,97 @@ class RemoteHandler(RemoteProgress):
         if ("Warning: Permanently added" not in line) and (line.strip() !=
                                                            "remote:"):
             print "%s: %s" % (self.vm, line)
+            status = machine_statuses["machines"][self.vm]
+            status["stderr_lines"] += 1
+            status["stderr"].append(line)
+            update_status()
+
 
     def update(self, op_code, cur_count, max_count=None, message=''):
         if len(message) > 0:
+            status = machine_statuses["machines"][self.vm]
+            status["stderr_lines"] += 1
+            status["stderr"].append(message)
+            update_status()
             print message
 
+
+def update_status():
+    with open(OUT_PATH, "wb") as f:
+        f.write(template.render(machine_statuses))
+
+def update_progress(mc, stage):
+    # Remove .dtg.cl.cam.ac.uk if it's there.
+    mc = mc.split(".")[0]
+    machine_statuses["machines"][mc]["progress"] += 1
+    machine_statuses["machines"][mc]["actions"].append(stage)
+    update_status()
+
+def current_task(task):
+    machine_statuses["tasks"].append(
+        "[%s] %s" % (datetime.datetime.now(), task))
+    update_status()
+
+def ensure_dir(d):
+    if not os.path.exists(d):
+        os.makedirs(d)
+
+
+@task
+def get_os_versions():
+    return run("lsb_release -rs | sed 's/\.//'")
+
+
+def must_update(mc, versions):
+    version = int(versions[mc["hostname"]])
+    if version < MINIMUM_UBUNTU_RELEASE:
+        return True
+    return False
+
+def should_update(mc, versions):
+    version = int(versions[mc["hostname"]])
+    if version < NOT_UBUNTU:
+        return False
+    if version < MINIMUM_UBUNTU_RELEASE:
+        return True
+    if mc["name"] in UPDATE_BLACKLIST:
+        return False
+    if version < TARGET_UBUNTU_RELEASE:
+        return True
+    return False
 
 @task
 def get_vms():
     """
     Get a list of virtual machines on the husky servers.
     """
+    current_task("Finding list of VMs")
     uuids = run(
         'xe vm-list params=uuid power-state=running '
         'PV-bootloader=pygrub --minimal').split(',')
+    names = run(
+        'xe vm-list params=name-label power-state=running '
+        'PV-bootloader=pygrub --minimal').split(',')
     vms = []
-    for uuid in uuids:
-        name_label = run('xe vm-list params=name-label uuid=%s --minimal' %
-                         uuid).replace(' ', '')
-        ip = run('xe vm-param-get param-name=networks uuid=%s | '
-                 'sed -e \'s_0/ip: __\' -e  \'s/; .*$//\'' %
-                 uuid)
+    i = 0
+    for name in names:
         try:
-            hostname = socket.gethostbyaddr(ip)[0]
+            hostname = "%s%s" % (name, DTG_DOM)
+            socket.gethostbyname(hostname)
         except socket.error:
-            sys.stderr.write("Unable to lookup hostname of %s\n" % name_label)
-            continue
-
-        vms.append({'name': name_label, 'hostname': hostname,
-                    'repo_loc': PUPPET_BARE, 'VM': True, 'uuid': uuid})
+            sys.stderr.write("%s does not have the CNAME %s%s" % (name, name,
+                                                                  DTG_DOM))
+            ip = run('xe vm-param-get param-name=networks uuid=%s | '
+                     'sed -e \'s_0/ip: __\' -e  \'s/; .*$//\'' %
+                     uuids[i])
+            try:
+                hostname = socket.gethostbyaddr(ip)[0]
+            except socket.error:
+                sys.stderr.write("Unable to lookup hostname of %s\n" % name)
+                continue
+        vms.append({'name': name, 'hostname': hostname,
+                    'repo_loc': PUPPET_BARE, 'VM': True, 'uuid': uuids[i]})
+        i += 1
     # Randomize the order of vms. Otherwise we will starve the vms at the
     # end of the list if lick doesn't finish running
     random.shuffle(vms)
@@ -111,14 +199,33 @@ def get_machines():
     Get all remote hosts that need updating: git repos, VMs, and physical mcs.
     """
     vms = execute(get_vms, hosts=[DOM0])
-    return vms[DOM0] + PHYSICAL_MACHINES
+    machines = vms[DOM0] + PHYSICAL_MACHINES
+    return machines
 
-@parallel(pool_size=POOL_SIZE)
+
+def init_status_page_machines(machines):
+    for machine in machines:
+        mc = {}
+        machine_statuses["machines"][machine["name"]] = mc
+        mc["name"] = machine["name"]
+        mc["actions"] = ["Waiting for update"]
+        mc["is_vm"] = "Virtual machine" if machine['VM'] else "Physical machine"
+        mc["progress"] = 1
+        mc["stdout"] = []
+        mc["stderr"] = []
+        mc["stderr_lines"] = 0
+        mc["stdout_lines"] = 0
+    update_status()
+
+
+@task
 def snapshot_mc(mc, commit_id):
     """
     Snapshot a VM using commit_id as a snapshot name.
     """
     assert mc['VM']
+
+    update_progress(mc['name'], "Snapshotting")
 
     new_snap_name = commit_id[0:SHA_LENGTH]
     cur_snaps = run(
@@ -127,10 +234,12 @@ def snapshot_mc(mc, commit_id):
     if new_snap_name in cur_snaps:
         print('%s already has a snapshot for commit %s. Not snapshotting again'
               % (mc['name'], new_snap_name))
+        update_progress(mc['name'], "Snapshot exists for VM")
     else:
         print 'Snapshotting %s' % mc['name']
         run('xe vm-snapshot uuid=%s new-name-label=%s' %
             (mc['uuid'], new_snap_name))
+        update_progress(mc['name'], "Snapshotted")
 
 
 def is_hex(val):
@@ -152,6 +261,7 @@ def snap_gc():
     Any lick snapshot that is older than 14 days is removed to save space,
     and keep the snapshot chain low to aid performance.
     """
+    current_task("Cleaning up old snapshots")
     snap_uuids = run('xe snapshot-list params=uuid --minimal').split(',')
     snap_names = run('xe snapshot-list params=name-label --minimal').split(',')
     snap_times = run(
@@ -207,10 +317,11 @@ def upgrade_mc():
         sudo('apt-get -q -y purge stunnel4')
         sudo('rm -rf /etc/stunnel')
         sudo('echo \'DPkg::options { "--force-confdef"; "--force-confnew"; }\' > /etc/apt/apt.conf.d/90-dtg-upgrade')
-        sudo(
-            'yes | '
-            'DEBIAN_FRONTEND=noninteractive '
-            'do-release-upgrade -f DistUpgradeViewNonInteractive')
+        if sudo(
+                'yes | '
+                'DEBIAN_FRONTEND=noninteractive '
+                'do-release-upgrade -f DistUpgradeViewNonInteractive'):
+            return
         sudo('rm -rf /etc/apt/apt.conf.d/90-dtg-upgrade')
         # Remove any out of date packages after upgrading.
         sudo("apt-show-versions | grep :amd64 | grep -v uptodate | "
@@ -231,12 +342,17 @@ def security_update():
 
     For when waiting for unattended upgrades is too risky.
     """
+    current_task("Applying update to %s" % env.host)
+    update_progress(env.host, "Applying security updates")
+
     sudo('apt-get -q update')
     sudo('unattended-upgrade')
     sudo('nice apt-get -y -q --no-install-recommends dist-upgrade')
     sudo('nice apt-get -y -q autoremove')
     sudo('nice apt-get -q clean')
     sudo('nice apt-get -q autoclean')
+    update_progress(env.host, "Security updates applied")
+
 
 
 @parallel(pool_size=POOL_SIZE)
@@ -244,21 +360,13 @@ def run_latest_puppet():
     """
     Manually apply puppet.
     """
+    current_task("Applying puppet to %s" % env.host)
+    update_progress(env.host, "Applying puppet")
     with show('output'):
         with cd(PUPPET_BARE):
             sudo('git fetch --quiet https://github.com/ucam-cl-dtg/dtg-puppet.git master:master')
             sudo('nice ./hooks/post-update')
-
-
-@task
-def post_update_hook():
-    """
-    Apply the post_update hook manually to force a puppet refresh.
-
-    This does more than calling run_puppet, such as ensuring that
-    /etc/puppet is the latest version.
-    """
-    run('nice /etc/puppet-bare/hooks/post-update')
+    update_progress(env.host, "Applied puppet")
 
 
 def add_remotes(repo, machines):
@@ -273,27 +381,47 @@ def add_remotes(repo, machines):
                            mc['hostname'] + ':' + mc['repo_loc'])
 
 
-def push_config(repo, machines, upgrade, sec_update):
+def snapshot_machines(machines, commit_id):
+    for mc in machines:
+        if mc['VM']:
+            current_task("Snapshotting %s" % mc['name'])
+            execute(snapshot_mc, mc, commit_id, hosts=[DOM0])
+
+
+
+def update_machines(machines, friendly_upgrade):
+    current_task("Finding machines that should have an OS update.")
+    upgrade_mcs = []
+    for mc in machines:
+        versions = execute(get_os_versions, hosts=[mc["hostname"]])
+        machine_statuses["machines"][mc["name"]]["os"] = versions[mc["hostname"]]
+        # Some machines must be updated even if we're not using the
+        # do-release-upgrade flag as they are insecure.
+        if must_update(mc, versions):
+            upgrade_mcs.append(mc["hostname"])
+            # Others we want to friendly update.
+        elif friendly_upgrade:
+            if should_update(mc, versions):
+                upgrade_mcs.append(mc["hostname"])
+    if upgrade_mcs:
+        execute(upgrade_mc, hosts=upgrade_mcs)
+
+
+def push_config(repo, machines, sec_update):
     """
     Push the latest updates, puppet, and security updates to the servers.
 
     Args:
         repo: local git repository containing python.
         machines: machines to apply the updates to.
-        upgrade: true if an OS upgrade should be run.
         sec_update: true if security updates should be applied.
     """
-    for mc in machines:
-        if mc['VM']:
-            execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
-
     hostnames = [x['hostname'] for x in machines]
 
-    if upgrade:
-        execute(upgrade_mc, hosts=hostnames)
     if sec_update:
         execute(security_update, hosts=hostnames)
 
+    current_task("Applying puppet")
     for mc in ORIGIN:
         handler = RemoteHandler(mc['name'])
         remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
@@ -313,6 +441,21 @@ def main(args):
     """
     output['running'] = False
     output['stdout'] = False
+
+
+    ensure_dir(OUT_DIR)
+    print("Streaming status to %s" % OUT_URL)
+
+    jinja_env = Environment(loader=FileSystemLoader(os.getcwd()),
+                         trim_blocks=True)
+    global template
+    template = jinja_env.get_template('deploy-status.html')
+    machine_statuses["deploy_time"] = datetime.datetime.now()
+    machine_statuses["machines"] = {}
+    machine_statuses["tasks"] = []
+    current_task("Lick initiatisation")
+    update_status()
+
     ssh_no_fngr = "%s/%s" % (os.getcwd(), 'ssh-no-fingerprint')
     try:
         with open(ssh_no_fngr):
@@ -323,7 +466,8 @@ def main(args):
 
     env.warn_only = True
 
-    repo = Repo('.')
+    repo = Repo('.', search_parent_directories=True)
+    current_task("Initialising list of machines")
     machines = get_machines()
     add_remotes(repo, ORIGIN + machines)
 
@@ -337,6 +481,8 @@ def main(args):
         sys.stderr.write("No machines to apply puppet to")
         sys.exit(-1)
 
+    init_status_page_machines(machines)
+
     # Remove old lick-generated snapshots, or else they build up
     if not args.no_snap_gc:
         execute(snap_gc, hosts=[DOM0])
@@ -346,7 +492,9 @@ def main(args):
     # don't care if someone MiTMs us.
     os.environ['GIT_SSH'] = ssh_no_fngr
 
-    push_config(repo, machines, args.upgrade, args.security_update)
+    snapshot_machines(machines, repo.head.commit.hexsha)
+    update_machines(machines, args.upgrade)
+    push_config(repo, machines,  args.security_update)
 
 
 if __name__ == '__main__':

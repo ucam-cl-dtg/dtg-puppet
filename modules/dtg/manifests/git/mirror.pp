@@ -47,7 +47,6 @@ class dtg::git::mirror::server {
     require    => Monkeysphere::Auth_capable_user['gitmirror'],
     home       => '/srv/gitmirror/',
   }
-  package {'git-daemon-run': ensure => 'present',}
   file {'/etc/systemd/system/git-daemon.service':
     ensure  => file,
     source  => 'puppet:///modules/dtg/git-daemon.service',
@@ -59,7 +58,7 @@ class dtg::git::mirror::server {
   }
   service {'git-daemon':
     ensure   => running,
-    require  => [Package['git-daemon-run'], File['/etc/systemd/system/git-daemon.service']],
+    require  => [File['/etc/systemd/system/git-daemon.service']],
   }
   class {'dtg::firewall::git':}
   package {'gitweb': ensure => 'installed',}
@@ -107,24 +106,18 @@ define dtg::git::mirror::repo ($source) {
   }
   cron {"gitmirror-mirror-${name}":
     ensure  => present,
-    command => "cd /srv/gitmirror/repositories/${name}.git && git fetch --quiet origin master:master && git update-server-info",
+    command => "cd /srv/gitmirror/repositories/${name}.git && nice git fetch --quiet origin master:master && nice git update-server-info",
     user    => 'gitmirror',
+    hour    => cron_hour("${name}-mirror"),
     minute  => cron_minute("${name}-mirror"),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
   }
   cron {"gitmirror-gc-${name}":
     ensure  => present,
-    command => "cd /srv/gitmirror/repositories/${name}.git && git fsck --strict && git repack -a -d --depth=100 --window=100",
+    command => "cd /srv/gitmirror/repositories/${name}.git && nice git fsck --strict && nice git repack -a -d --depth=100 --window=100",
     user    => 'gitmirror',
     hour    => cron_hour($name),
     minute  => cron_minute($name),
-    require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
-  }
-  cron {"gitmirror-update-server-info-${name}":
-    ensure  => present,
-    command => "cd /srv/gitmirror/repositories/${name}.git && git update-server-info",
-    user    => 'gitmirror',
-    minute  => cron_minute("${name} update"),
     require => Vcsrepo["/srv/gitmirror/repositories/${name}.git"],
   }
 }

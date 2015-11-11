@@ -1,4 +1,4 @@
-node /(\w+-)?isaac(-\w+)?(.+)?/ {
+node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   include 'dtg::minimal'
   
   $tomcat_version = '8'
@@ -35,7 +35,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
     owner    => "tomcat${tomcat_version}",
     group    => "tomcat${tomcat_version}"
   }
-  ->
+
   class {'apache::ubuntu': } ->
   apache::module {'cgi':} ->
   apache::module {'headers':} ->
@@ -87,7 +87,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   }
   
   file_line{'tomcat-memory-increase':
-    line   => 'JAVA_OPTS="-Djava.awt.headless=true -Xms512m -Xmx1024m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC"',
+    line   => 'JAVA_OPTS="-Djava.awt.headless=true -Xms512m -Xmx2048m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC"',
     path   => "/etc/default/tomcat${tomcat_version}",
     notify => Service["tomcat${tomcat_version}"],
     match  => '^JAVA_OPTS="-Djava\.awt\.headless=true.*'
@@ -95,7 +95,7 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
   
   class {'dtg::firewall::publichttp':}
 
-  $packages = ['maven2','openjdk-7-jdk','rssh','mongodb']
+  $packages = ['maven2','openjdk-7-jdk','rssh','mongodb','docker']
   package{$packages:
     ensure => installed
   }
@@ -141,8 +141,26 @@ node /(\w+-)?isaac(-\w+)?(.+)?/ {
       source => 'puppet:///modules/dtg/isaac/isaac-database-backup.sh'
   }
   ->
+  file { '/local/data/rutherford/database-backup/isaac-database-backup.log':
+      path => '/local/data/rutherford/database-backup/isaac-database-backup.log',
+      ensure  => present,
+      replace => false,
+      mode   => '0755',
+      owner  => postgres,
+      group  => root,
+      content => "# Database backup log files"
+  }
+  -> 
+  cron {'isaac-backup-postgresql':
+    ensure => absent
+  }
+  -> 
+  cron {'isaac-backup-mongodb':
+    ensure => absent
+  }
+  ->
   cron {'isaac-backup-database':
-    command => '/local/data/rutherford/isaac-database-backup.sh',
+    command => '/local/data/rutherford/isaac-database-backup.sh >> /local/data/rutherford/database-backup/isaac-database-backup.log',
     user    => postgres,
     hour    => 0,
     minute  => 0
