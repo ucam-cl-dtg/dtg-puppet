@@ -5,6 +5,7 @@ Deploy the latest puppet, security fixes or Ubuntu release to all puppies.
 """
 
 import argparse
+from jinja2 import Environment, FileSystemLoader, PackageLoader
 import socket
 import sys
 import os
@@ -25,6 +26,19 @@ PUPPET_BARE = '/etc/puppet-bare'
 POOL_SIZE = 12
 
 SHA_LENGTH = 9
+
+# No spaces in release name.
+# Version we should be running
+TARGET_UBUNTU_RELEASE= 1510
+
+MINIMUM_UBUNTU_RELEASE= 1504
+
+# If the version is older than this it is probably not Ubuntu.
+# TODO(oc243) properly read lsb_release
+NOT_UBUNTU = 1004
+
+template = ""
+machine_statuses = {}
 
 # This is where we need to push first as it is the canonical place for the
 # source code to be
@@ -61,6 +75,9 @@ PHYSICAL_MACHINES = [
 
 ]
 
+UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn', 'balancer',
+                    'gitlab', 'weather', 'isaac-staging', 'saluki1']
+
 
 class RemoteHandler(RemoteProgress):
     """
@@ -74,17 +91,60 @@ class RemoteHandler(RemoteProgress):
         if ("Warning: Permanently added" not in line) and (line.strip() !=
                                                            "remote:"):
             print "%s: %s" % (self.vm, line)
+            status = machine_statuses["machines"][self.vm]
+            status["stderr_lines"] += 1
+            status["stderr"].append(line)
+            update_status()
+
 
     def update(self, op_code, cur_count, max_count=None, message=''):
         if len(message) > 0:
+            status = machine_statuses["machines"][self.vm]
+            status["stderr_lines"] += 1
+            status["stderr"].append(message)
+            update_status()
             print message
 
+
+def update_status():
+    with open("/tmp/lick-status.html", "wb") as f:
+        f.write(template.render(machine_statuses))
+
+def update_progress(mc, stage):
+    # Remove .dtg.cl.cam.ac.uk if it's there.
+    mc = mc.split(".")[0]
+    machine_statuses["machines"][mc]["progress"] += 1
+    machine_statuses["machines"][mc]["action"] = stage
+    update_status()
+
+def current_task(task):
+    machine_statuses["tasks"].append(
+        "[%s] %s" % (datetime.datetime.now(), task))
+    update_status()
+
+@task
+def get_os_versions():
+    return run("lsb_release -rs | sed 's/\.//'")
+
+
+def should_update(mc, versions):
+    version = int(versions[mc])
+    if version < NOT_UBUNTU:
+        return False
+    if version < MINIMUM_UBUNTU_RELEASE:
+        return True
+    if mc.split(".")[0] in UPDATE_BLACKLIST:
+        return False
+    if version < TARGET_UBUNTU_RELEASE:
+        return True
+    return False
 
 @task
 def get_vms():
     """
     Get a list of virtual machines on the husky servers.
     """
+    current_task("Finding list of VMs")
     uuids = run(
         'xe vm-list params=uuid power-state=running '
         'PV-bootloader=pygrub --minimal').split(',')
@@ -114,14 +174,29 @@ def get_machines():
     Get all remote hosts that need updating: git repos, VMs, and physical mcs.
     """
     vms = execute(get_vms, hosts=[DOM0])
-    return vms[DOM0] + PHYSICAL_MACHINES
+    machines = vms[DOM0] + PHYSICAL_MACHINES
+    for machine in machines:
+        mc = {}
+        machine_statuses["machines"][machine["name"]] = mc
+        mc["name"] = machine["name"]
+        mc["action"] = "Waiting for update"
+        mc["is_vm"] = "Virtual machine" if machine in vms[DOM0] else "Physical machine"
+        mc["progress"] = 1
+        mc["stdout"] = []
+        mc["stderr"] = []
+        mc["stderr_lines"] = 0
+        mc["stdout_lines"] = 0
+    update_status()
+    return machines
 
-@parallel(pool_size=POOL_SIZE)
+@task
 def snapshot_mc(mc, commit_id):
     """
     Snapshot a VM using commit_id as a snapshot name.
     """
     assert mc['VM']
+
+    update_progress(mc['name'], "Snapshotting")
 
     new_snap_name = commit_id[0:SHA_LENGTH]
     cur_snaps = run(
@@ -130,10 +205,12 @@ def snapshot_mc(mc, commit_id):
     if new_snap_name in cur_snaps:
         print('%s already has a snapshot for commit %s. Not snapshotting again'
               % (mc['name'], new_snap_name))
+        update_progress(mc['name'], "Snapshot exists for VM")
     else:
         print 'Snapshotting %s' % mc['name']
         run('xe vm-snapshot uuid=%s new-name-label=%s' %
             (mc['uuid'], new_snap_name))
+        update_progress(mc['name'], "Snapshotted")
 
 
 def is_hex(val):
@@ -155,6 +232,7 @@ def snap_gc():
     Any lick snapshot that is older than 14 days is removed to save space,
     and keep the snapshot chain low to aid performance.
     """
+    current_task("Cleaning up old snapshots")
     snap_uuids = run('xe snapshot-list params=uuid --minimal').split(',')
     snap_names = run('xe snapshot-list params=name-label --minimal').split(',')
     snap_times = run(
@@ -234,12 +312,17 @@ def security_update():
 
     For when waiting for unattended upgrades is too risky.
     """
+    current_task("Applying update to %s" % env.host)
+    update_progress(env.host, "Applying security updates")
+
     sudo('apt-get -q update')
     sudo('unattended-upgrade')
     sudo('nice apt-get -y -q --no-install-recommends dist-upgrade')
     sudo('nice apt-get -y -q autoremove')
     sudo('nice apt-get -q clean')
     sudo('nice apt-get -q autoclean')
+    update_progress(env.host, "Security updates applied")
+
 
 
 @parallel(pool_size=POOL_SIZE)
@@ -247,11 +330,13 @@ def run_latest_puppet():
     """
     Manually apply puppet.
     """
+    current_task("Applying puppet to %s" % env.host)
+    update_progress(env.host, "Applying puppet")
     with show('output'):
         with cd(PUPPET_BARE):
             sudo('git fetch --quiet https://github.com/ucam-cl-dtg/dtg-puppet.git master:master')
             sudo('nice ./hooks/post-update')
-
+    update_progress(env.host, "Applied puppet")
 
 @task
 def post_update_hook():
@@ -261,7 +346,10 @@ def post_update_hook():
     This does more than calling run_puppet, such as ensuring that
     /etc/puppet is the latest version.
     """
+    update_progress(env.host, "Running post-update hook manually")
     run('nice /etc/puppet-bare/hooks/post-update')
+    update_progress(env.host, "Executed hook manually")
+
 
 
 def add_remotes(repo, machines):
@@ -286,6 +374,7 @@ def push_config(repo, machines, upgrade, sec_update):
         upgrade: true if an OS upgrade should be run.
         sec_update: true if security updates should be applied.
     """
+    current_task("Snapshotting virtual machines")
     for mc in machines:
         if mc['VM']:
             execute(snapshot_mc, mc, repo.head.commit.hexsha, hosts=[DOM0])
@@ -297,6 +386,7 @@ def push_config(repo, machines, upgrade, sec_update):
     if sec_update:
         execute(security_update, hosts=hostnames)
 
+    current_task("Applying puppet")
     for mc in ORIGIN:
         handler = RemoteHandler(mc['name'])
         remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
@@ -316,6 +406,17 @@ def main(args):
     """
     output['running'] = False
     output['stdout'] = False
+
+    jinja_env = Environment(loader=FileSystemLoader(os.getcwd()),
+                         trim_blocks=True)
+    global template
+    template = jinja_env.get_template('deploy-status.html')
+    machine_statuses["deploy_time"] = datetime.datetime.now()
+    machine_statuses["machines"] = {}
+    machine_statuses["tasks"] = []
+    current_task("Lick initiatisation")
+    update_status()
+
     ssh_no_fngr = "%s/%s" % (os.getcwd(), 'ssh-no-fingerprint')
     try:
         with open(ssh_no_fngr):
@@ -327,6 +428,7 @@ def main(args):
     env.warn_only = True
 
     repo = Repo('.', search_parent_directories=True)
+    current_task("Initialising list of machines")
     machines = get_machines()
     add_remotes(repo, ORIGIN + machines)
 
