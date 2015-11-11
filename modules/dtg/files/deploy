@@ -133,7 +133,7 @@ def update_progress(mc, stage):
     mc = mc.split(".")[0]
     machine_statuses["machines"][mc]["progress"] += 1
     machine_statuses["machines"][mc]["actions"].append(stage)
-    update_status()
+    current_task("[%s] %s" % (mc, stage))
 
 def current_task(task):
     machine_statuses["tasks"].append(
@@ -258,8 +258,6 @@ def snapshot_mc(mc, commit_id):
     """
     assert mc['VM']
 
-    update_progress(mc['name'], "Snapshotting")
-
     new_snap_name = commit_id[0:SHA_LENGTH]
     cur_snaps = run(
         'xe snapshot-list  snapshot-of=%s params=name-label --minimal' %
@@ -267,9 +265,11 @@ def snapshot_mc(mc, commit_id):
     if new_snap_name in cur_snaps:
         print('%s already has a snapshot for commit %s. Not snapshotting again'
               % (mc['name'], new_snap_name))
-        update_progress(mc['name'], "Snapshot exists for VM")
+        update_progress(mc['name'], "Snapshot already exists for VM")
     else:
         print 'Snapshotting %s' % mc['name']
+        update_progress(mc['name'], "Snapshotting")
+
         run('xe vm-snapshot uuid=%s new-name-label=%s' %
             (mc['uuid'], new_snap_name))
         update_progress(mc['name'], "Snapshotted")
@@ -432,9 +432,8 @@ def add_remotes(repo, machines):
 def snapshot_machines(machines, commit_id):
     for mc in machines:
         if mc['VM']:
-            current_task("Snapshotting %s" % mc['name'])
+            update_progress(mc['name'], "Snapshotting")
             execute(snapshot_mc, mc, commit_id, hosts=[DOM0])
-
 
 
 def update_machines(machines, friendly_upgrade):
@@ -469,8 +468,8 @@ def push_config(repo, machines, sec_update):
     if sec_update:
         execute(security_update, hosts=hostnames)
 
-    current_task("Applying puppet")
     for mc in ORIGIN:
+        current_task("Pushing puppet to %s" % mc["name"])
         handler = RemoteHandler(mc['name'])
         remote = repo.remotes[REMOTE_PREFIX + '_' + mc['name']]
         info = remote.push(refspec='master:master', progress=handler)[0]
