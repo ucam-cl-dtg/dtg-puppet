@@ -56,11 +56,9 @@
           <td>{{ kv.is_vm }}</td>
           <td>{{ kv.os }}</td>
           <td>
-            <div class="progress">
-              <div class="progress-bar" role="progressbar" aria-valuenow="{{ kv.progress }}" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-                {{ kv.action }}
-              </div>
-            </div>
+            {% for action in kv.actions %}
+            {{ kv.action }}
+            {% endfor %}
           </td>
           <td>
             <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#stdout-{{ kv.name }}">

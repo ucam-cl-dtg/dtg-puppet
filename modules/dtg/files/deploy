@@ -120,7 +120,7 @@ def update_progress(mc, stage):
     # Remove .dtg.cl.cam.ac.uk if it's there.
     mc = mc.split(".")[0]
     machine_statuses["machines"][mc]["progress"] += 1
-    machine_statuses["machines"][mc]["action"] = stage
+    machine_statuses["machines"][mc]["actions"].append(stage)
     update_status()
 
 def current_task(task):
@@ -192,19 +192,23 @@ def get_machines():
     """
     vms = execute(get_vms, hosts=[DOM0])
     machines = vms[DOM0] + PHYSICAL_MACHINES
+    return machines
+
+
+def init_status_page_machines(machines):
     for machine in machines:
         mc = {}
         machine_statuses["machines"][machine["name"]] = mc
         mc["name"] = machine["name"]
-        mc["action"] = "Waiting for update"
-        mc["is_vm"] = "Virtual machine" if machine in vms[DOM0] else "Physical machine"
+        mc["actions"] = ["Waiting for update"]
+        mc["is_vm"] = "Virtual machine" if machine['VM'] else "Physical machine"
         mc["progress"] = 1
         mc["stdout"] = []
         mc["stderr"] = []
         mc["stderr_lines"] = 0
         mc["stdout_lines"] = 0
     update_status()
-    return machines
+
 
 @task
 def snapshot_mc(mc, commit_id):
