@@ -8,7 +8,7 @@ class dtg::rscfl {
   }
 
   $rscfl_packages = ['python-jinja2', 'systemtap', 'build-essential', 'cmake',
-                    'clang', 'python-pip', 'ccache', 'cna']
+                    'clang', 'python-pip', 'ccache']
   package{$rscfl_packages:
     ensure => installed,
   }
