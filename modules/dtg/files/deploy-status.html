@@ -33,7 +33,7 @@
     <p>
       <pre>
         {% for task in tasks %}
-        {{ task }} <br />
+        {{ task }}
         {% endfor %}
       </pre>
     </p>
@@ -86,7 +86,7 @@
           <div class="modal-body">
             <pre>
               {% for line in kv.stdout %}
-              {{ line }}<br />
+              {{ line }}
               {% endfor %}
             </pre>
           </div>
@@ -107,7 +107,7 @@
           <div class="modal-body">
             <pre>
               {% for line in kv.stderr %}
-              {{ line }}<br />
+              {{ line }}
               {% endfor %}
             </pre>
           </div>

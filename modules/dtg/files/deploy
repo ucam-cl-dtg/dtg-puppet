@@ -210,14 +210,12 @@ def get_os_versions():
     return run("lsb_release -rs | sed 's/\.//'")
 
 
-def must_update(mc, versions):
-    version = versions[mc.hostname]
+def must_update(mc, version):
     if version < MINIMUM_UBUNTU_RELEASE:
         return True
     return False
 
-def should_update(mc, versions):
-    version = int(versions[mc.hostname])
+def should_update(mc, version):
     if version < NOT_UBUNTU:
         return False
     if version < MINIMUM_UBUNTU_RELEASE:
@@ -297,8 +295,8 @@ def snapshot_mc(mc, commit_id):
         print 'Snapshotting %s' % mc.name
         update_progress(mc.name, "Snapshotting")
 
-        if (run('xe vm-snapshot uuid=%s new-name-label=%s' %
-                (mc.uuid, new_snap_name))):
+        if run('xe vm-snapshot uuid=%s new-name-label=%s' %
+                (mc.uuid, new_snap_name)).return_code:
             update_progress(mc.name, "Error snapshotting")
             machine_err(mc.name)
         else:
@@ -475,18 +473,18 @@ def update_machines(machines, friendly_upgrade):
         except TypeError:
             sys.stderr.write("Unable to get OS version for %s\n" % mc.name)
             continue
-        mc.os = versions[mc.hostname]
+        mc.os = version
         # Some machines must be updated even if we're not using the
         # do-release-upgrade flag as they are insecure.
-        if must_update(mc, versions):
+        if must_update(mc, version):
             upgrade_mcs.append(mc.hostname)
             # Others we want to friendly update.
         elif friendly_upgrade:
-            if should_update(mc, versions):
+            if should_update(mc, version):
                 upgrade_mcs.append(mc.hostname)
         update_status()
     if upgrade_mcs:
-        current_task("Going to upgrade Ubuntu on: " + upgrade_mcs)
+        current_task("Going to upgrade Ubuntu on: " + ", ".join(upgrade_mcs))
         execute(upgrade_mc, hosts=upgrade_mcs)
         current_task("Finished upgrading Ubuntu")
 
