@@ -59,6 +59,7 @@ class Aggregator(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
+        self.daemon = True
 
     def run(self):
         global machines
@@ -198,9 +199,9 @@ def sudo_capture(cmd):
         print l
         if "[1;31m" in l:
             # Puppet's way of writing out errors.
-            machine.stderr.append(l)
+            machine.stderr.append(l.strip())
         else:
-            machine.stdout.append(l)
+            machine.stdout.append(l.strip())
     update_status()
     return result.return_code
 
@@ -210,7 +211,7 @@ def get_os_versions():
 
 
 def must_update(mc, versions):
-    version = int(versions[mc.hostname])
+    version = versions[mc.hostname]
     if version < MINIMUM_UBUNTU_RELEASE:
         return True
     return False
@@ -248,8 +249,8 @@ def get_vms():
         except socket.error:
             # The VM doesn't have a proper CNAME. Sigh.
             # Reverse DNS its IP address to gets its puppy number.
-            sys.stderr.write("%s does not have the CNAME %s%s" % (name, name,
-                                                                  DTG_DOM))
+            sys.stderr.write("%s does not have the CNAME %s%s\n" % (name, name,
+                                                                    DTG_DOM))
             ip = run('xe vm-param-get param-name=networks uuid=%s | '
                      'sed -e \'s_0/ip: __\' -e  \'s/; .*$//\'' %
                      uuids[i])
@@ -296,9 +297,12 @@ def snapshot_mc(mc, commit_id):
         print 'Snapshotting %s' % mc.name
         update_progress(mc.name, "Snapshotting")
 
-        run('xe vm-snapshot uuid=%s new-name-label=%s' %
-            (mc.uuid, new_snap_name))
-        update_progress(mc.name, "Snapshotted")
+        if (run('xe vm-snapshot uuid=%s new-name-label=%s' %
+                (mc.uuid, new_snap_name))):
+            update_progress(mc.name, "Error snapshotting")
+            machine_err(mc.name)
+        else:
+            update_progress(mc.name, "Snapshotted")
 
 
 def is_hex(val):
@@ -465,7 +469,12 @@ def update_machines(machines, friendly_upgrade):
     current_task("Finding machines that should have an OS update.")
     upgrade_mcs = []
     for mc in machines:
-        versions = execute(get_os_versions, hosts=[mc.hostname])
+        version = execute(get_os_versions, hosts=[mc.hostname])
+        try:
+            version = int(version[mc.hostname])
+        except TypeError:
+            sys.stderr.write("Unable to get OS version for %s\n" % mc.name)
+            continue
         mc.os = versions[mc.hostname]
         # Some machines must be updated even if we're not using the
         # do-release-upgrade flag as they are insecure.
@@ -475,6 +484,7 @@ def update_machines(machines, friendly_upgrade):
         elif friendly_upgrade:
             if should_update(mc, versions):
                 upgrade_mcs.append(mc.hostname)
+        update_status()
     if upgrade_mcs:
         current_task("Going to upgrade Ubuntu on: " + upgrade_mcs)
         execute(upgrade_mc, hosts=upgrade_mcs)
