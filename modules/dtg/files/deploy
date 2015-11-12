@@ -47,6 +47,8 @@ lick_status = {}
 
 orig_pid = os.getpid()
 
+prev_sent_tasks = 0
+
 OUT_DIR = "%s/public_html/dtg-infra" % os.getenv("HOME")
 OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
 OUT_PATH = "%s/%s" % (OUT_DIR, OUT_FILE)
@@ -64,14 +66,15 @@ class Aggregator(threading.Thread):
         UDPSock.bind(("localhost", 7777))
 
         while True:
-            data = UDPSock.recv(1024)
-            try:
-                new_mc = pickle.loads(data)
+            data = UDPSock.recv(1024 ** 2)
+            new_data = pickle.loads(data)
+            if isinstance(new_data, Machine):
+                new_mc = new_data
                 machines = [x for x in machines if x.name != new_mc.name]
+                lick_status["machines"] = machines
                 machines.append(new_mc)
-            except ValueError:
-                print("Unpickling error")
-                print(data)
+            else:
+                lick_status["tasks"].append(new_data)
             update_status()
 
 class Machine:
@@ -146,18 +149,21 @@ def get_machine_by_name(name):
     return x[0]
 
 def update_status():
+    global prev_sent_tasks
     if os.getpid() == orig_pid:
         # Dump to a file
         with open(OUT_PATH, "wb") as f:
             f.write(template.render(lick_status))
+        prev_sent_tasks = len(lick_status["tasks"])
     else:
     # Send our state to the co-ordinator
         UDPSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        try:
-            UDPSock.sendto(pickle.dumps(get_machine_by_name(env.host)),
+        UDPSock.sendto(pickle.dumps(get_machine_by_name(env.host)),
+                       ("localhost", 7777))
+        for i in range(prev_sent_tasks, len(lick_status["tasks"])):
+            UDPSock.sendto(pickle.dumps(lick_status["tasks"][i]),
                            ("localhost", 7777))
-        except IndexError:
-            is_core_thread = True
+        prev_sent_tasks = len(lick_status["tasks"])
 
 
 def machine_err(mc_name):
@@ -452,7 +458,6 @@ def add_remotes(repo, machines):
 def snapshot_machines(machines, commit_id):
     for mc in machines:
         if mc.is_vm:
-            update_progress(mc.name, "Snapshotting")
             execute(snapshot_mc, mc, commit_id, hosts=[DOM0])
 
 
@@ -471,7 +476,9 @@ def update_machines(machines, friendly_upgrade):
             if should_update(mc, versions):
                 upgrade_mcs.append(mc.hostname)
     if upgrade_mcs:
+        current_task("Going to upgrade Ubuntu on: " + upgrade_mcs)
         execute(upgrade_mc, hosts=upgrade_mcs)
+        current_task("Finished upgrading Ubuntu")
 
 
 def push_config(repo, machines, sec_update):

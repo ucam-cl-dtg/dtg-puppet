@@ -31,11 +31,11 @@
     <h1>Puppet lick at {{ deploy_time }}</h1>
     <h2>Licked <a href="https://github.com/ucam-cl-dtg/dtg-puppet/commit/{{ version }}">{{ version }}</a> by <a href="/~{{ licker }}">{{ licker }}</a></h2>
     <p>
-      <code>
+      <pre>
         {% for task in tasks %}
         {{ task }} <br />
         {% endfor %}
-      </code>
+      </pre>
     </p>
 
     <table class="table table-striped">
@@ -50,7 +50,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for kv in machines | sort(kv.name) %}
+        {% for kv in machines  %}
         <tr class={{ kv.status }}>
           <td>{{ kv.name }}</td>
           <td>{{ kv.is_vm }}</td>
@@ -84,11 +84,11 @@
             <h4 class="modal-title" id="myModalLabel">stdout of {{ kv.name }}</h4>
           </div>
           <div class="modal-body">
-            <code>
+            <pre>
               {% for line in kv.stdout %}
               {{ line }}<br />
               {% endfor %}
-            </code>
+            </pre>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -105,11 +105,11 @@
             <h4 class="modal-title" id="myModalLabel">stderr of {{ kv.name }}</h4>
           </div>
           <div class="modal-body">
-            <code>
+            <pre>
               {% for line in kv.stderr %}
               {{ line }}<br />
               {% endfor %}
-            </code>
+            </pre>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
