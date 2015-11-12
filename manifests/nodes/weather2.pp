@@ -30,6 +30,7 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
     require_password    => false,
     comment             => 'Allow members of weather-adm group root on weather\
  boxes',
+    require             =>  [ Group['weather-adm'], ],
   }
 
   # Install all our packages
