@@ -1,0 +1,16 @@
+<div>
+<div id="tasks">
+{% for task in tasks %}
+{{ task }}
+{% endfor %}
+</div>
+
+
+{% for kv in machines %}
+<pre id="stdout-{{ kv.name }}" class="stdout">
+  {% for line in kv.stdout %}
+  {{ line }}
+  {% endfor %}
+</pre>
+{% endfor %}
+</div>

@@ -31,10 +31,10 @@
     <h1>Puppet lick at {{ deploy_time }}</h1>
     <h2>Licked <a href="https://github.com/ucam-cl-dtg/dtg-puppet/commit/{{ version }}">{{ version }}</a> by <a href="/~{{ licker }}">{{ licker }}</a></h2>
     <p>
-      <pre>
-        {% for task in tasks %}
-        {{ task }}
-        {% endfor %}
+      <pre id="tasks">
+        <!-- {% for task in tasks %} -->
+        <!-- {{ task }} -->
+        <!-- {% endfor %} -->
       </pre>
     </p>
 
@@ -84,7 +84,7 @@
             <h4 class="modal-title" id="myModalLabel">stdout of {{ kv.name }}</h4>
           </div>
           <div class="modal-body">
-            <pre>
+            <pre class="stdout">
               {% for line in kv.stdout %}
               {{ line }}
               {% endfor %}
@@ -121,5 +121,16 @@
 
     {% endfor %}
 
+  <script>
+    setInterval(function(){
+    $.get("{{ tasks_url }}", function(arg) {
+      $("pre#tasks").html($(arg).find("#tasks").html());
+      $(arg).find("pre.stdout").each(function(){
+        $(".modal#"+this.id+" .stdout").html($(this).html());
+      });
+    })
+    }, 2000)
+
+  </script>
   </body>
   </html>

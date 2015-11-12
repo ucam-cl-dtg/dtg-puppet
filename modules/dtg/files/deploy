@@ -42,6 +42,7 @@ MINIMUM_UBUNTU_RELEASE= 1504
 NOT_UBUNTU = 1004
 
 template = ""
+tasks_template = ""
 machines = []
 lick_status = {}
 
@@ -54,6 +55,10 @@ OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
 OUT_PATH = "%s/%s" % (OUT_DIR, OUT_FILE)
 OUT_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
                                                          OUT_FILE)
+TASKS_FILE = "tasks-%s" % OUT_FILE
+TASKS_PATH = "%s/%s" % (OUT_DIR, TASKS_FILE)
+TASKS_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
+                                                           TASKS_FILE)
 
 class Aggregator(threading.Thread):
 
@@ -155,6 +160,8 @@ def update_status():
         # Dump to a file
         with open(OUT_PATH, "wb") as f:
             f.write(template.render(lick_status))
+        with open(TASKS_PATH, "wb") as f:
+            f.write(tasks_template.render(lick_status))
         prev_sent_tasks = len(lick_status["tasks"])
     else:
     # Send our state to the co-ordinator
@@ -531,12 +538,15 @@ def main(args):
     jinja_env = Environment(loader=FileSystemLoader(os.getcwd()),
                          trim_blocks=True)
     global template
+    global tasks_template
     template = jinja_env.get_template('deploy-status.html')
+    tasks_template = jinja_env.get_template('tasks-status.html')
     lick_status["deploy_time"] = datetime.datetime.now()
     lick_status["licker"] = os.getenv("USER")
     lick_status["version"] = ""
     lick_status["tasks"] = []
     lick_status["machines"] = []
+    lick_status["tasks_url"] = TASKS_URL
 
     current_task("Lick initiatisation")
     update_status()
