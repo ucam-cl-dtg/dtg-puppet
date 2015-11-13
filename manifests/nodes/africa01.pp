@@ -12,6 +12,7 @@ node 'africa01.cl.cam.ac.uk' {
     share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@airwolf.cl.cam.ac.uk,ro=@128.232.29.5,async',
   }
 
+  dtg::sudoers_group{ 'africa': }
 
   cron { 'zfs_weekly_scrub':
     command => '/sbin/zpool scrub data-pool0',

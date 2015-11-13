@@ -6,6 +6,8 @@ $deviceanalyzer_ip = $deviceanalyzer_ips[0]
 node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 
+  class {'dtg::deviceanalyzer':}
+
   # open up ports 80,443,2468
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
