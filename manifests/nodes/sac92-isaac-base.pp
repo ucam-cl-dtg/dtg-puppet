@@ -1,8 +1,6 @@
 node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   include 'dtg::minimal'
 
-  class {'dtg::isaac':}
-  
   $tomcat_version = '8'
 
   # download api content repo from private repo (TODO)
