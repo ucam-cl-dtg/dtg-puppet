@@ -3,6 +3,7 @@ node 'isaac-tickets.dtg.cl.cam.ac.uk' {
 
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
+  class {'dtg::isaac':}
 
   $packages = ['rssh', 'inotify-tools',  'php5', 'libapache2-mod-php5', 'php5-mcrypt', 'zip', 'unzip', 'php5-mysql', 'php5-imap', 'php5-gd']
   package{$packages:

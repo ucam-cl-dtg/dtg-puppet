@@ -1,10 +1,10 @@
 node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   include 'dtg::minimal'
+
+  class {'dtg::isaac':}
   
   $tomcat_version = '8'
 
-  User<|title == sac92 |> { groups +>[ 'adm' ]}
-  
   # download api content repo from private repo (TODO)
   file { '/local/data/rutherford/':
     ensure => 'directory',

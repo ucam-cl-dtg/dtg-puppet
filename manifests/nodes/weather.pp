@@ -4,8 +4,7 @@ $weather_ip = $weather_ips[0]
 node 'weather.dtg.cl.cam.ac.uk' {
   class { 'dtg::minimal': }
   class {'dtg::firewall::publichttp':}
-
-  User<|title == 'dwt27' |> { groups +>[ 'adm' ]}
+  class {'dtg::weather': }
 
   # Mount nas01 in order to ship backups there.
   file {'/mnt/nas01':

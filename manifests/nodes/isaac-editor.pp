@@ -3,6 +3,7 @@ node 'isaac-editor.dtg.cl.cam.ac.uk' {
   
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
+  class {'dtg::isaac':}
 
   class {'apache::ubuntu': } ->
   class {'dtg::apache::raven': server_description => 'Isaac Physics'} ->

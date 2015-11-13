@@ -38,16 +38,39 @@ class ms_id_certifiers {
   }
 }
 # Admin users to be given an account on all machines
-group { 'dtg-adm' :
-  ensure => present
-}
-group { 'rscfl' :
+group { 'dtg-adm':
   ensure => present,
 }
+# Delegated administration of central services
+group { 'scm-adm':
+  ensure => present,
+}
+group { 'weather-adm':
+  ensure => present,
+}
+group { 'wiki-adm':
+  ensure => present,
+}
+
+# Research projects
+group { 'africa':
+  ensure => present,
+}
+group { 'deviceanalyzer':
+  ensure => present,
+}
+group { 'isaac':
+  ensure => present,
+}
+group { 'rscfl':
+  ensure => present,
+}
+
+
 class admin_users {
     dtg::add_user { 'drt24':
         real_name => 'Daniel Thomas',
-        groups    => [ 'adm', 'dtg-adm' ],
+        groups    => [ 'adm', 'deviceanalyzer', 'dtg-adm' ],
         keys      => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
         uid       => 2607,
     }
@@ -59,13 +82,13 @@ class admin_users {
     }
     dtg::add_user { 'lc525':
         real_name => 'Lucian Carata',
-        groups    => ['adm', 'rscfl'],
+        groups    => ['weather-adm', 'wiki-adm', 'rscfl'],
         keys      => 'Lucian Carata <lc525@cam.ac.uk>',
         uid       => 2925,
     }
     dtg::add_user { 'jas250':
         real_name => 'James Snee',
-        groups    => ['adm', 'rscfl'],
+        groups    => ['rscfl'],
         keys      => 'James Snee <jas250@cam.ac.uk>',
         uid       => 2814,
     }
@@ -91,43 +114,43 @@ class admin_users {
 #    }
     dtg::add_user { 'tb403':
         real_name => 'Thomas Bytheway',
-        groups    => [ 'adm' ],
+        groups    => [ 'scm-adm' ],
         keys      => ['Thomas Bytheway <thomas.bytheway@cl.cam.ac.uk>'],
         uid       => 3105,
     }
     dtg::add_user { 'arb33':
       real_name => 'Alastair Beresford',
-      groups    => [ 'adm' ],
+      groups    => [ 'isaac' ],
       keys      => ['Alastair Beresford (ssh) <arb33@cam.ac.uk>'],
       uid       => 2125,
     }
     dtg::add_user { 'ipd21':
       real_name => 'Ian Davies',
-      groups    => [ 'adm' ],
+      groups    => [ 'isaac' ],
       keys      => ['Ian Davies (ssh) <ipd21@cam.ac.uk>'],
       uid       => 2361,
     }
     dtg::add_user { 'rss39':
       real_name => 'Ripduman Sohan',
-      groups    => ['adm', 'rscfl'],
+      groups    => [ 'africa', 'rscfl' ],
       keys      => ['Ripduman Sohan (Cambridge Key) <ripduman.sohan@cl.cam.ac.uk>'],
       uid       => 2134,
     }
     dtg::add_user { 'sa497':
       real_name => 'Sherif Akoush',
-      groups    => [],
+      groups    => [ 'africa' ],
       keys      => ['sa497 <sa497@cam.ac.uk>'],
       uid       => 2412,
     }
     dtg::add_user { 'sac92':
       real_name => 'Stephen Cummins',
-      groups    => [ 'adm' ],
+      groups    => [ 'isaac' ],
       keys      => ['Stephen Cummins (Main key) <sacummins@gmail.com>'],
       uid       => 3286,
     }
     dtg::add_user { 'ags46':
       real_name => 'Alistair Stead',
-      groups    => [ 'adm' ],
+      groups    => [ 'isaac' ],
       keys      => ['Alistair Stead <ags46@cam.ac.uk>'],
       uid       => 2815,
     }
@@ -139,7 +162,7 @@ class admin_users {
     }
     dtg::add_user { 'dwt27':
       real_name => 'David Turner',
-      groups    => [],
+      groups    => [ 'weather-adm' ],
       keys      => ['David W. Turner <david.w.turner@cl.cam.ac.uk>'],
       uid       => 3195,
     }
@@ -151,7 +174,7 @@ class admin_users {
     }
     dtg::add_user { 'dac53':
       real_name => 'Diana Vasile',
-      groups    => ['adm'],
+      groups    => [],
       keys      => ['Diana Vasile <dac53@cam.ac.uk>'],
       uid       => 3252,
     }

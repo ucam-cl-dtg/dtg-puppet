@@ -1,11 +1,11 @@
 node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
   class { 'dtg::minimal': }
+  class { 'dtg::weather': }
   if ( $::hostname == "weather2" ) {
     # Do not open up firewall on weather2-dev
     class {'dtg::firewall::publichttp':}
   }
 
-  User<|title == 'dwt27' |> { groups +>[ 'adm' ]}
 }
 
 # Disable monitoring until things are more stable:
