@@ -50,7 +50,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
       ensure => purged
   }
 
-  if ($virtual != 'physical') and $manageapt {
+  if ($virtual == 'xenu') and $manageapt {
     class {'dtg::vm':}
   }
 
