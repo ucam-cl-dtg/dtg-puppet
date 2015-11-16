@@ -53,8 +53,8 @@ prev_sent_tasks = 0
 OUT_DIR = "%s/public_html/dtg-infra" % os.getenv("HOME")
 OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
 OUT_PATH = "%s/%s" % (OUT_DIR, OUT_FILE)
-OUT_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
-                                                         OUT_FILE)
+OUT_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/lick-latest.html" % (
+    os.getenv("USER"))
 TASKS_FILE = "tasks-%s" % OUT_FILE
 TASKS_PATH = "%s/%s" % (OUT_DIR, TASKS_FILE)
 TASKS_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
@@ -83,7 +83,7 @@ class Aggregator(threading.Thread):
                 lick_status["tasks"].append(new_data)
             update_status()
 
-class Machine:
+class Machine(object):
 
     def __init__(self, name, hostname, repo, is_vm, uuid=None):
         self.name = name
@@ -203,7 +203,12 @@ def sudo_capture(cmd):
     result = sudo(cmd, stdout=stdout, stderr=stderr)
     machine = get_machine_by_name(env.host)
     for l in result.split('\n'):
-        print l
+        try:
+            l = str(l).encode('ascii', errors='ignore')
+        except UnicodeDecodeError:
+            # Ignore any junk unicode printed. It's normally by
+            # Ubuntu printing out loading dots.
+            sys.stderr.write("%s\n" % l)
         if "[1;31m" in l:
             # Puppet's way of writing out errors.
             machine.stderr.append(l.strip())
@@ -218,9 +223,8 @@ def get_os_versions():
 
 
 def must_update(mc, version):
-    if version < MINIMUM_UBUNTU_RELEASE:
-        return True
-    return False
+    return version < MINIMUM_UBUNTU_RELEASE and version >= NOT_UBUNTU
+
 
 def should_update(mc, version):
     if version < NOT_UBUNTU:
@@ -533,7 +537,13 @@ def main(args):
 
     Aggregator().start()
     ensure_dir(OUT_DIR)
-    print("Streaming status to %s" % OUT_URL)
+    try:
+        os.unlink("%s/lick-latest.html" % OUT_DIR)
+    except OSError:
+        # Symlink doesn't exist. Who cares?
+        pass
+    os.symlink(OUT_PATH, "%s/lick-latest.html" % OUT_DIR)
+
 
     jinja_env = Environment(loader=FileSystemLoader(os.getcwd()),
                          trim_blocks=True)
@@ -580,6 +590,7 @@ def main(args):
         sys.exit(-1)
     lick_status["machines"] = machines
     update_status()
+    print("Streaming status to %s" % OUT_URL)
 
     # Remove old lick-generated snapshots, or else they build up
     if not args.no_snap_gc:

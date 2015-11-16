@@ -12,5 +12,32 @@
   {{ line }}
   {% endfor %}
 </pre>
+
+<pre id="stderr-{{ kv.name }}" class="stderr">
+  {% for line in kv.stderr %}
+  {{ line }}
+  {% endfor %}
+</pre>
+
+<div id="actions-{{ kv.name }}" class="actions">
+  {% for line in kv.actions %}
+  {{ line }} <br />
+  {% endfor %}
+</div>
+
+<div id="stdout-count-{{ kv.name }}" class="stdout-count">
+  {{ kv.stdout|length }}
+</div>
+
+<div id="stderr-count-{{ kv.name }}" class="stderr-count">
+  {{ kv.stderr|length }}
+</div>
+
+<div id="status-{{ kv.name }}" class="status">
+  {{ kv.status }}
+</div>
+
 {% endfor %}
+
+
 </div>
