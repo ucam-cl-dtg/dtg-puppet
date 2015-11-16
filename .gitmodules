@@ -91,3 +91,6 @@
 [submodule "modules/vmutil"]
 	path = modules/vmutil
 	url = https://github.com/ucam-cl-dtg/puppet-vmutil.git
+[submodule "modules/rsyslog"]
+	path = modules/rsyslog
+	url = https://github.com/saz/puppet-rsyslog.git
