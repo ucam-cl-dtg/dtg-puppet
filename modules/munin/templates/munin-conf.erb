@@ -26,6 +26,15 @@
 # (Exactly one) directory to include all files from.
 includedir /etc/munin/munin-conf.d
 
+# This directive sets the resolution of the RRD files that area
+# created.  Possible values are "normal" and "huge".  Default is
+# "normal".  "Huge" is really huge, it saves the complete data with 5
+# minute resolution for 400 days.  This will probably increase thead
+# I/O load on your Munin master, and currently has very little
+# benefit.
+#
+graph_data_size <%= @graph_data_size %>
+
 # You can choose the time reference for "DERIVE" like graphs, and show
 # "per minute", "per hour" values instead of the default "per second"
 #
