@@ -8,7 +8,7 @@ node /gitlab-runner(-\d+)?/ {
   } ->
   apt::source { 'gitlab-ci':
     location => 'https://packages.gitlab.com/runner/gitlab-ci-multi-runner/ubuntu/',
-    repos => 'main',
+    repos    => 'main',
   } ->
   package {
     'gitlab-ci-multi-runner':
