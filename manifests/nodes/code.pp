@@ -1,4 +1,4 @@
-1;4002;0cnode 'code.dtg.cl.cam.ac.uk' {
+node 'code.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   class {'apache': }
   class {'dtg::apache::raven': server_description => 'DTG Code Server'}
