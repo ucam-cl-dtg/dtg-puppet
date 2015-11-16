@@ -13,6 +13,8 @@ class dtg::rscfl {
     ensure => installed,
   }
 
-  dtg::sudoers_group{ 'rscfl': }
+  dtg::sudoers_group{ 'rscfl':
+    group_name => 'rscfl',
+  }
 
 }
