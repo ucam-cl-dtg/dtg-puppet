@@ -114,9 +114,16 @@ class dtg::firewall::git inherits dtg::firewall::default {
 }
 
 class dtg::firewall::rsyslog inherits dtg::firewall::default {
-  firewall { '014 accept all rsyslog from dtg':
+  firewall { '014 accept all TCP rsyslog from dtg':
+    proto  => 'tcp',
+    dport  => '514',
+    action => 'accept',
+    source => $::local_subnet,
+  }
+
+  firewall { '014 accept all UDP rsyslog from dtg':
     proto  => 'udp',
-    dport  => '5544',
+    dport  => '514',
     action => 'accept',
     source => $::local_subnet,
   }
