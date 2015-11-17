@@ -4,13 +4,10 @@ node /gitlab-runner(-\d+)?/ {
 
   class {'dtg::scm':}
 
-  package {
-    'apt-transport-https':
-    ensure => installed,
-  } ->
   apt::source { 'gitlab-ci':
     location => 'https://packages.gitlab.com/runner/gitlab-ci-multi-runner/ubuntu/',
     repos    => 'main',
+    require  => [ Package['apt-transport-https'] ],
   } ->
   package {
     'gitlab-ci-multi-runner':
