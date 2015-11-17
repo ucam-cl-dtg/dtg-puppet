@@ -71,6 +71,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   }
 
   class { 'dtg::git::config': }
+  class { 'dtg::rsyslog': }
   class { 'etckeeper': require => Class['dtg::git::config'] }
   class { 'ntp': servers => $ntp_servers, package_ensure => latest, }
   # Get entropy then do gpg and then monkeysphere

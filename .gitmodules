@@ -106,3 +106,6 @@
 [submodule "modules/datacat"]
 	path = modules/datacat
 	url = https://github.com/richardc/puppet-datacat.git
+[submodule "modules/rsyslog"]
+	path = modules/rsyslog
+	url = https://github.com/saz/puppet-rsyslog.git
