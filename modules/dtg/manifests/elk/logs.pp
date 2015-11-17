@@ -8,13 +8,17 @@ class dtg::elk::logs {
 
   }
 
-  file { '/etc/logstash/logstash.conf':
-    mode   => '0755',
-    owner  => root,
-    group  => root,
+  logstash::configfile { 'dtg-elk':
     source => 'puppet:///modules/dtg/logstash.conf',
-    notify => Service['logstash']
   }
+
+  file {'/local/data/logs/':
+    ensure => directory,
+    owner  => 'logstash',
+    group  => 'logstash',
+    mode   => '0744',
+  }
+
 }
 
 class dtg::apt_logstash {
