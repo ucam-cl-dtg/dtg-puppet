@@ -2,6 +2,8 @@ node /gitlab-runner(-\d+)?/ {
   include 'dtg::minimal'
   include 'docker'
 
+  class {'dtg::scm':}
+
   package {
     'apt-transport-https':
     ensure => installed,
