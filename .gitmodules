@@ -109,3 +109,6 @@
 [submodule "modules/rsyslog"]
 	path = modules/rsyslog
 	url = https://github.com/saz/puppet-rsyslog.git
+[submodule "modules/kibana"]
+	path = modules/kibana
+	url = https://github.com/evenup/evenup-kibana.git
