@@ -14,7 +14,7 @@ PUPPETBARE=/etc/puppet-bare
 BOOTSTRAP="https://raw.github.com/ucam-cl-dtg/dtg-puppet/master/modules/dtg/files/bootstrap.sh"
 AUTHORIZED_KEYS="/root/.ssh/authorized_keys"
 DOM0_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAujx2sop6KNPYr6v/IWEpFITi964d89N3uVowvRo3X5f9a7fiquEphaXIvrMoF74TtmWe78NybfPPgKgTdmaBWYxhbykO7aC9QeY+iDcQqKWrLFlBAbqJ6GYJYfiSM0DZbmAXiAuguNhX1LU51zPRVKYf2/yAgCmJv2yammXppwCE+BJvBVqJziy2Cs0PKhI/26Altelc2tH+SMIlF9ZuSKCtAcyMTPQxTVrJ/zilmceh/U3LcLD3OlOD7XfHxUQ+fiH0KZ27dja6mnsb/OAvmqpmD8mYZs2vTUiFRH9V6HmQqQRO82a6XRRK6wHcGnh+J7JW45dO75lmtBElw1djyw== root@husky0.dtg.cl.cam.ac.uk"
-OBAPT_TS=/var/lib/apt/periodic/update-success-stamp
+APT_TS=/var/lib/apt/periodic/update-success-stamp
 # if there is a /dev/xvdb without partitions, let's use it
 
 mounted=`mount | grep /dev/xvdb`
@@ -28,7 +28,13 @@ if [ -e /dev/xvdb ] && [ ! -e /dev/xvdb1 ] && [[ -z $mounted ]]; then
     mount -a
 fi
 
-
+# If we have a cache partition on /dev/xvda then remove it. We want to move
+# to a partitionless world.
+sed -i '/swap/d' /etc/fstab
+fdisk -l | grep swap | grep xvda5 > /dev/null
+if [ $? ]; then
+    parted -s /dev/xvda rm 5
+fi
 
 # Find the time since apt-get last successfully updated.
 now=$(date +"%s")
