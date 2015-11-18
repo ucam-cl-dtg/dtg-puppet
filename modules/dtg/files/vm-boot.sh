@@ -28,7 +28,13 @@ if [ -e /dev/xvdb ] && [ ! -e /dev/xvdb1 ] && [[ -z $mounted ]]; then
     mount -a
 fi
 
-
+# If we have a cache partition on /dev/xvda then remove it. We want to move
+# to a partitionless world.
+sed -i '/swap/d' /etc/fstab
+fdisk -l | grep swap | grep xvda5 > /dev/null
+if [ $? ]; then
+    parted -s /dev/xvda rm 5
+fi
 
 # Find the time since apt-get last successfully updated.
 now=$(date +"%s")
