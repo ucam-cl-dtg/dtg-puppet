@@ -1,4 +1,4 @@
 #!/bin/sh
 set -e
 
-puppet parser validate --modulePath=modules manifests/nodes/
+find -name "*.pp" | xargs puppet parser validate --modulepath=modules
