@@ -43,7 +43,7 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
   nagios::monitor { 'isaac-editor-external':
-    parents                     => 'isaac-ediator',
+    parents                     => 'isaac-editor',
     address                     => 'editor.isaacphysics.org',
     hostgroups                  => [ 'http-servers', 'https-servers' ],
     include_standard_hostgroups => false,
