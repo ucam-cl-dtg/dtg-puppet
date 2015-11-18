@@ -1,4 +1,4 @@
-1;4002;0cnode 'isaac-editor.dtg.cl.cam.ac.uk' {
+node 'isaac-editor.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   
   class {'dtg::firewall::publichttp':}
