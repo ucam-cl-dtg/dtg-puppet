@@ -1,4 +1,4 @@
 #!/bin/sh
 set -e
 
-find -name "*.pp" | xargs puppet parser validate --modulepath=modules
+find ../.. -name "*.pp" | xargs puppet parser validate --modulepath=modules
