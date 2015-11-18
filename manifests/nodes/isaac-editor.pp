@@ -1,4 +1,4 @@
-1;4002;0cnode 'isaac-editor.dtg.cl.cam.ac.uk' {
+node 'isaac-editor.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   
   class {'dtg::firewall::publichttp':}
@@ -43,7 +43,7 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
   nagios::monitor { 'isaac-editor-external':
-    parents                     => 'isaac-ediator',
+    parents                     => 'isaac-editor',
     address                     => 'editor.isaacphysics.org',
     hostgroups                  => [ 'http-servers', 'https-servers' ],
     include_standard_hostgroups => false,
