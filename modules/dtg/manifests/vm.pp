@@ -18,6 +18,9 @@ class dtg::vm {
     ensure => 'link',
     target => '/etc/init.d/vm-boot.sh'
   }
+  exec {'xenstore-write-sudoers':
+    command => 'sudo xenstore-write "data/sudoers" "$(for x in `ls /etc/sudoers.d`; do getent group $x; done | cut -d \':\' -f 4 |  tr \',\' \'\n\' | sort | uniq | grep -e  ^[a-z]*[a-z][0-9][0-9]*$ | sed \':a;N;$!ba;s/\n/ /g\')"'
+  }
 }
 # So that we can appy a stage to it
 class dtg::vm::repos {
