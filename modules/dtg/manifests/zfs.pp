@@ -1,4 +1,13 @@
-class dtg::zfs {
+
+class dtg::zfs(
+  $zfs_mount     = 'no',
+  $zfs_unmount   = 'no',
+  $zfs_share     = 'yes',
+  $zfs_unshare   = 'no',
+  $zfs_debug     = 'no',
+  $zfs_debug_dmu = 'no',
+  $zfs_sleep     = 0,
+  ) {
   class {'dtg::zfs::repos': stage => 'repos'}
 
   package {"linux-headers-generic":
@@ -8,6 +17,14 @@ class dtg::zfs {
   package {'ubuntu-zfs':
     ensure  => present,
     require => [ Package["linux-headers-generic"], Apt::Ppa['ppa:zfs-native/stable'], Package['munin-node']],
+  }
+
+  file {'/etc/default/zfs':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
+    source => template('dtg/zfs/zfs.erb'),
   }
 
   # zfs includes this config file to let unpriviliged users run read only ZFS commands.

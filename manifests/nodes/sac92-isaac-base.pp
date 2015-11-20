@@ -1,10 +1,10 @@
 node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   include 'dtg::minimal'
-  
+
+  class {'dtg::isaac':}
+
   $tomcat_version = '8'
 
-  User<|title == sac92 |> { groups +>[ 'adm' ]}
-  
   # download api content repo from private repo (TODO)
   file { '/local/data/rutherford/':
     ensure => 'directory',
@@ -47,10 +47,19 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
     source => 'puppet:///modules/dtg/apache/isaac-server.conf',
   }
   
-  class { 'postgresql::globals':
-    version => '9.4',
+  # if we are on live we want to use a larger data volume to store the postgres data.
+  # TODO: rename mount point and create volumes on dev and staging as well so we don't have to do this.
+  if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
+    class { 'postgresql::globals':
+      version => '9.4',
+      datadir => '/local/mongo-data-store/postgres/'
+    }
+  } else {
+    class { 'postgresql::globals':
+      version => '9.4',
+    }
   }
-  ->
+
   class { 'postgresql::server':
     ip_mask_deny_postgres_user => '0.0.0.0/0',
     ip_mask_allow_all_users    => '127.0.0.1/32',

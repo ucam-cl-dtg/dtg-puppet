@@ -52,19 +52,42 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'puppet/modules/apache': source => 'git://github.com/ucam-cl-dtg/puppet-apache.git'}
   dtg::git::mirror::repo{'puppet/modules/apt': source => 'git://github.com/puppetlabs/puppetlabs-apt.git'}
   dtg::git::mirror::repo{'puppet/modules/common': source => 'git://github.com/puppet-modules/puppet-common.git'}
+  dtg::git::mirror::repo{'puppet/modules/concat': source => 'git@github.com:puppetlabs/puppetlabs-concat.git'}
+  dtg::git::mirror::repo{'puppet/modules/datacat': source => 'https://github.com/richardc/puppet-datacat.git'}
+  dtg::git::mirror::repo{'puppet/modules/dhcp': source => 'git@github.com:puppetlabs/puppetlabs-dhcp.git'}
+  dtg::git::mirror::repo{'puppet/modules/distcc': source => 'git@github.com:ucam-cl-dtg/puppet-distcc.git'}
+  dtg::git::mirror::repo{'puppet/modules/docker': source => 'git@github.com:garethr/garethr-docker.git'}
   dtg::git::mirror::repo{'puppet/modules/ekeyd': source => 'git://github.com/ucam-cl-dtg/puppet-ekeyd.git'}
+  dtg::git::mirror::repo{'puppet/modules/elasticsearch': source => 'https://github.com/elastic/puppet-elasticsearch.git'}
   dtg::git::mirror::repo{'puppet/modules/etckeeper': source => 'git://github.com/thomasvandoren/puppet-etckeeper.git'}
+  dtg::git::mirror::repo{'puppet/modules/fileconcat': source => 'https://github.com/electrical/puppet-lib-file_concat.git'}
   dtg::git::mirror::repo{'puppet/modules/firewall': source => 'git://github.com/puppetlabs/puppetlabs-firewall.git'}
+  dtg::git::mirror::repo{'puppet/modules/java': source => 'https://github.com/puppetlabs/puppetlabs-java.git'}
+  dtg::git::mirror::repo{'puppet/modules/kibana': source => 'https://github.com/evenup/evenup-kibana.git'}
+  dtg::git::mirror::repo{'puppet/modules/monkeysphere': source => 'https://github.com/ucam-cl-dtg/puppet-monkeysphere'}
   dtg::git::mirror::repo{'puppet/modules/mysql': source => 'git://github.com/puppetlabs/puppetlabs-mysql.git'}
+  dtg::git::mirror::repo{'puppet/modules/network': source => 'git@github.com:attachmentgenie/attachmentgenie-network.git'}
+  dtg::git::mirror::repo{'puppet/modules/nfs': source => 'git@github.com:stankevich/puppet-nfs.git'}
   dtg::git::mirror::repo{'puppet/modules/ntp': source => 'git://github.com/puppetlabs/puppetlabs-ntp.git'}
+  dtg::git::mirror::repo{'puppet/modules/postgresql': source => 'git://github.com/puppetlabs/puppet-postgresql.git'}
+  dtg::git::mirror::repo{'puppet/modules/puppetlabs-stdlib': source => 'git@github.com:puppetlabs/puppetlabs-stdlib.git'}
+  dtg::git::mirror::repo{'puppet/modules/rabbitmq': source => 'git://github.com/puppetlabs/puppetlabs-rabbitmq.git'}
+  dtg::git::mirror::repo{'puppet/modules/rsyslog': source => 'https://github.com/saz/puppet-rsyslog.git'}
+  dtg::git::mirror::repo{'puppet/modules/rvm': source => ' https://github.com/lc525/puppet-rvm'}
   dtg::git::mirror::repo{'puppet/modules/sonar': source => 'git://github.com/ucam-cl-dtg/puppet-sonar.git'}
+  dtg::git::mirror::repo{'puppet/modules/sonarqube': source => 'https://github.com/maestrodev/puppet-sonarqube.git'}
+  dtg::git::mirror::repo{'puppet/modules/shell_config': source => 'git://github.com/puppetlabs-operations/puppet-shell_config.git'}
+  dtg::git::mirror::repo{'puppet/modules/smartd': source => 'git://github.com/jhoblitt/puppet-smartd.git'}
   dtg::git::mirror::repo{'puppet/modules/stdlib': source => 'git://github.com/puppetlabs/puppetlabs-stdlib.git'}
   dtg::git::mirror::repo{'puppet/modules/stunnel': source => 'git://github.com/ucam-cl-dtg/blendedbyus-stunnel.git'}
   dtg::git::mirror::repo{'puppet/modules/sudoers': source => 'git://github.com/phinze/puppet-sudoers.git'}
   dtg::git::mirror::repo{'puppet/modules/sysctl': source => 'git://git.puppet.immerda.ch/module-sysctl.git'}
+  dtg::git::mirror::repo{'puppet/modules/unbound': source => 'git@github.com:xaque208/puppet-unbound.git'}
   dtg::git::mirror::repo{'puppet/modules/vcsrepo': source => 'git://github.com/openstack-infra/puppet-vcsrepo.git'}
+  dtg::git::mirror::repo{'puppet/modules/vmutil': source => 'git@github.com:ucam-cl-dtg/puppet-vmutil.git'}
   dtg::git::mirror::repo{'puppet/modules/wget': source => 'git://github.com/maestrodev/puppet-wget.git'}
-  dtg::git::mirror::repo{'puppet/modules/postgresql': source => 'git://github.com/puppetlabs/puppet-postgresql.git'}
+  dtg::git::mirror::repo{'puppet/modules/zfs-auto-snapshot': source => 'git@github.com:ucam-cl-dtg/puppet-zfs-auto-snapshot.git'}
+
 
   # cdn
   dtg::git::mirror::repo{'isaac/cdn': source => 'git@code.dtg.cl.cam.ac.uk:isaac/cdn'}

@@ -1,5 +1,7 @@
 node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
   class { 'dtg::minimal': }
+  # Give weather-adm admin on these machines:
+  class { 'dtg::weather': }
 
   # On weather2, open firewall and setup static IP via ifaces file
   # weather2-dev keeps its DTG VLAN puppy-IP and closed firewall
@@ -19,18 +21,6 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
       },
       auto       => ['eth0'],
     }
-  }
-
-  # Give weather-adm admin on these machines
-  group { 'weather-adm': ensure => present }
-  sudoers::allowed_command{ 'weather-adm':
-    command             => 'ALL',
-    group               => 'weather-adm',
-    run_as              => 'ALL',
-    require_password    => false,
-    comment             => 'Allow members of weather-adm group root on weather\
- boxes',
-    require             =>  [ Group['weather-adm'], ],
   }
 
   # Install all our packages
@@ -145,11 +135,7 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
     ensure  => present,
     type    => 'ssh-rsa',
     user    => 'postgres-ssh-tunnel',
-    key     => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQC1op9dVlbQoguAtT0ciVsgEnI1bcGpYk\
-B1KbuuR1MaStB0PbwgbWbNXtHCW5fLQNUab5r1C2C7RKGGGMG4GeotfsyJcvyrn1kgyZXA0qDQH3G4\
-/gNIXx0V0GuZrMt0hvXsauV1sUQyEePFQJZ9j9VMR9jh7QVM5SAAsBKiufhUmsVwqCrjqPujJ2dtYA\
-hygDlJw4m9sP1Axoqyka82hFotvcq45AgOUZ2f6JAKIbXLpq+osfknXHeBIerFPlZqCR38G73VvkaS\
-6Gz3W0qXq+3d5nhqOdicqzKclb5lMcJCIEAE/C45hRItl4Co+Vcrr7IztNdtdxLhYIGivNVQk91t',
+    key     => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQC1op9dVlbQoguAtT0ciVsgEnI1bcGpYkB1KbuuR1MaStB0PbwgbWbNXtHCW5fLQNUab5r1C2C7RKGGGMG4GeotfsyJcvyrn1kgyZXA0qDQH3G4/gNIXx0V0GuZrMt0hvXsauV1sUQyEePFQJZ9j9VMR9jh7QVM5SAAsBKiufhUmsVwqCrjqPujJ2dtYAhygDlJw4m9sP1Axoqyka82hFotvcq45AgOUZ2f6JAKIbXLpq+osfknXHeBIerFPlZqCR38G73VvkaS6Gz3W0qXq+3d5nhqOdicqzKclb5lMcJCIEAE/C45hRItl4Co+Vcrr7IztNdtdxLhYIGivNVQk91t',
   }
 }
 

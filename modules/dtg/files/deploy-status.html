@@ -28,14 +28,15 @@
       <![endif]-->
   </head>
   <body>
+    <div class="container-fluid">
     <h1>Puppet lick at {{ deploy_time }}</h1>
-
+    <h2>Licked <a href="https://github.com/ucam-cl-dtg/dtg-puppet/commit/{{ version }}">{{ version }}</a> by <a href="/~{{ licker }}">{{ licker }}</a></h2>
     <p>
-      <code>
+      <pre id="tasks">
         {% for task in tasks %}
-        {{ task }} <br />
+        {{ task }}
         {% endfor %}
-      </code>
+      </pre>
     </p>
 
     <table class="table table-striped">
@@ -50,24 +51,26 @@
         </tr>
       </thead>
       <tbody>
-        {% for machine, kv in machines.iteritems() %}
-        <tr class={{ kv.status }}>
+        {% for kv in machines|sort(attribute='name')  %}
+        <tr class="{{ kv.status }} status" id="status-{{ kv.name }}">
           <td>{{ kv.name }}</td>
           <td>{{ kv.is_vm }}</td>
           <td>{{ kv.os }}</td>
           <td>
-            {% for action in kv.actions %}
-            {{ action }} <br />
-            {% endfor %}
+            <div id="actions-{{ kv.name }}" class="actions">
+              {% for line in kv.actions %}
+              {{ line }} <br />
+              {% endfor %}
+            </div>
           </td>
           <td>
             <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#stdout-{{ kv.name }}">
-              stdout <span class="badge">{{ kv.stdout_lines }}</span>
+              stdout <span class="badge" id="stdout-count-{{ kv.name }}">{{ kv.stdout|length }}</span>
             </button>
           </td>
           <td>
             <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#stderr-{{ kv.name }}">
-              stderr <span class="badge">{{ kv.stderr_lines }}</span>
+              stderr <span class="badge" id="stderr-count-{{ kv.name }}">{{ kv.stderr|length }}</span>
             </button>
           </td>
         </tr>
@@ -75,7 +78,7 @@
       </tbody>
     </table>
 
-    {% for machine, kv in machines.iteritems() %}
+    {% for kv in machines %}
     <div class="modal fade" id="stdout-{{ kv.name }}" tabindex="-1" role="dialog">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -84,11 +87,11 @@
             <h4 class="modal-title" id="myModalLabel">stdout of {{ kv.name }}</h4>
           </div>
           <div class="modal-body">
-            <code>
+            <pre class="stdout">
               {% for line in kv.stdout %}
-              {{ line }}<br />
+              {{ line }}
               {% endfor %}
-            </code>
+            </pre>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -99,17 +102,17 @@
 
     <div class="modal fade" id="stderr-{{ kv.name }}" tabindex="-1" role="dialog">
       <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content modal-lg">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="myModalLabel">stderr of {{ kv.name }}</h4>
           </div>
           <div class="modal-body">
-            <code>
+            <pre>
               {% for line in kv.stderr %}
-              {{ line }}<br />
+              {{ line }}
               {% endfor %}
-            </code>
+            </pre>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -121,5 +124,39 @@
 
     {% endfor %}
 
+  <script>
+    setInterval(function(){
+    $.get("{{ tasks_url }}", function(arg) {
+      $("pre#tasks").html($(arg).find("#tasks").html());
+      $(arg).find("pre.stdout").each(function(){
+        $(".modal#"+this.id+" .stdout").html($(this).html());
+      });
+
+      $(arg).find("pre.stderr").each(function(){
+        $(".modal#"+this.id+" .stderr").html($(this).html());
+      });
+
+      $(arg).find("div.actions").each(function(){
+        $(".actions#"+this.id).html($(this).html());
+      });
+
+      $(arg).find("div.stdout-count").each(function(){
+        $(".badge#"+this.id).html($(this).html());
+      });
+
+      $(arg).find("div.stderr-count").each(function(){
+        $(".badge#"+this.id).html($(this).html());
+      });
+
+      $(arg).find("div.status").each(function(){
+        $(".status#"+this.id).addClass($(this).html());
+      });
+
+
+    })
+    }, 2000)
+
+  </script>
+  </div>
   </body>
   </html>

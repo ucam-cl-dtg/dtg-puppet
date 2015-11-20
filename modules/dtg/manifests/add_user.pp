@@ -14,7 +14,7 @@ define dtg::add_user ( $real_name, $groups = '', $keys = undef, $uid) {
         shell      => '/bin/bash',
         groups     => $groups,
         uid        => $uid,
-        membership => 'minimum',
+        membership => 'inclusive',
         password   => '*',
     }
 

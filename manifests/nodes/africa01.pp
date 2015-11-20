@@ -9,9 +9,12 @@ node 'africa01.cl.cam.ac.uk' {
   dtg::zfs::fs{'datashare':
     pool_name => 'data-pool0',
     fs_name => 'datashare',
-    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@128.232.29.5,async',
+    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@airwolf.cl.cam.ac.uk,ro=@128.232.29.5,async',
   }
 
+  dtg::sudoers_group{ 'africa':
+    group_name => 'africa',
+  }
 
   cron { 'zfs_weekly_scrub':
     command => '/sbin/zpool scrub data-pool0',
@@ -65,6 +68,18 @@ node 'africa01.cl.cam.ac.uk' {
         mountd_port     => $mountd_port,
         rquotad_port    => $rquotad_port,
         statd_port      => $statd_port,
+  }
+
+  dtg::firewall::nfs {'nfs access from airwolf.cl.cam.ac.uk':
+    source          => 'airwolf.cl.cam.ac.uk',
+    source_name     => 'airwolf.cl.cam.ac.uk',
+    portmapper_port => $portmapper_port,
+    nfs_port        => $nfs_port,
+    lockd_tcpport   => $lockd_tcpport,
+    lockd_udpport   => $lockd_udpport,
+    mountd_port     => $mountd_port,
+    rquotad_port    => $rquotad_port,
+    statd_port      => $statd_port,
   }
 
   dtg::firewall::nfs {'nfs access from 128.232.29.5':

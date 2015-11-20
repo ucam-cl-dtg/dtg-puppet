@@ -16,6 +16,8 @@ $deviceanalyzer_crunch_ips = "${deviceanalyzer_crunch0_ip},${deviceanalyzer_crun
 node /deviceanalyzer-crunch(\d+)?.dtg.cl.cam.ac.uk/ {
   include 'dtg::minimal'
 
+  class {'dtg::deviceanalyzer':}
+
   User<|title == 'dh526' |> { groups +>[ 'adm' ]}
 
   firewall { '020 redirect 80 to 4567':

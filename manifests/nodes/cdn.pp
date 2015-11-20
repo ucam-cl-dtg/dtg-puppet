@@ -1,5 +1,8 @@
 node 'cdn.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
+
+  class {'dtg::isaac':}
+
   # this script uses the guide here for installing varnish with apache (guide includes http and https)
   # http://blog.ajnicholls.com/varnish-apache-and-https/
 

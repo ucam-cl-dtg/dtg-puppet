@@ -88,3 +88,27 @@
 [submodule "modules/vcsrepo"]
 	path = modules/vcsrepo
 	url = https://github.com/puppetlabs/puppetlabs-vcsrepo
+[submodule "modules/vmutil"]
+	path = modules/vmutil
+	url = https://github.com/ucam-cl-dtg/puppet-vmutil.git
+[submodule "modules/logstash"]
+	path = modules/logstash
+	url = https://github.com/elastic/puppet-logstash.git
+[submodule "modules/file_concat"]
+	path = modules/file_concat
+	url = https://github.com/electrical/puppet-lib-file_concat.git
+[submodule "modules/elasticsearch"]
+	path = modules/elasticsearch
+	url = https://github.com/elastic/puppet-elasticsearch.git
+[submodule "modules/java"]
+	path = modules/java
+	url = https://github.com/puppetlabs/puppetlabs-java.git
+[submodule "modules/datacat"]
+	path = modules/datacat
+	url = https://github.com/richardc/puppet-datacat.git
+[submodule "modules/rsyslog"]
+	path = modules/rsyslog
+	url = https://github.com/saz/puppet-rsyslog.git
+[submodule "modules/kibana"]
+	path = modules/kibana
+	url = https://github.com/evenup/evenup-kibana.git

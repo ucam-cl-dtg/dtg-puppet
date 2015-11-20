@@ -23,7 +23,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
 
   # Packages which should be installed on all servers
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
-                  'apg', 'htop', 'nfs-common',
+                  'apg', 'htop', 'nfs-common', 'emacs24-nox',
                   'iptables-persistent', 'command-not-found', 'mlocate',
                   'bash-completion', 'apt-show-versions', 'iotop', 'byobu']
   package {
@@ -50,7 +50,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
       ensure => purged
   }
 
-  if ($virtual != 'physical') and $manageapt {
+  if ($virtual == 'xenu') and $manageapt {
     class {'dtg::vm':}
   }
 
@@ -71,6 +71,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   }
 
   class { 'dtg::git::config': }
+  class { 'dtg::rsyslog': }
   class { 'etckeeper': require => Class['dtg::git::config'] }
   class { 'ntp': servers => $ntp_servers, package_ensure => latest, }
   # Get entropy then do gpg and then monkeysphere
@@ -258,6 +259,10 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     group  => 'adm',
     mode   => '0775',
     source => 'puppet:///modules/dtg/post-update.hook',
+  }
+  file {'/etc/puppet/.git/hooks/pre-commit.hook':
+    ensure => 'link',
+    target => '/etc/puppet/modules/dtg/files/pre-commit.hook',
   }
   file {'/etc/init/failsafe.conf':
     ensure => file,

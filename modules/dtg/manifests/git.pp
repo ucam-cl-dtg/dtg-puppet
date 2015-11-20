@@ -16,6 +16,7 @@ class dtg::git {
   }
   class {'dtg::git::config::repohost':
   }
+  class {'dtg::scm':}
   # class {'dtg::git::gitlab::main':}
 }
 

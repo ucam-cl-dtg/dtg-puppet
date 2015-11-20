@@ -5,6 +5,8 @@ node /deviceanalyzer-marketcache/ {
     $tomcat_version = '8'
     $install_directory = '/local/data/webapps'
 
+    class {'dtg::deviceanalyzer':}
+
     class {'dtg::tomcat': version => $tomcat_version}
     ->
     class {'dtg::firewall::publichttp':}

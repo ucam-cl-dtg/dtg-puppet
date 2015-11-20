@@ -3,6 +3,7 @@ node 'isaac-tickets.dtg.cl.cam.ac.uk' {
 
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
+  class {'dtg::isaac':}
 
   $packages = ['rssh', 'inotify-tools',  'php5', 'libapache2-mod-php5', 'php5-mcrypt', 'zip', 'unzip', 'php5-mysql', 'php5-imap', 'php5-gd']
   package{$packages:
@@ -63,8 +64,15 @@ if ( $::monitor ) {
   nagios::monitor { 'isaac-tickets':
     parents    => 'nas04',
     address    => 'isaac-tickets.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers', 'http-servers', 'https-servers'],
+    hostgroups => [ 'ssh-servers', 'http-servers'],
   }
+  nagios::monitor { 'isaac-tickets-external':
+    parents                     => 'isaac-tickets',
+    address                     => 'tickets.isaacphysics.org',
+    hostgroups                  => [ 'http-servers', 'https-servers' ],
+    include_standard_hostgroups => false,
+  }
+
   munin::gatherer::configure_node { 'isaac-tickets': }
 }
 

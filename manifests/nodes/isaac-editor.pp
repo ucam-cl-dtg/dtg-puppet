@@ -3,6 +3,7 @@ node 'isaac-editor.dtg.cl.cam.ac.uk' {
   
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
+  class {'dtg::isaac':}
 
   class {'apache::ubuntu': } ->
   class {'dtg::apache::raven': server_description => 'Isaac Physics'} ->
@@ -39,7 +40,13 @@ if ( $::monitor ) {
   nagios::monitor { 'isaac-editor':
     parents    => 'nas04',
     address    => 'isaac-editor.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers', 'http-servers', 'https-servers'],
+    hostgroups => [ 'ssh-servers', 'http-servers'],
+  }
+  nagios::monitor { 'isaac-editor-external':
+    parents                     => 'isaac-editor',
+    address                     => 'editor.isaacphysics.org',
+    hostgroups                  => [ 'http-servers', 'https-servers' ],
+    include_standard_hostgroups => false,
   }
   munin::gatherer::configure_node { 'isaac-editor': }
 }

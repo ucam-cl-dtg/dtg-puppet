@@ -19,17 +19,22 @@ APT_TS=/var/lib/apt/periodic/update-success-stamp
 
 mounted=`mount | grep /dev/xvdb`
 if [ -e /dev/xvdb ] && [ ! -e /dev/xvdb1 ] && [[ -z $mounted ]]; then
-    echo "Partitioning, and creating filesystem on /dev/xvdb"
-    (echo n; echo p; echo 1; echo ; echo; echo w) | fdisk /dev/xvdb
-    mkfs.ext4 /dev/xvdb1
-    echo "/dev/xvdb1 /local/data ext4 defaults,errors=remount-ro 0 1" >> /etc/fstab
+    echo "Creating a filesystem on /dev/xvdb"
+    mkfs.ext4 /dev/xvdb
+    echo "/dev/xvdb /local/data ext4 defaults,errors=remount-ro 0 1" >> /etc/fstab
     if [ ! -d /local/data ]; then
 	mkdir -p /local/data
     fi
-    mount /local/data
+    mount -a
 fi
 
-
+# If we have a cache partition on /dev/xvda then remove it. We want to move
+# to a partitionless world.
+sed -i '/swap/d' /etc/fstab
+fdisk -l | grep swap | grep xvda5 > /dev/null
+if [ $? ]; then
+    parted -s /dev/xvda rm 5
+fi
 
 # Find the time since apt-get last successfully updated.
 now=$(date +"%s")

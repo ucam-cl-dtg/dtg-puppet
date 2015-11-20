@@ -1,7 +1,7 @@
 node /balancer(-\d+)?/ {
   include 'dtg::minimal'
   
-  User<|title == sac92 |> { groups +>[ 'adm' ]}
+  class {'dtg::isaac':}
   
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
