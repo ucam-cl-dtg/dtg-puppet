@@ -2,7 +2,7 @@ node 'weather-legacy.dtg.cl.cam.ac.uk' {
   class {'dtg::minimal':}
   class {'dtg::firewall::publichttp':}
 
-  User<|title == 'dwt27' |> { groups +>[ 'adm' ]}
+  class {'dtg::weather': }
 }
 
 # Disable monitoring until things are more stable:
