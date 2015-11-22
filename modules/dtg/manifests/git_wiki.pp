@@ -24,6 +24,16 @@ class dtg::git_wiki {
 
   class {'dtg::git::gollum::pre':}
   class {'dtg::git::gollum::main':}
+  dtg::sudoers_group{ 'wiki':
+    group_name => 'wiki',
+  }
+
+  dtg::backup::serversetup {'wiki':
+    backup_directory   => '/local/data/git',
+    script_destination => '/srv/git/wiki-backup',
+    user               => 'git',
+    home               => '/srv/git/',
+  }
 }
 
 # Install ruby and passenger before gollum
@@ -91,3 +101,11 @@ class dtg::git::gollum::main {
   }
 }
 
+if ( $::is_backup_server ) {
+  dtg::backup::hostsetup{'wiki':
+    user    => 'git',
+    host    => 'wiki.dtg.cl.cam.ac.uk',
+    weekday => 'Sunday',
+    require => Class['dtg::backup::host'],
+  }
+}

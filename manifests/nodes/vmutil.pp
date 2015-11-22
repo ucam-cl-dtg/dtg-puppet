@@ -1,11 +1,16 @@
 node 'vmutil.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
+  class { 'dtg::husky-scripts': }
   class {'vmutil':
     hosts         => 'husky0.dtg.cl.cam.ac.uk husky1.dtg.cl.cam.ac.uk husky2.dtg.cl.cam.ac.uk',
     password_file => '/local/data/vmutil.password',
-    xe_path       => '/local/data/xe'
+    xe_path       => '/local/data/xe',
+    user_vms      => 'tags:contains=$USER',
   }
+
+
 }
+
 if ($::monitor) {
 
   nagios::monitor {'vmutil':
