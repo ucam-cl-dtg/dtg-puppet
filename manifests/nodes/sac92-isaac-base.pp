@@ -9,21 +9,21 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   file { '/local/data/rutherford/':
     ensure => 'directory',
     owner  => "tomcat${tomcat_version}",
-    group  => "tomcat${tomcat_version}",
+    group  => "isaac",
     mode   => '0644',
   }
   
   file { '/local/data/rutherford/keys/':
     ensure => 'directory',
     owner  => "tomcat${tomcat_version}",
-    group  => "tomcat${tomcat_version}",
+    group  => "isaac",
     mode   => '0640',
   }
   
   file { ['/local/data/rutherford/git-contentstore', '/local/data/rutherford/conf']:
     ensure => 'directory',
     owner  => "tomcat${tomcat_version}",
-    group  => "tomcat${tomcat_version}",
+    group  => "isaac",
     mode   => '0644',
   }
 
@@ -33,7 +33,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
     provider => git,
     source   => 'https://github.com/ucam-cl-dtg/isaac-app.git',
     owner    => "tomcat${tomcat_version}",
-    group    => "tomcat${tomcat_version}"
+    group    => "isaac"
   }
 
   class {'apache::ubuntu': } ->
@@ -132,21 +132,21 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   file { '/local/data/rutherford/database-backup':
     ensure => 'directory',
     owner  => 'postgres',
-    group  => 'root',
+    group  => 'isaac',
     mode   => '0755',
   }
   ->
     file { '/local/data/rutherford/database-backup/combined':
     ensure => 'directory',
     owner  => 'postgres',
-    group  => 'root',
+    group  => 'isaac',
     mode   => '0755',
   }
   ->
   file { '/local/data/rutherford/isaac-database-backup.sh':
       mode   => '0755',
       owner  => postgres,
-      group  => root,
+      group  => isaac,
       source => 'puppet:///modules/dtg/isaac/isaac-database-backup.sh'
   }
   ->
@@ -156,7 +156,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
       replace => false,
       mode   => '0755',
       owner  => postgres,
-      group  => root,
+      group  => isaac,
       content => "# Database backup log files"
   }
   -> 

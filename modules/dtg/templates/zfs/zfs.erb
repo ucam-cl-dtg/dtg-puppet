@@ -1,4 +1,4 @@
-# ZoL userland configuration.
+84;0;0c# ZoL userland configuration.
 
 # Run `zfs mount -a` during system start?
 # This should be 'no' if zfs-mountall or a systemd generator is available.
@@ -26,4 +26,4 @@ ZFS_DKMS_DISABLE_STRIP='<%=@zfs_debug%>'
 
 # Wait for this many seconds in the initrd pre_mountroot?
 # This delays startup and should be '0' on most systems.
-ZFS_INITRD_PRE_MOUNTROOT_SLEEP='<%=@zfs_sleep>'
+ZFS_INITRD_PRE_MOUNTROOT_SLEEP='<%=@zfs_sleep%>'
