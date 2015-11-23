@@ -32,7 +32,7 @@ fi
 # to a partitionless world.
 sed -i '/swap/d' /etc/fstab
 fdisk -l | grep swap | grep xvda5 > /dev/null
-if [ $? ]; then
+if [ $? -eq 0 ]; then
     parted -s /dev/xvda rm 5
 fi
 
