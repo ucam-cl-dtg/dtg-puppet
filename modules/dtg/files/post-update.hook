@@ -21,7 +21,7 @@ unset GIT_DIR
 
 # Fix permissions on stunnel that puppet can't easily fix
 if [ -d /var/lib/stunnel4/egd-client ]; then
-    sudo chown -R egd-client:egd-client /var/lib/stunnel4/egd-client/
+    sudo chown -R egd-client:egd-client /var/lib/stunnel4/egd-client/ || echo "Could not fix stunnel4 permissions" >&2
 fi
 
 # First pull updates without the submodules - this gives us a chance
