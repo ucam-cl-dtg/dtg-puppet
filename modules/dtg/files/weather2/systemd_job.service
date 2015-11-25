@@ -1,0 +1,11 @@
+[Unit]
+Description=Gunicorn application server running weather_api
+
+[Service]
+User=weather
+Group=www-data
+WorkingDirectory=/srv/weather/weather-srv/weather_api
+ExecStart=/srv/weather/venv/bin/gunicorn --workers 1 --bind unix:../../weather_api.sock -m 007 wsgi
+
+[Install]
+WantedBy=multi-user.target
