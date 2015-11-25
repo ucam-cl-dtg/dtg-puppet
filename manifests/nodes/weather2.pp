@@ -72,7 +72,7 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
   # Install service
   file {'systemd-script':
     ensure  => file,
-    path    => '/etc/systemd/system/weather-service.service',
+    path    => '/etc/systemd/system/weather.service',
     owner   => 'root',
     group   => 'root',
     source  => 'puppet:///modules/dtg/weather2/systemd_job.service',
