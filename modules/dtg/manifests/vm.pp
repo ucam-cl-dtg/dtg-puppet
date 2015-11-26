@@ -21,6 +21,21 @@ class dtg::vm {
   exec {'xenstore-write-sudoers':
     command => 'sudo xenstore-write "data/sudoers" "$(for x in `ls /etc/sudoers.d`; do getent group $x; done | cut -d \':\' -f 4 |  tr \',\' \'\n\' | sort | uniq | grep -e  ^[a-z]*[a-z][0-9][0-9]*$ | sed \':a;N;$!ba;s/\n/ /g\')"'
   }
+
+  # Autologin as root
+
+  file{'/etc/systemd/system/serial-getty@hvc0.service.d/':
+    ensure => 'directory',
+  }
+  ->
+  file{'/etc/systemd/system/serial-getty@hvc0.service.d/autologin.conf':
+    ensure => file,
+    source => 'puppet:///modules/dtg/autologin.conf',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+  }
+
 }
 # So that we can appy a stage to it
 class dtg::vm::repos {
