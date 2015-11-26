@@ -176,6 +176,5 @@ if ( $::monitor ) {
     address    => 'upload.deviceanalyzer.cl.cam.ac.uk',
     hostgroups => [ 'http-servers', 'https-servers' ],
   }
-  munin::gatherer::configure_node { 'hound4': }
   munin::gatherer::configure_node { 'deviceanalyzer': }
 }
