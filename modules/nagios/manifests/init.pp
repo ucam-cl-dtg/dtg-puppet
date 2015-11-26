@@ -1,4 +1,3 @@
-
 class nagios::params {
   $base_dir = "/etc/nagios3"
   $plugins_base_dir = "/etc/nagios-plugins/config"
@@ -28,6 +27,8 @@ class nagios::server inherits nagios::params {
   }
   concat { "$nagios_base_dir/conf.d/services_nagios2.cfg":
     ensure => present,
+    notify => Service["nagios3"],
+    require => Package["nagios3"]
   }
   file { "$nagios_base_dir/commands.cfg":
     content => template("nagios/nagios3/commands.cfg.erb"),
@@ -35,8 +36,7 @@ class nagios::server inherits nagios::params {
     notify => Service["nagios3"],
     require => Package["nagios3"]
   }
-  file { "$nagios_base_dir/conf.d/hostgroups_nagios2.cfg":
-    source => "puppet:///modules/nagios/nagios3/conf.d/hostgroups_nagios2.cfg",
+  concat { "$nagios_base_dir/conf.d/hostgroups_nagios2.cfg":
     ensure => present,
     notify => Service["nagios3"],
     require => Package["nagios3"]
@@ -220,6 +220,21 @@ define nagios::contactgroup(
     notify => Service["nagios3"]
   }
 }
+
+define nagios::hostgroup(
+  $hostgroup_name, 
+  $hostgroup_alias,
+  $hostgroup_members = '') {
+
+  concat::fragment { "nagios_hostgroup_${name}":
+    target  => "$nagios::params::base_dir/conf.d/hostgroups_nagios2.cfg",
+    content => template("nagios/nagios3/conf.d/hostgroups.cfg.erb"),
+    order   => '10',
+    require => Package["nagios3"],
+    notify  => Service["nagios3"]
+  }
+}
+
 
 define nagios::service(  
   $service_hostgroup_name, 

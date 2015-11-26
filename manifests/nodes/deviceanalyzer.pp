@@ -174,7 +174,7 @@ if ( $::monitor ) {
   nagios::monitor { 'upload.deviceanalyzer':
     parents    => 'deviceanalyzer',
     address    => 'upload.deviceanalyzer.cl.cam.ac.uk',
-    hostgroups => [ 'http-servers', 'https-servers' ],
+    hostgroups => [ 'http-servers', 'https-servers', 'xml-servers'],
   }
   munin::gatherer::configure_node { 'deviceanalyzer': }
 }

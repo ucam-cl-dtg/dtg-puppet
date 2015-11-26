@@ -218,9 +218,9 @@ node /nas01/ {
 
 if ( $::monitor ) {
   nagios::monitor { 'nas01':
-    parents    => '',
+    parents    => 'se18-r8-sw1',
     address    => 'nas01.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => [ 'ssh-servers', 'nfs-servers' ],
   }
   munin::gatherer::configure_node { 'nas01': }
 }
