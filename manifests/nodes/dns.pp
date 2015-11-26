@@ -33,7 +33,7 @@ if ( $::monitor ) {
   nagios::monitor { 'dns-0':
     parents    => 'nas04',
     address    => 'dns-0.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => [ 'ssh-servers', 'dns-servers' ],
   }
   munin::gatherer::configure_node { 'dns-0': }
 }

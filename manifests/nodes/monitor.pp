@@ -3,7 +3,7 @@ node 'monitor.dtg.cl.cam.ac.uk' {
   class {'dtg::apache::raven': server_description => 'Monitor'}
   apache::module {'headers':}
   $nagios_ssl = true
-  class {'nagios::server':}
+  class {'dtg::nagiosserver':}
   class {'munin::gatherer':
     server_name => $::munin_server
   }
