@@ -182,6 +182,44 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     'puppy93':mac => '00:16:3E:E8:14:9D', ip => '128.232.20.157';
     'puppy94':mac => '00:16:3E:E8:14:9E', ip => '128.232.20.158';
     'puppy95':mac => '00:16:3E:E8:14:9F', ip => '128.232.20.159';
+    'puppy96':mac => '00:16:3E:E8:15:A0', ip => '128.232.21.96';
+    'puppy97':mac => '00:16:3E:E8:15:A1', ip => '128.232.21.97';
+    'puppy98':mac => '00:16:3E:E8:15:A2', ip => '128.232.21.98';
+    'puppy99':mac => '00:16:3E:E8:15:A3', ip => '128.232.21.99';
+    'puppy100':mac => '00:16:3E:E8:15:A4', ip => '128.232.21.100';
+    'puppy101':mac => '00:16:3E:E8:15:A5', ip => '128.232.21.101';
+    'puppy102':mac => '00:16:3E:E8:15:A6', ip => '128.232.21.102';
+    'puppy103':mac => '00:16:3E:E8:15:A7', ip => '128.232.21.103';
+    'puppy104':mac => '00:16:3E:E8:15:A8', ip => '128.232.21.104';
+    'puppy105':mac => '00:16:3E:E8:15:A9', ip => '128.232.21.105';
+    'puppy106':mac => '00:16:3E:E8:15:AA', ip => '128.232.21.106';
+    'puppy107':mac => '00:16:3E:E8:15:AB', ip => '128.232.21.107';
+    'puppy108':mac => '00:16:3E:E8:15:AC', ip => '128.232.21.108';
+    'puppy109':mac => '00:16:3E:E8:15:AD', ip => '128.232.21.109';
+    'puppy110':mac => '00:16:3E:E8:15:AE', ip => '128.232.21.110';
+    'puppy111':mac => '00:16:3E:E8:15:AF', ip => '128.232.21.111';
+    'puppy112':mac => '00:16:3E:E8:15:B0', ip => '128.232.21.112';
+    'puppy113':mac => '00:16:3E:E8:15:B1', ip => '128.232.21.113';
+    'puppy114':mac => '00:16:3E:E8:15:B2', ip => '128.232.21.114';
+    'puppy115':mac => '00:16:3E:E8:15:B3', ip => '128.232.21.115';
+    'puppy116':mac => '00:16:3E:E8:15:B4', ip => '128.232.21.116';
+    'puppy117':mac => '00:16:3E:E8:15:B5', ip => '128.232.21.117';
+    'puppy118':mac => '00:16:3E:E8:15:B6', ip => '128.232.21.118';
+    'puppy119':mac => '00:16:3E:E8:15:B7', ip => '128.232.21.119';
+    'puppy120':mac => '00:16:3E:E8:15:B8', ip => '128.232.21.120';
+    'puppy121':mac => '00:16:3E:E8:15:B9', ip => '128.232.21.121';
+    'puppy122':mac => '00:16:3E:E8:15:BA', ip => '128.232.21.122';
+    'puppy123':mac => '00:16:3E:E8:15:BB', ip => '128.232.21.123';
+    'puppy124':mac => '00:16:3E:E8:15:BC', ip => '128.232.21.124';
+    'puppy125':mac => '00:16:3E:E8:15:BD', ip => '128.232.21.125';
+    'puppy126':mac => '00:16:3E:E8:15:BE', ip => '128.232.21.126';
+    'puppy127':mac => '00:16:3E:E8:15:BF', ip => '128.232.21.127';
+
+    # Puppy128-256 registered with sys-admin but not included in DHCP.
+    # This is so to reduce internal fragmentation of the address space so that
+    # if we want to open/close ports for a subset of puppies we have a lot of
+    # the address space in which we can do so.
+
     'deviceanalyzer-database':mac => '00:0E:0C:BC:0E:E4', ip => '128.232.23.47';
   }
 }
