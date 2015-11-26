@@ -4,6 +4,7 @@ $weather_ip = $weather_ips[0]
 node 'weather.dtg.cl.cam.ac.uk' {
   class { 'dtg::minimal': }
   class {'dtg::firewall::publichttp':}
+# Gives the weather-adm group admin on these machines.
   class {'dtg::weather': }
 
   # Mount nas01 in order to ship backups there.
