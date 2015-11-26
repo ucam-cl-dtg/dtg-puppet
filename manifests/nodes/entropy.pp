@@ -22,7 +22,7 @@ if ( $::monitor ) {
   nagios::monitor { 'entropy':
     parents    => '',
     address    => 'entropy.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers'],
+    hostgroups => [ 'ssh-servers', 'entropy-servers'],
   }
   munin::gatherer::configure_node { 'entropy': 
     override_lines => 'diskstats_latency.warning 0:4
