@@ -6,10 +6,19 @@ node 'africa01.cl.cam.ac.uk' {
 
   class {'dtg::zfs': }
 
+  $pool_name = 'data-pool0'
+
   dtg::zfs::fs{'datashare':
-    pool_name => 'data-pool0',
+    pool_name => $pool_name,
     fs_name => 'datashare',
     share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@airwolf.cl.cam.ac.uk,ro=@128.232.29.5,async',
+  }
+
+  # Test FS so that we can monitor africa01 over NFS
+  dtg::zfs::fs{'test':
+    pool_name => $pool_name,
+    fs_name => 'test',
+    share_opts => 'ro=@128.232.20.0/22,async',
   }
 
   dtg::sudoers_group{ 'africa':
