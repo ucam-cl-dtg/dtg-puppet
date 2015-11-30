@@ -254,15 +254,10 @@ node /otter(-\d+)?/ {
 }
 
 if ( $::monitor ) {
-  nagios::monitor { 'berrycider':
+  nagios::monitor { 'otter':
     parents    => 'nas04',
-    address    => 'berrycider.dtg.cl.cam.ac.uk',
+    address    => 'otter.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
-  nagios::monitor { 'otter':
-    parents    => 'berrycider',
-    address    => 'otter.cl.cam.ac.uk',
-    hostgroups => [ 'http-servers'],
-  }
-  munin::gatherer::configure_node { 'berrycider': }
+  munin::gatherer::configure_node { 'otter': }
 }
