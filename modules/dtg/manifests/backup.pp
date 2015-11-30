@@ -60,7 +60,7 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
     ensure => directory,
     owner  => $user,
     group  => $user,
-    mode   => '0700',#Backups should not be readable by anyone else
+    mode   => '0701',#Backups should not be readable by anyone else - needs to be executable for 'others'
   }
   # Set sending address for $user to dtg-infra
   file_line {"${user}email":
@@ -76,20 +76,27 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
 # The name of the backup will be used as the directory name for the subdir containing the backups
 # user is the user to ssh in as
 # host is the host to ssh into
-define dtg::backup::hostsetup($user, $host, $weekday) {
+define dtg::backup::hostsetup($user, $group, $host, $weekday) { #needs to have a configurable backup group + default
   $backupsdirectory = $dtg::backup::host::directory
   $backupsuser      = $dtg::backup::host::user
   $backupskey       = $dtg::backup::host::realkey
   $backupto = "${backupsdirectory}/${name}"
+
+  # Default to the group and user being the same
+  if $group == undef {
+    $group = $dtg::backup::host::user
+  }
+
   file {"${backupto}":
     ensure => directory,
     owner  => $backupsuser,
-    group  => $backupsuser,
+    group  => $group,
     mode   => '0700',
   }
   cron {"backup ${name}":
     ensure  => present,
     user    => $backupsuser,
+    environmental => "MAILTO=dtg-infra@cl.cam.ac.uk",
     command => "nice -n 19 /bin/bash -c 'ssh -T -i ${backupskey} ${user}@${host} > ${backupto}/`date +\\%F_\\%T`.tar.bz2'",
     minute  => cron_minute("backup ${name}"),
     hour    => cron_hour("backup ${name}"),

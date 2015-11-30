@@ -129,14 +129,24 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   }
 
   #Database Backup
-  file { '/local/data/rutherford/database-backup':
-    ensure => 'directory',
-    owner  => 'postgres',
-    group  => 'isaac',
-    mode   => '0755',
+  if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
+    file { '/local/data/rutherford/database-backup':
+      ensure => 'directory',
+      target => '/local/logs/database-backup',
+      owner  => 'postgres',
+      group  => 'isaac',
+      mode   => '0755',
+    }
+  } else {
+      file { '/local/data/rutherford/database-backup':
+      ensure => 'directory',
+      owner  => 'postgres',
+      group  => 'isaac',
+      mode   => '0755',
+    }
   }
-  ->
-    file { '/local/data/rutherford/database-backup/combined':
+
+  file { '/local/data/rutherford/database-backup/combined':
     ensure => 'directory',
     owner  => 'postgres',
     group  => 'isaac',
