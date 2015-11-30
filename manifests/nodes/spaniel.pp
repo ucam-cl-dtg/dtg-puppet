@@ -7,12 +7,3 @@ node 'spaniel.dtg.cl.cam.ac.uk' {
     ensure => installed
   }
 }
-
-if ( $::monitor ) {
-  nagios::monitor { 'spaniel':
-    parents    => '',
-    address    => 'spaniel.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
-  }
-  munin::gatherer::configure_node { 'spaniel': }
-}
