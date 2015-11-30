@@ -4,6 +4,13 @@ node 'elk-elasticsearch.dtg.cl.cam.ac.uk' {
   class {'kibana':
     port => 8080,
   }
+  ->
+  file{'/var/run/kibana.pid':
+    ensure => file,
+    owner  => 'kibana',
+    group  => 'kibana',
+    mode   => '0755',
+  }
   class { 'dtg::firewall::publichttp': }
   class { 'dtg::firewall::80to8080': }
 }
