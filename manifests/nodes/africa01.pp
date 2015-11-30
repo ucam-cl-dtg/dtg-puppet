@@ -115,7 +115,7 @@ if ( $::monitor ) {
   nagios::monitor { 'africa01':
     parents    => '',
     address    => 'africa01.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => [ 'ssh-servers', 'nfs-servers' ],
   }
   munin::gatherer::configure_node { 'africa01': }
 }
