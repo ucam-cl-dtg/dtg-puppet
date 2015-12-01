@@ -23,6 +23,38 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     share_opts => 'ro=@128.232.20.0/22,async',
   }
 
+  # Backups
+  # We take backups of various servers onto nas01 these are run as low priority cron jobs
+  # and run as very restricted user.
+  dtg::zfs::fs{'backups':
+    pool_name  => $pool_name,
+    fs_name    => 'backups',
+    share_opts => 'off'
+  } ->
+  class { 'dtg::backup::host':
+    directory => "/$pool_name/backups",
+  }
+
+  # Weather
+  dtg::zfs::fs{'weather':
+    pool_name => $pool_name,
+    fs_name => 'weather',
+    share_opts => 'rw=@weather.dtg.cl.cam.ac.uk,ro=@{::dtg_subnet},ro=@128.232.28.41,async',# 128.232.28.41 is Tien Han Chua's VM
+  }
+
+  user {'weather':
+    ensure => 'present',
+    uid => 501,
+    gid => 'www-data',
+  }
+
+  file {"/$pool_name/weather":
+    ensure => directory,
+    owner => 'weather',
+    group => 'www-data',
+    mode => 'ug=rwx,o=rx',
+  }
+
   dtg::sudoers_group{ 'africa':
     group_name => 'africa',
   }
