@@ -2,6 +2,8 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   include 'dtg::nfs'
 
+  class { 'dtg::bonding': address => '128.232.23.175'}
+
   class { 'dtg::firewall::hadoopcluster': }
 
   class {'dtg::zfs': }
