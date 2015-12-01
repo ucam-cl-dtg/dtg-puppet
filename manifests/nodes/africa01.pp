@@ -1,6 +1,6 @@
-node 'africa01.cl.cam.ac.uk' {
+node 'africa01.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
-  include 'nfs::server'  
+  include 'dtg::nfs'
 
   class { 'dtg::firewall::hadoopcluster': }
 
@@ -33,74 +33,20 @@ node 'africa01.cl.cam.ac.uk' {
     weekday => 1,
   }
 
-  $portmapper_port     = 111
-  $nfs_port            = 2049
-  $lockd_tcpport       = 32803
-  $lockd_udpport       = 32769
-  $mountd_port         = 892
-  $rquotad_port        = 875
-  $statd_port          = 662
-  $statd_outgoing_port = 2020
-
-  augeas { 'nfs-kernel-server':
-     context => '/files/etc/default/nfs-kernel-server',
-     changes => [
-         "set LOCKD_TCPPORT ${lockd_tcpport}",
-         "set LOCKD_UDPPORT ${lockd_udpport}",
-         "set MOUNTD_PORT ${mountd_port}",
-         "set RQUOTAD_PORT ${rquotad_port}",
-         "set STATD_PORT ${statd_port}",
-         "set STATD_OUTGOING_PORT ${statd_outgoing_port}",
-         "set RPCMOUNTDOPTS \"'--manage-gids --port ${mountd_port}'\"",
-     ],
-     notify  => Service['nfs-kernel-server']
-  }
-  dtg::firewall::nfs {'nfs access from dtg':
-     source          => '128.232.20.0/22',
-     source_name     => 'dtg',
-     portmapper_port => $portmapper_port,
-     nfs_port        => $nfs_port,
-     lockd_tcpport   => $lockd_tcpport,
-     lockd_udpport   => $lockd_udpport,
-     mountd_port     => $mountd_port,
-     rquotad_port    => $rquotad_port,
-     statd_port      => $statd_port,
+  dtg::nfs::firewall {'dtg':
+    source          => '128.232.20.0/22',
   }
 
-  dtg::firewall::nfs {'nfs access from wright.cl.cam.ac.uk':
-        source          => 'wright.cl.cam.ac.uk',
-        source_name     => 'wright.cl.cam.ac.uk',
-        portmapper_port => $portmapper_port,
-        nfs_port        => $nfs_port,
-        lockd_tcpport   => $lockd_tcpport,
-        lockd_udpport   => $lockd_udpport,
-        mountd_port     => $mountd_port,
-        rquotad_port    => $rquotad_port,
-        statd_port      => $statd_port,
+  dtg::nfs::firewall {'wright.cl.cam.ac.uk':
+    source          => 'wright.cl.cam.ac.uk',
   }
 
-  dtg::firewall::nfs {'nfs access from airwolf.cl.cam.ac.uk':
+  dtg::nfs::firewall {'airwolf.cl.cam.ac.uk':
     source          => 'airwolf.cl.cam.ac.uk',
-    source_name     => 'airwolf.cl.cam.ac.uk',
-    portmapper_port => $portmapper_port,
-    nfs_port        => $nfs_port,
-    lockd_tcpport   => $lockd_tcpport,
-    lockd_udpport   => $lockd_udpport,
-    mountd_port     => $mountd_port,
-    rquotad_port    => $rquotad_port,
-    statd_port      => $statd_port,
   }
 
-  dtg::firewall::nfs {'nfs access from 128.232.29.5':
-        source          => '128.232.29.5',
-        source_name     => '128.232.29.5',
-        portmapper_port => $portmapper_port,
-        nfs_port        => $nfs_port,
-        lockd_tcpport   => $lockd_tcpport,
-        lockd_udpport   => $lockd_udpport,
-        mountd_port     => $mountd_port,
-        rquotad_port    => $rquotad_port,
-        statd_port      => $statd_port,
+  dtg::nfs::firewall {'128.232.29.5':
+    source          => '128.232.29.5',
   }
 
 
