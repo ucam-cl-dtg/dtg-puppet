@@ -2,8 +2,9 @@
 node /dns(-\d+)?/ {
   include 'dtg::minimal'
   class { 'unbound':
-    interface => ['::0','0.0.0.0'],
-    access    => [ $::local_subnet, '::1'],
+    interface    => ['::0','0.0.0.0'],
+    access       => [ $::local_subnet, '::1'],
+    tcp_upstream => true,
   }
   unbound::forward { '.':
     address => [
