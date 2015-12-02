@@ -9,15 +9,21 @@ node /dns(-\d+)?/ {
   unbound::forward { '.':
     address => [
       '131.111.8.42', #UIS
-      '131.111.12.20', #UIS
-      '128.232.1.2', #CL
-      '128.232.1.3', #CL
-      '8.8.8.8', # Google
-      '8.8.4.4',
-      '208.67.222.222', # OpenDNS
-      '208.67.220.220',
-      '128.232.1.1', # CL
+      '131.111.12.20', #UIS # unbound round robins so we only want the ip addresses we will use
+#      '128.232.1.2', #CL
+#      '128.232.1.3', #CL
+#      '8.8.8.8', # Google
+#      '8.8.4.4',
+#      '208.67.222.222', # OpenDNS
+#      '208.67.220.220',
+#      '128.232.1.1', # CL
       ]
+  }
+  augeas { 'disable-dhcp-override-of-forward-config':
+    context => '/files/etc/default/unbound',
+    changes => ['set RESOLVCONF_FORWARDERS false'],
+    notify  => Service['unbound'],
+    require => Package['unbound'],
   }
   firewall { '030-dns accept tcp 53 (dns) from CL':
     proto  => 'tcp',
