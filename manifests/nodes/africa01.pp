@@ -83,6 +83,35 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     source          => '128.232.29.5',
   }
 
+  # Device Analyzer
+  dtg::nfs::firewall {'deviceanalyzer':
+    source          => $::deviceanalyzer_ip,
+  }
+
+  dtg::zfs::fs{'deviceanalyzer':
+    pool_name => $pool_name,
+    fs_name => 'deviceanalyzer',
+    share_opts => 'rw=@deviceanalyzer.dtg.cl.cam.ac.uk,async',
+  }->
+  file {"/$pool_name/deviceanalyzer":
+    ensure => directory,
+    owner  => 'www-data',
+    group  => 'www-data',
+    mode   => 'ug=rwx',
+  }
+
+  dtg::zfs::fs{'deviceanalyzer-datadivider':
+    pool_name => $pool_name,
+    fs_name => 'deviceanalyzer-datadivider',
+    share_opts => 'rw=@dh526-datadivider.dtg.cl.cam.ac.uk,async',
+  }->
+  file {"/$pool_name/deviceanalyzer-datadivider":
+    ensure => directory,
+    owner  => 'www-data',
+    group  => 'www-data',
+    mode   => 'ug=rwx',
+  }
+
 
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
