@@ -438,15 +438,15 @@ def security_update():
 
 
 @parallel(pool_size=POOL_SIZE)
-def run_latest_puppet():
+def run_latest_puppet(repourl, refspec):
     """
     Manually apply puppet.
     """
     update_progress(env.host, "Applying puppet")
     with show('output'):
         with cd(PUPPET_BARE):
-            rc = sudo_capture('git fetch --quiet https://github.com/ucam-cl-dtg/'
-                              'dtg-puppet.git master:master')
+            rc = sudo_capture('git fetch --quiet %s %s' % (repourl,
+                                                           refspec))
             if rc:
                 update_progress(env.host, "Error fetching latest puppet. "
                                 "Running old verison.")
@@ -607,7 +607,8 @@ def main(args):
         execute(security_update, hosts=hostnames)
 
     push_to_repos(repo, machines)
-    execute(run_latest_puppet, hosts=hostnames)
+    execute(run_latest_puppet, args.repourl, args.refspec,
+            hosts=hostnames)
 
 
 if __name__ == '__main__':
@@ -623,6 +624,13 @@ if __name__ == '__main__':
     parser.add_argument('--security-update', action='store_true',
                         dest='security_update',
                         help='Apply all security updates immediately')
+    parser.add_argument('--repourl', help='URL of the git repository '
+                        'containing puppet that should be applied.',
+                        default='https://github.com/ucam-cl-dtg/')
+    parser.add_argument('--refspec', help='refspec that should be '
+                        'pulled from. Caution, if this doesn\'t get '
+                        'merged into master life gets difficult.',
+                        default='master:master')
     parser.add_argument('machines', nargs='*',
                         help='Limit the machines that the lick is applied to')
 
