@@ -21,11 +21,19 @@ class dtg::email {
     require => Package['exim'],
   }
 
-  # Set mailto for cron job emails
+  # Set mailto and mailfrom for cron job emails
   augeas {'rootcrontabmailtoinsert':
     incl    => '/etc/crontab',
     lens    => 'Cron.lns',
     changes => ['ins MAILTO after SHELL', 'set MAILTO dtg-infra@cl.cam.ac.uk'],
+    onlyif  => 'match MAILTO size == 0',
+  }
+
+  augeas {'rootcrontabmailfrominsert':
+    incl    => '/etc/crontab',
+    lens    => 'Cron.lns',
+    changes => ['ins MAILFROM after MAILTO',
+                'set MAILFROM dtg-infra@cl.cam.ac.uk'],
     onlyif  => 'match MAILTO size == 0',
   }
 
