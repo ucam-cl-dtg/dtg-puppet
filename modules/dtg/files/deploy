@@ -594,7 +594,8 @@ def main(args):
     # don't care if someone MiTMs us.
     os.environ['GIT_SSH'] = ssh_no_fngr
 
-    snapshot_machines(machines, repo.head.commit.hexsha)
+    if not args.no_snap:
+        snapshot_machines(machines, repo.head.commit.hexsha)
     update_machines(machines, args.upgrade)
     if args.sec_update:
         execute(security_update, hosts=hostnames)
@@ -624,6 +625,9 @@ if __name__ == '__main__':
                         'pulled from. Caution, if this doesn\'t get '
                         'merged into master life gets difficult.',
                         default='master:master')
+    parser.add_argument('--no-snap', dest='no_snap',
+                        help='Don\'t snapshot machines.',
+                        action='store_true')
     parser.add_argument('machines', nargs='*',
                         help='Limit the machines that the lick is applied to')
 
