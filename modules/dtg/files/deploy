@@ -501,14 +501,13 @@ def update_machines(machines, friendly_upgrade):
         current_task("Finished upgrading Ubuntu")
 
 
-def push_config(repo, machines):
+def push_to_repos(repo, machines):
     """
-    Push the latest updates, puppet, and security updates to the servers.
+    Push the current version of puppet to the various repos.
 
     Args:
         repo: local git repository containing python.
         machines: machines to apply the updates to.
-        sec_update: true if security updates should be applied.
     """
     hostnames = get_hostnames_by_machines(machines)
 
@@ -525,7 +524,6 @@ def push_config(repo, machines):
                              "Terminating.\n" % (mc.name, info.flags))
             sys.exit(-1)
 
-    execute(run_latest_puppet, hosts=hostnames)
 
 def main(args):
     """
@@ -592,6 +590,7 @@ def main(args):
     lick_status["machines"] = machines
     update_status()
     print("Streaming status to %s" % OUT_URL)
+    hostnames = get_hostnames_by_machines(machines)
 
     # Remove old lick-generated snapshots, or else they build up
     if not args.no_snap_gc:
@@ -605,10 +604,10 @@ def main(args):
     snapshot_machines(machines, repo.head.commit.hexsha)
     update_machines(machines, args.upgrade)
     if args.sec_update:
-        execute(security_update,
-                hosts=get_hostnames_by_machines(machines))
+        execute(security_update, hosts=hostnames)
 
-    push_config(repo, machines)
+    push_to_repos(repo, machines)
+    execute(run_latest_puppet, hosts=hostnames)
 
 
 if __name__ == '__main__':
