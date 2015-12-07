@@ -614,9 +614,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Pushes the master branch of dtg-puppet, as found on '
         'github all over the world')
-    parser.add_argument('--boot',
-                        help='Boot linux machines that are currently'
-                        ' turned off.')
     parser.add_argument('--do-release-upgrade', action='store_true',
                         dest='upgrade',
                         help='Upgrade the version of Ubuntu before '
