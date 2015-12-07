@@ -34,7 +34,7 @@ class dtg::email {
     lens    => 'Cron.lns',
     changes => ['ins MAILFROM after MAILTO',
                 'set MAILFROM dtg-infra@cl.cam.ac.uk'],
-    onlyif  => 'match MAILTO size == 0',
+    onlyif  => 'match MAILFROM size == 0',
   }
 
   augeas {'rootcrontabmailtoset':
