@@ -303,7 +303,7 @@ if ( $::monitor ) {
   nagios::monitor { 'nas04-bmc':
     parents    => 'se18-r8-sw1',
     address    => 'nas04-bmc.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => [ 'ssh-servers', 'bmcs' ],
   }
 
   munin::gatherer::configure_node { 'nas04': }
