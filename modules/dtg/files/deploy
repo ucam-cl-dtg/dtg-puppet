@@ -152,6 +152,9 @@ def get_machine_by_name(name):
     # Names should be unique
     return x[0]
 
+def get_hostnames_by_machines(machines):
+    return [x.hostname for x in machines]
+
 def update_status():
     global prev_sent_tasks
     if os.getpid() == orig_pid:
@@ -507,7 +510,7 @@ def push_config(repo, machines, sec_update):
         machines: machines to apply the updates to.
         sec_update: true if security updates should be applied.
     """
-    hostnames = [x.hostname for x in machines]
+    hostnames = get_hostnames_by_machines(machines)
 
     if sec_update:
         execute(security_update, hosts=hostnames)
