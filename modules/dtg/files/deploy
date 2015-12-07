@@ -570,6 +570,8 @@ def main(args):
 
     env.warn_only = True
     env.skip_bad_hosts = True
+    env.keepalive = 1
+    env.connection_attempts = 3
 
     repo = Repo('.', search_parent_directories=True)
     lick_status["version"] = repo.head.commit.hexsha
