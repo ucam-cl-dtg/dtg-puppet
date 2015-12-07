@@ -501,7 +501,7 @@ def update_machines(machines, friendly_upgrade):
         current_task("Finished upgrading Ubuntu")
 
 
-def push_config(repo, machines, sec_update):
+def push_config(repo, machines):
     """
     Push the latest updates, puppet, and security updates to the servers.
 
@@ -512,8 +512,6 @@ def push_config(repo, machines, sec_update):
     """
     hostnames = get_hostnames_by_machines(machines)
 
-    if sec_update:
-        execute(security_update, hosts=hostnames)
 
     for mc in ORIGIN:
         current_task("Pushing puppet to %s" % mc.name)
@@ -606,7 +604,11 @@ def main(args):
 
     snapshot_machines(machines, repo.head.commit.hexsha)
     update_machines(machines, args.upgrade)
-    push_config(repo, machines,  args.security_update)
+    if args.sec_update:
+        execute(security_update,
+                hosts=get_hostnames_by_machines(machines))
+
+    push_config(repo, machines)
 
 
 if __name__ == '__main__':
