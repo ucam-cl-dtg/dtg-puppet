@@ -53,8 +53,7 @@ prev_sent_tasks = 0
 OUT_DIR = "/usr/groups/dtg/dtg-infra/www"
 OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
 OUT_PATH = "%s/%s" % (OUT_DIR, OUT_FILE)
-OUT_URL = ("https://www.cl.cam.ac.uk/research/dtg/dtg-infra/%s" %
-           OUT_FILE)
+OUT_URL = "https://www.cl.cam.ac.uk/research/dtg/infra/%s" % OUT_FILE
 TASKS_FILE = "tasks-%s" % OUT_FILE
 TASKS_PATH = "%s/%s" % (OUT_DIR, TASKS_FILE)
 TASKS_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
