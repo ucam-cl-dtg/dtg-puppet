@@ -116,7 +116,6 @@ PHYSICAL_MACHINES = [
     Machine('wolf0','wolf0' + DTG_DOM, PUPPET_BARE, False),
     Machine('wolf1','wolf1' + DTG_DOM, PUPPET_BARE, False),
     Machine('wolf2','wolf2' + DTG_DOM, PUPPET_BARE, False),
-    Machine('spaniel','spaniel' + DTG_DOM, PUPPET_BARE, False),
     Machine('saluki1','saluki1' + DTG_DOM, PUPPET_BARE, False),
     Machine('saluki2','saluki2' + DTG_DOM, PUPPET_BARE, False),
     Machine('africa01','africa01' + DTG_DOM, PUPPET_BARE, False),
