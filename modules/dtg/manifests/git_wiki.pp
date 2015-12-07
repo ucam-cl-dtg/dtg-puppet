@@ -6,6 +6,10 @@
 #
 
 class dtg::git_wiki {
+  dtg::sudoers_group{ 'wiki-adm':
+    group_name => 'wiki-adm',
+  }
+
   file {'/home/lc525/lc525.pub':
     ensure => file,
     owner  => 'lc525',

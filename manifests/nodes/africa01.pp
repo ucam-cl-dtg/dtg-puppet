@@ -1,15 +1,58 @@
-node 'africa01.cl.cam.ac.uk' {
+node 'africa01.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
-  include 'nfs::server'  
+  include 'dtg::nfs'
+
+  class { 'dtg::bonding': address => '128.232.23.175'}
 
   class { 'dtg::firewall::hadoopcluster': }
 
   class {'dtg::zfs': }
 
+  $pool_name = 'data-pool0'
+
   dtg::zfs::fs{'datashare':
-    pool_name => 'data-pool0',
+    pool_name => $pool_name,
     fs_name => 'datashare',
     share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@airwolf.cl.cam.ac.uk,ro=@128.232.29.5,async',
+  }
+
+  # Test FS so that we can monitor africa01 over NFS
+  dtg::zfs::fs{'test':
+    pool_name => $pool_name,
+    fs_name => 'test',
+    share_opts => 'ro=@128.232.20.0/22,async',
+  }
+
+  # Backups
+  # We take backups of various servers onto nas01 these are run as low priority cron jobs
+  # and run as very restricted user.
+  dtg::zfs::fs{'backups':
+    pool_name  => $pool_name,
+    fs_name    => 'backups',
+    share_opts => 'off'
+  } ->
+  class { 'dtg::backup::host':
+    directory => "/$pool_name/backups",
+  }
+
+  # Weather
+  dtg::zfs::fs{'weather':
+    pool_name => $pool_name,
+    fs_name => 'weather',
+    share_opts => 'rw=@weather.dtg.cl.cam.ac.uk,ro=@{::dtg_subnet},ro=@128.232.28.41,async',# 128.232.28.41 is Tien Han Chua's VM
+  }
+
+  user {'weather':
+    ensure => 'present',
+    uid => 501,
+    gid => 'www-data',
+  }
+
+  file {"/$pool_name/weather":
+    ensure => directory,
+    owner => 'weather',
+    group => 'www-data',
+    mode => 'ug=rwx,o=rx',
   }
 
   dtg::sudoers_group{ 'africa':
@@ -24,74 +67,49 @@ node 'africa01.cl.cam.ac.uk' {
     weekday => 1,
   }
 
-  $portmapper_port     = 111
-  $nfs_port            = 2049
-  $lockd_tcpport       = 32803
-  $lockd_udpport       = 32769
-  $mountd_port         = 892
-  $rquotad_port        = 875
-  $statd_port          = 662
-  $statd_outgoing_port = 2020
-
-  augeas { 'nfs-kernel-server':
-     context => '/files/etc/default/nfs-kernel-server',
-     changes => [
-         "set LOCKD_TCPPORT ${lockd_tcpport}",
-         "set LOCKD_UDPPORT ${lockd_udpport}",
-         "set MOUNTD_PORT ${mountd_port}",
-         "set RQUOTAD_PORT ${rquotad_port}",
-         "set STATD_PORT ${statd_port}",
-         "set STATD_OUTGOING_PORT ${statd_outgoing_port}",
-         "set RPCMOUNTDOPTS \"'--manage-gids --port ${mountd_port}'\"",
-     ],
-     notify  => Service['nfs-kernel-server']
-  }
-  dtg::firewall::nfs {'nfs access from dtg':
-     source          => '128.232.20.0/22',
-     source_name     => 'dtg',
-     portmapper_port => $portmapper_port,
-     nfs_port        => $nfs_port,
-     lockd_tcpport   => $lockd_tcpport,
-     lockd_udpport   => $lockd_udpport,
-     mountd_port     => $mountd_port,
-     rquotad_port    => $rquotad_port,
-     statd_port      => $statd_port,
+  dtg::nfs::firewall {'dtg':
+    source          => '128.232.20.0/22',
   }
 
-  dtg::firewall::nfs {'nfs access from wright.cl.cam.ac.uk':
-        source          => 'wright.cl.cam.ac.uk',
-        source_name     => 'wright.cl.cam.ac.uk',
-        portmapper_port => $portmapper_port,
-        nfs_port        => $nfs_port,
-        lockd_tcpport   => $lockd_tcpport,
-        lockd_udpport   => $lockd_udpport,
-        mountd_port     => $mountd_port,
-        rquotad_port    => $rquotad_port,
-        statd_port      => $statd_port,
+  dtg::nfs::firewall {'wright.cl.cam.ac.uk':
+    source          => 'wright.cl.cam.ac.uk',
   }
 
-  dtg::firewall::nfs {'nfs access from airwolf.cl.cam.ac.uk':
+  dtg::nfs::firewall {'airwolf.cl.cam.ac.uk':
     source          => 'airwolf.cl.cam.ac.uk',
-    source_name     => 'airwolf.cl.cam.ac.uk',
-    portmapper_port => $portmapper_port,
-    nfs_port        => $nfs_port,
-    lockd_tcpport   => $lockd_tcpport,
-    lockd_udpport   => $lockd_udpport,
-    mountd_port     => $mountd_port,
-    rquotad_port    => $rquotad_port,
-    statd_port      => $statd_port,
   }
 
-  dtg::firewall::nfs {'nfs access from 128.232.29.5':
-        source          => '128.232.29.5',
-        source_name     => '128.232.29.5',
-        portmapper_port => $portmapper_port,
-        nfs_port        => $nfs_port,
-        lockd_tcpport   => $lockd_tcpport,
-        lockd_udpport   => $lockd_udpport,
-        mountd_port     => $mountd_port,
-        rquotad_port    => $rquotad_port,
-        statd_port      => $statd_port,
+  dtg::nfs::firewall {'128.232.29.5':
+    source          => '128.232.29.5',
+  }
+
+  # Device Analyzer
+  dtg::nfs::firewall {'deviceanalyzer':
+    source          => $::deviceanalyzer_ip,
+  }
+
+  dtg::zfs::fs{'deviceanalyzer':
+    pool_name => $pool_name,
+    fs_name => 'deviceanalyzer',
+    share_opts => 'rw=@deviceanalyzer.dtg.cl.cam.ac.uk,async',
+  }->
+  file {"/$pool_name/deviceanalyzer":
+    ensure => directory,
+    owner  => 'www-data',
+    group  => 'www-data',
+    mode   => 'ug=rwx',
+  }
+
+  dtg::zfs::fs{'deviceanalyzer-datadivider':
+    pool_name => $pool_name,
+    fs_name => 'deviceanalyzer-datadivider',
+    share_opts => 'rw=@dh526-datadivider.dtg.cl.cam.ac.uk,async',
+  }->
+  file {"/$pool_name/deviceanalyzer-datadivider":
+    ensure => directory,
+    owner  => 'www-data',
+    group  => 'www-data',
+    mode   => 'ug=rwx',
   }
 
 
@@ -115,7 +133,7 @@ if ( $::monitor ) {
   nagios::monitor { 'africa01':
     parents    => '',
     address    => 'africa01.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => [ 'ssh-servers', 'nfs-servers' ],
   }
   munin::gatherer::configure_node { 'africa01': }
 }

@@ -25,6 +25,21 @@ node 'weather.dtg.cl.cam.ac.uk' {
   file_line {'mount nas01':
     line => '/mnt	/etc/auto.nas01',
     path => '/etc/auto.master',
+  } ->
+  file {'/mnt/africa01':
+    ensure => directory,
+    owner  => 'weather',
+  } ->
+  file {'/etc/auto.africa01':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 'a=r',
+    content => 'africa01	africa01.dtg.cl.cam.ac.uk:/data-pool0/weather',
+  } ->
+  file_line {'mount africa01':
+    line => '/mnt	/etc/auto.africa01',
+    path => '/etc/auto.master',
   }
 
   # Temporarily disable service restarts so that

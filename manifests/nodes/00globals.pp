@@ -237,7 +237,7 @@ $local_subnet = '128.232.0.0/17'
 $dtg_subnet = '128.232.20.0/22'
 
 # Backup config
-$backup_hosts = ['nas01.dtg.cl.cam.ac.uk']
+$backup_hosts = ['nas01.dtg.cl.cam.ac.uk', 'africa01.dtg.cl.cam.ac.uk']
 
 if ( $::fqdn in $backup_hosts ) {
   $is_backup_server= true

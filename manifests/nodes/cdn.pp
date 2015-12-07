@@ -8,8 +8,6 @@ node 'cdn.dtg.cl.cam.ac.uk' {
 
   # Note for new systemctl we need to use a combination of the following guides: https://wiki.archlinux.org/index.php/Varnish and http://deshack.net/how-to-varnish-listen-port-80-systemd/
 
-  User<|title == ags46 |> { groups +>[ 'adm' ]}
-
   # port configuration
   $apache_http_port = '8080'
   $apache_ssl_port = '8443'
@@ -56,14 +54,14 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   file { "/etc/apache2/cdn-config":
     ensure => "directory",
     owner  => "root",
-    group  => "root",
+    group  => "isaac",
     mode   => 755,
   }
   ->
   file { '/etc/apache2/cdn-config/apache-cdn-rules.conf':
       mode   => '0755',
       owner  => root,
-      group  => root,
+      group  => isaac,
       source => 'puppet:///modules/dtg/cdn/apache-cdn-rules.conf',
       notify => Service["apache2"]
   }
@@ -103,7 +101,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   file { '/etc/pound/pound.cfg':
       mode   => '0755',
       owner  => root,
-      group  => root,
+      group  => isaac,
       source => 'puppet:///modules/dtg/cdn/pound/pound.cfg',
       notify => Service["pound"]
   }
@@ -111,7 +109,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   file { '/etc/varnish/cdn.vcl':
       mode   => '0755',
       owner  => root,
-      group  => root,
+      group  => isaac,
       source => 'puppet:///modules/dtg/cdn/varnish/cdn.vcl'
   }
   ->
@@ -146,13 +144,13 @@ node 'cdn.dtg.cl.cam.ac.uk' {
     provider => git,
     source   => 'git://github.com/ucam-cl-dtg/dtg-cdn',
     owner    => 'root',
-    group    => 'root'
+    group    => 'isaac'
   }
   ->
   file { '/etc/cdn-bare/hooks/post-update':
     ensure => 'file',
     owner  => "root",
-    group  => "adm",
+    group  => "isaac",
     mode   => '0775',
     source => 'puppet:///modules/dtg/cdn/post-update-cdn.hook',
   }  

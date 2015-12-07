@@ -24,7 +24,7 @@ class dtg::zfs(
     owner  => 'root',
     group  => 'root',
     mode   => '0644',
-    source => template('dtg/zfs/zfs.erb'),
+    content => template('dtg/zfs/zfs.erb'),
   }
 
   # zfs includes this config file to let unpriviliged users run read only ZFS commands.
