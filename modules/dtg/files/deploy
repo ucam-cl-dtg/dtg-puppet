@@ -591,7 +591,8 @@ def main(args):
 
     if not args.no_snap:
         snapshot_machines(machines, repo.head.commit.hexsha)
-    update_machines(machines, args.upgrade)
+    if not args.no_update:
+        update_machines(machines, args.upgrade)
     if args.security_update:
         execute(security_update, hosts=hostnames)
 
@@ -622,6 +623,9 @@ if __name__ == '__main__':
                         default='master:master')
     parser.add_argument('--no-snap', dest='no_snap',
                         help='Don\'t snapshot machines.',
+                        action='store_true')
+    parser.add_argument('--no-update', dest='no_update',
+                        help='Don\'t attempt to update machines.',
                         action='store_true')
     parser.add_argument('machines', nargs='*',
                         help='Limit the machines that the lick is applied to')
