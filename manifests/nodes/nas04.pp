@@ -139,7 +139,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'rwandadataset':
     pool_name => $pool_name,
     fs_name => 'rwandadataset',
-    share_opts => "rw=@128.232.20.51,rw=@128.232.20.37,rw=@128.232.20.57,rw=@128.232.20.45,ro=@${grapevine_ip},async",
+    share_opts => "rw=@sa497-crunch-0.dtg.cl.cam.ac.uk,rw=@sa497-crunch-1.dtg.cl.cam.ac.uk,rw=@sa497-crunch-2.dtg.cl.cam.ac.uk,rw=@sa497-crunch-3.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,async",
   }
 
 # Not using this method ATM
