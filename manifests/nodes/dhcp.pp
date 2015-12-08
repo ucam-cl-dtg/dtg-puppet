@@ -5,7 +5,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     interfaces => {
       'eth0' => {
         'method'          => 'static',
-        'address'         => '128.232.20.36',
+        'address'         => '128.232.21.8',
         'netmask'         => '255.255.252.0',
         'gateway'         => '128.232.20.1',
         'dns-nameservers' => $::dns_name_servers,
