@@ -179,10 +179,11 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     ensure => installed,
   } ->
   file { '/usr/share/munin/plugins/dnsresponse_':
-    ensure => file,
+    ensure  => file,
     source  => 'puppet:///modules/munin/contrib/plugins/network/dns/dnsresponse_',
     mode    => '0755',
     require => Package['munin-node'],
+    notify  => Exec['munin-node-configure'],
   }
   file {'/etc/munin/plugins/dnsresponse_':# Oops, configured it wrong
     ensure => absent,
