@@ -7,39 +7,26 @@ node 'weather.dtg.cl.cam.ac.uk' {
 # Gives the weather-adm group admin on these machines.
   class {'dtg::weather': }
 
-  # Mount nas01 in order to ship backups there.
-  file {'/mnt/nas01':
-    ensure => directory,
-    owner  => 'weather',
-  } ->
+  # Mount nas01 and africa01 in order to ship backups there.
+  # First, install autofs:
   package {'autofs':
     ensure => present,
   } ->
-  file {'/etc/auto.nas01':
-    ensure  => file,
-    owner   => 'root',
-    group   => 'root',
-    mode    => 'a=r',
-    content => 'nas01	nas01.dtg.cl.cam.ac.uk:/data/weather',
-  } ->
+  # Now, ensure auto.master includes auto.mnt at /mnt:
   file_line {'mount nas01':
-    line => '/mnt	/etc/auto.nas01',
+    line => '/mnt	/etc/auto.mnt',
     path => '/etc/auto.master',
   } ->
-  file {'/mnt/africa01':
-    ensure => directory,
-    owner  => 'weather',
-  } ->
-  file {'/etc/auto.africa01':
+  # Add our auto.mnt including nas01 and africa01:
+  file {'/etc/auto.mnt':
     ensure  => file,
     owner   => 'root',
     group   => 'root',
     mode    => 'a=r',
-    content => 'africa01	africa01.dtg.cl.cam.ac.uk:/data-pool0/weather',
-  } ->
-  file_line {'mount africa01':
-    line => '/mnt	/etc/auto.africa01',
-    path => '/etc/auto.master',
+    content => '
+nas01       nas01.dtg.cl.cam.ac.uk:/data/weather
+africa01    africa01.dtg.cl.cam.ac.uk:/data-pool0/weather
+'
   }
 
   # Temporarily disable service restarts so that
