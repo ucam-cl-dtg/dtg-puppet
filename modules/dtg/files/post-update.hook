@@ -54,4 +54,4 @@ git clean -fffd
 echo '---- Applying new recipes ----'
 # Need -H so that HOME is set to /root as some stuff gets put there by puppet
 #  e.g. mysql
-sudo -H puppet apply --modulepath modules manifests/nodes/
+sudo -H puppet apply --logdest=console --logdest=syslog --modulepath modules manifests/nodes/
