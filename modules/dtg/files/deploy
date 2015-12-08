@@ -592,7 +592,7 @@ def main(args):
     if not args.no_snap:
         snapshot_machines(machines, repo.head.commit.hexsha)
     update_machines(machines, args.upgrade)
-    if args.sec_update:
+    if args.security_update:
         execute(security_update, hosts=hostnames)
 
     push_to_repos(repo, machines)
