@@ -175,6 +175,9 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   munin::node::plugin{ 'apt_ubuntu':
     target => '/etc/puppet/modules/munin/files/contrib/plugins/ubuntu/apt_ubuntu',
   }
+  munin::node::plugin{ 'dnsresponse_':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/network/dns/dnsresponse_',
+  }
   # Add read only filesystem detection plugin
   file {'/usr/share/munin/plugins/fs_readonly':
     ensure  => file,
