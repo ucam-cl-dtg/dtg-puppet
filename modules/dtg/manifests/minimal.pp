@@ -53,6 +53,9 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   if ($virtual == 'xenu') and $manageapt {
     class {'dtg::vm':}
   }
+  if ($virtual == 'physical') and $manageapt {
+    class {'dtg::baremetal':}
+  }
 
   class { 'monkeysphere::sshd':
     max_startups         => '',
