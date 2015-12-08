@@ -175,6 +175,9 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   munin::node::plugin{ 'apt_ubuntu':
     target => '/etc/puppet/modules/munin/files/contrib/plugins/ubuntu/apt_ubuntu',
   }
+  package {'libnet-dns-perl':
+    ensure => installed,
+  } ->
   file { '/usr/share/munin/plugins/dnsresponse_':
     ensure => file,
     source  => 'puppet:///modules/munin/contrib/plugins/network/dns/dnsresponse_',
