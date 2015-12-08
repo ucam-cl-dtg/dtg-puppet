@@ -201,7 +201,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
 
   cron { 'zfs_weekly_scrub':
-    command => '/sbin/zpool scrub dtg-pool0',
+    command => "/sbin/zpool scrub $pool_name",
     user    => 'root',
     minute  => 0,
     hour    => 0,
