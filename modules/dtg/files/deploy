@@ -589,11 +589,6 @@ def main(args):
     if not args.no_snap_gc:
         execute(snap_gc, hosts=[DOM0])
 
-    # Set GIT_SSH to point to the wrapper around SSH that stops hostkey checks.
-    # We don't need to check hostkeys as we're only pushing at hosts, so we
-    # don't care if someone MiTMs us.
-    os.environ['GIT_SSH'] = ssh_no_fngr
-
     if not args.no_snap:
         snapshot_machines(machines, repo.head.commit.hexsha)
     update_machines(machines, args.upgrade)
