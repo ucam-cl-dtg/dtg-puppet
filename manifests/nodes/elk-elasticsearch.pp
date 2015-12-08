@@ -1,18 +1,26 @@
 node 'elk-elasticsearch.dtg.cl.cam.ac.uk' {
   class { 'dtg::minimal': }
   class {'dtg::elk::es': }
-  class {'kibana':
-    port => 8080,
-  }
-  ->
-  file{'/var/run/kibana.pid':
-    ensure => file,
+  class { 'dtg::firewall::publichttp': }
+  class { 'dtg::firewall::80to8080': }
+
+  file{'/var/run/kibana/':
+    ensure =>  directory,
     owner  => 'kibana',
     group  => 'kibana',
     mode   => '0755',
   }
-  class { 'dtg::firewall::publichttp': }
-  class { 'dtg::firewall::80to8080': }
+  ->
+  class {'kibana':
+    port => 8080,
+
+    # Override the default pid file location of /var/run/kibana.pid
+    # as Kibana doesn't run as root and cannot create its pid
+    # file due to permissions on /var/run
+    pid_file => '/var/run/kibana/kibana.pid',
+  }
+
+
 }
 
 
