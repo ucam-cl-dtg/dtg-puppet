@@ -616,7 +616,7 @@ if __name__ == '__main__':
                         help='Apply all security updates immediately')
     parser.add_argument('--repourl', help='URL of the git repository '
                         'containing puppet that should be applied.',
-                        default='https://github.com/ucam-cl-dtg/')
+                        default='https://github.com/ucam-cl-dtg/dtg-puppet.git')
     parser.add_argument('--refspec', help='refspec that should be '
                         'pulled from. Caution, if this doesn\'t get '
                         'merged into master life gets difficult.',
@@ -627,6 +627,9 @@ if __name__ == '__main__':
     parser.add_argument('--no-update', dest='no_update',
                         help='Don\'t attempt to update machines.',
                         action='store_true')
+    parser.add_argument('--no-push', dest='no_push',
+                        help='Don\'t push the current config to our '
+                        'code repositories.')
     parser.add_argument('machines', nargs='*',
                         help='Limit the machines that the lick is applied to')
 
