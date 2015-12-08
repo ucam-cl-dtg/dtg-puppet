@@ -568,16 +568,40 @@ def main(args):
     repo = Repo('.', search_parent_directories=True)
     lick_status["version"] = repo.head.commit.hexsha
     global machines
-    machines = get_machines()
+    machines = []
 
     add_remotes(repo, ORIGIN + machines)
 
+    # Does args.machines contain hostnames? If so, let's use those
+    # and avoid talking to dom0 (so dom0 is needed)
     if args.machines:
         # If only one machine is specified then we need it to be a
         # one element list.
         if isinstance(args.machines, str):
             args.machines = [args.machines]
-        machines = [x for x in machines if x.name in args.machines]
+        for mc in args.machines:
+            try:
+                socket.gethostbyname(mc)
+                machines.append(Machine(name=mc.split(".")[0],
+                                        hostname=mc,
+                                        repo="/etc/puppet-bare",
+                                        is_vm=False))
+
+            except socket.error:
+                # One of the arguments was not a valid hostname.
+                # Let's consult dom0 to work out what's going on.
+                # Get rid of the machines we've found by hostname
+                # and abort hostname checks.
+                machines = []
+                break
+
+    # We haven't received a list of hostnames. Use dom0 to get VM
+    # names.
+    if not machines:
+        machines = get_machines()
+        if args.machines:
+            machines = [x for x in machines if x.name in args.machines]
+    # A bad filter was applied so we can't lick any machines.
     if not machines:
         sys.stderr.write("No machines to apply puppet to")
         sys.exit(-1)
@@ -596,8 +620,9 @@ def main(args):
         update_machines(machines, args.upgrade)
     if args.security_update:
         execute(security_update, hosts=hostnames)
+    if not args.no_push:
+        push_to_repos(repo, machines)
 
-    push_to_repos(repo, machines)
     execute(run_latest_puppet, args.repourl, args.refspec,
             hosts=hostnames)
 
@@ -630,7 +655,8 @@ if __name__ == '__main__':
                         action='store_true')
     parser.add_argument('--no-push', dest='no_push',
                         help='Don\'t push the current config to our '
-                        'code repositories.')
+                        'code repositories.',
+                        action='store_true')
     parser.add_argument('machines', nargs='*',
                         help='Limit the machines that the lick is applied to')
 
