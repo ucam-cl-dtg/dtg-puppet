@@ -13,5 +13,9 @@ class dtg::elk::es {
     source      => dnsLookup('logs.dtg.cl.cam.ac.uk'),
     source_name => 'logstash',
   }
-
+  # Open a firewall hole for us to monitor elasticsearch
+  dtg::firewall::elasticsearch{'es-logs-monitor':
+    source      => dnsLookup('monitor.dtg.cl.cam.ac.uk'),
+    source_name => 'monitor',
+  }
 }
