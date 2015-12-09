@@ -102,7 +102,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
     match  => '^JAVA_OPTS="-Djava\.awt\.headless=true.*'
   }
   
-  class {'dtg::firewall::publichttp':}
+  class {'dtg::firewall::privatehttp':}
 
   $packages = ['maven2','openjdk-7-jdk','rssh','mongodb','docker']
   package{$packages:
