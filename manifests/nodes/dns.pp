@@ -19,6 +19,25 @@ node /dns(-\d+)?/ {
 #      '128.232.1.1', # CL
       ]
   }
+
+  # Allow the use of private addresses as listed in http://jackdaw.cam.ac.uk/ipreg/nsconfig/sample.named.conf
+  unbound::local_zone { '10.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '16.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '17.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '18.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '19.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '20.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '21.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '22.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '23.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '24.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '25.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '26.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '27.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '28.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '29.172.in-addr.arpa.': type => 'transparent'}
+  unbound::local_zone { '30.172.in-addr.arpa.': type => 'transparent'}
+
   augeas { 'disable-dhcp-override-of-forward-config':
     context => '/files/etc/default/unbound',
     changes => ['set RESOLVCONF_FORWARDERS false'],
