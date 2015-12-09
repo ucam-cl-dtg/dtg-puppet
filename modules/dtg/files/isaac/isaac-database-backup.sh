@@ -39,9 +39,6 @@ MONGO_TMP_DIR=$TMP_DIR"/mongodb"
 POSTGRES_TMP_DIR=$TMP_DIR"/postgres"
 ZIP_DIR=$BACKUP_PATH"/combined"
 
-# Create BACKUP_PATH directory if it does not exist
-[ ! -d $BACKUP_PATH ] && mkdir -p $BACKUP_PATH
-
 # initialise temporary folders
 [ -d "$TMP_DIR" ] && rm -Rf $TMP_DIR  || mkdir -p $TMP_DIR
 echo "`date` Delete and recreated $TMP_DIR"
