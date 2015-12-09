@@ -1,7 +1,7 @@
 node 'elk-elasticsearch.dtg.cl.cam.ac.uk' {
   class { 'dtg::minimal': }
   class {'dtg::elk::es': }
-  class { 'dtg::firewall::publichttp': }
+  class { 'dtg::firewall::privatehttp': }
   class { 'dtg::firewall::80to8080': }
 
   file{'/var/run/kibana/':
