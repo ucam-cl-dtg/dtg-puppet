@@ -131,14 +131,14 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   #Database Backup
   if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
     file { '/local/data/rutherford/database-backup':
-      ensure => 'directory',
+      ensure => link,
       target => '/local/logs/database-backup',
       owner  => 'postgres',
       group  => 'isaac',
       mode   => '0755',
     }
   } else {
-      file { '/local/data/rutherford/database-backup':
+    file { '/local/data/rutherford/database-backup':
       ensure => 'directory',
       owner  => 'postgres',
       group  => 'isaac',
