@@ -1,7 +1,5 @@
 if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
 
-  class {'dtg::isaac':}
-
   file { ['/usr/share/isaac/', '/usr/share/isaac/.ssh']:
     ensure => 'directory',
     owner  => 'isaac',
