@@ -115,7 +115,7 @@ PHYSICAL_MACHINES = [
     Machine('africa01','africa01' + DTG_DOM, PUPPET_BARE, False),
 ]
 
-UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn', 'balancer',
+UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn',
                     'weather', 'saluki1']
 
 
@@ -343,7 +343,7 @@ def snap_gc():
 
    # filter out those snapshots where the timestamp field is > 14 days old
     snaps = [x for x in snaps if x['time'] < datetime.datetime.today()
-             - timedelta(days=14)]
+             - timedelta(days=2)]
 
     # filter out snapshots whose name is not $SHA_LENGTH digits of hex
     snaps = [x for x in snaps if is_hex(x['name']) and
