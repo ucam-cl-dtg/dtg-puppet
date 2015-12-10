@@ -14,6 +14,7 @@ node 'elk-elasticsearch.dtg.cl.cam.ac.uk' {
   class {'kibana':
     port => 8080,
     default_app_id => 'dashboard/default-dashboard',
+    version => '4.1.3',
     # Override the default pid file location of /var/run/kibana.pid
     # as Kibana doesn't run as root and cannot create its pid
     # file due to permissions on /var/run
