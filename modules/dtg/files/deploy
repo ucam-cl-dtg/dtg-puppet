@@ -538,8 +538,9 @@ def main(args):
     os.symlink(OUT_FILE, "%s/lick-latest.html" % OUT_DIR)
 
 
-    jinja_env = Environment(loader=FileSystemLoader(os.getcwd()),
-                         trim_blocks=True)
+    jinja_env = Environment(loader=FileSystemLoader(os.path.dirname(
+        os.path.realpath(__file__))),
+                            trim_blocks=True)
     global template
     global tasks_template
     template = jinja_env.get_template('deploy-status.html')
