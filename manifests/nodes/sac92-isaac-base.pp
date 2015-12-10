@@ -185,22 +185,21 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
     minute  => 0
   }
 
-  # puppet repository permissions
-  file { '/etc/puppet-bare':
-    ensure => 'directory',
-    recurse => true,
-    owner  => 'root',
-    group  => 'isaac',
-    mode   => 'ug+rwx',
-  }
-  ->
-  file { '/etc/puppet':
-    ensure => 'directory',
-    recurse => true,
-    owner  => 'root',
-    group  => 'isaac',
-    mode   => 'ug+rwx',
-  }
+#  # puppet repository permissions
+#  File <| title == '/etc/puppet-bare' |> {
+#    recurse => true,
+#    owner  => 'root',
+#    group  => 'isaac',
+#    mode   => 'ug+rwx',
+#  }
+#  ->
+#  File <| title == '/etc/puppet' |> {
+#    recurse => true,
+#    owner  => 'root',
+#    group  => 'isaac',
+#    mode   => 'ug+rwx',
+#  }
+
 
   class { 'dtg::apt_elasticsearch': stage => 'repos' }
   package { ['elasticsearch']:
