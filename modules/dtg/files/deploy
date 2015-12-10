@@ -210,6 +210,7 @@ def sudo_capture(cmd):
             # Ignore any junk unicode printed. It's normally by
             # Ubuntu printing out loading dots.
             sys.stderr.write("%s\n" % l)
+            continue
         if "[1;31m" in l:
             # Puppet's way of writing out errors.
             machine.stderr.append(l.strip())
