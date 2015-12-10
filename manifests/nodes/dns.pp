@@ -19,6 +19,13 @@ node /dns(-\d+)?/ {
 #      '128.232.1.1', # CL
       ]
   }
+  # The active directory part of the CL ip address space is not properly slaved and so we need to look it up internally
+  unbound::stub { '13.232.128.in-addr.arpa.': address => ['128.232.1.1', '128.232.1.2', '128.232.1.3',], insecure => true,}
+  unbound::stub { '14.232.128.in-addr.arpa.': address => ['128.232.1.1', '128.232.1.2', '128.232.1.3',], insecure => true,}
+  unbound::stub { '28.232.128.in-addr.arpa.': address => ['128.232.1.1', '128.232.1.2', '128.232.1.3',], insecure => true,}
+  unbound::stub { '29.232.128.in-addr.arpa.': address => ['128.232.1.1', '128.232.1.2', '128.232.1.3',], insecure => true,}
+  unbound::stub { '30.232.128.in-addr.arpa.': address => ['128.232.1.1', '128.232.1.2', '128.232.1.3',], insecure => true,}
+  unbound::stub { '31.232.128.in-addr.arpa.': address => ['128.232.1.1', '128.232.1.2', '128.232.1.3',], insecure => true,}
 
   # Allow the use of private addresses as listed in http://jackdaw.cam.ac.uk/ipreg/nsconfig/sample.named.conf
   unbound::local_zone { '10.in-addr.arpa.': type => 'transparent'}
