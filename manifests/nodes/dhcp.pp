@@ -86,7 +86,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     'spaniel':mac => 'b8:27:eb:bc:d7:cb', ip => '128.232.20.96';
     'fluffy':mac => '00:04:4b:26:fa:34', ip => '128.232.20.97';
 
-    'poodle':mac => 'b8:27:eb:85:bd:420', ip => '128.232.20.136';
+    'poodle':mac => 'b8:27:eb:85:bd:42', ip => '128.232.20.136';
     'entropy':mac => 'b8:27:eb:ae:dc:89', ip => '128.232.20.137';
 
     'puppy0':mac => '00:16:3E:E8:14:1C', ip => '128.232.21.0';
