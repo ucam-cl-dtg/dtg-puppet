@@ -18,7 +18,9 @@ $ntp_servers = [
   'ntp1c.cl.cam.ac.uk',
 ]
 
-$name_servers = [ '128.232.20.43',
+$name_servers = [ '128.232.21.15',
+                  '131.111.8.42',
+                  '131.111.12.20',
                   '128.232.1.1',
                   '128.232.1.2',
                   '128.232.1.3' ]
@@ -190,12 +192,6 @@ class admin_users {
       keys      => ['Ahmed Elmezeini <amiae2@cam.ac.uk>'],
       uid       => 3581,
     }
-    dtg::add_user { 'jp662':
-      real_name => 'Jeunese Payne',
-      groups    => [],
-      keys      => ['Jeunese Payne <jp662@cam.ac.uk>'],
-      uid       => 3284,
-    }
 
 }
 # Admin user ids to be given root on the nodes via monkeysphere
@@ -237,7 +233,7 @@ $local_subnet = '128.232.0.0/17'
 $dtg_subnet = '128.232.20.0/22'
 
 # Backup config
-$backup_hosts = ['nas01.dtg.cl.cam.ac.uk']
+$backup_hosts = ['nas01.dtg.cl.cam.ac.uk', 'africa01.dtg.cl.cam.ac.uk']
 
 if ( $::fqdn in $backup_hosts ) {
   $is_backup_server= true

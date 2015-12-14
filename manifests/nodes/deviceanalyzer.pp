@@ -114,8 +114,6 @@ nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
 }
 
 node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
-# MAC: 00:0e:0c:bc:0e:e4
-# IPv4: 128.232.23.47
 
   include 'dtg::minimal'
   class { 'postgresql::globals':
@@ -127,7 +125,8 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
     ip_mask_allow_all_users    => '127.0.0.1/32',
     listen_addresses           => '*',
     ipv4acls                   => ['hostssl all all 127.0.0.1/32 md5',
-                                   'host androidusage androidusage 128.232.98.188/32 md5']
+                                   'host androidusage androidusage 128.232.98.188/32 md5',
+                                   'host androidusage androidusage 128.232.21.105/32 md5',]
   }
   ->
   postgresql::server::db{'androidusage':
@@ -151,16 +150,11 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
 }
 
 if ( $::monitor ) {
-  nagios::monitor { 'hound4':
-    parents    => '',
-    address    => 'hound4.dtg.cl.cam.ac.uk',
+  nagios::monitor { 'deviceanalyzer-database':
+    parents    => 'nas04',
+    address    => 'deviceanalyzer-database.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
-#  nagios::monitor { 'deviceanalyzer-database':
-#    parents    => 'nas04',
-#    address    => 'deviceanalyzer-database.dtg.cl.cam.ac.uk',
-#    hostgroups => [ 'ssh-servers' ],
-#  }
   nagios::monitor { 'deviceanalyzer':
     parents    => ['nas04', 'nas02'],
     address    => 'deviceanalyzer.cl.cam.ac.uk',
@@ -174,8 +168,7 @@ if ( $::monitor ) {
   nagios::monitor { 'upload.deviceanalyzer':
     parents    => 'deviceanalyzer',
     address    => 'upload.deviceanalyzer.cl.cam.ac.uk',
-    hostgroups => [ 'http-servers', 'https-servers' ],
+    hostgroups => [ 'http-servers', 'https-servers', 'xml-servers'],
   }
-  munin::gatherer::configure_node { 'hound4': }
   munin::gatherer::configure_node { 'deviceanalyzer': }
 }

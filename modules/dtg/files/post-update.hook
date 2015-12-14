@@ -19,6 +19,11 @@ find .git -type d -print0 | sudo xargs -0 -s 256 chmod --quiet g+s || true
 
 unset GIT_DIR
 
+# Fix permissions on stunnel that puppet can't easily fix
+if [ -d /var/lib/stunnel4/egd-client ]; then
+    sudo chown -R egd-client:egd-client /var/lib/stunnel4/egd-client/ || echo "Could not fix stunnel4 permissions" >&2
+fi
+
 # First pull updates without the submodules - this gives us a chance
 # to fix broken repositories for any submodules
 git pull --quiet --recurse-submodules=no bare  master
@@ -49,4 +54,4 @@ git clean -fffd
 echo '---- Applying new recipes ----'
 # Need -H so that HOME is set to /root as some stuff gets put there by puppet
 #  e.g. mysql
-sudo -H puppet apply --modulepath modules manifests/nodes/
+sudo -H puppet apply --logdest=console --logdest=syslog --modulepath modules manifests/nodes/

@@ -88,7 +88,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'nakedscientists':
     pool_name  => $pool_name,
     fs_name    => 'nakedscientists',
-    share_opts => 'rw=@131.111.39.72,rw=@131.111.39.84,rw=@131.111.39.87,rw=@131.111.39.103,async',
+    share_opts => 'rw=@131.111.39.72,rw=@131.111.39.84,rw=@131.111.39.87,rw=@131.111.39.103,rw=@131.111.61.37,async',
   }
 
   dtg::zfs::fs{'abbot-archive':
@@ -139,7 +139,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'rwandadataset':
     pool_name => $pool_name,
     fs_name => 'rwandadataset',
-    share_opts => "rw=@128.232.20.51,rw=@128.232.20.37,rw=@128.232.20.57,rw=@128.232.20.45,ro=@${grapevine_ip},async",
+    share_opts => "rw=@sa497-crunch-0.dtg.cl.cam.ac.uk,rw=@sa497-crunch-1.dtg.cl.cam.ac.uk,rw=@sa497-crunch-2.dtg.cl.cam.ac.uk,rw=@sa497-crunch-3.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,async",
   }
 
 # Not using this method ATM
@@ -201,7 +201,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
 
   cron { 'zfs_weekly_scrub':
-    command => '/sbin/zpool scrub dtg-pool0',
+    command => "/sbin/zpool scrub $pool_name",
     user    => 'root',
     minute  => 0,
     hour    => 0,
@@ -245,6 +245,17 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     source          => '131.111.39.64/26',
     #131.111.39.65 - 131.111.39.126 which covers the four IP addresses we need to let through
     source_name     => 'nakedscientists',
+    portmapper_port => $portmapper_port,
+    nfs_port        => $nfs_port,
+    lockd_tcpport   => $lockd_tcpport,
+    lockd_udpport   => $lockd_udpport,
+    mountd_port     => $mountd_port,
+    rquotad_port    => $rquotad_port,
+    statd_port      => $statd_port,
+  }
+  dtg::firewall::nfs {'nfs access from nakedscientists medschl':
+    source          => '131.111.61.37',
+    source_name     => 'nakedscientists medschl',
     portmapper_port => $portmapper_port,
     nfs_port        => $nfs_port,
     lockd_tcpport   => $lockd_tcpport,
@@ -298,12 +309,12 @@ if ( $::monitor ) {
   nagios::monitor { 'nas04':
     parents    => 'se18-r8-sw1',
     address    => 'nas04.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => [ 'ssh-servers', 'nfs-servers' ],
   }
   nagios::monitor { 'nas04-bmc':
     parents    => 'se18-r8-sw1',
     address    => 'nas04-bmc.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => [ 'ssh-servers', 'bmcs' ],
   }
 
   munin::gatherer::configure_node { 'nas04': }

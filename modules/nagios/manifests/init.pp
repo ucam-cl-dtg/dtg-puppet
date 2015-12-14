@@ -1,4 +1,3 @@
-
 class nagios::params {
   $base_dir = "/etc/nagios3"
   $plugins_base_dir = "/etc/nagios-plugins/config"
@@ -26,8 +25,7 @@ class nagios::server inherits nagios::params {
     notify => Service["nagios3"],
     require => Package["nagios3"]
   }
-  file { "$nagios_base_dir/conf.d/services_nagios2.cfg":
-    source => "puppet:///modules/nagios/nagios3/conf.d/services_nagios2.cfg",
+  concat { "$nagios_base_dir/conf.d/services_nagios2.cfg":
     ensure => present,
     notify => Service["nagios3"],
     require => Package["nagios3"]
@@ -38,8 +36,7 @@ class nagios::server inherits nagios::params {
     notify => Service["nagios3"],
     require => Package["nagios3"]
   }
-  file { "$nagios_base_dir/conf.d/hostgroups_nagios2.cfg":
-    source => "puppet:///modules/nagios/nagios3/conf.d/hostgroups_nagios2.cfg",
+  concat { "$nagios_base_dir/conf.d/hostgroups_nagios2.cfg":
     ensure => present,
     notify => Service["nagios3"],
     require => Package["nagios3"]
@@ -224,18 +221,36 @@ define nagios::contactgroup(
   }
 }
 
+define nagios::hostgroup(
+  $hostgroup_name, 
+  $hostgroup_alias,
+  $hostgroup_members = '') {
+
+  concat::fragment { "nagios_hostgroup_${name}":
+    target  => "$nagios::params::base_dir/conf.d/hostgroups_nagios2.cfg",
+    content => template("nagios/nagios3/conf.d/hostgroups.cfg.erb"),
+    order   => '10',
+    require => Package["nagios3"],
+    notify  => Service["nagios3"]
+  }
+}
+
+
 define nagios::service(  
   $service_hostgroup_name, 
   $service_description, 
   $service_check_command, 
-  $service_use = "generice-service", 
+  $service_use = "generic-service", 
   $service_notification_interval = "0" ) {
 
-  file { "$nagiosi::params::base_dir/conf.d/contactgroups/${service_host_group_name}.cfg":
-    ensure => present,
-    content => template("nagios/service.cfg.erb"),
+
+
+  concat::fragment { "nagios_service_${name}":
+    target  => "$nagios::params::base_dir/conf.d/services_nagios2.cfg",
+    content => template("nagios/services.cfg.erb"),
+    order   => '10',
     require => Package["nagios3"],
-    notify => Service["nagios3"]
+    notify  => Service["nagios3"]
   }
 }
 

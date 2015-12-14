@@ -9,21 +9,21 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   file { '/local/data/rutherford/':
     ensure => 'directory',
     owner  => "tomcat${tomcat_version}",
-    group  => "tomcat${tomcat_version}",
+    group  => "isaac",
     mode   => '0644',
   }
   
   file { '/local/data/rutherford/keys/':
     ensure => 'directory',
     owner  => "tomcat${tomcat_version}",
-    group  => "tomcat${tomcat_version}",
+    group  => "isaac",
     mode   => '0640',
   }
   
   file { ['/local/data/rutherford/git-contentstore', '/local/data/rutherford/conf']:
     ensure => 'directory',
     owner  => "tomcat${tomcat_version}",
-    group  => "tomcat${tomcat_version}",
+    group  => "isaac",
     mode   => '0644',
   }
 
@@ -33,7 +33,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
     provider => git,
     source   => 'https://github.com/ucam-cl-dtg/isaac-app.git',
     owner    => "tomcat${tomcat_version}",
-    group    => "tomcat${tomcat_version}"
+    group    => "isaac"
   }
 
   class {'apache::ubuntu': } ->
@@ -102,7 +102,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
     match  => '^JAVA_OPTS="-Djava\.awt\.headless=true.*'
   }
   
-  class {'dtg::firewall::publichttp':}
+  class {'dtg::firewall::privatehttp':}
 
   $packages = ['maven2','openjdk-7-jdk','rssh','mongodb','docker']
   package{$packages:
@@ -129,24 +129,34 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   }
 
   #Database Backup
-  file { '/local/data/rutherford/database-backup':
-    ensure => 'directory',
-    owner  => 'postgres',
-    group  => 'root',
-    mode   => '0755',
+  if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
+    file { '/local/data/rutherford/database-backup':
+      ensure => link,
+      target => '/local/logs/database-backup',
+      owner  => 'postgres',
+      group  => 'isaac',
+      mode   => '0755',
+    }
+  } else {
+    file { '/local/data/rutherford/database-backup':
+      ensure => 'directory',
+      owner  => 'postgres',
+      group  => 'isaac',
+      mode   => '0755',
+    }
   }
-  ->
-    file { '/local/data/rutherford/database-backup/combined':
+
+  file { '/local/data/rutherford/database-backup/combined':
     ensure => 'directory',
     owner  => 'postgres',
-    group  => 'root',
+    group  => 'isaac',
     mode   => '0755',
   }
   ->
   file { '/local/data/rutherford/isaac-database-backup.sh':
       mode   => '0755',
       owner  => postgres,
-      group  => root,
+      group  => isaac,
       source => 'puppet:///modules/dtg/isaac/isaac-database-backup.sh'
   }
   ->
@@ -156,7 +166,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
       replace => false,
       mode   => '0755',
       owner  => postgres,
-      group  => root,
+      group  => isaac,
       content => "# Database backup log files"
   }
   -> 
@@ -174,6 +184,21 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
     hour    => 0,
     minute  => 0
   }
+
+#  # puppet repository permissions
+#  File <| title == '/etc/puppet-bare' |> {
+#    recurse => true,
+#    owner  => 'root',
+#    group  => 'isaac',
+#    mode   => 'ug+rwx',
+#  }
+#  ->
+#  File <| title == '/etc/puppet' |> {
+#    recurse => true,
+#    owner  => 'root',
+#    group  => 'isaac',
+#    mode   => 'ug+rwx',
+#  }
 
 
   class { 'dtg::apt_elasticsearch': stage => 'repos' }

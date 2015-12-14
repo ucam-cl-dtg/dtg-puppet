@@ -1,6 +1,7 @@
 node 'gitlab.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   class {'dtg::scm':}
+  class {'dtg::firewall::privatehttp':}
 }
 if ( $::monitor ) {
   nagios::monitor { 'gitlab':

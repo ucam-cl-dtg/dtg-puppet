@@ -2,6 +2,7 @@ if ( $::monitor ) {
   nagios::monitor { 'husky0':
     address    => 'husky0.dtg.cl.cam.ac.uk',
     hostgroups => ['https-servers'],
+    parents    => 'se18-r8-sw1',
   }
 
   munin::gatherer::configure_node { 'husky0': }

@@ -24,7 +24,7 @@ class dtg::zfs(
     owner  => 'root',
     group  => 'root',
     mode   => '0644',
-    source => template('dtg/zfs/zfs.erb'),
+    content => template('dtg/zfs/zfs.erb'),
   }
 
   # zfs includes this config file to let unpriviliged users run read only ZFS commands.
@@ -81,6 +81,7 @@ class dtg::zfs(
     target => '/usr/share/munin/plugins/zlist',
   }
 
+  #FIXME bug, this refers to dtg-pool0 which is only true on nas04
   file {'/etc/munin/plugins/zfs_fs_dtg-pool0':
     ensure => link,
     target => '/usr/share/munin/plugins/zfs-filesystem-graph',

@@ -29,7 +29,7 @@ if ( $::monitor ) {
   nagios::monitor { 'elk-elasticsearch':
     parents    => 'nas04',
     address    => 'elk-elasticsearch.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => [ 'ssh-servers',  'elasticsearch-servers' ],
   }
   nagios::monitor { 'kibana':
     parents                     => 'elk-elasticsearch',

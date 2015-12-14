@@ -1,6 +1,6 @@
-node 'entropy.dtg.cl.cam.ac.uk' {
-  # We don't have a local mirror of raspbian to point at
-  class { 'dtg::minimal': manageapt => false, }
+node 'poodle.dtg.cl.cam.ac.uk' {
+  # A small physical server to provide some backup services and to provide the entropy service
+  class { 'dtg::minimal': }
   class { 'dtg::entropy::host':
     certificate => '/root/puppet/ssl/stunnel.pem',
     private_key => '/root/puppet/ssl/stunnel.pem',
@@ -19,15 +19,20 @@ node 'entropy.dtg.cl.cam.ac.uk' {
   }
 }
 if ( $::monitor ) {
-  nagios::monitor { 'entropy':
-    parents    => '',
+  nagios::monitor { 'poodle':
+    parents    => 'se18-r8-sw1',
+    address    => 'poodle.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers', 'entropy-servers', 'dns-servers'],
+  }
+  nagios::monitor { 'entropy-poodle':
+    parents    => 'poodle',
     address    => 'entropy.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers', 'entropy-servers'],
+    hostgroups => [ 'entropy-servers'],
   }
-  munin::gatherer::configure_node { 'entropy': 
-    override_lines => 'diskstats_latency.warning 0:4
-  diskstats_latency.critical 0:6
-  diskstats_latency.mmcblk0.avgrdwait.warning 0:4
-  diskstats_latency.mmcblk0.avgwrwait.warning 0:4'
+  nagios::monitor { 'dns-1':
+    parents    => 'poodle',
+    address    => 'dns-1.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'dns-servers'],
   }
+  munin::gatherer::configure_node { 'poodle': }
 }
