@@ -16,9 +16,10 @@ define dtg::backup::serversetup ($backup_directory, $script_destination, $user, 
     mode    => '0775',
     content => template('dtg/backup-server.sh.erb'),
   }
+  $backup_hosts_from = join($backup_hosts, ',')
   file_line {"${name} backup authorized_keys":
     ensure  => present,
-    line    => "from=\"${backup_hosts}\",command=\"${script_destination}\" ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzb/C7T6G+PQbVuc/uqp4YbBrMQ9JLoIrSPesNtSRlDg4ckrUIiWeAVt/NUYtIdE+7vl2YNbSU0IK8+ONsApnTNP+XjfEwjaIfZPwQRXtEGWCSs4QwN/ZihrhWNODYUP473HbOFvsVwBQSM7LxLBW6TB1ecjpPYC1ds1InOhJcfP752GqX5KkQ++mbUpb8YR6FQZTGiBKDD/LfD25PUblZkdp1kuiikD4GhMQrDmD1m+CycFpkK5l4idqNBohBA4RV9ton17kJHrD4gpZtYFwifRmdaXt6ageofw2GKM5MAMo5QNOezLDWDovOp4atHa1ZaUlCLF5or3QzNw+wHI9N git@code.dtg.cl.cam.ac.uk",
+    line    => "from=\"${backup_hosts_from}\",command=\"${script_destination}\" ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzb/C7T6G+PQbVuc/uqp4YbBrMQ9JLoIrSPesNtSRlDg4ckrUIiWeAVt/NUYtIdE+7vl2YNbSU0IK8+ONsApnTNP+XjfEwjaIfZPwQRXtEGWCSs4QwN/ZihrhWNODYUP473HbOFvsVwBQSM7LxLBW6TB1ecjpPYC1ds1InOhJcfP752GqX5KkQ++mbUpb8YR6FQZTGiBKDD/LfD25PUblZkdp1kuiikD4GhMQrDmD1m+CycFpkK5l4idqNBohBA4RV9ton17kJHrD4gpZtYFwifRmdaXt6ageofw2GKM5MAMo5QNOezLDWDovOp4atHa1ZaUlCLF5or3QzNw+wHI9N git@code.dtg.cl.cam.ac.uk",
     path    => "${home}.ssh/authorized_keys",
     require => File["${home}.ssh/authorized_keys", $script_destination],
   }
@@ -60,7 +61,7 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
     ensure => directory,
     owner  => $user,
     group  => $user,
-    mode   => '0700',#Backups should not be readable by anyone else
+    mode   => '0701',#Backups should not be readable by anyone else - needs to be executable for 'others'
   }
   # Set sending address for $user to dtg-infra
   file_line {"${user}email":
@@ -76,20 +77,22 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
 # The name of the backup will be used as the directory name for the subdir containing the backups
 # user is the user to ssh in as
 # host is the host to ssh into
-define dtg::backup::hostsetup($user, $host, $weekday) {
+define dtg::backup::hostsetup($user, $group = $dtg::backup::host::user, $host, $weekday) { #needs to have a configurable backup group + default
   $backupsdirectory = $dtg::backup::host::directory
   $backupsuser      = $dtg::backup::host::user
   $backupskey       = $dtg::backup::host::realkey
   $backupto = "${backupsdirectory}/${name}"
+
   file {"${backupto}":
     ensure => directory,
     owner  => $backupsuser,
-    group  => $backupsuser,
+    group  => $group,
     mode   => '0700',
   }
   cron {"backup ${name}":
     ensure  => present,
     user    => $backupsuser,
+    environment => "MAILTO=dtg-infra@cl.cam.ac.uk",
     command => "nice -n 19 /bin/bash -c 'ssh -T -i ${backupskey} ${user}@${host} > ${backupto}/`date +\\%F_\\%T`.tar.bz2'",
     minute  => cron_minute("backup ${name}"),
     hour    => cron_hour("backup ${name}"),
