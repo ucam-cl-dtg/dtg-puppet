@@ -116,8 +116,6 @@ nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
 }
 
 node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
-# MAC: 00:0e:0c:bc:0e:e4
-# IPv4: 128.232.23.47
 
   include 'dtg::minimal'
   class { 'postgresql::globals':
@@ -158,16 +156,11 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
 }
 
 if ( $::monitor ) {
-  nagios::monitor { 'hound4':
-    parents    => '',
-    address    => 'hound4.dtg.cl.cam.ac.uk',
+  nagios::monitor { 'deviceanalyzer-database':
+    parents    => 'nas04',
+    address    => 'deviceanalyzer-database.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
-#  nagios::monitor { 'deviceanalyzer-database':
-#    parents    => 'nas04',
-#    address    => 'deviceanalyzer-database.dtg.cl.cam.ac.uk',
-#    hostgroups => [ 'ssh-servers' ],
-#  }
   nagios::monitor { 'deviceanalyzer':
     parents    => ['nas04', 'nas02'],
     address    => 'deviceanalyzer.cl.cam.ac.uk',

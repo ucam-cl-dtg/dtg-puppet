@@ -36,6 +36,9 @@ class dtg::nagiosserver {
     'entropy':
       hostgroup_name  => 'entropy-servers',
       hostgroup_alias => 'Entropy servers';
+    'bmc':
+      hostgroup_name  => 'bmcs',
+      hostgroup_alias => 'BMCs';
   }
   ->
   nagios::service {
@@ -79,6 +82,9 @@ class dtg::nagiosserver {
       service_hostgroup_name =>'entropy-servers',
       service_description    =>'Entropy',
       service_check_command  => 'check_tcp!7776';
-      
+    'bmc':
+      service_hostgroup_name =>'bmcs',
+      service_description    =>'BMCs',
+      service_check_command  => 'check_tcp!623';
   }
 }

@@ -50,14 +50,9 @@ orig_pid = os.getpid()
 
 prev_sent_tasks = 0
 
-OUT_DIR = "/usr/groups/dtg/dtg-infra/www"
+DEFAULT_OUT_DIR = "/usr/groups/dtg/dtg-infra/www"
 OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
-OUT_PATH = "%s/%s" % (OUT_DIR, OUT_FILE)
-OUT_URL = "https://www.cl.cam.ac.uk/research/dtg/infra/%s" % OUT_FILE
 TASKS_FILE = "tasks-%s" % OUT_FILE
-TASKS_PATH = "%s/%s" % (OUT_DIR, TASKS_FILE)
-TASKS_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
-                                                           TASKS_FILE)
 
 class Aggregator(threading.Thread):
 
@@ -120,7 +115,7 @@ PHYSICAL_MACHINES = [
     Machine('africa01','africa01' + DTG_DOM, PUPPET_BARE, False),
 ]
 
-UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn', 'balancer',
+UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn',
                     'weather', 'saluki1']
 
 
@@ -210,6 +205,7 @@ def sudo_capture(cmd):
             # Ignore any junk unicode printed. It's normally by
             # Ubuntu printing out loading dots.
             sys.stderr.write("%s\n" % l)
+            continue
         if "[1;31m" in l:
             # Puppet's way of writing out errors.
             machine.stderr.append(l.strip())
@@ -347,7 +343,7 @@ def snap_gc():
 
    # filter out those snapshots where the timestamp field is > 14 days old
     snaps = [x for x in snaps if x['time'] < datetime.datetime.today()
-             - timedelta(days=14)]
+             - timedelta(days=2)]
 
     # filter out snapshots whose name is not $SHA_LENGTH digits of hex
     snaps = [x for x in snaps if is_hex(x['name']) and
@@ -542,8 +538,9 @@ def main(args):
     os.symlink(OUT_FILE, "%s/lick-latest.html" % OUT_DIR)
 
 
-    jinja_env = Environment(loader=FileSystemLoader(os.getcwd()),
-                         trim_blocks=True)
+    jinja_env = Environment(loader=FileSystemLoader(os.path.dirname(
+        os.path.realpath(__file__))),
+                            trim_blocks=True)
     global template
     global tasks_template
     template = jinja_env.get_template('deploy-status.html')
@@ -567,16 +564,40 @@ def main(args):
     repo = Repo('.', search_parent_directories=True)
     lick_status["version"] = repo.head.commit.hexsha
     global machines
-    machines = get_machines()
+    machines = []
 
     add_remotes(repo, ORIGIN + machines)
 
+    # Does args.machines contain hostnames? If so, let's use those
+    # and avoid talking to dom0 (so dom0 is needed)
     if args.machines:
         # If only one machine is specified then we need it to be a
         # one element list.
         if isinstance(args.machines, str):
             args.machines = [args.machines]
-        machines = [x for x in machines if x.name in args.machines]
+        for mc in args.machines:
+            try:
+                socket.gethostbyname(mc)
+                machines.append(Machine(name=mc.split(".")[0],
+                                        hostname=mc,
+                                        repo="/etc/puppet-bare",
+                                        is_vm=False))
+
+            except socket.error:
+                # One of the arguments was not a valid hostname.
+                # Let's consult dom0 to work out what's going on.
+                # Get rid of the machines we've found by hostname
+                # and abort hostname checks.
+                machines = []
+                break
+
+    # We haven't received a list of hostnames. Use dom0 to get VM
+    # names.
+    if not machines:
+        machines = get_machines()
+        if args.machines:
+            machines = [x for x in machines if x.name in args.machines]
+    # A bad filter was applied so we can't lick any machines.
     if not machines:
         sys.stderr.write("No machines to apply puppet to")
         sys.exit(-1)
@@ -595,8 +616,9 @@ def main(args):
         update_machines(machines, args.upgrade)
     if args.security_update:
         execute(security_update, hosts=hostnames)
+    if not args.no_push:
+        push_to_repos(repo, machines)
 
-    push_to_repos(repo, machines)
     execute(run_latest_puppet, args.repourl, args.refspec,
             hosts=hostnames)
 
@@ -629,9 +651,25 @@ if __name__ == '__main__':
                         action='store_true')
     parser.add_argument('--no-push', dest='no_push',
                         help='Don\'t push the current config to our '
-                        'code repositories.')
+                        'code repositories.',
+                        action='store_true')
+    parser.add_argument('--out-dir', dest='out_dir',
+                        help='Directory to write the lick status to.',
+                        default=DEFAULT_OUT_DIR)
     parser.add_argument('machines', nargs='*',
                         help='Limit the machines that the lick is applied to')
 
     args = parser.parse_args()
+
+    # Set "constants" based on arguments:
+
+    OUT_PATH = "%s/%s" % (args.out_dir, OUT_FILE)
+    OUT_URL = "https://www.cl.cam.ac.uk/research/dtg/infra/%s" % OUT_FILE
+    TASKS_PATH = "%s/%s" % (args.out_dir, TASKS_FILE)
+    TASKS_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
+                                                               TASKS_FILE)
+    OUT_DIR = args.out_dir
+
+
+
     main(args)

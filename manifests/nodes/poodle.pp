@@ -24,7 +24,7 @@ if ( $::monitor ) {
     address    => 'poodle.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'entropy-servers', 'dns-servers'],
   }
-  nagios::monitor { 'entropy':
+  nagios::monitor { 'entropy-poodle':
     parents    => 'poodle',
     address    => 'entropy.dtg.cl.cam.ac.uk',
     hostgroups => [ 'entropy-servers'],
