@@ -135,6 +135,12 @@ if ( $::monitor ) {
     address    => 'africa01.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'nfs-servers' ],
   }
+  nagios::monitor { 'africa01-bmc':
+    parents    => 'se18-r8-sw1',
+    address    => 'africa01-bmc.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers', 'bmcs' ],
+  }
+
   munin::gatherer::configure_node { 'africa01': }
 }
 

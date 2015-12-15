@@ -12,6 +12,6 @@ if ( $::monitor ) {
   nagios::monitor { 'wolf2-bmc':
     parents    => '',
     address    => 'wolf2-bmc.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
+    hostgroups => [ 'ssh-servers', 'bmcs' ],
   }
 }
