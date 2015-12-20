@@ -6,6 +6,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $pool_name = 'dtg-pool0'
   $cl_share = "rw=@${local_subnet}"
   $desktop_share = join($desktop_ips_array, ',rw=@')
+  $deviceanalyzer_share = "rw=@${deviceanalyzer_ip},rw=@128.232.21.105"
   $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_share}"
   $secgrp_subnet = '128.232.18.0/24'
   $pig20_ip = '128.232.64.63'
@@ -107,13 +108,13 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'deviceanalyzer':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer',
-    share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},ro=@${secgrp_subnet},ro=@${pig20_ip},async",
+    share_opts => "${dtg_share},${deviceanalyzer_share},ro=@${secgrp_subnet},ro=@${pig20_ip},async",
   }
 
   dtg::zfs::fs{'deviceanalyzer-datadivider':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-datadivider',
-    share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},async",
+    share_opts => "${dtg_share},${deviceanalyzer_share},async",
   }
 
   dtg::zfs::fs{'deviceanalyzer-graphing':
