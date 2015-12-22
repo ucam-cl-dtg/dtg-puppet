@@ -48,7 +48,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   }
   
   # if we are on live we want to use a larger data volume to store the postgres data.
-  # TODO: rename mount point and create volumes on dev and staging as well so we don't have to do this.
+  # TODO: rename mount point (as it is postgres that uses it not mongo) and create volumes on dev and staging as well so we don't have to do this.
   if ( $::fqdn =~ /(\w+-)?isaac-live/ ) {
     class { 'postgresql::globals':
       version => '9.4',
@@ -104,7 +104,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   
   class {'dtg::firewall::privatehttp':}
 
-  $packages = ['maven2','openjdk-7-jdk','rssh','mongodb','docker']
+  $packages = ['maven2','openjdk-7-jdk','rssh','docker']
   package{$packages:
     ensure => installed
   }
