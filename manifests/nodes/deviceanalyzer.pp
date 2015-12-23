@@ -128,7 +128,9 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
     listen_addresses           => '*',
     ipv4acls                   => ['hostssl all all 127.0.0.1/32 md5',
                                    'host androidusage androidusage 128.232.98.188/32 md5',
-                                   'host androidusage androidusage 128.232.21.105/32 md5',]
+                                   'host androidusage androidusage 128.232.21.105/32 md5',
+                                   'host androidusage androidusage 128.232.21.104/32 md5',
+                                   ]
   }
   ->
   postgresql::server::db{'androidusage':
