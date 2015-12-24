@@ -112,6 +112,6 @@
 [submodule "modules/kibana"]
 	path = modules/kibana
 	url = https://github.com/evenup/evenup-kibana.git
-[submodule "modules/ge"]
-	path = modules/ge
+[submodule "modules/gerrit"]
+	path = modules/gerrit
 	url = https://github.com/tykeal/puppet-gerrit.git
