@@ -3,14 +3,6 @@ node 'oc243-algos' {
   class {'dtg::firewall::privatehttp':}
   class {'dtg::firewall::publichttps':}
   class {'dtg::firewall::80to8080':}
-  class {'mysql::server':}
-
-  mysql::db { 'gerrit':
-    user     => 'gerrit',
-    # Not a secret. We rely on localhost.
-    password => 'gerrit',
-    host     => 'localhost',
-  }
 
   file {'/local/data/gerrit':
     ensure    => directory,
