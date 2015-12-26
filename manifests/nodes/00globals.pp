@@ -18,7 +18,9 @@ $ntp_servers = [
   'ntp1c.cl.cam.ac.uk',
 ]
 
-$name_servers = [ '128.232.21.15',
+$name_servers = [ # '128.232.21.15', Removed DTG DNS. Some software (NFS)
+                  # doesn't failover nicely. This means that when dns.dtg goes
+                  # down, all of the DTG services stop working as nas04 dies.
                   '131.111.8.42',
                   '131.111.12.20',
                   '128.232.1.1',
