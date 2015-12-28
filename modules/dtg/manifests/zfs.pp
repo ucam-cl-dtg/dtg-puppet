@@ -14,7 +14,7 @@ class dtg::zfs(
     ensure => present,
   }
 
-  package {'ubuntu-zfs':
+  package {'zfsutils-linux':
     ensure  => present,
     require => [ Package["linux-headers-generic"], Apt::Ppa['ppa:zfs-native/stable'], Package['munin-node']],
   }
