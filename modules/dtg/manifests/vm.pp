@@ -18,8 +18,19 @@ class dtg::vm {
     ensure => 'link',
     target => '/etc/init.d/vm-boot.sh'
   }
-  exec {'xenstore-write-sudoers':
-    command => 'sudo xenstore-write "data/sudoers" "$(for x in `ls /etc/sudoers.d`; do getent group $x; done | cut -d \':\' -f 4 |  tr \',\' \'\n\' | sort | uniq | grep -e  ^[a-z]*[a-z][0-9][0-9]*$ | sed \':a;N;$!ba;s/\n/ /g\')"'
+  cron {'xenstore-write-sudoers':
+    ensure  => present,
+    user    => 'root',
+    command => 'sudo xenstore-write "data/sudoers" "$(for x in `ls /etc/sudoers.d`; do getent group $x; done | cut -d \':\' -f 4 |  tr \',\' \'\n\' | sort | uniq | grep -e  ^[a-z]*[a-z][0-9][0-9]*$ | sed \':a;N;$!ba;s/\n/ /g\')"',
+    minute  => cron_minute('xenstore-write-sudoers'),
+    hour    => '*',
+  }
+  # Need to refresh Xenstore on reboot as Xenstore doesn't persist.
+  cron {'xenstore-write-sudoers-reboot':
+    ensure  => present,
+    user    => 'root',
+    command => 'sudo xenstore-write "data/sudoers" "$(for x in `ls /etc/sudoers.d`; do getent group $x; done | cut -d \':\' -f 4 |  tr \',\' \'\n\' | sort | uniq | grep -e  ^[a-z]*[a-z][0-9][0-9]*$ | sed \':a;N;$!ba;s/\n/ /g\')"',
+    special => 'reboot',
   }
 
   # Autologin as root
