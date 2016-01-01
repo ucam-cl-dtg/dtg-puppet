@@ -3,14 +3,7 @@ node 'oc243-algos' {
   class {'dtg::firewall::privatehttp':}
   class {'dtg::firewall::publichttps':}
   class {'dtg::firewall::80to8080':}
-  class {'mysql::server':}
-
-  mysql::db { 'gerrit':
-    user     => 'gerrit',
-    # Not a secret. We rely on localhost.
-    password => 'gerrit',
-    host     => 'localhost',
-  }
+  class {'dtg::firewall::git':}
 
   file {'/local/data/gerrit':
     ensure    => directory,
@@ -50,7 +43,8 @@ node 'oc243-algos' {
         # up to look like http *basic* auth
         'type'      => 'http',
         # Email addresses should be crsid@cam.ac.uk
-        'emailFormat' => '{0}@cam.ac.uk'
+        'emailFormat' => '{0}@cam.ac.uk',
+        'logoutUrl'   => 'https://raven.cam.ac.uk/auth/logout.html',
       },
       'container' => {
         'user'        => 'gerrit',
