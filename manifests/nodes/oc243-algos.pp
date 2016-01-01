@@ -43,7 +43,8 @@ node 'oc243-algos' {
         # up to look like http *basic* auth
         'type'      => 'http',
         # Email addresses should be crsid@cam.ac.uk
-        'emailFormat' => '{0}@cam.ac.uk'
+        'emailFormat' => '{0}@cam.ac.uk',
+        'logoutUrl'   => 'https://raven.cam.ac.uk/auth/logout.html',
       },
       'container' => {
         'user'        => 'gerrit',
