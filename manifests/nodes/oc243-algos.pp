@@ -15,6 +15,10 @@ node 'oc243-algos' {
     ensure => 'link',
     target => '/local/data/gerrit',
   }
+  # SSL config needs a
+  file {'/usr/local/bin/b64.py':
+    source => 'puppet:///modules/dtg/b64.py',
+  }
   class {'apache::ubuntu': } ->
   class {'dtg::apache::raven': server_description => 'Part IA algorithms code review'}->
   apache::module {'proxy':} ->
@@ -22,6 +26,12 @@ node 'oc243-algos' {
   apache::module {'ssl':} ->
   apache::module {'headers':} ->
   apache::module {'rewrite':} ->
+  apache::site{'gerrit':
+    source => 'puppet:///modules/dtg/apache/gerrit.conf'
+  }->
+  apache::site{'gerrit-ssl':
+    source => 'puppet:///modules/dtg/apache/gerrit-ssl.conf'
+  }->
 
   class {'gerrit':
     install_git => false,
