@@ -3,6 +3,7 @@ node 'oc243-algos' {
   class {'dtg::firewall::privatehttp':}
   class {'dtg::firewall::publichttps':}
   class {'dtg::firewall::80to8080':}
+  class {'dtg::firewall::git':}
 
   file {'/local/data/gerrit':
     ensure    => directory,
