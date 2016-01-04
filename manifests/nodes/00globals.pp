@@ -203,6 +203,9 @@ $ms_admin_user_ids = [
 $ms_keyserver = 'keys.gnupg.net'
 $ms_gpg_passphrase = 'not a secret passphrase - we rely on unix user protection'
 
+# Email config
+$smtp_server = "mailserv.cl.cam.ac.uk"
+
 # Nagios config
 $nagios_machine_fqdn = "monitor.${org_domain}"
 $nagios_server = "nagios.${org_domain}"
