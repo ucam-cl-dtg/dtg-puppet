@@ -32,10 +32,10 @@ SHA_LENGTH = 9
 
 # No spaces in release name.
 # Version we should be running
-TARGET_UBUNTU_RELEASE= 1510
+TARGET_UBUNTU_RELEASE = 1510
 
 # Any VM older than this needs an emergency OS update.
-MINIMUM_UBUNTU_RELEASE= 1504
+MINIMUM_UBUNTU_RELEASE = 1504
 
 # If the version is older than this it is probably not Ubuntu.
 # TODO(oc243) properly read lsb_release
@@ -54,6 +54,7 @@ DEFAULT_OUT_DIR = "/usr/groups/dtg/dtg-infra/www"
 OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
 TASKS_FILE = "tasks-%s" % OUT_FILE
 
+
 class Aggregator(threading.Thread):
 
     def __init__(self):
@@ -62,7 +63,7 @@ class Aggregator(threading.Thread):
 
     def run(self):
         global machines
-        UDPSock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+        UDPSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         UDPSock.bind(("localhost", 7777))
 
         while True:
@@ -77,6 +78,7 @@ class Aggregator(threading.Thread):
                 lick_status["tasks"].append(new_data)
             update_status()
 
+
 class Machine(object):
 
     def __init__(self, name, hostname, repo, is_vm, uuid=None):
@@ -84,7 +86,7 @@ class Machine(object):
         self.hostname = hostname
         self.repo = repo
         self.is_vm = is_vm
-        self.uuid=uuid
+        self.uuid = uuid
 
         self.actions = ["Waiting for update"]
         self.status = "active"
@@ -104,15 +106,15 @@ ORIGIN = [
 ]
 
 PHYSICAL_MACHINES = [
-    Machine('nas01','nas01' + DTG_DOM, PUPPET_BARE, False),
-    Machine('nas04','nas04' + DTG_DOM, PUPPET_BARE, False),
-    Machine('entropy','entropy' + DTG_DOM, PUPPET_BARE, False),
-    Machine('wolf0','wolf0' + DTG_DOM, PUPPET_BARE, False),
-    Machine('wolf1','wolf1' + DTG_DOM, PUPPET_BARE, False),
-    Machine('wolf2','wolf2' + DTG_DOM, PUPPET_BARE, False),
-    Machine('saluki1','saluki1' + DTG_DOM, PUPPET_BARE, False),
-    Machine('saluki2','saluki2' + DTG_DOM, PUPPET_BARE, False),
-    Machine('africa01','africa01' + DTG_DOM, PUPPET_BARE, False),
+    Machine('nas01', 'nas01' + DTG_DOM, PUPPET_BARE, False),
+    Machine('nas04', 'nas04' + DTG_DOM, PUPPET_BARE, False),
+    Machine('entropy', 'entropy' + DTG_DOM, PUPPET_BARE, False),
+    Machine('wolf0', 'wolf0' + DTG_DOM, PUPPET_BARE, False),
+    Machine('wolf1', 'wolf1' + DTG_DOM, PUPPET_BARE, False),
+    Machine('wolf2', 'wolf2' + DTG_DOM, PUPPET_BARE, False),
+    Machine('saluki1', 'saluki1' + DTG_DOM, PUPPET_BARE, False),
+    Machine('saluki2', 'saluki2' + DTG_DOM, PUPPET_BARE, False),
+    Machine('africa01', 'africa01' + DTG_DOM, PUPPET_BARE, False),
 ]
 
 UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn',
@@ -120,9 +122,11 @@ UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn',
 
 
 class RemoteHandler(RemoteProgress):
+
     """
     Prints output from the pre-receive handler, stripping irrelevant bits.
     """
+
     def __init__(self, vm_name):
         super(RemoteHandler, self).__init__()
         self.vm = vm_name
@@ -134,7 +138,6 @@ class RemoteHandler(RemoteProgress):
             self.vm.stderr.append(line)
             update_status()
 
-
     def update(self, op_code, cur_count, max_count=None, message=''):
         if len(message) > 0:
             self.vm.stderr.append(message)
@@ -143,12 +146,14 @@ class RemoteHandler(RemoteProgress):
 
 
 def get_machine_by_name(name):
-    x = [x for x in machines if x.hostname==name or x.name==name]
+    x = [x for x in machines if x.hostname == name or x.name == name]
     # Names should be unique
     return x[0]
 
+
 def get_hostnames_by_machines(machines):
     return [x.hostname for x in machines]
+
 
 def update_status():
     global prev_sent_tasks
@@ -180,18 +185,22 @@ def machine_succ(mc_name):
     if mc.status != "danger":
         mc.status = "success"
 
+
 def update_progress(mc_name, stage):
     mc = get_machine_by_name(mc_name)
     mc.actions.append(stage)
     current_task("[%s] %s" % (mc_name, stage))
 
+
 def current_task(task):
     lick_status["tasks"].append("[%s] %s" % (datetime.datetime.now(), task))
     update_status()
 
+
 def ensure_dir(d):
     if not os.path.exists(d):
         os.makedirs(d)
+
 
 def sudo_capture(cmd):
     stdout = StringIO()
@@ -214,6 +223,7 @@ def sudo_capture(cmd):
     update_status()
     return result.return_code
 
+
 @task
 def get_os_versions():
     return run("lsb_release -rs | sed 's/\.//'")
@@ -233,6 +243,7 @@ def should_update(mc, version):
     if version < TARGET_UBUNTU_RELEASE:
         return True
     return False
+
 
 @task
 def get_vms():
@@ -370,8 +381,8 @@ def upgrade_mc():
         sudo_capture('rm /etc/apt/apt.conf.d/99progressbar')
         # Remove any out of date packages before trying to upgrade.
         sudo_capture("apt-show-versions | grep :amd64 | grep -v uptodate |"
-             " grep -v xe-guest-utilities | sed 's/:.*$//' |"
-             ' xargs sudo apt-get -y -q remove')
+                     " grep -v xe-guest-utilities | sed 's/:.*$//' |"
+                     ' xargs sudo apt-get -y -q remove')
         # Ensure the current version is up to date, as there may be a new
         # version of the updater.
         update_progress(env.host, "Refreshing apt indexes before OS upgrade")
@@ -386,15 +397,17 @@ def upgrade_mc():
         sudo_capture('apt-get -y -q autoremove')
         sudo_capture('rm -rf /etc/apt/sources.list.d/*.{save,distUpgrade}')
         with cd('/etc/apt/sources.list.d/'):
-            sudo_capture('find . ! -name main.list ! -name security.list ! -name updates.list -delete')
+            sudo_capture(
+                'find . ! -name main.list ! -name security.list ! -name updates.list -delete')
         # Ensure do-release-upgrade doesn't just want to use LTS versions.
         sudo_capture("sed -i 's/Prompt=lts/Prompt=normal/' "
-             "/etc/update-manager/release-upgrades")
+                     "/etc/update-manager/release-upgrades")
         # Desperately try to do a non-interactive upgrade.
         update_progress(env.host, "Removing stunnel before OS upgrade")
         sudo_capture('apt-get -q -y purge stunnel4')
         sudo_capture('rm -rf /etc/stunnel')
-        sudo_capture('echo \'DPkg::options { "--force-confdef"; "--force-confnew"; }\' > /etc/apt/apt.conf.d/90-dtg-upgrade')
+        sudo_capture(
+            'echo \'DPkg::options { "--force-confdef"; "--force-confnew"; }\' > /etc/apt/apt.conf.d/90-dtg-upgrade')
         update_progress(env.host, "Attempting OS upgrade")
         if sudo_capture(
                 'yes | '
@@ -406,13 +419,14 @@ def upgrade_mc():
         sudo_capture('rm -rf /etc/apt/apt.conf.d/90-dtg-upgrade')
         # Remove any out of date packages after upgrading.
         sudo_capture("apt-show-versions | grep :amd64 | grep -v uptodate | "
-             "sed 's/:.*$//' |"
-             ' xargs sudo apt-get -y -q remove')
+                     "sed 's/:.*$//' |"
+                     ' xargs sudo apt-get -y -q remove')
         # Clean up apt.
         sudo_capture('apt-get -q clean')
         sudo_capture('apt-get -q autoclean')
         sudo_capture('reboot')
         machine_succ(env.host)
+
 
 @parallel(pool_size=POOL_SIZE)
 def security_update():
@@ -452,6 +466,7 @@ def run_latest_puppet(repourl, refspec):
                 update_progress(env.host, "Error running puppet.")
     update_progress(env.host, "Applied puppet")
     machine_succ(env.host)
+
 
 def add_remotes(repo, machines):
     """
@@ -507,7 +522,6 @@ def push_to_repos(repo, machines):
     """
     hostnames = get_hostnames_by_machines(machines)
 
-
     for mc in ORIGIN:
         current_task("Pushing puppet to %s" % mc.name)
         handler = RemoteHandler(mc.name)
@@ -537,10 +551,9 @@ def main(args):
         pass
     os.symlink(OUT_FILE, "%s/lick-latest.html" % OUT_DIR)
 
-
     jinja_env = Environment(loader=FileSystemLoader(os.path.dirname(
         os.path.realpath(__file__))),
-                            trim_blocks=True)
+        trim_blocks=True)
     global template
     global tasks_template
     template = jinja_env.get_template('deploy-status.html')
@@ -669,7 +682,5 @@ if __name__ == '__main__':
     TASKS_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
                                                                TASKS_FILE)
     OUT_DIR = args.out_dir
-
-
 
     main(args)
