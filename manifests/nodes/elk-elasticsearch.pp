@@ -12,7 +12,7 @@ node 'elk-elasticsearch.dtg.cl.cam.ac.uk' {
   }
   ->
   class {'kibana':
-    port => 8080,
+    port     => 8080,
 
     # Override the default pid file location of /var/run/kibana.pid
     # as Kibana doesn't run as root and cannot create its pid

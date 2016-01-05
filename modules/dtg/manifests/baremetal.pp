@@ -12,8 +12,8 @@ class dtg::baremetal {
     mode   => '0644',
   }
 
-  exec { "update-grub":
-    subscribe   => File["/etc/default/grub"],
+  exec { 'update-grub':
+    subscribe   => File['/etc/default/grub'],
     refreshonly => true
     }
   

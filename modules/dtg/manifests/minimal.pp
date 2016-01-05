@@ -238,7 +238,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     owner   => 'root',
     group   => 'root',
     mode    => '0644',
-    content => "options nfs callback_tcpport=$::nfs_client_port",
+    content => "options nfs callback_tcpport=${::nfs_client_port}",
   }
 
   if $::operatingsystem != 'Debian' {

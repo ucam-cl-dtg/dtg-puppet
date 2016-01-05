@@ -206,7 +206,7 @@ $ms_keyserver = 'keys.gnupg.net'
 $ms_gpg_passphrase = 'not a secret passphrase - we rely on unix user protection'
 
 # Email config
-$smtp_server = "mailserv.cl.cam.ac.uk"
+$smtp_server = 'mailserv.cl.cam.ac.uk'
 
 # Nagios config
 $nagios_machine_fqdn = "monitor.${org_domain}"
@@ -259,8 +259,8 @@ if $::operatingsystem == 'Ubuntu' {
 }
 
 # Configure git push to deploy
-exec { "git-push-to-deploy":
+exec { 'git-push-to-deploy':
   command => 'git config receive.denyCurrentBranch updateInstead',
-  unless => "git config --get receive.denyCurrentBranch | grep updateInstead",
-  cwd => "/etc/puppet",
+  unless  => 'git config --get receive.denyCurrentBranch | grep updateInstead',
+  cwd     => '/etc/puppet',
 }

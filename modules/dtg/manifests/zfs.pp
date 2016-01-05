@@ -9,7 +9,7 @@ class dtg::zfs(
   $zfs_sleep     = 0,
   ) {
 
-  package {"linux-headers-generic":
+  package {'linux-headers-generic':
     ensure => present,
   }
 
@@ -18,10 +18,10 @@ class dtg::zfs(
   }
 
   file {'/etc/default/zfs':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
     content => template('dtg/zfs/zfs.erb'),
   }
 

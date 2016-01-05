@@ -10,9 +10,9 @@ class dtg::git::mirror::server {
   }
   # Set sending address for gitmirror to dtg-infra
   file_line {'gitmirror-email':
-    ensure => present,
-    path   => '/etc/email-addresses',
-    line   => 'gitmirror: dtg-infra@cl.cam.ac.uk',
+    ensure  => present,
+    path    => '/etc/email-addresses',
+    line    => 'gitmirror: dtg-infra@cl.cam.ac.uk',
     require => Package['exim'],
   }
 
@@ -57,8 +57,8 @@ class dtg::git::mirror::server {
     require => File['/srv/gitmirror/repositories/'],
   }
   service {'git-daemon':
-    ensure   => running,
-    require  => [File['/etc/systemd/system/git-daemon.service']],
+    ensure  => running,
+    require => [File['/etc/systemd/system/git-daemon.service']],
   }
   class {'dtg::firewall::git':}
   package {'gitweb': ensure => 'installed',}
@@ -75,7 +75,7 @@ class dtg::git::mirror::server {
     require => Package['gitweb'],
   }
   apache::site { 'gitmirror':
-    source => 'puppet:///modules/dtg/apache/gitmirror.conf',
+    source  => 'puppet:///modules/dtg/apache/gitmirror.conf',
     require => File['/srv/gitmirror/repositories/'],
   }
   #EXTENSION(drt24) this uses a dumb backend for http git but there is a clever

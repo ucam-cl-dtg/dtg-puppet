@@ -4,8 +4,8 @@ node /acr31-apjava/ {
   class {'dtg::firewall::publichttp':}
   ->
   firewall {'060 accept all 8080':
-    proto => 'tcp',
-    dport => '8080',
+    proto  => 'tcp',
+    dport  => '8080',
     action => 'accept',
   }
 

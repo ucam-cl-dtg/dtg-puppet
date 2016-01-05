@@ -32,8 +32,8 @@ define dtg::nexus::fetch (
     if $symlink != 'NONE' {
       file{ $symlink:
         require => Wget::Fetch["nexus-fetch-${destination_filename}"],
-        ensure => link,
-        target => $destination_path,
+        ensure  => link,
+        target  => $destination_path,
       }
     }
   }
@@ -42,7 +42,7 @@ define dtg::nexus::fetch (
     
     if !defined(Package['unzip']) {
       package{'unzip':
-  name  => 'unzip',
+  name   => 'unzip',
   ensure => installed,
       }
     }
@@ -62,8 +62,8 @@ define dtg::nexus::fetch (
     if $symlink != 'NONE' {
       file{ $symlink:
         require => Exec["unzip-${destination_filename}"],
-        ensure => link,
-        target => $unzip_target,
+        ensure  => link,
+        target  => $unzip_target,
       }
     }
   }

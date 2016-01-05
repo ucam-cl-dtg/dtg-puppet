@@ -9,21 +9,21 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   file { '/local/data/rutherford/':
     ensure => 'directory',
     owner  => "tomcat${tomcat_version}",
-    group  => "isaac",
+    group  => 'isaac',
     mode   => '0644',
   }
   
   file { '/local/data/rutherford/keys/':
     ensure => 'directory',
     owner  => "tomcat${tomcat_version}",
-    group  => "isaac",
+    group  => 'isaac',
     mode   => '0640',
   }
   
   file { ['/local/data/rutherford/git-contentstore', '/local/data/rutherford/conf']:
     ensure => 'directory',
     owner  => "tomcat${tomcat_version}",
-    group  => "isaac",
+    group  => 'isaac',
     mode   => '0644',
   }
 
@@ -33,7 +33,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
     provider => git,
     source   => 'https://github.com/ucam-cl-dtg/isaac-app.git',
     owner    => "tomcat${tomcat_version}",
-    group    => "isaac"
+    group    => 'isaac'
   }
 
   class {'apache::ubuntu': } ->
@@ -161,19 +161,19 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   }
   ->
   file { '/local/data/rutherford/database-backup/isaac-database-backup.log':
-      path => '/local/data/rutherford/database-backup/isaac-database-backup.log',
+      path    => '/local/data/rutherford/database-backup/isaac-database-backup.log',
       ensure  => present,
       replace => false,
-      mode   => '0755',
-      owner  => postgres,
-      group  => isaac,
-      content => "# Database backup log files"
+      mode    => '0755',
+      owner   => postgres,
+      group   => isaac,
+      content => '# Database backup log files'
   }
-  -> 
+  ->
   cron {'isaac-backup-postgresql':
     ensure => absent
   }
-  -> 
+  ->
   cron {'isaac-backup-mongodb':
     ensure => absent
   }
@@ -214,20 +214,20 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
 
 class dtg::apt_elasticsearch {
   apt::source { 'elasticsearch-source':
-        location    => 'http://packages.elasticsearch.org/elasticsearch/1.4/debian',
-        release     => 'stable',
-        repos       => 'main',
-        include     =>  {'src' => false},
-        key         =>  {
-          'id'      => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
-          'source'  => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
+        location => 'http://packages.elasticsearch.org/elasticsearch/1.4/debian',
+        release  => 'stable',
+        repos    => 'main',
+        include  =>  {'src'        => false},
+        key      =>  {
+          'id'     => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
+          'source' => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
         }
   }
 
   apt::source { 'elasticsearch-logstash':
-        location    => 'http://packages.elasticsearch.org/logstash/1.3/debian',
-        release     => 'stable',
-        repos       => 'main',
-        include     =>  {'src' => false}
+        location => 'http://packages.elasticsearch.org/logstash/1.3/debian',
+        release  => 'stable',
+        repos    => 'main',
+        include  =>  {'src'        => false}
   }
 }
