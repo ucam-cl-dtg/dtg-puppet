@@ -8,11 +8,3 @@ node 'dac53.dtg.cl.cam.ac.uk' {
     type   => 'ssh-rsa',
   }
 }
-if ( $::monitor ) {
-  nagios::monitor { 'dac53':
-    parents    => 'nas04',
-    address    => 'dac53.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
-  }
-  munin::gatherer::configure_node { 'dac53': }
-}

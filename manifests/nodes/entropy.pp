@@ -24,7 +24,7 @@ if ( $::monitor ) {
     address    => 'entropy.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'entropy-servers'],
   }
-  munin::gatherer::configure_node { 'entropy': 
+  munin::gatherer::configure_node { 'entropy':
     override_lines => 'diskstats_latency.warning 0:4
   diskstats_latency.critical 0:6
   diskstats_latency.mmcblk0.avgrdwait.warning 0:4

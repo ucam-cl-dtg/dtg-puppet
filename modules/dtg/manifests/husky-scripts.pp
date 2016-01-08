@@ -13,7 +13,7 @@ class dtg::husky-scripts {
         user             => 'ALL',
         run_as           => 'root',
         require_password => false,
-        comment          => "Allow anyone to run cl-dtg-make-vm",
+        comment          => 'Allow anyone to run cl-dtg-make-vm',
     }
 
 }

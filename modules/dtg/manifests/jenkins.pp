@@ -34,10 +34,10 @@ class dtg::jenkins {
     "/usr/share/tomcat${tomcat_version}/.cabal/",
     "/usr/share/tomcat${tomcat_version}/.ghc/",
     ]:
-    ensure  => directory,
-    owner   => "tomcat${tomcat_version}",
-    group   => "tomcat${tomcat_version}",
-    mode    => '0700'
+    ensure => directory,
+    owner  => "tomcat${tomcat_version}",
+    group  => "tomcat${tomcat_version}",
+    mode   => '0700'
   } ->
   exec {'update-cabal':
     user        => "tomcat${tomcat_version}",

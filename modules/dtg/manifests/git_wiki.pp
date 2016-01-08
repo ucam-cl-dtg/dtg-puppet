@@ -28,9 +28,6 @@ class dtg::git_wiki {
 
   class {'dtg::git::gollum::pre':}
   class {'dtg::git::gollum::main':}
-  dtg::sudoers_group{ 'wiki':
-    group_name => 'wiki',
-  }
 
   dtg::backup::serversetup {'wiki':
     backup_directory   => '/local/data/git',

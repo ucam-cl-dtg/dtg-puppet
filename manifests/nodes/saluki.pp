@@ -19,12 +19,12 @@ define bayncore_ssh_user($real_name,$uid) {
 
 define bayncore_setup() {
 
-  exec { "remount":
-    command => "/bin/mount -a",
+  exec { 'remount':
+    command     => '/bin/mount -a',
     refreshonly => true,
   }
 
-  package {["gfortran"]:
+  package {['gfortran']:
     ensure => installed,
   }
   
@@ -36,40 +36,46 @@ define bayncore_setup() {
     line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore /mnt/bayncore nfs defaults 0 0',
     path   => '/etc/fstab',
     ensure => present,
-    notify => Exec["remount"],
+    notify => Exec['remount'],
   }
   ->
   file_line { 'mount home':
     line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore/home /home nfs defaults 0 0',
     path   => '/etc/fstab',
     ensure => present,
-    notify => Exec["remount"],
+    notify => Exec['remount'],
   }
 
   bayncore_ssh_user {'rogerphilp':
-    real_name => "Roger Philp (Bayncore)",
+    real_name => 'Roger Philp (Bayncore)',
     uid       => 20000
   }
 
   bayncore_ssh_user {'manelfernandez':
-    real_name => "Manel Fernandez (Bayncore)",
+    real_name => 'Manel Fernandez (Bayncore)',
     uid       => 20001,
   }
 
   bayncore_ssh_user {'richardpaul':
-    real_name => "Richard Paul (Bayncore)",
+    real_name => 'Richard Paul (Bayncore)',
     uid       => 20002
   }
 
   bayncore_ssh_user {'francoisfayard':
-    real_name => "Francois Fayard (Bayncore)",
+    real_name => 'Francois Fayard (Bayncore)',
     uid       => 20004
   }
 
   bayncore_ssh_user {'bpwc2':
-    real_name => "Ben Catterall (Undergraduate)",
+    real_name => 'Ben Catterall (Undergraduate)',
     uid       => 20005
   }
+
+  bayncore_ssh_user {'smj58':
+    real_name => 'Siddhant Jayakumar (Undergraduate)',
+    uid       => 20006
+  }
+
 }
 
 node /saluki(\d+)?/ {
@@ -92,20 +98,20 @@ node /saluki(\d+)?/ {
     chain    => 'POSTROUTING',
     jump     => 'MASQUERADE',
     proto    => 'all',
-    outiface => "em1",
+    outiface => 'em1',
     source   => '10.0.0.0/8',
     table    => 'nat',
   }
 
-  exec { "ipforward":
-    command => "/bin/echo 1 > /proc/sys/net/ipv4/ip_forward",
-    unless => "/bin/grep 1 /proc/sys/net/ipv4/ip_forward",
+  exec { 'ipforward':
+    command => '/bin/echo 1 > /proc/sys/net/ipv4/ip_forward',
+    unless  => '/bin/grep 1 /proc/sys/net/ipv4/ip_forward',
   }
 
-  augeas { "sysctl-ipforward":
-    context => "/files/etc/sysctl.conf",
+  augeas { 'sysctl-ipforward':
+    context => '/files/etc/sysctl.conf',
     changes => [
-                "set net.ipv4.ip_forward 1"
+                'set net.ipv4.ip_forward 1'
                 ],
   }
     

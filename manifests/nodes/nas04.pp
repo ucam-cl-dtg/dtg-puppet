@@ -6,22 +6,23 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $pool_name = 'dtg-pool0'
   $cl_share = "rw=@${local_subnet}"
   $desktop_share = join($desktop_ips_array, ',rw=@')
+  $deviceanalyzer_share = "rw=@${deviceanalyzer_ip},rw=@{deviceanalyzer_upload_ip}"
   $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_share}"
   $secgrp_subnet = '128.232.18.0/24'
   $pig20_ip = '128.232.64.63'
 
   # bonded nics
-  dtg::kernelmodule::add{"bonding": }
+  dtg::kernelmodule::add{'bonding': }
   package{'ifenslave':
     ensure => installed
   }
   class { 'network::interfaces':
     interfaces => {
-      'eth0' => {
+      'eth0'  => {
         'method'      => 'manual',
         'bond-master' => 'bond0',
       },
-      'eth1' => {
+      'eth1'  => {
         'method'      => 'manual',
         'bond-master' => 'bond0',
       },
@@ -94,26 +95,26 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'abbot-archive':
     pool_name  => $pool_name,
     fs_name    => 'abbot-archive',
-    share_opts => "$dtg_share,async",
+    share_opts => "${dtg_share},async",
   }
 
   dtg::zfs::fs{'time':
     pool_name  => $pool_name,
     fs_name    => 'time',
-    share_opts => "$dtg_share,async",
+    share_opts => "${dtg_share},async",
   }
 
 
   dtg::zfs::fs{'deviceanalyzer':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer',
-    share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},ro=@${secgrp_subnet},ro=@${pig20_ip},async",
+    share_opts => "${dtg_share},${deviceanalyzer_share},ro=@${secgrp_subnet},ro=@${pig20_ip},async",
   }
 
   dtg::zfs::fs{'deviceanalyzer-datadivider':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-datadivider',
-    share_opts => "${dtg_share},rw=@${deviceanalyzer_ip},async",
+    share_opts => "${dtg_share},${deviceanalyzer_share},async",
   }
 
   dtg::zfs::fs{'deviceanalyzer-graphing':
@@ -128,7 +129,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => 'off',
   }
 
-  $saluki_share = "rw=@128.232.98.206,@128.232.98.207"
+  $saluki_share = 'rw=@128.232.98.206,@128.232.98.207'
   
   dtg::zfs::fs{ 'bayncore':
     pool_name  => $pool_name,
@@ -137,9 +138,9 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   }
 
   dtg::zfs::fs{'rwandadataset':
-    pool_name => $pool_name,
-    fs_name => 'rwandadataset',
-    share_opts => "rw=@sa497-crunch-0.dtg.cl.cam.ac.uk,rw=@sa497-crunch-1.dtg.cl.cam.ac.uk,rw=@sa497-crunch-2.dtg.cl.cam.ac.uk,rw=@sa497-crunch-3.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,async",
+    pool_name  => $pool_name,
+    fs_name    => 'rwandadataset',
+    share_opts => 'rw=@sa497-crunch-0.dtg.cl.cam.ac.uk,rw=@sa497-crunch-1.dtg.cl.cam.ac.uk,rw=@sa497-crunch-2.dtg.cl.cam.ac.uk,rw=@sa497-crunch-3.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,async',
   }
 
 # Not using this method ATM
@@ -201,7 +202,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
 
   cron { 'zfs_weekly_scrub':
-    command => "/sbin/zpool scrub $pool_name",
+    command => "/sbin/zpool scrub ${pool_name}",
     user    => 'root',
     minute  => 0,
     hour    => 0,

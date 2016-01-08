@@ -8,22 +8,20 @@ class dtg::zfs(
   $zfs_debug_dmu = 'no',
   $zfs_sleep     = 0,
   ) {
-  class {'dtg::zfs::repos': stage => 'repos'}
 
-  package {"linux-headers-generic":
+  package {'linux-headers-generic':
     ensure => present,
   }
 
-  package {'ubuntu-zfs':
+  package {'zfsutils-linux':
     ensure  => present,
-    require => [ Package["linux-headers-generic"], Apt::Ppa['ppa:zfs-native/stable'], Package['munin-node']],
   }
 
   file {'/etc/default/zfs':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
     content => template('dtg/zfs/zfs.erb'),
   }
 
@@ -98,9 +96,4 @@ define dtg::zfs::fs ($pool_name, $fs_name, $share_opts, $compress_opts='on') {
     command => "sudo zfs create -o compression=${compress_opts} -o sharenfs=${share_opts} ${pool_name}/${fs_name}",
     onlyif  => "[  ! -d /${pool_name}/${fs_name} ]",
   }
-}
-
-class dtg::zfs::repos {
-  # ZFS is not in main repos due to licensing restrictions
-  apt::ppa {'ppa:zfs-native/stable': }
 }
