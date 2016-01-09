@@ -40,7 +40,7 @@ node /deviceanalyzer-marketcache/ {
       password => 'marketcache',
       encoding => 'UTF-8',
       grant    => 'ALL'
-    }    
+    }
     ->
     dtg::nexus::fetch{'download-marketcache-backup':
       groupID               => 'uk.ac.cam.deviceanalyzer.analysis',
@@ -66,9 +66,9 @@ node /deviceanalyzer-marketcache/ {
     }
     ->
     exec{'install-gem-marketbot':
-      command => "gem install market_bot",
-      path    => "/usr/bin:/bin",
-      unless  => "gem list | grep market_bot",
+      command => 'gem install market_bot',
+      path    => '/usr/bin:/bin',
+      unless  => 'gem list | grep market_bot',
     }
     
     group {'jenkins':

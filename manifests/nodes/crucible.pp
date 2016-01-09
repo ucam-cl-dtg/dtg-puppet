@@ -2,6 +2,7 @@ node 'crucible.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 
   User<|title == sac92 |> { groups +>[ 'adm' ] }
+  class {'dtg::isaac':}
 
   package {['openjdk-7-jdk', 'unzip']:
     ensure => installed
