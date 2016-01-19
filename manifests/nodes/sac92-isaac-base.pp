@@ -146,7 +146,14 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
     }
   }
 
-  file { '/local/data/rutherford/database-backup/combined':
+  file { '/local/data/rutherford/database-backup/backups':
+    ensure => 'directory',
+    owner  => 'postgres',
+    group  => 'isaac',
+    mode   => '0755',
+  }
+  ->
+    file { '/local/data/rutherford/database-backup/latest':
     ensure => 'directory',
     owner  => 'postgres',
     group  => 'isaac',
@@ -168,14 +175,6 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
       owner   => postgres,
       group   => isaac,
       content => '# Database backup log files'
-  }
-  ->
-  cron {'isaac-backup-postgresql':
-    ensure => absent
-  }
-  ->
-  cron {'isaac-backup-mongodb':
-    ensure => absent
   }
   ->
   cron {'isaac-backup-database':
