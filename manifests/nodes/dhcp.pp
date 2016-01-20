@@ -5,7 +5,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     interfaces => {
       'eth0' => {
         'method'          => 'static',
-        'address'         => '128.232.20.36',
+        'address'         => '128.232.21.8',
         'netmask'         => '255.255.252.0',
         'gateway'         => '128.232.20.1',
         'dns-nameservers' => $::dns_name_servers,
@@ -85,6 +85,10 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     'inuit':mac => '00:92:58:00:53:c3', ip => '128.232.20.17';
     'spaniel':mac => 'b8:27:eb:bc:d7:cb', ip => '128.232.20.96';
     'fluffy':mac => '00:04:4b:26:fa:34', ip => '128.232.20.97';
+
+    'poodle':mac => 'b8:27:eb:85:bd:42', ip => '128.232.20.136';
+    'entropy':mac => 'b8:27:eb:ae:dc:89', ip => '128.232.20.137';
+
     'puppy0':mac => '00:16:3E:E8:14:1C', ip => '128.232.21.0';
     'puppy1':mac => '00:16:3E:E8:14:1D', ip => '128.232.21.1';
     'puppy2':mac => '00:16:3E:E8:14:1E', ip => '128.232.21.2';

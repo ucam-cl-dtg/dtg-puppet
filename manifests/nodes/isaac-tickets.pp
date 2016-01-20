@@ -13,7 +13,7 @@ node 'isaac-tickets.dtg.cl.cam.ac.uk' {
   file_line { 'rssh-allow-sftp':
     line => 'allowsftp',
     path => '/etc/rssh.conf',
-  } 
+  }
   ->
   class {'apache::ubuntu': } ->
   class {'dtg::apache::raven': server_description => 'Isaac Physics'} ->

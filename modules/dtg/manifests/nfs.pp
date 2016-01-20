@@ -30,7 +30,7 @@ class dtg::nfs{
 define dtg::nfs::firewall($source) {
   dtg::firewall::nfs {$name: #TODO all the variables are blank
      source          => $source,
-     source_name     => "nfs access from $name",
+     source_name     => "nfs access from ${name}",
      portmapper_port => $dtg::nfs::portmapper_port,
      nfs_port        => $dtg::nfs::nfs_port,
      lockd_tcpport   => $dtg::nfs::lockd_tcpport,

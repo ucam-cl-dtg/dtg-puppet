@@ -87,7 +87,7 @@ define dtg::backup::hostsetup($user, $group = $dtg::backup::host::user, $host, $
     ensure => directory,
     owner  => $backupsuser,
     group  => $group,
-    mode   => '0700',
+    mode   => 'u=rwx,g=rx,o=x',
   }
   cron {"backup ${name}":
     ensure  => present,

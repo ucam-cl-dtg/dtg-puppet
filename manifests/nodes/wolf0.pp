@@ -2,6 +2,7 @@ node /wolf(\d+)?/ {
   include 'dtg::minimal'
 
   class { 'dtg::rscfl': }
+  class { 'dtg::autologin': }
 }
 
 if ( $::monitor ) {

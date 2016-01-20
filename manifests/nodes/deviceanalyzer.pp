@@ -2,6 +2,8 @@
 
 $deviceanalyzer_ips = dnsLookup('deviceanalyzer.dtg.cl.cam.ac.uk')
 $deviceanalyzer_ip = $deviceanalyzer_ips[0]
+$deviceanalyzer_upload_ips = dnsLookup('upload.deviceanalyzer.dtg.cl.cam.ac.uk')
+$deviceanalyzer_upload_ip = $deviceanalyzer_upload_ips[0]
 
 node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
@@ -126,7 +128,9 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
     listen_addresses           => '*',
     ipv4acls                   => ['hostssl all all 127.0.0.1/32 md5',
                                    'host androidusage androidusage 128.232.98.188/32 md5',
-                                   'host androidusage androidusage 128.232.21.105/32 md5',]
+                                   'host androidusage androidusage 128.232.21.105/32 md5',
+                                   'host androidusage androidusage 128.232.21.104/32 md5',
+                                   ]
   }
   ->
   postgresql::server::db{'androidusage':
@@ -145,6 +149,10 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
   dtg::firewall::postgres{'deviceanalyzer':
     source      => $deviceanalyzer_ip,
     source_name => 'deviceanalyzer',
+  }
+  dtg::firewall::postgres{'deviceanalyzer-upload':
+    source      => $deviceanalyzer_upload_ip,
+    source_name => 'upload.deviceanalyzer',
   }
 
 }

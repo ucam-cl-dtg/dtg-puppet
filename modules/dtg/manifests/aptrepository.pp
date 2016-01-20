@@ -2,8 +2,8 @@ class aptrepository($repository) {
   # Manage apt sources lists
   #  Use puppet to manage sources.list but allow manual stuff inside sources.list.d
   class { 'apt':
-    purge => { 'sources.list' => true },
-    stage              => $stage,
+    purge => { 'sources.list'    => true },
+    stage => $stage,
   }
   if $::operatingsystem == 'Ubuntu' {
     # Include main repository
@@ -32,22 +32,22 @@ class aptrepository($repository) {
   if $::operatingsystem == 'Debian' {
     apt::source {'main':
       location => $repository,
-      repos => 'main contrib non-free',
+      repos    => 'main contrib non-free',
     }
     apt::source {'security-failsafe':
       location => 'http://security.debian.org/debian-security',
-      release => "${::lsbdistcodename}/updates",
-      repos => 'main contrib non-free',
+      release  => "${::lsbdistcodename}/updates",
+      repos    => 'main contrib non-free',
     }
     apt::source {'backports':
       location => $repository,
-      release => "${::lsbdistcodename}-backports",
+      release  => "${::lsbdistcodename}-backports",
       repos    => 'main contrib non-free',
     }
     apt::source {'updates':
       location => $repository,
-      release => "${::lsbdistcodename}-updates",
-      repos => 'main contrib non-free',
+      release  => "${::lsbdistcodename}-updates",
+      repos    => 'main contrib non-free',
     }
   }
 }

@@ -29,33 +29,33 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   apache::module {'expires':} ->
   apache::site {'cdn-apache':
     source => 'puppet:///modules/dtg/apache/cdn.conf',
-  } 
+  }
 
   # Configure apache so that it works with pound and varnish
   file_line{'apache-port-configure-http':
-    line   => "Listen ${apache_http_port}",
-    path   => "/etc/apache2/ports.conf",
-    match  => '^Listen 80.*$'
-  } 
+    line  => "Listen ${apache_http_port}",
+    path  => '/etc/apache2/ports.conf',
+    match => '^Listen 80.*$'
+  }
   ->
   file_line{'apache-port-configure-ssl':
-    line   => "Listen ${apache_ssl_port}",
-    path   => "/etc/apache2/ports.conf",
-    match  => '^Listen .*443.*$'
-  } 
+    line  => "Listen ${apache_ssl_port}",
+    path  => '/etc/apache2/ports.conf',
+    match => '^Listen .*443.*$'
+  }
   ->
   file_line{'apache-port-configure-http-virtual-directory':
     line   => "<VirtualHost *:${apache_http_port}>",
-    path   => "/etc/apache2/sites-available/000-default.conf",
-    notify => Service["apache2"],
+    path   => '/etc/apache2/sites-available/000-default.conf',
+    notify => Service['apache2'],
     match  => '<VirtualHost \*:.*>'
-  }   
+  }
   ->
-  file { "/etc/apache2/cdn-config":
-    ensure => "directory",
-    owner  => "root",
-    group  => "isaac",
-    mode   => 755,
+  file { '/etc/apache2/cdn-config':
+    ensure => 'directory',
+    owner  => 'root',
+    group  => 'isaac',
+    mode   => '0755',
   }
   ->
   file { '/etc/apache2/cdn-config/apache-cdn-rules.conf':
@@ -63,7 +63,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
       owner  => root,
       group  => isaac,
       source => 'puppet:///modules/dtg/cdn/apache-cdn-rules.conf',
-      notify => Service["apache2"]
+      notify => Service['apache2']
   }
 
   # stop apache so that we can use its old ports for pound
@@ -77,25 +77,25 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   ->
   package{ 'pound':
     ensure => installed
-  }  
+  }
   ->
   file_line{'pound-startup':
-    line   => "startup=1",
-    path   => "/etc/default/pound",
+    line   => 'startup=1',
+    path   => '/etc/default/pound',
     match  => '^startup.*$',
-    notify => Service["pound"]
+    notify => Service['pound']
   }
 
-  service { "varnish":
-      ensure  => "running",
-      enable  => "true",
-      require => Package["varnish"],
+  service { 'varnish':
+      ensure  => 'running',
+      enable  => true,
+      require => Package['varnish'],
   }
 
-  service { "pound":
-      ensure  => "running",
-      enable  => "true",
-      require => Package["pound"],
+  service { 'pound':
+      ensure  => 'running',
+      enable  => true,
+      require => Package['pound'],
   }
 
   file { '/etc/pound/pound.cfg':
@@ -103,7 +103,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
       owner  => root,
       group  => isaac,
       source => 'puppet:///modules/dtg/cdn/pound/pound.cfg',
-      notify => Service["pound"]
+      notify => Service['pound']
   }
   ->
   file { '/etc/varnish/cdn.vcl':
@@ -114,28 +114,28 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   }
   ->
   file_line{'configure-varnish-vcl':
-    notify => Service["varnish"],
-    line   => "-f /etc/varnish/cdn.vcl \\",
-    path   => "/etc/default/varnish",
-    match  => ".*-f /etc/varnish/.*vcl \\.*"
+    notify => Service['varnish'],
+    line   => '-f /etc/varnish/cdn.vcl \\',
+    path   => '/etc/default/varnish',
+    match  => '.*-f /etc/varnish/.*vcl \\.*'
   }
   ->
   file_line{'configure-varnish-memory':
-    notify => Service["varnish"],
+    notify => Service['varnish'],
     line   => "-s malloc,512m\"",
-    path   => "/etc/default/varnish",
+    path   => '/etc/default/varnish',
     match  => '.*-s malloc,.*"'
-  }  
+  }
   ->
   file_line{'varnish-setup-http-listening-ports':
-    notify => Service["varnish"],
+    notify => Service['varnish'],
     line   => "DAEMON_OPTS=\"-a :${varnish_http_port},:${varnish_ssl_port} \\",
-    path   => "/etc/default/varnish",
-    match  => "^DAEMON_OPTS=.*"
+    path   => '/etc/default/varnish',
+    match  => '^DAEMON_OPTS=.*'
   }
   ->
   exec { 'start-apache':
-    command  => 'sudo systemctl start apache2',
+    command     => 'sudo systemctl start apache2',
     refreshonly => true
   }
 
@@ -149,14 +149,14 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   ->
   file { '/etc/cdn-bare/hooks/post-update':
     ensure => 'file',
-    owner  => "root",
-    group  => "isaac",
+    owner  => 'root',
+    group  => 'isaac',
     mode   => '0775',
     source => 'puppet:///modules/dtg/cdn/post-update-cdn.hook',
-  }  
+  }
   ->
   exec { 'run-cdn-hook':
-    command  => '/etc/cdn-bare/hooks/post-update',
+    command => '/etc/cdn-bare/hooks/post-update',
     creates => '/var/www/.git',
   }
 

@@ -61,20 +61,20 @@ echo "`date` Checked $ZIP_DIR exists"
 ##################################################################################
 
 # Ensure directory exists before dumping to it
-if [ -d "$BACKUP_PATH" ]; then
-	cd $BACKUP_PATH
+#if [ -d "$BACKUP_PATH" ]; then
+#	cd $BACKUP_PATH
 
-	echo; echo "`date` => Backing up Mongo Server: $MONGO_HOST:$MONGO_PORT"; echo -n '   ';
+#	echo; echo "`date` => Backing up Mongo Server: $MONGO_HOST:$MONGO_PORT"; echo -n '   ';
 	
 	# run dump on mongoDB
-	if [ "$MONGO_USERNAME" != "" -a "$MONGO_PASSWORD" != "" ]; then 
-		$MONGO_DUMP_BIN_PATH --host $MONGO_HOST:$MONGO_PORT -u $MONGO_USERNAME -p $MONGO_PASSWORD --out $MONGO_TMP_DIR >> /dev/null
-	else
-		$MONGO_DUMP_BIN_PATH --host $MONGO_HOST:$MONGO_PORT --out $MONGO_TMP_DIR >> /dev/null 
-	fi
-else
-	echo "`date` !!!=> Failed to create backup path: $BACKUP_PATH"
-fi
+#	if [ "$MONGO_USERNAME" != "" -a "$MONGO_PASSWORD" != "" ]; then 
+#		$MONGO_DUMP_BIN_PATH --host $MONGO_HOST:$MONGO_PORT -u $MONGO_USERNAME -p $MONGO_PASSWORD --out $MONGO_TMP_DIR >> /dev/null
+#	else
+#		$MONGO_DUMP_BIN_PATH --host $MONGO_HOST:$MONGO_PORT --out $MONGO_TMP_DIR >> /dev/null 
+#	fi
+#else
+#	echo "`date` !!!=> Failed to create backup path: $BACKUP_PATH"
+#fi
 
 
 ##################################################################################

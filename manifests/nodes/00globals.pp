@@ -18,7 +18,9 @@ $ntp_servers = [
   'ntp1c.cl.cam.ac.uk',
 ]
 
-$name_servers = [ '128.232.21.15',
+$name_servers = [ # '128.232.21.15', Removed DTG DNS. Some software (NFS)
+                  # doesn't failover nicely. This means that when dns.dtg goes
+                  # down, all of the DTG services stop working as nas04 dies.
                   '131.111.8.42',
                   '131.111.12.20',
                   '128.232.1.1',
@@ -192,6 +194,12 @@ class admin_users {
       keys      => ['Ahmed Elmezeini <amiae2@cam.ac.uk>'],
       uid       => 3581,
     }
+    dtg::add_user { 'af599':
+      real_name => 'Andrea Franceschini',
+      groups    => [ 'isaac' ],
+      keys      => ['Andrea Franceschini (porto) <af599@cam.ac.uk>', 'Andrea Franceschini (omoikane) <af599@cam.ac.uk>'],
+      uid       => 3619,
+    }
 
 }
 # Admin user ids to be given root on the nodes via monkeysphere
@@ -202,6 +210,9 @@ $ms_admin_user_ids = [
 # Keyserver with the public keys to use for monkeysphere
 $ms_keyserver = 'keys.gnupg.net'
 $ms_gpg_passphrase = 'not a secret passphrase - we rely on unix user protection'
+
+# Email config
+$smtp_server = "mail-serv.cl.cam.ac.uk"
 
 # Nagios config
 $nagios_machine_fqdn = "monitor.${org_domain}"
@@ -254,8 +265,8 @@ if $::operatingsystem == 'Ubuntu' {
 }
 
 # Configure git push to deploy
-exec { "git-push-to-deploy":
+exec { 'git-push-to-deploy':
   command => 'git config receive.denyCurrentBranch updateInstead',
-  unless => "git config --get receive.denyCurrentBranch | grep updateInstead",
-  cwd => "/etc/puppet",
+  unless  => 'git config --get receive.denyCurrentBranch | grep updateInstead',
+  cwd     => '/etc/puppet',
 }

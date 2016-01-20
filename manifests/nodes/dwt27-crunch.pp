@@ -20,69 +20,69 @@ node 'dwt27-crunch.dtg.cl.cam.ac.uk' {
 # Install files from puppet
   file { '/home/dwt27/ipc':
     ensure => directory,
-    owner => 'dwt27',
-    group => 'dwt27',
-    mode => '0775',
+    owner  => 'dwt27',
+    group  => 'dwt27',
+    mode   => '0775',
   } ->
   file { '/home/dwt27/ipc/requirements.txt':
     ensure => file,
-    owner => 'dwt27',
-    group => 'dwt27',
-    mode => '0664',
+    owner  => 'dwt27',
+    group  => 'dwt27',
+    mode   => '0664',
     source => 'puppet:///modules/dtg/dwt27-crunch/requirements.txt',
   } ->
   file { '/home/dwt27/ipc/setup_venv.sh':
     ensure => file,
-    owner => 'dwt27',
-    group => 'dwt27',
-    mode => '0775',
+    owner  => 'dwt27',
+    group  => 'dwt27',
+    mode   => '0775',
     source => 'puppet:///modules/dtg/dwt27-crunch/setup_venv.sh',
   } ->
   file { '/home/dwt27/ipc/start_ipc.sh':
     ensure => file,
-    owner => 'dwt27',
-    group => 'dwt27',
-    mode => '0775',
+    owner  => 'dwt27',
+    group  => 'dwt27',
+    mode   => '0775',
     source => 'puppet:///modules/dtg/dwt27-crunch/start_ipc.sh',
   } ->
 # Setup VirtualEnv
   exec { 'setup_venv':
     command => '/home/dwt27/ipc/setup_venv.sh',
-    cwd => '/home/dwt27/ipc/',
-    user => 'dwt27',
-    group => 'dwt27',
+    cwd     => '/home/dwt27/ipc/',
+    user    => 'dwt27',
+    group   => 'dwt27',
     creates => '/home/dwt27/ipc/venv'
   }
 
 # Setup nas04 mount
   file { '/home/dwt27/nas04':
     ensure => directory,
-    owner => 'dwt27',
-    group => 'dwt27',
-    mode => '0775',
+    owner  => 'dwt27',
+    group  => 'dwt27',
+    mode   => '0775',
   } ->
   mount { 'nas04':
-    name => '/home/dwt27/nas04',
-    ensure => mounted,
-    atboot => true,
-    device => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/dwt27',
-    fstype => 'nfs',
+    name    => '/home/dwt27/nas04',
+    ensure  => mounted,
+    atboot  => true,
+    device  => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/dwt27',
+    fstype  => 'nfs',
     options => 'defaults',
   }
 
 # Setup cluster cronjob.
   cron { 'start_cluster':
     command => '/home/dwt27/ipc/start_ipc.sh',
-    ensure => present,
-    user => 'dwt27',
-    minute => '*',
+    ensure  => present,
+    user    => 'dwt27',
+    minute  => '*',
   }
 
 # Check cron error emails go to me, not dtg-infra
   augeas {'rootcontabmailtome':
-    incl => '/etc/crontab',
-    lens => 'Cron.lns',
+    incl    => '/etc/crontab',
+    lens    => 'Cron.lns',
     changes => 'set MAILTO dwt27@cl.cam.ac.uk',
-    onlyif => 'get MAILTO == dtg-infra@cl.cam.ac.uk',
+    onlyif  => 'get MAILTO == dtg-infra@cl.cam.ac.uk',
   }
 }
