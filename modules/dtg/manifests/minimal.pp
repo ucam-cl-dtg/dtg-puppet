@@ -73,6 +73,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     authorized_keys_file => '/var/lib/monkeysphere/authorized_keys/%u .ssh/authorized_keys',
   }
 
+  class { 'dtg::dns': }
   class { 'dtg::git::config': }
   class { 'dtg::rsyslog': }
   class { 'etckeeper': require => Class['dtg::git::config'] }
