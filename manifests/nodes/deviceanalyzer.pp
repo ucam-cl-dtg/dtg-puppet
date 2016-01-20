@@ -58,21 +58,6 @@ nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
     target => '/mnt/nas04-index',
   }
 
-
-  # mount nas02 on startup
-  file_line { 'mount nas02':
-    line   => 'nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
-    path   => '/etc/fstab',
-    ensure => absent,
-  }
-
-  # mount nas04 on startup
-  file_line { 'mount nas04':
-    line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer /nas4 nfs defaults 0 0',
-    path   => '/etc/fstab',
-    ensure => absent,
-  }
-
   # set up nginx and jetty config
   file {'/etc/nginx/sites-enabled/default':
     ensure => absent,
