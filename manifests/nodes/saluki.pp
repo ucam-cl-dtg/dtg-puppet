@@ -56,11 +56,6 @@ define bayncore_setup() {
     uid       => 20001,
   }
 
-  bayncore_ssh_user {'richardpaul':
-    real_name => 'Richard Paul (Bayncore)',
-    uid       => 20002
-  }
-
   bayncore_ssh_user {'francoisfayard':
     real_name => 'Francois Fayard (Bayncore)',
     uid       => 20004
