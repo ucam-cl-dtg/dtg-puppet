@@ -40,6 +40,9 @@ class ms_id_certifiers {
   monkeysphere::add_id_certifier {
     'oc243': keyid => '4292E0E21E9FDE91D0EC6AD457CB6E4578EA2A07'
   }
+  monkeysphere::add_id_certifier {
+    'acr31': keyid => '43BF45D11B36F45C3F07DA49BDB889325CACF039'
+  }
 }
 # Admin users to be given an account on all machines
 group { 'dtg-adm':

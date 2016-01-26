@@ -1,5 +1,5 @@
 
-node 'dh526-datadivider.dtg.cl.cam.ac.uk' {
+node 'deviceanalyzer-datadivider.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   User<|title == 'dh526' |> { groups +>[ 'adm' ]}
 
