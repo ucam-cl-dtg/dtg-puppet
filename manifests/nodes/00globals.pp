@@ -258,15 +258,6 @@ if ( $::fqdn in $backup_hosts ) {
 $nfs_client_port = 1025
 
 
-
-# Override Service definition until we are on a new enough puppet to know about ubuntu and systemd
-
-if $::operatingsystem == 'Ubuntu' {
-  Service {
-    provider => systemd,
-  }
-}
-
 # Configure git push to deploy
 exec { 'git-push-to-deploy':
   command => 'git config receive.denyCurrentBranch updateInstead',
