@@ -150,7 +150,7 @@ class apt::source::megaraid {
     release  => 'lucid',
     repos    => 'main',
     key      => {
-        'id'     => '6005210E23B3D3B4',
+        'id'     => '0073C11919A641464163F7116005210E23B3D3B4',
         'source' => 'http://hwraid.le-vert.net/debian/hwraid.le-vert.net.gpg.key',
         },
     }
