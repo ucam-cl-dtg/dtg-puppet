@@ -31,7 +31,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
       ensure => installed
   }
 
-  if $::operatingsystem == 'Debian' {
+  if $::operatingsystem == 'Debian' or $::virtual == 'openvzve' {
     $os_extralist = []
   } else {
     $os_extralist = ['linux-image-generic']
