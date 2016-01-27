@@ -115,3 +115,6 @@
 [submodule "modules/gerrit"]
 	path = modules/gerrit
 	url = https://github.com/ucam-cl-dtg/puppet-gerrit.git
+[submodule "modules/virt"]
+	path = modules/virt
+	url = https://github.com/carlasouza/puppet-virt.git
