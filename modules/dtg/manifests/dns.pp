@@ -3,7 +3,7 @@ class dtg::dns {
   # This config doesn't allow it through the firewall which must be done elsewhere.
   class { 'unbound':
     interface    => ['::0','0.0.0.0'],
-    access       => [ $::local_subnet, '::1'],
+    access       => [ $::local_subnet, '::1', '192.168.0.0/16'],
     tcp_upstream => true,
   }
   unbound::forward { '.':
