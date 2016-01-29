@@ -23,12 +23,19 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
 
   # Packages which should be installed on all servers
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
-                  'apg', 'htop', 'nfs-common', 'emacs24-nox',
+                  'apg', 'htop', 'emacs24-nox',
                   'iptables-persistent', 'command-not-found', 'mlocate',
                   'bash-completion', 'apt-show-versions', 'iotop', 'byobu']
   package {
     $packagelist:
       ensure => installed
+  }
+
+  if ! $::virtual == 'openvzve' {
+    package {
+      'nfs-common':
+        ensure => installed
+    }
   }
 
   if $::operatingsystem == 'Debian' or $::virtual == 'openvzve' {
@@ -242,7 +249,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     content => "options nfs callback_tcpport=${::nfs_client_port}",
   }
 
-  if $::operatingsystem != 'Debian' {
+  if $::operatingsystem != 'Debian' and $::virtual != 'openvzve' {
     # Attempt to make DNS more robust by timing out quickly and retrying enough times that we will hit all of the configured DNS servers before failing
     file { '/etc/resolvconf/resolv.conf.d/tail':
       ensure => file,
