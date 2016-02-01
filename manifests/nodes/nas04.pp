@@ -6,7 +6,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $pool_name = 'dtg-pool0'
   $cl_share = "rw=@${local_subnet}"
   $desktop_share = join($desktop_ips_array, ',rw=@')
-  $deviceanalyzer_share = "rw=@${deviceanalyzer_ip},rw=@${deviceanalyzer_upload_ip},rw=@deviceanalyzer-crunch0.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch1.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch2.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch3.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch4.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,ro=@earlybird.cl.cam.ac.uk,rw=@jenkins-master.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-datadivider.dtg.cl.cam.ac.uk"
+  $deviceanalyzer_share = "rw=@${deviceanalyzer_ip},rw=@${deviceanalyzer_upload_ip},rw=@deviceanalyzer-crunch0.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch1.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch2.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch3.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch4.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,ro=@earlybird.cl.cam.ac.uk,rw=@jenkins-master.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-datadivider.dtg.cl.cam.ac.uk,ro=@dac53.dtg.cam.ac.uk"
   $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_share}"
 
   # bonded nics
