@@ -7,4 +7,5 @@ node 'dac53.dtg.cl.cam.ac.uk' {
     user   => 'dac53',
     type   => 'ssh-rsa',
   }
+  User<|title == dac53 |> { groups +>[ 'adm' ] }
 }
