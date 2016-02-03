@@ -8,4 +8,10 @@ node 'dac53.dtg.cl.cam.ac.uk' {
     type   => 'ssh-rsa',
   }
   User<|title == dac53 |> { groups +>[ 'adm' ] }
+  
+  # mount nas04 on startup
+  file_line { 'mount nas04':
+    line => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer /deviceanalyzerdata nfs defaults 0 0',
+    path => '/etc/fstab',
+  }
 }
