@@ -181,7 +181,7 @@ class admin_users {
     }
     dtg::add_user { 'dac53':
       real_name => 'Diana Vasile',
-      groups    => [],
+      groups    => ['adm', 'deviceanalyzer', 'dtg-adm'],
       keys      => ['Diana Vasile <dac53@cam.ac.uk>'],
       uid       => 3252,
     }
