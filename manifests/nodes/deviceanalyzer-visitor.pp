@@ -1,8 +1,13 @@
 node /deviceanalyzer-visitor(-\w+)?/ {
   include 'dtg::minimal'
 
+
   User<|title == jk672 |> { groups +>[ 'adm' ] }   
 
+  # For DA
+  package {'autofs':
+    ensure => present,
+  } ->
   file {'/etc/auto.mnt':
     ensure  => file,
     owner   => 'root',
