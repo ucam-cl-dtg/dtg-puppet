@@ -206,7 +206,7 @@ class admin_users {
     dtg::add_user { 'jk672':
       real_name => 'Nicolas Karsten',
       groups    =>  [],
-      keys      => ['Nicolas Karsten (no) <karsten@dice.hhu.de>'],
+      keys      => ['Nicolas Karsten <karsten@dice.hhu.de>'],
       uid       => 3633,
     }
 
