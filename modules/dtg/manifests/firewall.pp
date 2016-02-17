@@ -353,6 +353,16 @@ class dtg::firewall::hadoopcluster inherits dtg::firewall::default {
         source => 'africa01.cl.cam.ac.uk',
     }
 
+    firewall { '001 accept all sa497mac.mac.cl.cam.ac.uk':
+        action => 'accept',
+        source => 'sa497mac.mac.cl.cam.ac.uk',
+    }
+
+    firewall { '001 accept all airwolf.cl.cam.ac.uk':
+        action => 'accept',
+        source => 'airwolf.cl.cam.ac.uk',
+    }
+
 }
 
 # The last rule which does the dropping
