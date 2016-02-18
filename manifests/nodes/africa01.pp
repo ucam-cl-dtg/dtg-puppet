@@ -144,15 +144,6 @@ if ( $::monitor ) {
   munin::gatherer::configure_node { 'africa01': }
 }
 
-class apt::source::megaraid {
-    apt::source { 'megaraid':
-    location => 'http://hwraid.le-vert.net/ubuntu',
-    release  => 'lucid',
-    repos    => 'main',
-    key      => {
-        'id'     => '0073C11919A641464163F7116005210E23B3D3B4',
-        'source' => 'http://hwraid.le-vert.net/debian/hwraid.le-vert.net.gpg.key',
-        },
-    }
+
 }
 
