@@ -115,3 +115,9 @@
 [submodule "modules/gerrit"]
 	path = modules/gerrit
 	url = https://github.com/ucam-cl-dtg/puppet-gerrit.git
+[submodule "modules/letsencrypt"]
+	path = modules/letsencrypt
+	url = https://github.com/danzilio/puppet-letsencrypt.git
+[submodule "modules/inifile"]
+	path = modules/inifile
+	url = https://github.com/puppetlabs/puppetlabs-inifile.git
