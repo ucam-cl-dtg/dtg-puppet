@@ -118,3 +118,9 @@
 [submodule "modules/virt"]
 	path = modules/virt
 	url = https://github.com/carlasouza/puppet-virt.git
+[submodule "modules/letsencrypt"]
+	path = modules/letsencrypt
+	url = https://github.com/danzilio/puppet-letsencrypt.git
+[submodule "modules/inifile"]
+	path = modules/inifile
+	url = https://github.com/puppetlabs/puppetlabs-inifile.git
