@@ -140,11 +140,6 @@ if ( $::monitor ) {
     address    => 'africa01-bmc.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'bmcs' ],
   }
-}
 
   munin::gatherer::configure_node { 'africa01': }
 }
-
-
-}
-
