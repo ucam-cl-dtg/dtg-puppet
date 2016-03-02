@@ -116,11 +116,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
 
-  class {'apt::source::megaraid':
-    stage => 'repos'
-  }
-
-  $packagelist = ['megacli', 'bison' , 'flex', 'autoconf' , 'pkg-config' , 'libglib2.0-dev', 'libpcap-dev' , 'mountall' , 'liblz4-tool']
+  $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config' , 'libglib2.0-dev', 'libpcap-dev' , 'mountall' , 'liblz4-tool']
   package {
       $packagelist:
           ensure => installed
