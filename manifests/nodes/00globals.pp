@@ -217,7 +217,7 @@ $ms_admin_user_ids = [
   'Oliver Chick <oc243@cam.ac.uk>'
 ]
 # Keyserver with the public keys to use for monkeysphere
-$ms_keyserver = 'keys.gnupg.net'
+$ms_keyserver = 'keyserver.ubuntu.com'
 $ms_gpg_passphrase = 'not a secret passphrase - we rely on unix user protection'
 
 # Email config
