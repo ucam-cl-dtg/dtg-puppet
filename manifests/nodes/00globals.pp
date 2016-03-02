@@ -127,7 +127,7 @@ class admin_users {
     }
     dtg::add_user { 'arb33':
       real_name => 'Alastair Beresford',
-      groups    => [ 'isaac' ],
+      groups    => [ 'isaac','adm','dtg-adm' ],
       keys      => ['Alastair Beresford (ssh) <arb33@cam.ac.uk>'],
       uid       => 2125,
     }
