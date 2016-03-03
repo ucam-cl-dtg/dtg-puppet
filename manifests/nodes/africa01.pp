@@ -35,26 +35,6 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     directory => "/${pool_name}/backups",
   }
 
-  # Weather
-  dtg::zfs::fs{'weather':
-    pool_name  => $pool_name,
-    fs_name    => 'weather',
-    share_opts => 'rw=@weather.dtg.cl.cam.ac.uk,ro=@{::dtg_subnet},ro=@128.232.28.41,async',# 128.232.28.41 is Tien Han Chua's VM
-  }
-
-  user {'weather':
-    ensure => 'present',
-    uid    => 501,
-    gid    => 'www-data',
-  }
-
-  file {"/${pool_name}/weather":
-    ensure => directory,
-    owner  => 'weather',
-    group  => 'www-data',
-    mode   => 'ug=rwx,o=rx',
-  }
-
   dtg::sudoers_group{ 'africa':
     group_name => 'africa',
   }
