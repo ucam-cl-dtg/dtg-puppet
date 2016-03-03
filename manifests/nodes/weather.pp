@@ -83,6 +83,8 @@ if ( $::monitor ) {
 if ( $::is_backup_server ) {
   dtg::backup::hostsetup{'weather_database':
     user    => 'weather',
+    # this is the group to assign ownership of the weather backups directory to
+    group   => 'weather-adm',
     host    => 'weather.dtg.cl.cam.ac.uk',
     require => Class['dtg::backup::host'],
     weekday => '*',
