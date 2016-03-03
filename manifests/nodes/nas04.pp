@@ -141,6 +141,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => 'rw=@sa497-crunch-0.dtg.cl.cam.ac.uk,rw=@sa497-crunch-1.dtg.cl.cam.ac.uk,rw=@sa497-crunch-2.dtg.cl.cam.ac.uk,rw=@sa497-crunch-3.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,async',
   }
 
+  dtg::zfs::fs{ 'caida-internet-traces-2014':
+    pool_name  => $pool_name,
+    fs_name    => 'caida-internet-traces-2014',
+    share_opts => "${dtg_share},async",
+  }
+
 # Not using this method ATM
 
 #   # Mount nas02 in order to back it up.
