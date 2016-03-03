@@ -92,6 +92,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
 
   class { 'gpg': }
   class { 'monkeysphere':
+    keyserver => $::ms_keyserver,
     require => Class['dtg::email'],
   }
   # create hourly cron job to update users authorized_user_id files
