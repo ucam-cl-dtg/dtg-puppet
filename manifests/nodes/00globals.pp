@@ -101,7 +101,7 @@ class admin_users {
     }
     dtg::add_user { 'acr31':
         real_name => 'Andrew Rice',
-        groups    => ['adm', 'dtg-adm'],
+        groups    => ['adm', 'dtg-adm','weather-adm', 'wiki-adm'],
         keys      => 'Andrew Rice <acr31@cam.ac.uk>',
         uid       => 2132,
     }
