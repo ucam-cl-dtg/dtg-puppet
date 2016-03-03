@@ -7,27 +7,28 @@ node 'weather.dtg.cl.cam.ac.uk' {
 # Gives the weather-adm group admin on these machines.
   class {'dtg::weather': }
 
+  # ACR - removed these mounts. backups are now done by the backup servers ssh'ing into the vm and pulling the data through the ssh connection
   # Mount nas01 and africa01 in order to ship backups there.
   # First, install autofs:
-  package {'autofs':
-    ensure => present,
-  } ->
+#  package {'autofs':
+#   ensure => present,
+#  } ->
   # Now, ensure auto.master includes auto.mnt at /mnt:
-  file_line {'mount nas01':
-    line => '/mnt	/etc/auto.mnt',
-    path => '/etc/auto.master',
-  } ->
+#  file_line {'mount nas01':
+#    line => '/mnt	/etc/auto.mnt',
+#    path => '/etc/auto.master',
+#  } ->
   # Add our auto.mnt including nas01 and africa01:
-  file {'/etc/auto.mnt':
-    ensure  => file,
-    owner   => 'root',
-    group   => 'root',
-    mode    => 'a=r',
-    content => '
-nas01       nas01.dtg.cl.cam.ac.uk:/data/weather
-africa01    africa01.dtg.cl.cam.ac.uk:/data-pool0/weather
-'
-  }
+#  file {'/etc/auto.mnt':
+#    ensure  => file,
+#    owner   => 'root',
+#    group   => 'root',
+#    mode    => 'a=r',
+#    content => '
+#nas01       nas01.dtg.cl.cam.ac.uk:/data/weather
+#africa01    africa01.dtg.cl.cam.ac.uk:/data-pool0/weather
+#'
+#  }
 
   group {"weather":
     ensure => present,
