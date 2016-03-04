@@ -40,10 +40,6 @@ nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
     path => '/etc/auto.master',
   }
 
-  file {'/nas1':
-    ensure => link,
-    target => '/mnt/nas01',
-  }
   file {'/nas2':
     ensure => link,
     target => '/mnt/nas02',
