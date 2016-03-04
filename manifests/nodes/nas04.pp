@@ -127,7 +127,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => 'off',
   }
 
-  $saluki_share = 'rw=@128.232.98.206,@128.232.98.207'
+  $saluki_share = 'rw=@128.232.98.206,rw=@128.232.98.207'
   
   dtg::zfs::fs{ 'bayncore':
     pool_name  => $pool_name,
