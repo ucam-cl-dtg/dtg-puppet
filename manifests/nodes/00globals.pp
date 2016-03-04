@@ -38,9 +38,6 @@ class ms_id_certifiers {
     'drt24-laptop': keyid => 'EA14782BFF32D5B8464B92D7B2FB14CF18EB83B1'
   }
   monkeysphere::add_id_certifier {
-    'oc243': keyid => '4292E0E21E9FDE91D0EC6AD457CB6E4578EA2A07'
-  }
-  monkeysphere::add_id_certifier {
     'acr31': keyid => '43BF45D11B36F45C3F07DA49BDB889325CACF039'
   }
 }
