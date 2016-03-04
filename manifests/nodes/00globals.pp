@@ -229,7 +229,7 @@ $nagios_server = "nagios.${org_domain}"
 $nagios_ssl = false
 $nagios_from_emailaddress = $from_address
 $nagios_alert_emailaddress = $nagios_from_emailaddress
-$nagios_org_name = 'Digitial Technology Group'
+$nagios_org_name = 'Digital Technology Group'
 $nagios_org_url = 'https://www.cl.cam.ac.uk/research/dtg/'
 
 #Munin config
