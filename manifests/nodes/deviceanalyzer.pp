@@ -86,13 +86,26 @@ nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
     source => 'puppet:///modules/dtg/deviceanalyzer/interfaces',
   }
 
-  # ensure webapps directory is writeable by the non-standard 'www-data' user
+  # ensure webapps directory is writeable by the non-standard 'www-deviceanalyzer' user
   file { '/var/lib/jetty8/webapps':
     ensure => directory,
-    owner  => 'www-data',
-    group  => 'www-data',
+    owner  => 'www-deviceanalyzer',
+    group  => 'adm',
     mode   => '0755',
   }
+  file { '/var/lib/jetty8':
+    ensure => directory,
+    owner  => 'www-deviceanalyzer',
+    group  => 'adm',
+    mode   => '0755',
+  }
+  file { '/var/log/jetty8':
+    ensure => directory,
+    owner  => 'www-deviceanalyzer',
+    group  => 'adm',
+    mode   => '0755',
+  }
+
 }
 
 node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
