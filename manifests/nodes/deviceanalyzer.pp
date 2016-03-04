@@ -31,8 +31,7 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
     owner   => 'root',
     group   => 'root',
     mode    => 'a=r',
-    content => 'nas01   nas01.dtg.cl.cam.ac.uk:/data/deviceanalyzer
-nas02   nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer
+    content => 'nas02   nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer
 nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer
 nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
   } ->
