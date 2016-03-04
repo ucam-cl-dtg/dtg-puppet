@@ -207,6 +207,24 @@ class admin_users {
       uid       => 3633,
     }
 
+
+    # System users which need to be present on all machines
+    # This applies for example if the user needs to write data which
+    # is nfs mounted
+    group { "www-deviceanalyzer" :
+      gid => 40000,
+    }
+    ->
+    user { "www-deviceanalyzer" :
+      ensure => present,
+      comment => "DeviceAnalyzer WWW user",
+      shell => "/usr/sbin/nologin",
+      groups => "www-deviceanalyzer",
+      uid => 40000,
+      gid => 40000,
+      password => "*",
+    }
+    
 }
 # Admin user ids to be given root on the nodes via monkeysphere
 $ms_admin_user_ids = [
