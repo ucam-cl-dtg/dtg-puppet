@@ -33,7 +33,8 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
     mode    => 'a=r',
     content => 'nas02   nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer
 nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer
-nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
+nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider
+nas04-snapshot   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-2016-03-14 ',
   } ->
   file_line {'mount nas':
     line => '/mnt   /etc/auto.mnt',
@@ -51,6 +52,10 @@ nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
   file {'/nas4-index':
     ensure => link,
     target => '/mnt/nas04-index',
+  }
+  file {'/nas4-snapshot':
+    ensure => link,
+    target => '/mnt/nas04-snapshot',
   }
 
   # set up nginx and jetty config
