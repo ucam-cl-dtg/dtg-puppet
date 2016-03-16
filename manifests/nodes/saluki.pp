@@ -71,6 +71,13 @@ define bayncore_setup() {
     uid       => 229858,
   }
 
+  bayncore_ssh_user {'sa614':
+    real_name => 'Sam Ainsworth (PhD Student)',
+    uid       => 3354,
+  }
+
+  
+
 }
 
 node /saluki(\d+)?/ {
