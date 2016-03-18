@@ -1,4 +1,4 @@
-class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = true) {
+class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = true, $managefirewall = true) {
 
   # Set up the repositories, get some entropy then do everything else
   #  entropy needs to start being provided before it is consumed
@@ -213,7 +213,11 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
   }
 
   # Include default firewall rules
-  class { 'dtg::firewall': }
+
+  if $managefirewall {
+    class { 'dtg::firewall': }
+  }
+  
   sshkey {'localhost':
     ensure       => present,
     host_aliases => [$::fqdn, $::hostname],
