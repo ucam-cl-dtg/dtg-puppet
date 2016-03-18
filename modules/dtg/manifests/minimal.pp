@@ -1,4 +1,4 @@
-class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
+class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = true) {
 
   # Set up the repositories, get some entropy then do everything else
   #  entropy needs to start being provided before it is consumed
@@ -79,12 +79,14 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   class { 'etckeeper': require => Class['dtg::git::config'] }
   class { 'ntp': servers => $ntp_servers, package_ensure => latest, }
   # Get entropy then do gpg and then monkeysphere
-  class { 'dtg::entropy': stage => 'entropy-host' }
-  class { 'dtg::entropy::client':
-    cafile       => '/usr/local/share/ssl/cafile',
-    host_address => 'entropy.dtg.cl.cam.ac.uk',
-    stage        => 'entropy',
-    require      => File['/usr/local/share/ssl/cafile'],
+  if $manageentropy {
+    class { 'dtg::entropy': stage => 'entropy-host' }
+    class { 'dtg::entropy::client':
+      cafile       => '/usr/local/share/ssl/cafile',
+      host_address => 'entropy.dtg.cl.cam.ac.uk',
+      stage        => 'entropy',
+      require      => File['/usr/local/share/ssl/cafile'],
+    }
   }
 
   # Make it possible to send email (if correct from address is used)
