@@ -128,6 +128,7 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
                                    'host androidusage androidusage 128.232.98.188/32 md5',
                                    'host androidusage androidusage 128.232.21.105/32 md5',
                                    'host androidusage androidusage 128.232.21.104/32 md5',
+                                   'host androidusage androidusage 128.232.21.132/32 md5',
                                    ]
   }
   ->
