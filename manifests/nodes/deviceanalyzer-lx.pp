@@ -1,7 +1,7 @@
 # DeviceAnalyzer running in a LX domain on SmartOS
 
 node 'deviceanalyzer-lx' {
-  class { 'dtg::minimal': manageentropy => false, }
+  class { 'dtg::minimal': manageentropy => false, managefirewall => false }
 
   class {'dtg::deviceanalyzer':}
 
