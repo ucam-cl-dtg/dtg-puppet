@@ -5,6 +5,7 @@ class dtg::dns {
     interface    => ['::0','0.0.0.0'],
     access       => [ $::local_subnet, '::1', '192.168.0.0/16'],
     tcp_upstream => true,
+    num_threads  => 4,
   }
   unbound::forward { '.':
     address => [
