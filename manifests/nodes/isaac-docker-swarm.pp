@@ -13,6 +13,7 @@ node /isaac-\d+/ {
     home   => '/usr/share/isaac'
   }
 
+  # Directories to hold backups
   file { '/local/data/database-backup':
     ensure => 'directory',
     owner  => 'isaac',
@@ -58,5 +59,38 @@ node /isaac-\d+/ {
     minute  => 0
   }
 
+  # Home directory of isaac user.
 
+  file { ['/usr/share/isaac/', '/usr/share/isaac/.ssh']:
+    ensure => 'directory',
+    owner  => 'isaac',
+    group  => 'root',
+    mode   => '0644',
+  }
+  ->
+  file {'/usr/share/isaac/.ssh/authorized_keys':
+    ensure => file,
+    owner  => 'isaac',
+    group  => 'isaac',
+    mode   => '0600',
+  }
+  ->
+  dtg::backup::serversetup{'Live DB Backup':
+    backup_directory   => '/local/data/rutherford/database-backup/latest',
+    script_destination => '/usr/share/isaac/database-backup',
+    user               => 'isaac',
+    home               => '/usr/share/isaac/',
+  }
+}
+
+# Configure backup server to pull things from here.
+
+if ( $::is_backup_server ) {
+  dtg::backup::hostsetup{'isaac_physics_docker_db':
+    user    => 'isaac',
+    group   => 'isaac',
+    host    => 'isaac-1.dtg.cl.cam.ac.uk',
+    weekday => '*',
+    require => Class['dtg::backup::host'],
+  }
 }

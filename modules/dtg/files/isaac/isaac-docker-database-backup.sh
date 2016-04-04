@@ -8,6 +8,7 @@ echo "Started isaac db backup at `date "+%Y-%m-%d %l:%M"`"
 BACKUP_FILE="/local/data/database-backup/backups/isaac-live-db-`date +%Y-%m-%d`.sql.gz"
 
 /local/src/isaac-api/src/main/resources/db_scripts/dump-db.sh live | gzip > $BACKUP_FILE 
+chown isaac:isaac $BACKUP_FILE
 
 # Copy the latest
 rm /local/data/database-backup/latest/*
