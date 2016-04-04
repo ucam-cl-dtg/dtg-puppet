@@ -45,7 +45,7 @@ node /isaac-\d+/ {
       path    => '/local/data/database-backup/isaac-database-backup.log',
       ensure  => present,
       replace => false,
-      mode    => '0755',
+      mode    => '0664',
       owner   => isaac,
       group   => isaac,
       content => '# Database backup log files'
