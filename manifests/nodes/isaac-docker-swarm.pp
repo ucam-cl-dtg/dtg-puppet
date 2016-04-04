@@ -52,7 +52,7 @@ node /isaac-\d+/ {
   }
   ->
   cron {'isaac-backup-database':
-    command => '/local/data/isaac-database-backup.sh >> /local/data/database-backup/isaac-database-backup.log',
+    command => '/local/data/isaac-docker-database-backup.sh >> /local/data/database-backup/isaac-database-backup.log',
     user    => root,
     hour    => 0,
     minute  => 0
