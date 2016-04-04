@@ -153,6 +153,10 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
     source      => $deviceanalyzer_upload_ip,
     source_name => 'upload.deviceanalyzer',
   }
+  dtg::firewall::postgres{'deviceanalyzer-lx':
+    source      => "128.232.21.132",
+    source_name => 'deviceanalyzer-lx',
+  }
 
 }
 
