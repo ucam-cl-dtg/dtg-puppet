@@ -1,6 +1,6 @@
 
 node /dns(-\d+)?/ {
-  include 'dtg::minimal'
+  class { 'dtg::minimal': dns_server => true, }
 
   # unbound is part of the minimal config
   # We just need to stop dhcp overriding the forwarding config and allow access through the firewall

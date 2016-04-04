@@ -1,10 +1,27 @@
-class dtg::dns {
+class dtg::dns ($dns_server = false) {
   # Run unbound and use it to serve DNS requests
   # This config doesn't allow it through the firewall which must be done elsewhere.
-  class { 'unbound':
-    interface    => ['::0','0.0.0.0'],
-    access       => [ $::local_subnet, '::1', '192.168.0.0/16'],
-    tcp_upstream => true,
+  if !$dns_server {
+    class { 'unbound':
+      interface    => ['::0','0.0.0.0'],
+      access       => [ $::local_subnet, '::1', '192.168.0.0/16'],
+      tcp_upstream => true,
+      num_threads  => $::processorcount,
+      prefetch     => 'yes',
+    }
+  } else {
+    class { 'unbound':
+      interface        => ['::0','0.0.0.0'],
+      access           => [ $::local_subnet, '::1', '192.168.0.0/16'],
+      tcp_upstream     => true,
+      num_threads      => $::processorcount,
+      #neg_cache_size   => '8m',
+      key_cache_size   => '32m',
+      rrset_cache_size => '64m',
+      msg_cache_size   => '32m',
+      prefetch_key     => 'yes',
+      prefetch         => 'yes',
+    }
   }
   unbound::forward { '.':
     address => [
