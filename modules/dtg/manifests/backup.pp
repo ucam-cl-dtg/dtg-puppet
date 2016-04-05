@@ -29,7 +29,6 @@ define dtg::backup::serversetup ($backup_directory, $script_destination, $user, 
   $backup_description = $name
   dtg::backup::serversetup_script { "$name script":
     content => template('dtg/backup-server.sh.erb'),
-    script => $script,
     script_destination => $script_destination,
     user => $user,
     home => $home,
