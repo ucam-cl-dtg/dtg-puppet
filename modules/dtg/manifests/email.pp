@@ -28,7 +28,7 @@ class dtg::email {
     changes => ['ins MAILTO after SHELL', 'set MAILTO dtg-infra@cl.cam.ac.uk'],
     onlyif  => 'match MAILTO size == 0',
   }
-
+  ->
   augeas {'rootcrontabmailfrominsert':
     incl    => '/etc/crontab',
     lens    => 'Cron.lns',
