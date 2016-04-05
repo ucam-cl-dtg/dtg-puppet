@@ -76,7 +76,7 @@ node /isaac-\d+/ {
   }
   ->
   dtg::backup::serversetup{'Live DB Backup':
-    backup_directory   => '/local/data/rutherford/database-backup/latest',
+    backup_directory   => '/local/data/database-backup/latest',
     script_destination => '/usr/share/isaac/database-backup',
     user               => 'isaac',
     home               => '/usr/share/isaac/',
