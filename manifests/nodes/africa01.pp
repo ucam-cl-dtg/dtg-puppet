@@ -8,6 +8,14 @@ node 'africa01.dtg.cl.cam.ac.uk' {
 
   class {'dtg::zfs': }
 
+  class {'dtg::firewall::publichttp':}
+  ->
+  firewall {'060 accept all 8080':
+    proto  => 'tcp',
+    dport  => '8080',
+    action => 'accept',
+  }
+
   $pool_name = 'data-pool0'
 
   dtg::zfs::fs{'datashare':
@@ -96,7 +104,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
 
-  $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config' , 'libglib2.0-dev', 'libpcap-dev' , 'mountall' , 'liblz4-tool']
+  $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config', 'libpcap-dev' , 'mountall' , 'liblz4-tool']
   package {
       $packagelist:
           ensure => installed
