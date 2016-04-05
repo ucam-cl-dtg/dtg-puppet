@@ -1,5 +1,17 @@
 #! /bin/sh
 
+### BEGIN INIT INFO
+# Provides:          xmlsocketserver
+# Required-Start:    $local_fs $remote_fs $network
+# Required-Stop:     $local_fs $remote_fs $network
+# Should-Start:      $named
+# Should-Stop:       $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start xmlsocketserver
+# Description:       Start xmlsocketserver
+### END INIT INFO
+
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DAEMON="/usr/bin/java"
 DAEMON_OPTS="-jar /home/dtw30/xmlsocketserver.jar > /dev/null"
