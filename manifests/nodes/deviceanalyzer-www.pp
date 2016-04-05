@@ -1,6 +1,7 @@
 # DeviceAnalyzer running in a LX domain on SmartOS
-
-node 'deviceanalyzer-lx' {
+# This node hosts the webserver for receiving uploads as well as providing the main website for the project
+# WARNING. Deviceanalyzer needs an SSL certificate and htpasswd configuration in /etc/nginx/sec. This is not stored in puppet. 
+node 'deviceanalyzer-www' {
   class { 'dtg::minimal': manageentropy => false, managefirewall => false }
 
   class {'dtg::deviceanalyzer':}
