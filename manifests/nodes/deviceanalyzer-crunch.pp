@@ -13,12 +13,10 @@ $deviceanalyzer_crunch4_ip = $deviceanalyzer_crunch4_ips[0]
 
 $deviceanalyzer_crunch_ips = "${deviceanalyzer_crunch0_ip},${deviceanalyzer_crunch1_ip},${deviceanalyzer_crunch2_ip},${deviceanalyzer_crunch3_ip},${deviceanalyzer_crunch4_ip}"
 
-node /deviceanalyzer-crunch(\d+)?.dtg.cl.cam.ac.uk/ {
+node /deviceanalyzer-crunch[01234].dtg.cl.cam.ac.uk/ {
   include 'dtg::minimal'
 
   class {'dtg::deviceanalyzer':}
-
-  User<|title == 'dh526' |> { groups +>[ 'adm' ]}
 
   firewall { '020 redirect 80 to 4567':
     dport   => '80',
@@ -75,6 +73,19 @@ node /deviceanalyzer-crunch(\d+)?.dtg.cl.cam.ac.uk/ {
     path => '/etc/fstab',
   }
 }
+
+node /deviceanalyzer-crunch5/ {
+  # This crunch is a LX zone running on opensolaris
+
+  class { 'dtg::minimal': manageentropy => false, managefirewall => false }
+  class {'dtg::deviceanalyzer':}
+
+  $packagelist = ['openjdk-8-jre-headless']
+  package {$packagelist:
+    ensure => installed
+  }
+}
+
 if ( $::monitor ) {
   nagios::monitor { 'deviceanalyzer-crunch0':
     parents    => 'nas04',
