@@ -6,7 +6,7 @@ node 'deviceanalyzer-lx' {
   class {'dtg::deviceanalyzer':}
 
   # Packages which should be installed
-  $packagelist = ['openjdk-7-jdk', 'jetty8', 'nginx', 'autofs']
+  $packagelist = ['openjdk-7-jdk', 'jetty8', 'nginx']
   package {
     $packagelist:
       ensure => installed
@@ -37,13 +37,6 @@ node 'deviceanalyzer-lx' {
     mode   => '0755',
     source => 'puppet:///modules/dtg/deviceanalyzer/xmlsocketserver.initd',
   }
-  file {'/etc/network/interfaces':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0644',
-    source => 'puppet:///modules/dtg/deviceanalyzer/interfaces',
-  }
 
   # ensure webapps directory is writeable by the non-standard 'www-deviceanalyzer' user
   file { '/var/lib/jetty8/webapps':
@@ -65,5 +58,22 @@ node 'deviceanalyzer-lx' {
     mode   => '0755',
   }
 
+  file {'/nas2':
+    ensure => link,
+    target => '/deviceanalyzer/data',
+  }
+  file {'/nas4':
+    ensure => link,
+    target => '/deviceanalyzer/export',
+  }
+  file {'/nas4-index':
+    ensure => link,
+    target => '/deviceanalyzer/picky-index',
+  }
+  file {'/nas4-snapshot':
+    ensure => link,
+    target => '/deviceanalyzer/export',
+  }
+  
 }
 
