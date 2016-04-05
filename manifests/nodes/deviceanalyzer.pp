@@ -1,5 +1,7 @@
 #Configuration for deviceanalyzer related stuff
 
+# WARNING. Deviceanalyzer needs an SSL certificate and htpasswd configuration in /etc/nginx/sec. This is not stored in puppet. 
+
 $deviceanalyzer_ips = dnsLookup('deviceanalyzer.dtg.cl.cam.ac.uk')
 $deviceanalyzer_ip = $deviceanalyzer_ips[0]
 $deviceanalyzer_upload_ips = dnsLookup('upload.deviceanalyzer.dtg.cl.cam.ac.uk')
