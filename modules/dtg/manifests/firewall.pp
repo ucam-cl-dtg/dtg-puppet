@@ -14,7 +14,7 @@ class dtg::firewall::default {
     notify  => Exec['persist-firewall'],
   }
 }
-class dtg::firewall inherits dtg::firewall::default {
+class dtg::firewall inherits dtg::firewall::default($interface_file = '/etc/network/interfaces') {
   exec { 'persist-firewall':
     command     => '/sbin/iptables-save > /etc/iptables.rules',
     refreshonly => true,
@@ -22,7 +22,7 @@ class dtg::firewall inherits dtg::firewall::default {
   file_line { 'restore iptables':
     ensure => present,
     line   => 'pre-up iptables-restore < /etc/iptables.rules',
-    path   => '/etc/network/interfaces',
+    path   => $interface_file,
   }
   # Purge unmanaged firewall resources
   #
