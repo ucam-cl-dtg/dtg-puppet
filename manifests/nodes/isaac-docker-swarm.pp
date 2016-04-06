@@ -3,12 +3,8 @@ node /isaac-\d+/ {
 
   class {'dtg::isaac':}
 
-  class {'dtg::firewall::publichttp':
-    interface_file => "/etc/network/interfaces.d/eth0.cfg",
-  }
-  class {'dtg::firewall::publichttps':
-    interface_file => "/etc/network/interfaces.d/eth0.cfg",
-  }
+  class {'dtg::firewall::publichttp':}
+  class {'dtg::firewall::publichttps':}
   
   # User to own DB Backups
   user {'isaac':
