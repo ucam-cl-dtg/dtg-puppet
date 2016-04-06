@@ -19,39 +19,11 @@ class dtg::firewall inherits dtg::firewall::default {
     command     => '/sbin/iptables-save > /etc/iptables.rules',
     refreshonly => true,
   }
-
-  # On SmartOS KVM containers the setup is to use interfaces.d rather
-  # than a single interfaces file. Therefore if you put pre-up at the
-  # end of the interfaces file on these machines you just break everything
-  # (for some reason)
-  # Therefore we check to see if the interfaces.d pattern has been used
-  # if it has then we put the pre-up command on the eth0 interfaces file
-  # if it hasn't then we carry on as normal and put it in /etc/network/interfaces
-  
-  exec { 'check_for_etc_network_interfacesd_eth0':
-    command     => '/bin/true',
-    onlyif      => 'test -f /etc/network/interfaces.d/eth0.cfg'
-  }
-
-  file_line { 'restore iptables in etc_network_interfacesd_eth0':
-    ensure => present,
-    line   => 'pre-up iptables-restore < /etc/iptables.rules',
-    path   => '/etc/network/interfaces.d/eth0.cfg',
-    require => Exec["check_for_etc_network_interfacesd_eth0"]
-  }
-
-  exec { 'check_for_no_etc_network_interfacesd_eth0':
-    command     => '/bin/true',
-    onlyif      => 'test -f ! /etc/network/interfaces.d/eth0.cfg'
-  }
-
   file_line { 'restore iptables':
     ensure => present,
     line   => 'pre-up iptables-restore < /etc/iptables.rules',
     path   => '/etc/network/interfaces',
-    require => Exec["check_for_no_etc_network_interfacesd_eth0"]
   }
-  
   # Purge unmanaged firewall resources
   #
   # This will clear any existing rules, and make sure that only rules
