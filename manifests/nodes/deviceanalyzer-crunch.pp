@@ -84,6 +84,29 @@ node /deviceanalyzer-crunch5/ {
   package {$packagelist:
     ensure => installed
   }
+
+  file  { '/usr/local/distanalysis/':
+    ensure => directory,
+    owner  => 'www-deviceanalyzer',
+    group  => 'www-deviceanalyzer',
+    mode   => '0755',
+  }
+  ->
+  file {'/usr/local/distanalysis/run-distanalysis.sh':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+    source => 'puppet:///modules/dtg/deviceanalyzer/run-distanalysis.sh',
+  }
+  ->
+  file {'/etc/init.d/distanalysis':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+    source => 'puppet:///modules/dtg/deviceanalyzer/distanalysis.initd',
+  }
 }
 
 if ( $::monitor ) {
