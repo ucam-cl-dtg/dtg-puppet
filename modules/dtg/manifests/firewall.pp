@@ -42,7 +42,7 @@ class dtg::firewall inherits dtg::firewall::default {
 
   exec { 'check_for_no_etc_network_interfacesd_eth0':
     command     => '/bin/true',
-    onlyif      => 'test -f ! /etc/network/interfaces.d/eth0.cfg'
+    onlyif      => 'test ! -f /etc/network/interfaces.d/eth0.cfg'
   }
 
   file_line { 'restore iptables':
