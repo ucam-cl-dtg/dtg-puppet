@@ -22,7 +22,7 @@ class dtg::dns ($dns_server = false) {
       prefetch_key          => 'yes',
       prefetch              => 'yes',
       extended_statistics   => 'yes',
-      statistics_cumulative => 'no',
+      statistics_cumulative => false,
       statistics_interval   => 0,
       control_enable        => 'yes',
     }
