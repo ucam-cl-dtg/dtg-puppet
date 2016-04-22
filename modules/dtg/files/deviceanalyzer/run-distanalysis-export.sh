@@ -6,6 +6,6 @@ if [ `whoami` != "www-deviceanalyzer" ]; then
 fi
 
 rm -rf /var/cache/distanalysis/analysed/*
-nohup /usr/bin/java -Xmx26g -XX:GCTimeLimit=60 -XX:+UseConcMarkSweepGC -Duk.ac.cam.deviceanalyzer.archivedir=/deviceanalyzer/archive/archive -Duk.ac.cam.deviceanalyzer.brokenarchivedir=/deviceanalyzer/archive/archive-suspected-broken/ -Duk.ac.cam.deviceanalyzer.exportdir=/deviceanalyzer/export -Duk.ac.cam.deviceanalyzer.analysisdir=/var/cache/distanalysis/analysed  -Duk.ac.cam.deviceanalyzer.exportOnly=true -Duk.ac.cam.deviceanalyzer.production=true -jar /usr/local/distanalysis/DistAnalysis.jar >/tmp/distanalysis-export.log 2>&1
+nohup /usr/bin/java -Xmx26g -XX:GCTimeLimit=60 -XX:+UseConcMarkSweepGC -Duk.ac.cam.deviceanalyzer.archivedir=/deviceanalyzer/archive/archive -Duk.ac.cam.deviceanalyzer.brokenarchivedir=/deviceanalyzer/archive/archive-suspected-broken/ -Duk.ac.cam.deviceanalyzer.exportdir=/deviceanalyzer/export -Duk.ac.cam.deviceanalyzer.analysisdir=/var/cache/distanalysis/analysed  -Duk.ac.cam.deviceanalyzer.exportOnly=true -Duk.ac.cam.deviceanalyzer.production=true -jar /usr/local/distanalysis/DistAnalysis.jar --all >/tmp/distanalysis-export.log 2>&1 &
 
 echo "Log file in /tmp/distanalysis-export"
