@@ -7,6 +7,8 @@ $deviceanalyzer_ip = $deviceanalyzer_ips[0]
 $deviceanalyzer_upload_ips = dnsLookup('upload.deviceanalyzer.dtg.cl.cam.ac.uk')
 $deviceanalyzer_upload_ip = $deviceanalyzer_upload_ips[0]
 
+$deviceanalyzer_www_ip = dnsLookup('deviceanalyzer-www.dtg.cl.cam.ac.uk')
+
 node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 
@@ -155,9 +157,9 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
     source      => $deviceanalyzer_upload_ip,
     source_name => 'upload.deviceanalyzer',
   }
-  dtg::firewall::postgres{'deviceanalyzer-lx':
-    source      => "128.232.21.132",
-    source_name => 'deviceanalyzer-lx',
+  dtg::firewall::postgres{'deviceanalyzer-www':
+    source      => $deviceanalyzer_www_ip,
+    source_name => 'deviceanalyzer-www',
   }
 
 }
