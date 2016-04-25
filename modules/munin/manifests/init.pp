@@ -9,6 +9,7 @@ class munin::gatherer(
   $alerts_email = $from_address,
   $contact = "dtg",
   $graph_data_size = "huge",
+  $extra_apache_config = '',
 ) {
   package { [ "munin", "libcgi-fast-perl", "libapache2-mod-fcgid" ]:
     ensure => installed

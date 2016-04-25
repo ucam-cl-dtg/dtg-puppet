@@ -1,6 +1,8 @@
 <VirtualHost <%= @listen_ip %><% if @munin_ssl -%>:443<% else -%>:80<% end -%>>
 ServerName <%= @server_name %>
 
+  <%= @extra_apache_config %>
+
   <IfModule !mod_rewrite.c>
     # required because we serve out of the cgi directory and URLs are relative
     Alias /munin-cgi/munin-cgi-html/static /var/cache/munin/www/static
