@@ -2,18 +2,24 @@ node 'monitor.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   class {'dtg::apache::raven': server_description => 'Monitor'}
   apache::module {'headers':}
+  # Use letsencrypt to get a certificate
+  class {'letsencrypt':
+    email => $::from_address,
+  }
   $nagios_ssl = true
   class {'dtg::nagiosserver':}
   class {'munin::gatherer':
     server_name         => $::munin_server,
-    extra_apache_config => '    AuthName "Munin access"
+    extra_apache_config => '<Location />
+    AuthName "Munin access"
     AuthType Ucam-WebAuth
-    require valid-user',
+    require valid-user
+  </Location>',
   }
   munin::node::plugin {'nagiosstatus':
     target => '/etc/puppet/modules/munin/files/contrib/plugins/nagios/nagiosstatus',
   }
-  class {'dtg::firewall::privatehttp':}
+  class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
 }
 if ($::monitor) {

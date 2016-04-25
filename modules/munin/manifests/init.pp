@@ -10,6 +10,7 @@ class munin::gatherer(
   $contact = "dtg",
   $graph_data_size = "huge",
   $extra_apache_config = '',
+  $lets_encrypt = true,
 ) {
   package { [ "munin", "libcgi-fast-perl", "libapache2-mod-fcgid" ]:
     ensure => installed
@@ -30,6 +31,14 @@ class munin::gatherer(
   }
   file { "/etc/munin/munin.conf":
     content => template("munin/munin-conf.erb"),
+  }
+  if $lets_encrypt {
+    letsencrypt::certonly { $server_name:
+      plugin        => 'webroot',
+      webroot_paths => ['/var/cache/munin/www/'],
+      manage_cron   => true,
+      require       => Class['letsencrypt'],
+    }
   }
 }
 
