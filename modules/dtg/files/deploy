@@ -106,7 +106,6 @@ ORIGIN = [
 ]
 
 PHYSICAL_MACHINES = [
-    Machine('nas01', 'nas01' + DTG_DOM, PUPPET_BARE, False),
     Machine('nas04', 'nas04' + DTG_DOM, PUPPET_BARE, False),
     Machine('entropy', 'entropy' + DTG_DOM, PUPPET_BARE, False),
     Machine('saluki1', 'saluki1' + DTG_DOM, PUPPET_BARE, False),
