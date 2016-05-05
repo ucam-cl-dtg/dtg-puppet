@@ -48,6 +48,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   class {'zfs_auto_snapshot':
     fs_names => [ "${pool_name}/abbot-archive",
                   "${pool_name}/bayncore",
+                  "${pool_name}/deviceanalyzer-backup",
                   "${pool_name}/deviceanalyzer-graphing",
                   "${pool_name}/dwt27",
                   "${pool_name}/shin-backup",
