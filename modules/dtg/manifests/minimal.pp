@@ -1,4 +1,4 @@
-class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
+class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = true, $managefirewall = true, $dns_server = false) {
 
   # Set up the repositories, get some entropy then do everything else
   #  entropy needs to start being provided before it is consumed
@@ -73,18 +73,20 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
     authorized_keys_file => '/var/lib/monkeysphere/authorized_keys/%u .ssh/authorized_keys',
   }
 
-  class { 'dtg::dns': }
+  class { 'dtg::dns': dns_server => $dns_server }
   class { 'dtg::git::config': }
   class { 'dtg::rsyslog': }
   class { 'etckeeper': require => Class['dtg::git::config'] }
   class { 'ntp': servers => $ntp_servers, package_ensure => latest, }
   # Get entropy then do gpg and then monkeysphere
-  class { 'dtg::entropy': stage => 'entropy-host' }
-  class { 'dtg::entropy::client':
-    cafile       => '/usr/local/share/ssl/cafile',
-    host_address => 'entropy.dtg.cl.cam.ac.uk',
-    stage        => 'entropy',
-    require      => File['/usr/local/share/ssl/cafile'],
+  if $manageentropy {
+    class { 'dtg::entropy': stage => 'entropy-host' }
+    class { 'dtg::entropy::client':
+      cafile       => '/usr/local/share/ssl/cafile',
+      host_address => 'entropy.dtg.cl.cam.ac.uk',
+      stage        => 'entropy',
+      require      => File['/usr/local/share/ssl/cafile'],
+    }
   }
 
   # Make it possible to send email (if correct from address is used)
@@ -92,6 +94,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
 
   class { 'gpg': }
   class { 'monkeysphere':
+    keyserver => $::ms_keyserver,
     require => Class['dtg::email'],
   }
   # create hourly cron job to update users authorized_user_id files
@@ -210,7 +213,11 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true) {
   }
 
   # Include default firewall rules
-  class { 'dtg::firewall': }
+
+  if $managefirewall {
+    class { 'dtg::firewall': }
+  }
+  
   sshkey {'localhost':
     ensure       => present,
     host_aliases => [$::fqdn, $::hostname],

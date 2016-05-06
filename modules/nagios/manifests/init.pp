@@ -176,8 +176,13 @@ class nagios::server inherits nagios::params {
     content => template("nagios/apache/nagios.conf.erb")
   }
   if $nagios_ssl {
-    #TODO(drt24) support for cert management
-    #x509::manage_cert{ "$nagios_server.crt": }
+    letsencrypt::certonly { $nagios_server:
+      plugin        => 'webroot',
+      webroot_paths => ['/usr/share/nagios3/htdocs/'],
+      manage_cron   => true,
+      require       => Class['letsencrypt'],
+    }
+
     apache::module { "ssl": }
     apache::port { 'ssl': port => 443 }
   }

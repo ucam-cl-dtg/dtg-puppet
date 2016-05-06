@@ -6,7 +6,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $pool_name = 'dtg-pool0'
   $cl_share = "rw=@${local_subnet}"
   $desktop_share = join($desktop_ips_array, ',rw=@')
-  $deviceanalyzer_share = "rw=@${deviceanalyzer_ip},rw=@${deviceanalyzer_upload_ip},rw=@deviceanalyzer-crunch0.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch1.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch2.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch3.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch4.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,ro=@earlybird.cl.cam.ac.uk,rw=@jenkins-master.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-datadivider.dtg.cl.cam.ac.uk,ro=@dac53.dtg.cam.ac.uk"
+  $deviceanalyzer_share = "rw=@${deviceanalyzer_ip},rw=@${deviceanalyzer_upload_ip},rw=@deviceanalyzer-crunch0.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch1.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch2.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch3.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch4.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,ro=@earlybird.cl.cam.ac.uk,rw=@jenkins-master.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-datadivider.dtg.cl.cam.ac.uk,ro=@dac53.dtg.cam.ac.uk,ro=@deviceanalyzer-visitor-jk672.dtg.cam.ac.uk"
   $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_share}"
 
   # bonded nics
@@ -127,7 +127,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => 'off',
   }
 
-  $saluki_share = 'rw=@128.232.98.206,@128.232.98.207'
+  $saluki_share = 'rw=@128.232.98.206,rw=@128.232.98.207'
   
   dtg::zfs::fs{ 'bayncore':
     pool_name  => $pool_name,
@@ -139,6 +139,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     pool_name  => $pool_name,
     fs_name    => 'rwandadataset',
     share_opts => 'rw=@sa497-crunch-0.dtg.cl.cam.ac.uk,rw=@sa497-crunch-1.dtg.cl.cam.ac.uk,rw=@sa497-crunch-2.dtg.cl.cam.ac.uk,rw=@sa497-crunch-3.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,async',
+  }
+
+  dtg::zfs::fs{ 'caida-internet-traces-2014':
+    pool_name  => $pool_name,
+    fs_name    => 'caida-internet-traces-2014',
+    share_opts => "${dtg_share},async",
   }
 
 # Not using this method ATM

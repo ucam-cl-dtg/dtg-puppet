@@ -9,6 +9,8 @@ class munin::gatherer(
   $alerts_email = $from_address,
   $contact = "dtg",
   $graph_data_size = "huge",
+  $extra_apache_config = '',
+  $lets_encrypt = true,
 ) {
   package { [ "munin", "libcgi-fast-perl", "libapache2-mod-fcgid" ]:
     ensure => installed
@@ -29,6 +31,14 @@ class munin::gatherer(
   }
   file { "/etc/munin/munin.conf":
     content => template("munin/munin-conf.erb"),
+  }
+  if $lets_encrypt {
+    letsencrypt::certonly { $server_name:
+      plugin        => 'webroot',
+      webroot_paths => ['/var/cache/munin/www/'],
+      manage_cron   => true,
+      require       => Class['letsencrypt'],
+    }
   }
 }
 
@@ -85,6 +95,7 @@ class munin::node (
     notify => Service[ "munin-node"]
   }
   # Overrides for default content of munin-node so that we don't get noise from filesystems coming and going
+  # Also specify the user required for the unbound plugins
   file { '/etc/munin/plugin-conf.d/z-overrides':
     ensure => file,
     content => '[df*]
@@ -92,7 +103,13 @@ class munin::node (
     env.critical 98
     env.exclude none unknown binfmt_misc debugfs devtmpfs fuse.gvfs-fuse-daemon iso9660 ramfs romfs rpc_pipefs squashfs tmpfs udf
 [diskstats]
-    env.exclude none unknown ok',
+    env.exclude none unknown ok
+[unbound*]
+    user root
+    env.statefile /var/lib/munin-node/plugin-state/unbound-state
+    env.unbound_conf /etc/unbound/unbound.conf
+    env.unbound_control /usr/sbin/unbound-control
+',
     require => Package["munin-node"],
     notify => Service[ "munin-node"],
   }

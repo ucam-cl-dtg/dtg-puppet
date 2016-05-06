@@ -14,7 +14,7 @@ class dtg::firewall::default {
     notify  => Exec['persist-firewall'],
   }
 }
-class dtg::firewall inherits dtg::firewall::default {
+class dtg::firewall($interfacefile = "/etc/network/interfaces") inherits dtg::firewall::default {
   exec { 'persist-firewall':
     command     => '/sbin/iptables-save > /etc/iptables.rules',
     refreshonly => true,
@@ -22,7 +22,7 @@ class dtg::firewall inherits dtg::firewall::default {
   file_line { 'restore iptables':
     ensure => present,
     line   => 'pre-up iptables-restore < /etc/iptables.rules',
-    path   => '/etc/network/interfaces',
+    path   => $interfacefile,
   }
   # Purge unmanaged firewall resources
   #
@@ -351,6 +351,16 @@ class dtg::firewall::hadoopcluster inherits dtg::firewall::default {
     firewall { '001 accept all africa01.cl.cam.ac.uk':
         action => 'accept',
         source => 'africa01.cl.cam.ac.uk',
+    }
+
+    firewall { '001 accept all sa497mac.mac.cl.cam.ac.uk':
+        action => 'accept',
+        source => 'sa497mac.mac.cl.cam.ac.uk',
+    }
+
+    firewall { '001 accept all airwolf.cl.cam.ac.uk':
+        action => 'accept',
+        source => 'airwolf.cl.cam.ac.uk',
     }
 
 }

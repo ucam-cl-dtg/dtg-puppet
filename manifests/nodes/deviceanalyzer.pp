@@ -1,9 +1,13 @@
 #Configuration for deviceanalyzer related stuff
 
+# WARNING. Deviceanalyzer needs an SSL certificate and htpasswd configuration in /etc/nginx/sec. This is not stored in puppet. 
+
 $deviceanalyzer_ips = dnsLookup('deviceanalyzer.dtg.cl.cam.ac.uk')
 $deviceanalyzer_ip = $deviceanalyzer_ips[0]
 $deviceanalyzer_upload_ips = dnsLookup('upload.deviceanalyzer.dtg.cl.cam.ac.uk')
 $deviceanalyzer_upload_ip = $deviceanalyzer_upload_ips[0]
+
+$deviceanalyzer_www_ip = dnsLookup('deviceanalyzer-www.dtg.cl.cam.ac.uk')
 
 node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
@@ -31,20 +35,16 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
     owner   => 'root',
     group   => 'root',
     mode    => 'a=r',
-    content => 'nas01   nas01.dtg.cl.cam.ac.uk:/data/deviceanalyzer
-nas02   nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer
+    content => 'nas02   nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer
 nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer
-nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
+nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider
+nas04-snapshot   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-2016-03-14 ',
   } ->
   file_line {'mount nas':
     line => '/mnt   /etc/auto.mnt',
     path => '/etc/auto.master',
   }
 
-  file {'/nas1':
-    ensure => link,
-    target => '/mnt/nas01',
-  }
   file {'/nas2':
     ensure => link,
     target => '/mnt/nas02',
@@ -56,6 +56,10 @@ nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
   file {'/nas4-index':
     ensure => link,
     target => '/mnt/nas04-index',
+  }
+  file {'/nas4-snapshot':
+    ensure => link,
+    target => '/mnt/nas04-snapshot',
   }
 
   # set up nginx and jetty config
@@ -91,13 +95,26 @@ nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider ',
     source => 'puppet:///modules/dtg/deviceanalyzer/interfaces',
   }
 
-  # ensure webapps directory is writeable by the non-standard 'www-data' user
+  # ensure webapps directory is writeable by the non-standard 'www-deviceanalyzer' user
   file { '/var/lib/jetty8/webapps':
     ensure => directory,
-    owner  => 'www-data',
-    group  => 'www-data',
+    owner  => 'www-deviceanalyzer',
+    group  => 'adm',
     mode   => '0755',
   }
+  file { '/var/lib/jetty8':
+    ensure => directory,
+    owner  => 'www-deviceanalyzer',
+    group  => 'adm',
+    mode   => '0755',
+  }
+  file { '/var/log/jetty8':
+    ensure => directory,
+    owner  => 'www-deviceanalyzer',
+    group  => 'adm',
+    mode   => '0755',
+  }
+
 }
 
 node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
@@ -115,6 +132,7 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
                                    'host androidusage androidusage 128.232.98.188/32 md5',
                                    'host androidusage androidusage 128.232.21.105/32 md5',
                                    'host androidusage androidusage 128.232.21.104/32 md5',
+                                   'host androidusage androidusage 128.232.21.132/32 md5',
                                    ]
   }
   ->
@@ -138,6 +156,10 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
   dtg::firewall::postgres{'deviceanalyzer-upload':
     source      => $deviceanalyzer_upload_ip,
     source_name => 'upload.deviceanalyzer',
+  }
+  dtg::firewall::postgres{'deviceanalyzer-www':
+    source      => $deviceanalyzer_www_ip,
+    source_name => 'deviceanalyzer-www',
   }
 
 }

@@ -1,6 +1,6 @@
 
 node /dns(-\d+)?/ {
-  include 'dtg::minimal'
+  class { 'dtg::minimal': dns_server => true, }
 
   # unbound is part of the minimal config
   # We just need to stop dhcp overriding the forwarding config and allow access through the firewall
@@ -21,6 +21,34 @@ node /dns(-\d+)?/ {
     dport  => 53,
     source => $::local_subnet,
     action => 'accept',
+  }
+
+  munin::node::plugin {'unbound_munin_hits':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/network/dns/unbound_',
+  }
+  munin::node::plugin {'unbound_munin_queue':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/network/dns/unbound_',
+  }
+  munin::node::plugin {'unbound_munin_memory':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/network/dns/unbound_',
+  }
+  munin::node::plugin {'unbound_munin_by_type':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/network/dns/unbound_',
+  }
+  munin::node::plugin {'unbound_munin_by_class':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/network/dns/unbound_',
+  }
+  munin::node::plugin {'unbound_munin_by_opcode':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/network/dns/unbound_',
+  }
+  munin::node::plugin {'unbound_munin_by_rcode':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/network/dns/unbound_',
+  }
+  munin::node::plugin {'unbound_munin_by_flags':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/network/dns/unbound_',
+  }
+  munin::node::plugin {'unbound_munin_histogram':
+    target => '/etc/puppet/modules/munin/files/contrib/plugins/network/dns/unbound_',
   }
 }
 if ( $::monitor ) {

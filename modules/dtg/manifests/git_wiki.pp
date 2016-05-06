@@ -95,11 +95,26 @@ class dtg::git::gollum::main {
     mode    => '0775',
     require => Vcsrepo['/srv/gollum/'],
   }
+
+# Install apache
   class{'apache':} ->
-  apache::module{'headers': ensure => present } ->
+  apache::module {'ssl':} ->
+  apache::module{'headers':} ->
+# Use letsencrypt to get a certificate
+  class {'letsencrypt':
+    email => $::from_address,
+  } ->
+  letsencrypt::certonly { $::fqdn:
+    plugin      => 'webroot',
+    webroot_paths => ['/srv/gollum/lib/gollum/frontend/public/'],
+    manage_cron => true,
+  } ->
+# Configure the website
   apache::site{'gollum':
     source => 'puppet:///modules/dtg/gollum/apache.conf'
   }
+
+
 }
 
 if ( $::is_backup_server ) {
