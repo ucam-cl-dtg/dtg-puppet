@@ -8,21 +8,16 @@ node 'dac53.dtg.cl.cam.ac.uk' {
     type   => 'ssh-rsa',
   }
   User<|title == dac53 |> { groups +>[ 'adm' ] }
-
- file {'/etc/auto.mnt':
-    ensure  => file,
-    owner   => 'root',
-    group   => 'root',
-    mode    => 'a=r',
-    content => 'nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-backup',
-  } ->
-  file_line {'mount nas':
-    line => '/mnt   /etc/auto.mnt',
-    path => '/etc/auto.master',
+  # mount nas02 on startup
+  file_line { 'mount nas02':
+    line => 'nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
+    path => '/etc/fstab',
   }
-  file {'/nas4':
-    ensure => link,
-    target => '/mnt/nas04',
+
+  # mount nas04 on startup
+  file_line { 'mount nas04':
+    line => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-backup /nas4 nfs defaults 0 0',
+    path => '/etc/fstab',
   }
   
 }
