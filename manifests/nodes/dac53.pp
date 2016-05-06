@@ -14,7 +14,7 @@ node 'dac53.dtg.cl.cam.ac.uk' {
     owner   => 'root',
     group   => 'root',
     mode    => 'a=r',
-    content => 'nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer',
+    content => 'nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-backup',
   } ->
   file_line {'mount nas':
     line => '/mnt   /etc/auto.mnt',
