@@ -95,6 +95,7 @@ class munin::node (
   $node_allow_ips = ['^127\.0\.0\.1$'],
   $node_timeout = "15",
   $async = true,
+  $async_key = '',
 ) {
   package { [ "munin-node", "munin-plugins-extra", "libcache-cache-perl" ]:
     ensure => installed
@@ -114,14 +115,14 @@ class munin::node (
     service { 'munin-async':
       ensure  => running,
       require => Service['munin-node'],
-    } /* ->
+    } ->
     ssh_authorized_key { 'munin-async':
       user    => 'munin-async',
       type    => 'ssh-rsa',
-      key     => '',#TODO(drt24) add the key value once it is generated
+      key     => $async_key,
       ensure  => 'present',
-      options => 'no-port-forwarding,no-agent-forwarding,no-X11-forwarding,no-pty,no-user-rc,command="/usr/sbin/munin-async  --spooldir /var/lib/munin-async --spoolfetch"'
-    } */
+      options => ['no-port-forwarding', 'no-agent-forwarding', 'no-X11-forwarding', 'no-pty', 'no-user-rc', 'command="/usr/sbin/munin-async  --spooldir /var/lib/munin-async --spoolfetch"']
+    }
   }
 
   file { "/etc/munin/munin-node.conf":
