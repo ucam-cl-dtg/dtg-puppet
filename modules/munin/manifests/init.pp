@@ -121,7 +121,7 @@ class munin::node (
       type    => 'ssh-rsa',
       key     => $async_key,
       ensure  => 'present',
-      options => ['no-port-forwarding', 'no-agent-forwarding', 'no-X11-forwarding', 'no-pty', 'no-user-rc', 'command="/usr/sbin/munin-async  --spooldir /var/lib/munin-async --spoolfetch"']
+      options => ['no-port-forwarding', 'no-agent-forwarding', 'no-X11-forwarding', 'no-pty', 'no-user-rc', 'command="/usr/share/munin/munin-async --spoolfetch"']
     }
   }
 
