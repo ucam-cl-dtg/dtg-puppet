@@ -652,7 +652,7 @@ if __name__ == '__main__':
                         'pulled from. Caution, if this doesn\'t get '
                         'merged into master life gets difficult.',
                         default='master:master')
-    parser.add-argument('--no-root', dest='no_root', action='store_true',
+    parser.add_argument('--no-root', dest='no_root', action='store_true',
                         help='Don\'t do anything which requires root on DOM0 '
                              'or admin on the infrastructure repository. '
                              'Implies --no-snap --no-snap-gc --no-push.')
