@@ -42,11 +42,29 @@ class munin::gatherer(
   }
 }
 
+class munin::gatherer::async(
+) {
+  require 'munin::gatherer'
+  dtg::sshkeygen{'munin':
+    homedir => '/var/lib/munin',
+    # This require is actually meant for the whole class but I don't know how to do that (drt24).
+    require => Package['munin-async'],
+  }
+}
+
 define munin::gatherer::configure_node ( $override_lines = '') {
   $munin_node_host = $title
   file { "/etc/munin/munin-conf.d/$munin_node_host":
     ensure  => present,
     content => template("munin/node.erb"),
+    require => File["/etc/munin/munin-conf.d/"],
+  }
+}
+define munin::gatherer::async_node ( $override_lines = '') {
+  $munin_node_host = $title
+  file { "/etc/munin/munin-conf.d/$munin_node_host":
+    ensure  => present,
+    content => template("munin/node-async.erb"),
     require => File["/etc/munin/munin-conf.d/"],
   }
 }
@@ -75,17 +93,35 @@ define munin::node::plugin( $ensure = "symlink", $target = "") {
 
 class munin::node (
   $node_allow_ips = ['^127\.0\.0\.1$'],
-  $node_timeout = "15"
+  $node_timeout = "15",
+  $async = true,
 ) {
   package { [ "munin-node", "munin-plugins-extra", "libcache-cache-perl" ]:
     ensure => installed
-  }
-  service { "munin-node":
-    ensure => running
-  }
+  } ->
   exec { "munin-node-configure":
     command  => 'munin-node-configure --shell | sh',
     provider => shell,
+  } ->
+  service { "munin-node":
+    ensure => running
+  }
+
+  if $async {
+    package { 'munin-async':
+      ensure => installed,
+    } ->
+    service { 'munin-async':
+      ensure  => running,
+      require => Service['munin-node'],
+    } /* ->
+    ssh_authorized_key { 'munin-async':
+      user    => 'munin-async',
+      type    => 'ssh-rsa',
+      key     => '',#TODO(drt24) add the key value once it is generated
+      ensure  => 'present',
+      options => 'no-port-forwarding,no-agent-forwarding,no-X11-forwarding,no-pty,no-user-rc,command="/usr/sbin/munin-async  --spooldir /var/lib/munin-async --spoolfetch"'
+    } */
   }
 
   file { "/etc/munin/munin-node.conf":

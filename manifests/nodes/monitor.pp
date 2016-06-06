@@ -16,6 +16,7 @@ node 'monitor.dtg.cl.cam.ac.uk' {
     require valid-user
   </Location>',
   }
+  class {'munin::gatherer::async':}
   munin::node::plugin {'nagiosstatus':
     target => '/etc/puppet/modules/munin/files/contrib/plugins/nagios/nagiosstatus',
   }
