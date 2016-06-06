@@ -237,6 +237,14 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     mode    => 'a=r',
     content => 'ACTION=false',
   }
+
+  sudoers::allowed_command{ 'backup-zfs':
+    command          => '/sbin/zfs',
+    user             => 'backup',
+    run_as           => 'root',
+    require_password => false,
+    comment          => 'Allow the backup user to use sudo for zfs',
+  }
 }
 
 if ( $::monitor ) {
