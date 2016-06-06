@@ -134,6 +134,24 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => "${dtg_share},async",
   }
 
+  dtg::zfs::fs{'backups':
+    pool_name  => $pool_name,
+    fs_name    => 'backups',
+    share_opts => 'off'
+  }
+  ->
+  class { 'dtg::backup::host':
+    directory => "/${pool_name}/backups",
+  }
+  ->
+  sudoers::allowed_command{ 'backup-zfs':
+    command          => '/sbin/zfs',
+    user             => 'backup',
+    run_as           => 'root',
+    require_password => false,
+    comment          => 'Allow the backup user to use sudo for zfs',
+  }
+
   cron { 'zfs_weekly_scrub':
     command => "/sbin/zpool scrub ${pool_name}",
     user    => 'root',
@@ -236,14 +254,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     group   => 'root',
     mode    => 'a=r',
     content => 'ACTION=false',
-  }
-
-  sudoers::allowed_command{ 'backup-zfs':
-    command          => '/sbin/zfs',
-    user             => 'backup',
-    run_as           => 'root',
-    require_password => false,
-    comment          => 'Allow the backup user to use sudo for zfs',
   }
 }
 
