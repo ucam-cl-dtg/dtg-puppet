@@ -652,6 +652,10 @@ if __name__ == '__main__':
                         'pulled from. Caution, if this doesn\'t get '
                         'merged into master life gets difficult.',
                         default='master:master')
+    parser.add-argument('--no-root', dest='no_root', action='store_true',
+                        help='Don\'t do anything which requires root on DOM0 '
+                             'or admin on the infrastructure repository. '
+                             'Implies --no-snap --no-snap-gc --no-push.')
     parser.add_argument('--no-snap', dest='no_snap',
                         help='Don\'t snapshot machines.',
                         action='store_true')
@@ -669,6 +673,11 @@ if __name__ == '__main__':
                         help='Limit the machines that the lick is applied to')
 
     args = parser.parse_args()
+
+    if args.no_root:
+        args.no_snap = True
+        args.no_snap_gc = True
+        args.no_push = True
 
     # Set "constants" based on arguments:
 
