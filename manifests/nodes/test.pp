@@ -3,5 +3,5 @@ node 'test-puppet.dtg.cl.cam.ac.uk' {
 
 }
 if ( $::monitor ) {
-  munin::gatherer::configure_node { 'test-puppet': }
+  munin::gatherer::async_node { 'test-puppet': }
 }
