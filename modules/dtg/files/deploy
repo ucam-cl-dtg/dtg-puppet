@@ -32,7 +32,7 @@ SHA_LENGTH = 9
 
 # No spaces in release name.
 # Version we should be running
-TARGET_UBUNTU_RELEASE = 1510
+TARGET_UBUNTU_RELEASE = 1604
 
 # Any VM older than this needs an emergency OS update.
 MINIMUM_UBUNTU_RELEASE = 1504
