@@ -99,7 +99,8 @@ max_processes 32
 contact.<%= @contact %>.command mail -aFrom:<%= @alerts_email %> -aReturn-Path:<%= @alerts_email %> -s "Munin notification ${var:host} -> ${var:graph_title} -> warnings ${var:wfields} criticals: ${var:cfields} unknowns: ${var:ufields}" <%= @alerts_email %>
 #contact.<%= @contact %>.always_send warning critical
 
-timeout 60
+timeout 180
+
 unknown_limit 10
 
 #contact.anotheruser.command mail -s "Munin notification" anotheruser@blibb.comm
