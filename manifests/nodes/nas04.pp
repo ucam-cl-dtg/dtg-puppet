@@ -46,14 +46,10 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   class {'dtg::zfs': }
 
   class {'zfs_auto_snapshot':
-    fs_names => [ "${pool_name}/abbot-archive",
-                  "${pool_name}/bayncore",
-                  "${pool_name}/deviceanalyzer-backup",
+    fs_names => [ "${pool_name}/bayncore",
                   "${pool_name}/deviceanalyzer-graphing",
                   "${pool_name}/dwt27",
-                  "${pool_name}/shin-backup",
                   "${pool_name}/rscfl",
-                  "${pool_name}/time",
                   "${pool_name}/vms",
                   "${pool_name}/rwandadataset",
                   ]
@@ -72,12 +68,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => "ro=@${dtg_subnet},async",
   }
 
-  dtg::zfs::fs{'shin-backup':
-    pool_name  => $pool_name,
-    fs_name    => 'shin-backup',
-    share_opts => 'rw=@shin.cl.cam.ac.uk,async',
-  }
-
   dtg::zfs::fs{'dwt27':
     pool_name  => $pool_name,
     fs_name    => 'dwt27',
@@ -90,23 +80,30 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => 'rw=@131.111.39.72,rw=@131.111.39.84,rw=@131.111.39.87,rw=@131.111.39.103,rw=@131.111.61.37,async',
   }
 
-  dtg::zfs::fs{'abbot-archive':
+  dtg::zfs::fs{'archive':
+    pool_name => $pool_name,
+    fs_name   => 'archive',
+    share_opts => 'off',
+  }
+  ->  
+  dtg::zfs::fs{'archive/abbot-archive':
     pool_name  => $pool_name,
-    fs_name    => 'abbot-archive',
+    fs_name    => 'archive/abbot-archive',
     share_opts => "${dtg_share},async",
   }
-
+  ->  
+  dtg::zfs::fs{'archive/retired-git-repos':
+    pool_name  => $pool_name,
+    fs_name    => 'archive/retired-git-repos',
+    share_opts => "${dtg_share},async",
+  }
+  ->
   dtg::zfs::fs{'time':
     pool_name  => $pool_name,
     fs_name    => 'time',
     share_opts => "${dtg_share},async",
   }
 
-  dtg::zfs::fs{'deviceanalyzer-backup':
-    pool_name  => $pool_name,
-    fs_name    => 'deviceanalyzer-backup',
-    share_opts => "${dtg_share},${deviceanalyzer_share},async",
-  }
 
   dtg::zfs::fs{'deviceanalyzer-graphing':
     pool_name  => $pool_name,
@@ -151,6 +148,13 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     require_password => false,
     comment          => 'Allow the backup user to use sudo for zfs',
   }
+  ->
+  dtg::zfs::fs{'backups/deviceanalyzer':
+    pool_name  => $pool_name,
+    fs_name    => 'backups/deviceanalyzer',
+    share_opts => "${dtg_share},${deviceanalyzer_share},async",
+  }
+
 
   cron { 'zfs_weekly_scrub':
     command => "/sbin/zpool scrub ${pool_name}",
