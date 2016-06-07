@@ -124,3 +124,6 @@
 [submodule "modules/inifile"]
 	path = modules/inifile
 	url = https://github.com/puppetlabs/puppetlabs-inifile.git
+[submodule "modules/munin/files/nagios-munin"]
+	path = modules/munin/files/nagios-munin
+	url = https://github.com/ucam-cl-dtg/Nagios-Munin.git
