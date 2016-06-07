@@ -17,8 +17,11 @@ node 'monitor.dtg.cl.cam.ac.uk' {
     AuthType Ucam-WebAuth
     require valid-user
   </Location>',
-  }
+  } ->
   class {'munin::gatherer::async':}
+  class {'nagios::munin':
+    require => Class['munin::gatherer'],
+  }
   munin::node::plugin {'nagiosstatus':
     target => '/etc/puppet/modules/munin/files/contrib/plugins/nagios/nagiosstatus',
   }
