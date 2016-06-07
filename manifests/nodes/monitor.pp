@@ -10,6 +10,7 @@ node 'monitor.dtg.cl.cam.ac.uk' {
   class {'dtg::nagiosserver':}
   class {'munin::gatherer':
     server_name         => $::munin_server,
+    alerts_email        => 'drt24--dtgmunin@cl.cam.ac.uk',
     extra_apache_config => '<Location />
     AuthName "Munin access"
     AuthType Ucam-WebAuth
