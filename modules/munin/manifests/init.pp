@@ -93,7 +93,7 @@ define munin::node::plugin( $ensure = "symlink", $target = "") {
 
 class munin::node (
   $node_allow_ips = ['^127\.0\.0\.1$'],
-  $node_timeout = "15",
+  $node_timeout = "30",
   $async = true,
   $async_key = '',
 ) {
