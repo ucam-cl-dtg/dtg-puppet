@@ -49,7 +49,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     fs_names => [ "${pool_name}/bayncore",
                   "${pool_name}/deviceanalyzer-graphing",
                   "${pool_name}/dwt27",
-                  "${pool_name}/shin-backup",
                   "${pool_name}/rscfl",
                   "${pool_name}/vms",
                   "${pool_name}/rwandadataset",
@@ -69,12 +68,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => "ro=@${dtg_subnet},async",
   }
 
-  dtg::zfs::fs{'shin-backup':
-    pool_name  => $pool_name,
-    fs_name    => 'shin-backup',
-    share_opts => 'rw=@shin.cl.cam.ac.uk,async',
-  }
-
   dtg::zfs::fs{'dwt27':
     pool_name  => $pool_name,
     fs_name    => 'dwt27',
@@ -90,6 +83,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'archive':
     pool_name => $pool_name,
     fs_name   => 'archive',
+    share_opts => 'off',
   }
   ->  
   dtg::zfs::fs{'archive/abbot-archive':
