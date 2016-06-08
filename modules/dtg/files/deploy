@@ -295,6 +295,8 @@ def get_machines():
     Get all remote hosts that need updating: git repos, VMs, and physical mcs.
     """
     vms = execute(get_vms, hosts=[DOM0])
+    if not isinstance(vms, list) and not isinstance(vms, dict): # Error message rather than result
+        raise vms
     machines = vms[DOM0] + PHYSICAL_MACHINES
     return machines
 
