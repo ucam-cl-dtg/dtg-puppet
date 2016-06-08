@@ -1,4 +1,5 @@
 #! /usr/bin/env python2.7
+# Fabric doesn't support python3 so we are stuck with 2.7
 
 """
 Deploy the latest puppet, security fixes or Ubuntu release to all puppies.
@@ -56,6 +57,10 @@ DEFAULT_OUT_DIR = "/usr/groups/dtg/dtg-infra/www"
 OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
 TASKS_FILE = "tasks-%s" % OUT_FILE
 
+MESSAGE_BUFFER_SIZE = 2048 ** 2
+# Setting values larger than net.core.wmem_max won't work so you may need to do something like
+# sudo sysctl net.core.wmem_max=1048576
+# to avoid error messages about message being too large
 
 class Aggregator(threading.Thread):
 
@@ -70,7 +75,7 @@ class Aggregator(threading.Thread):
         UnixSock.bind(self.socket_name)
 
         while True:
-            data = UnixSock.recv(1024 ** 2)
+            data = UnixSock.recv(MESSAGE_BUFFER_SIZE)
             new_data = pickle.loads(data)
             if isinstance(new_data, Machine):
                 new_mc = new_data
@@ -165,6 +170,7 @@ def update_status():
     else:
     # Send our state to the co-ordinator
         UnixSock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+        UnixSock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, MESSAGE_BUFFER_SIZE)
         UnixSock.sendto(pickle.dumps(get_machine_by_name(env.host)),
                        socket_name)
         for i in range(prev_sent_tasks, len(lick_status["tasks"])):
@@ -289,6 +295,8 @@ def get_machines():
     Get all remote hosts that need updating: git repos, VMs, and physical mcs.
     """
     vms = execute(get_vms, hosts=[DOM0])
+    if not isinstance(vms, list) and not isinstance(vms, dict): # Error message rather than result
+        raise vms
     machines = vms[DOM0] + PHYSICAL_MACHINES
     return machines
 
@@ -384,7 +392,7 @@ def upgrade_mc():
         # Ensure the current version is up to date, as there may be a new
         # version of the updater.
         update_progress(env.host, "Refreshing apt indexes before OS upgrade")
-        sudo_capture('apt-get update')
+        sudo_capture('apt-get update -q')
         update_progress(env.host,
                         "Upgrading current packages before OS upgrade")
         sudo_capture('apt-get -y -q --no-install-recommends dist-upgrade')
@@ -690,6 +698,10 @@ if __name__ == '__main__':
                                                                TASKS_FILE)
     OUT_DIR = args.out_dir
 
-    with tempfile.TemporaryDirectory() as tempdirname:
-        socket_name = os.path.join(tempdirname, 'deploy_unix_socket')
+    tempdirname = tempfile.mkdtemp()
+    socket_name = os.path.join(tempdirname, 'deploy_unix_socket')
+    try:
         main(args, socket_name)
+    finally:
+        os.remove(socket_name)
+        os.rmdir(tempdirname)

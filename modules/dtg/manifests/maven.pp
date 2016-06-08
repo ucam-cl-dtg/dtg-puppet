@@ -77,7 +77,7 @@ class dtg::maven::nexus (
   }
   exec {'nexus_download':
     unless    => "test -d ${nexus_dir}",
-    command   => "curl -o '${download_to}' '${download_url}'",
+    command   => "curl --location -o '${download_to}' '${download_url}'",
     creates   => $download_to,
     logoutput => 'on_failure',
     require   => [File['/srv/nexus/'], Package['curl']],
