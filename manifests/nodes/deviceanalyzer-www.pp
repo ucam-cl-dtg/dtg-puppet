@@ -7,7 +7,7 @@ node 'deviceanalyzer-www' {
   class {'dtg::deviceanalyzer':}
 
   # Packages which should be installed
-  $packagelist = ['openjdk-7-jdk', 'jetty8', 'nginx']
+  $packagelist = ['openjdk-8-jdk', 'jetty8', 'nginx']
   package {
     $packagelist:
       ensure => installed
