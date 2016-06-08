@@ -113,8 +113,7 @@ PHYSICAL_MACHINES = [
     Machine('africa01', 'africa01' + DTG_DOM, PUPPET_BARE, False),
 ]
 
-UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn',
-                    'weather', 'saluki1']
+UPDATE_BLACKLIST = ['cdn', 'weather', 'gitlab']
 
 
 class RemoteHandler(RemoteProgress):
