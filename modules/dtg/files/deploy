@@ -1,4 +1,4 @@
-#! /usr/bin/env python2.7
+#! /usr/bin/env python3
 
 """
 Deploy the latest puppet, security fixes or Ubuntu release to all puppies.
@@ -14,7 +14,7 @@ import os
 import pickle
 import random
 import socket
-from StringIO import StringIO
+from io import StringIO
 import sys
 import threading
 
@@ -129,7 +129,7 @@ class RemoteHandler(RemoteProgress):
     def line_dropped(self, line):
         if ("Warning: Permanently added" not in line) and (line.strip() !=
                                                            "remote:"):
-            print "%s: %s" % (self.vm, line)
+            print("%s: %s" % (self.vm, line))
             self.vm.stderr.append(line)
             update_status()
 
@@ -137,7 +137,7 @@ class RemoteHandler(RemoteProgress):
         if len(message) > 0:
             self.vm.stderr.append(message)
             update_status()
-            print message
+            print(message)
 
 
 def get_machine_by_name(name):
@@ -302,11 +302,11 @@ def snapshot_mc(mc, commit_id):
         'xe snapshot-list  snapshot-of=%s params=name-label --minimal' %
         mc.uuid).split(',')
     if new_snap_name in cur_snaps:
-        print('%s already has a snapshot for commit %s. Not snapshotting again'
-              % (mc.name, new_snap_name))
+        print(('%s already has a snapshot for commit %s. Not snapshotting again'
+              % (mc.name, new_snap_name)))
         update_progress(mc.name, "Snapshot already exists for VM")
     else:
-        print 'Snapshotting %s' % mc.name
+        print('Snapshotting %s' % mc.name)
         update_progress(mc.name, "Snapshotting")
 
         if run('xe vm-snapshot uuid=%s new-name-label=%s' %
@@ -344,7 +344,7 @@ def snap_gc():
     snap_times = [datetime.datetime.strptime(x, '%Y%m%dT%H:%M:%SZ') for x in
                   snap_times]
     keys = ('uuid', 'name', 'time')
-    snaps = ([dict(zip(keys, data)) for data in
+    snaps = ([dict(list(zip(keys, data))) for data in
               zip(snap_uuids, snap_names, snap_times)])
 
    # filter out those snapshots where the timestamp field is > 14 days old
@@ -356,7 +356,7 @@ def snap_gc():
              len(x['name']) == SHA_LENGTH]
 
     if snaps:
-        print 'Destroying %d old snapshots' % len(snaps)
+        print('Destroying %d old snapshots' % len(snaps))
 
     for snap in snaps:
         run('xe snapshot-uninstall force=true uuid=%s' % snap['uuid'])
@@ -611,7 +611,7 @@ def main(args):
         sys.exit(-1)
     lick_status["machines"] = machines
     update_status()
-    print("Streaming status to %s" % OUT_URL)
+    print(("Streaming status to %s" % OUT_URL))
     hostnames = get_hostnames_by_machines(machines)
 
     # Remove old lick-generated snapshots, or else they build up
