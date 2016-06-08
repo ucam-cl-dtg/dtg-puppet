@@ -63,12 +63,11 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
     group  => $user,
     mode   => '0755',
   }
-  file{"${realhome}/.ssh":
-    ensure => directory,
-    owner  => $user,
-    group  => $user,
-    mode   => '0700',
+
+  dtg::sshkeygen{'backup':
+    homedir => $realhome
   }
+
   file{"${directory}":
     ensure => directory,
     owner  => $user,
