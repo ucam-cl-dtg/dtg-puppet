@@ -19,11 +19,15 @@ class dtg::firewall($interfacefile = "/etc/network/interfaces") inherits dtg::fi
     command     => '/sbin/iptables-save > /etc/iptables.rules',
     refreshonly => true,
   }
-  file_line { 'restore iptables':
-    ensure => present,
-    line   => 'pre-up iptables-restore < /etc/iptables.rules',
-    path   => $interfacefile,
+
+  file { '/etc/network/if-pre-up.d/loadiptables':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
+    source => 'puppet:///modules/dtg/preup-loadiptables',
   }
+  
   # Purge unmanaged firewall resources
   #
   # This will clear any existing rules, and make sure that only rules
