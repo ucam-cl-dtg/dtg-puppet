@@ -1,4 +1,5 @@
 #! /usr/bin/env python2.7
+# Fabric doesn't support python3 so we are stuck with 2.7
 
 """
 Deploy the latest puppet, security fixes or Ubuntu release to all puppies.
