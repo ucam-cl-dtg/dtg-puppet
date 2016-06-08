@@ -392,7 +392,7 @@ def upgrade_mc():
         # Ensure the current version is up to date, as there may be a new
         # version of the updater.
         update_progress(env.host, "Refreshing apt indexes before OS upgrade")
-        sudo_capture('apt-get update')
+        sudo_capture('apt-get update -q')
         update_progress(env.host,
                         "Upgrading current packages before OS upgrade")
         sudo_capture('apt-get -y -q --no-install-recommends dist-upgrade')
