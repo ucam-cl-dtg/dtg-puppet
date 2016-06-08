@@ -29,7 +29,7 @@ REMOTE_PREFIX = 'lick'
 
 PUPPET_BARE = '/etc/puppet-bare'
 
-POOL_SIZE = 12
+POOL_SIZE = 8
 
 SHA_LENGTH = 9
 
