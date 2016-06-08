@@ -35,7 +35,7 @@ SHA_LENGTH = 9
 TARGET_UBUNTU_RELEASE = 1604
 
 # Any VM older than this needs an emergency OS update.
-MINIMUM_UBUNTU_RELEASE = 1504
+MINIMUM_UBUNTU_RELEASE = 1510
 
 # If the version is older than this it is probably not Ubuntu.
 # TODO(oc243) properly read lsb_release
