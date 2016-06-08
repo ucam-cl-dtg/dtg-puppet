@@ -29,7 +29,7 @@ REMOTE_PREFIX = 'lick'
 
 PUPPET_BARE = '/etc/puppet-bare'
 
-POOL_SIZE = 12
+POOL_SIZE = 8
 
 SHA_LENGTH = 9
 
@@ -121,7 +121,7 @@ PHYSICAL_MACHINES = [
     Machine('africa01', 'africa01' + DTG_DOM, PUPPET_BARE, False),
 ]
 
-UPDATE_BLACKLIST = ['cdn', 'weather', 'gitlab']
+UPDATE_BLACKLIST = ['cdn', 'weather', 'gitlab', 'nas04']
 
 
 class RemoteHandler(RemoteProgress):
