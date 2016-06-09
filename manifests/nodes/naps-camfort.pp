@@ -1,4 +1,4 @@
-node /acr31-camfort(-\d+)?/ {
+node /naps-camfort(-\d+)?/ {
   include 'dtg::minimal'
 
   class {'apache::ubuntu': } ->
