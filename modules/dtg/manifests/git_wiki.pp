@@ -102,7 +102,8 @@ class dtg::git::gollum::main {
   apache::module{'headers':} ->
 # Use letsencrypt to get a certificate
   class {'letsencrypt':
-    email => $::from_address,
+    email          => $::from_address,
+    configure_epel => false,
   } ->
   letsencrypt::certonly { $::fqdn:
     plugin      => 'webroot',
