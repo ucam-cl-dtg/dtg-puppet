@@ -24,7 +24,7 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
   }
 
   # Packages which should be installed
-  $packagelist = ['openjdk-7-jdk', 'jetty8', 'nginx', 'autofs']
+  $packagelist = ['openjdk-8-jdk', 'jetty8', 'nginx', 'autofs']
   package {
     $packagelist:
       ensure => installed

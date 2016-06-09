@@ -5,9 +5,10 @@ node 'gitlab.dtg.cl.cam.ac.uk' {
   class {'dtg::firewall::publichttps':} ->
 
 
-# Use letsencrypt to get a certificate
+  # Use letsencrypt to get a certificate
   class {'letsencrypt':
-    email => $::from_address,
+    email          => $::from_address,
+    configure_epel => false,
   } ->
   letsencrypt::certonly { $::fqdn:
     plugin      => 'webroot',
