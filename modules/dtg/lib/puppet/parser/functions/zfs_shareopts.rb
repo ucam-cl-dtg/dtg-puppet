@@ -7,8 +7,8 @@ Third argument is (optionally) any additional rules you want to add (as a string
 EOS
               ) do |args|
     # if you are wondering about function_dnsLookup([args]) then see here: https://docs.puppet.com/guides/custom_functions.html#calling-functions-from-functions
-    names = args[0].map { |name| "@r=" + function_dnsLookup([name])[0] }
-    names.concat(args[1].map { |name| "@rw="+ function_dnsLookup([name])[0] })
+    names = args[0].map { |name| "r=@" + function_dnsLookup([name])[0] }
+    names.concat(args[1].map { |name| "rw=@"+ function_dnsLookup([name])[0] })
     if args.length == 3
       names.push(args[2])
     end
