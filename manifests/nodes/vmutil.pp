@@ -1,6 +1,9 @@
 node 'vmutil.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   class { 'dtg::husky-scripts': }
+
+  User<|title == dwt27 |> { groups +>[ 'adm' ]}
+
   class {'vmutil':
     hosts         => 'husky0.dtg.cl.cam.ac.uk husky1.dtg.cl.cam.ac.uk husky2.dtg.cl.cam.ac.uk',
     password_file => '/local/data/vmutil.password',
