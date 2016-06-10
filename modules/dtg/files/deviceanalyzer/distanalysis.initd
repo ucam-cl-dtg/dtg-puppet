@@ -1,24 +1,22 @@
-#! /bin/sh
+#! /bin/bash
 
 ### BEGIN INIT INFO
-# Provides:          xmlsocketserver
+# Provides:          distanalysis
 # Required-Start:    $local_fs $remote_fs $network
 # Required-Stop:     $local_fs $remote_fs $network
 # Should-Start:      $named
 # Should-Stop:       $named
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Start xmlsocketserver
-# Description:       Start xmlsocketserver
+# Short-Description: Start distanalysis
+# Description:       Start distanalysis
 ### END INIT INFO
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON="/usr/bin/java"
-DAEMON_OPTS="-jar /home/dtw30/xmlsocketserver.jar > /dev/null"
-NAME=xmlsocketserver
+DAEMON="/usr/local/distanalysis/run-distanalysis.sh"
+NAME=distanalysis
 PIDFILE="/var/run/${NAME}.pid"
-QUIET="--quiet"
-START_OPTS="--start ${QUIET} --background -c www-data --make-pidfile --pidfile ${PIDFILE} --exec ${DAEMON} -- ${DAEMON_OPTS}"
+START_OPTS="--start --background -c www-deviceanalyzer --make-pidfile --pidfile ${PIDFILE} --startas /bin/bash -- -c ${DAEMON}"
 STOP_OPTS="--stop --pidfile ${PIDFILE}"
 
 test -x $DAEMON || exit 0
@@ -26,6 +24,7 @@ test -x $DAEMON || exit 0
 case "$1" in
   start)
         echo "Starting $NAME... "
+	echo start-stop-daemon $START_OPTS
         start-stop-daemon $START_OPTS
         ;;
   stop)

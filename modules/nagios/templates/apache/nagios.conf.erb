@@ -1,7 +1,14 @@
 <%- if @nagios_ssl then -%>
 <VirtualHost *:80>
    ServerName <%= @nagios_server%>
-   Redirect permanent / https://<%=@nagios_server%>
+   DocumentRoot /usr/share/nagios3/htdocs
+   <Location /.well-known/>
+    Require all granted
+   </Location>
+
+   RewriteEngine On
+   RewriteCond %{REQUEST_URI} !^/\.well-known.*
+   RewriteRule ^/?(.*) https://<%=@nagios_server%>/$1 [R,L]
 </VirtualHost>
 <%- end -%>
 
@@ -10,9 +17,8 @@
   DocumentRoot /usr/share/nagios3/htdocs
 <%- if @nagios_ssl then -%>
   SSLEngine On
-  SSLCertificateFile /etc/ssl/<%=@nagios_server%>.crt
-  SSLCertificateKeyFile /etc/ssl/private/<%=@nagios_server%>.key
-  SSLCertificateChainFile /etc/ssl/certs/<%=@nagios_server%>.ca-bundle
+  SSLCertificateFile /etc/letsencrypt/live/<%=@nagios_server%>/fullchain.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/<%=@nagios_server%>/privkey.pem
   SSLProtocol All -SSLv2 -SSLv3
   SSLCipherSuite          ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
   SSLHonorCipherOrder     on

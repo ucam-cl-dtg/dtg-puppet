@@ -39,7 +39,7 @@
 	url = git://github.com/puppetlabs/puppetlabs-ntp.git
 [submodule "modules/rvm"]
 	path = modules/rvm
-	url = https://github.com/lc525/puppet-rvm
+	url = https://github.com/ucam-cl-dtg/puppet-rvm
 [submodule "modules/postgresql"]
 	path = modules/postgresql
 	url = git://github.com/ucam-cl-dtg/puppetlabs-postgresql.git
@@ -118,3 +118,12 @@
 [submodule "modules/virt"]
 	path = modules/virt
 	url = https://github.com/carlasouza/puppet-virt.git
+[submodule "modules/letsencrypt"]
+	path = modules/letsencrypt
+	url = https://github.com/danzilio/puppet-letsencrypt.git
+[submodule "modules/inifile"]
+	path = modules/inifile
+	url = https://github.com/puppetlabs/puppetlabs-inifile.git
+[submodule "modules/munin/files/nagios-munin"]
+	path = modules/munin/files/nagios-munin
+	url = https://github.com/ucam-cl-dtg/Nagios-Munin.git

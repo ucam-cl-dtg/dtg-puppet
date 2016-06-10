@@ -12,7 +12,7 @@ class dtg::maven (
 }
 # This will set up nexus listening on port 8081
 class dtg::maven::nexus (
-  $version = '2.8.1-01',
+  $version = '2.12.1-01',
   $mirror_url = 'http://download.sonatype.com/nexus/oss/'
 ){
   $download_file = "nexus-${version}-bundle.tar.gz"
@@ -77,7 +77,7 @@ class dtg::maven::nexus (
   }
   exec {'nexus_download':
     unless    => "test -d ${nexus_dir}",
-    command   => "curl -o '${download_to}' '${download_url}'",
+    command   => "curl --location -o '${download_to}' '${download_url}'",
     creates   => $download_to,
     logoutput => 'on_failure',
     require   => [File['/srv/nexus/'], Package['curl']],

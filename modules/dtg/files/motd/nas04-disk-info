@@ -15,7 +15,7 @@ for DEVICE in sda sdb sdc sdd sde sdf sdg sdh sdi sdj sdk sdl sdm sdn sdo sdp sd
 done
 echo ""
 
-df -h | grep -vE "^udev|^tmpfs|^none"
+sudo zfs list -o name,used,usedsnap,avail -s name
 echo ""
 
 sudo -n zpool status -x

@@ -38,9 +38,6 @@ class ms_id_certifiers {
     'drt24-laptop': keyid => 'EA14782BFF32D5B8464B92D7B2FB14CF18EB83B1'
   }
   monkeysphere::add_id_certifier {
-    'oc243': keyid => '4292E0E21E9FDE91D0EC6AD457CB6E4578EA2A07'
-  }
-  monkeysphere::add_id_certifier {
     'acr31': keyid => '43BF45D11B36F45C3F07DA49BDB889325CACF039'
   }
 }
@@ -101,7 +98,7 @@ class admin_users {
     }
     dtg::add_user { 'acr31':
         real_name => 'Andrew Rice',
-        groups    => ['adm', 'dtg-adm'],
+        groups    => ['adm', 'dtg-adm','weather-adm', 'wiki-adm'],
         keys      => 'Andrew Rice <acr31@cam.ac.uk>',
         uid       => 2132,
     }
@@ -127,7 +124,7 @@ class admin_users {
     }
     dtg::add_user { 'arb33':
       real_name => 'Alastair Beresford',
-      groups    => [ 'isaac' ],
+      groups    => [ 'isaac','adm','dtg-adm' ],
       keys      => ['Alastair Beresford (ssh) <arb33@cam.ac.uk>'],
       uid       => 2125,
     }
@@ -181,7 +178,7 @@ class admin_users {
     }
     dtg::add_user { 'dac53':
       real_name => 'Diana Vasile',
-      groups    => [],
+      groups    => ['adm', 'deviceanalyzer', 'dtg-adm'],
       keys      => ['Diana Vasile <dac53@cam.ac.uk>'],
       uid       => 3252,
     }
@@ -203,15 +200,51 @@ class admin_users {
       keys      => ['Andrea Franceschini (porto) <af599@cam.ac.uk>', 'Andrea Franceschini (omoikane) <af599@cam.ac.uk>'],
       uid       => 3619,
     }
+    dtg::add_user { 'jk672':
+      real_name => 'Nicolas Karsten',
+      groups    =>  [],
+      keys      => ['Nicolas Karsten <karsten@dice.hhu.de>'],
+      uid       => 3633,
+    }
+    dtg::add_user { 'jps79':
+      real_name => 'James Sharkey',
+      groups    =>  ['isaac'],
+      keys      => ['James Sharkey (CL) <jps79@cam.ac.uk>'],
+      uid       => 3622,
+    }
 
+    dtg::add_user { 'rjm49':
+      real_name => 'Russell Moore',
+      groups    =>  [],
+      keys      => ['Russell Moore <rjm49@cam.ac.uk>'],
+      uid       => 3651,
+    }
+
+    # System users which need to be present on all machines
+    # This applies for example if the user needs to write data which
+    # is nfs mounted
+    group { "www-deviceanalyzer" :
+      gid => 40000,
+    }
+    ->
+    user { "www-deviceanalyzer" :
+      ensure => present,
+      comment => "DeviceAnalyzer WWW user",
+      shell => "/usr/sbin/nologin",
+      groups => "www-deviceanalyzer",
+      uid => 40000,
+      gid => 40000,
+      password => "*",
+    }
+    
 }
 # Admin user ids to be given root on the nodes via monkeysphere
 $ms_admin_user_ids = [
   'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
-  'Oliver Chick <oc243@cam.ac.uk>'
+  'Andrew Rice <acr31@cam.ac.uk>'
 ]
 # Keyserver with the public keys to use for monkeysphere
-$ms_keyserver = 'keys.gnupg.net'
+$ms_keyserver = 'keyserver.ubuntu.com'
 $ms_gpg_passphrase = 'not a secret passphrase - we rely on unix user protection'
 
 # Email config
@@ -223,7 +256,7 @@ $nagios_server = "nagios.${org_domain}"
 $nagios_ssl = false
 $nagios_from_emailaddress = $from_address
 $nagios_alert_emailaddress = $nagios_from_emailaddress
-$nagios_org_name = 'Digitial Technology Group'
+$nagios_org_name = 'Digital Technology Group'
 $nagios_org_url = 'https://www.cl.cam.ac.uk/research/dtg/'
 
 #Munin config
@@ -247,7 +280,7 @@ $local_subnet = '128.232.0.0/17'
 $dtg_subnet = '128.232.20.0/22'
 
 # Backup config
-$backup_hosts = ['nas01.dtg.cl.cam.ac.uk', 'africa01.dtg.cl.cam.ac.uk']
+$backup_hosts = ['africa01.dtg.cl.cam.ac.uk']
 
 if ( $::fqdn in $backup_hosts ) {
   $is_backup_server= true

@@ -9,7 +9,7 @@ node /sa497-crunch(-\d+)?/ {
         group_name => 'africa',
     }
 
-    $packagelist = [ 'bison' , 'flex', 'autoconf' , 'pkg-config' , 'libglib2.0-dev', 'libpcap-dev' , 'liblz4-tool']
+    $packagelist = [ 'bison' , 'flex', 'autoconf' , 'pkg-config' , 'libpcap-dev' , 'liblz4-tool']
     package {
         $packagelist:
         ensure => installed

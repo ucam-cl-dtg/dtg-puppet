@@ -218,6 +218,8 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
     'puppy126':mac => '00:16:3E:E8:15:BE', ip => '128.232.21.126';
     'puppy127':mac => '00:16:3E:E8:15:BF', ip => '128.232.21.127';
 
+    # Puppey128-159 (inclusive) are reserved for containers running on malamute.dtg
+    
     # Puppy128-256 registered with sys-admin but not included in DHCP.
     # This is so to reduce internal fragmentation of the address space so that
     # if we want to open/close ports for a subset of puppies we have a lot of

@@ -1,4 +1,5 @@
 #! /usr/bin/env python2.7
+# Fabric doesn't support python3 so we are stuck with 2.7
 
 """
 Deploy the latest puppet, security fixes or Ubuntu release to all puppies.
@@ -11,12 +12,14 @@ from fabric.api import cd, env, execute, output, parallel, run, sudo, show, task
 from git import Repo, RemoteProgress
 from jinja2 import Environment, FileSystemLoader
 import os
+import os.path
 import pickle
 import random
 import socket
 from StringIO import StringIO
 import sys
 import threading
+import tempfile
 
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
@@ -26,16 +29,16 @@ REMOTE_PREFIX = 'lick'
 
 PUPPET_BARE = '/etc/puppet-bare'
 
-POOL_SIZE = 12
+POOL_SIZE = 8
 
 SHA_LENGTH = 9
 
 # No spaces in release name.
 # Version we should be running
-TARGET_UBUNTU_RELEASE = 1510
+TARGET_UBUNTU_RELEASE = 1604
 
 # Any VM older than this needs an emergency OS update.
-MINIMUM_UBUNTU_RELEASE = 1504
+MINIMUM_UBUNTU_RELEASE = 1510
 
 # If the version is older than this it is probably not Ubuntu.
 # TODO(oc243) properly read lsb_release
@@ -54,20 +57,25 @@ DEFAULT_OUT_DIR = "/usr/groups/dtg/dtg-infra/www"
 OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
 TASKS_FILE = "tasks-%s" % OUT_FILE
 
+MESSAGE_BUFFER_SIZE = 2048 ** 2
+# Setting values larger than net.core.wmem_max won't work so you may need to do something like
+# sudo sysctl net.core.wmem_max=1048576
+# to avoid error messages about message being too large
 
 class Aggregator(threading.Thread):
 
-    def __init__(self):
+    def __init__(self, socket_name):
         threading.Thread.__init__(self)
         self.daemon = True
+        self.socket_name = socket_name
 
     def run(self):
         global machines
-        UDPSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        UDPSock.bind(("localhost", 7777))
+        UnixSock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+        UnixSock.bind(self.socket_name)
 
         while True:
-            data = UDPSock.recv(1024 ** 2)
+            data = UnixSock.recv(MESSAGE_BUFFER_SIZE)
             new_data = pickle.loads(data)
             if isinstance(new_data, Machine):
                 new_mc = new_data
@@ -99,14 +107,11 @@ class Machine(object):
 ORIGIN = [
     Machine('github', 'git@github.com',
             'ucam-cl-dtg/dtg-puppet.git', False),
-    Machine('code-repo', 'git@code.dtg.cl.cam.ac.uk',
-            'infrastructure/dtg-puppet', False),
     Machine('gitlab-repo', 'git@gitlab.dtg.cl.cam.ac.uk',
             'infrastructure/dtg-puppet.git', False),
 ]
 
 PHYSICAL_MACHINES = [
-    Machine('nas01', 'nas01' + DTG_DOM, PUPPET_BARE, False),
     Machine('nas04', 'nas04' + DTG_DOM, PUPPET_BARE, False),
     Machine('entropy', 'entropy' + DTG_DOM, PUPPET_BARE, False),
     Machine('saluki1', 'saluki1' + DTG_DOM, PUPPET_BARE, False),
@@ -114,8 +119,7 @@ PHYSICAL_MACHINES = [
     Machine('africa01', 'africa01' + DTG_DOM, PUPPET_BARE, False),
 ]
 
-UPDATE_BLACKLIST = ['wolf0', 'wolf1', 'wolf2', 'isaac-live', 'cdn',
-                    'weather', 'saluki1']
+UPDATE_BLACKLIST = ['cdn', 'weather', 'gitlab', 'nas04']
 
 
 class RemoteHandler(RemoteProgress):
@@ -163,12 +167,13 @@ def update_status():
         prev_sent_tasks = len(lick_status["tasks"])
     else:
     # Send our state to the co-ordinator
-        UDPSock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        UDPSock.sendto(pickle.dumps(get_machine_by_name(env.host)),
-                       ("localhost", 7777))
+        UnixSock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
+        UnixSock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, MESSAGE_BUFFER_SIZE)
+        UnixSock.sendto(pickle.dumps(get_machine_by_name(env.host)),
+                       socket_name)
         for i in range(prev_sent_tasks, len(lick_status["tasks"])):
-            UDPSock.sendto(pickle.dumps(lick_status["tasks"][i]),
-                           ("localhost", 7777))
+            UnixSock.sendto(pickle.dumps(lick_status["tasks"][i]),
+                           socket_name)
         prev_sent_tasks = len(lick_status["tasks"])
 
 
@@ -217,13 +222,31 @@ def sudo_capture(cmd):
             machine.stderr.append(l.strip())
         else:
             machine.stdout.append(l.strip())
+    # stdout is handled above by result but standard error needs to be dealt with too
+    stdout.close()
+    err = stderr.getvalue()
+    stderr.close()
+    if len(err) > 0:
+        for l in err.split('\n'):
+            try:
+                l = str(l).encode('ascii', errors='ignore')
+            except UnicodeDecodeError:
+                # Ignore any junk unicode printed. It's normally by
+                # Ubuntu printing out loading dots.
+                sys.stderr.write("%s\n" % l)
+                continue
+            else:
+                machine.stderr.append(l.strip())
+    if result.return_code:
+        # Failed
+        machine_err(machine.name)
     update_status()
     return result.return_code
 
 
 @task
 def get_os_versions():
-    return run("lsb_release -rs | sed 's/\.//'")
+    return run("lsb_release -rs | sed 's/\.//'", timeout=60)
 
 
 def must_update(mc, version):
@@ -288,6 +311,8 @@ def get_machines():
     Get all remote hosts that need updating: git repos, VMs, and physical mcs.
     """
     vms = execute(get_vms, hosts=[DOM0])
+    if not isinstance(vms, list) and not isinstance(vms, dict): # Error message rather than result
+        raise vms
     machines = vms[DOM0] + PHYSICAL_MACHINES
     return machines
 
@@ -375,7 +400,7 @@ def upgrade_mc():
     with show('output'):
         update_progress(env.host, "Cleaning up before OS upgrade")
         # Disable fancy progress bars during the update, as they break fabric.
-        sudo_capture('rm /etc/apt/apt.conf.d/99progressbar')
+        sudo_capture('rm /etc/apt/apt.conf.d/99progressbar || true')
         # Remove any out of date packages before trying to upgrade.
         sudo_capture("apt-show-versions | grep :amd64 | grep -v uptodate |"
                      " grep -v xe-guest-utilities | sed 's/:.*$//' |"
@@ -383,7 +408,7 @@ def upgrade_mc():
         # Ensure the current version is up to date, as there may be a new
         # version of the updater.
         update_progress(env.host, "Refreshing apt indexes before OS upgrade")
-        sudo_capture('apt-get update')
+        sudo_capture('apt-get update -q')
         update_progress(env.host,
                         "Upgrading current packages before OS upgrade")
         sudo_capture('apt-get -y -q --no-install-recommends dist-upgrade')
@@ -410,10 +435,13 @@ def upgrade_mc():
                 'yes | '
                 'DEBIAN_FRONTEND=noninteractive '
                 'do-release-upgrade -f DistUpgradeViewNonInteractive'):
+            #Upgrade failed
+            update_progress(env.host, "Upgrade failed!")
             return
         update_progress(env.host, "OS upgrade successful")
         update_progress(env.host, "Cleaning up after OS upgrade")
         sudo_capture('rm -rf /etc/apt/apt.conf.d/90-dtg-upgrade')
+        sudo_capture('rm /etc/apt/apt.conf.d/50unattended-upgrades.ucf-dist || true')
         # Remove any out of date packages after upgrading.
         sudo_capture("apt-show-versions | grep :amd64 | grep -v uptodate | "
                      "sed 's/:.*$//' |"
@@ -487,7 +515,13 @@ def update_machines(machines, friendly_upgrade):
     current_task("Finding machines that should have an OS update.")
     upgrade_mcs = []
     for mc in machines:
-        version = execute(get_os_versions, hosts=[mc.hostname])
+        version = ''
+        try:
+            version = execute(get_os_versions, hosts=[mc.hostname])
+        except CommandTimeout:
+            update_progress(mc.name, "Timed out getting OS version")
+            machine_err(mc.name)
+            continue
         try:
             version = int(version[mc.hostname])
         except TypeError:
@@ -532,14 +566,14 @@ def push_to_repos(repo, machines):
             sys.exit(-1)
 
 
-def main(args):
+def main(args, socket_name):
     """
     Update DTG machines.
     """
     output['running'] = False
     output['stdout'] = False
 
-    Aggregator().start()
+    Aggregator(socket_name).start()
     ensure_dir(OUT_DIR)
     try:
         os.unlink("%s/lick-latest.html" % OUT_DIR)
@@ -653,6 +687,10 @@ if __name__ == '__main__':
                         'pulled from. Caution, if this doesn\'t get '
                         'merged into master life gets difficult.',
                         default='master:master')
+    parser.add_argument('--no-root', dest='no_root', action='store_true',
+                        help='Don\'t do anything which requires root on DOM0 '
+                             'or admin on the infrastructure repository. '
+                             'Implies --no-snap --no-snap-gc --no-push.')
     parser.add_argument('--no-snap', dest='no_snap',
                         help='Don\'t snapshot machines.',
                         action='store_true')
@@ -671,6 +709,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
+    if args.no_root:
+        args.no_snap = True
+        args.no_snap_gc = True
+        args.no_push = True
+
     # Set "constants" based on arguments:
 
     OUT_PATH = "%s/%s" % (args.out_dir, OUT_FILE)
@@ -680,4 +723,10 @@ if __name__ == '__main__':
                                                                TASKS_FILE)
     OUT_DIR = args.out_dir
 
-    main(args)
+    tempdirname = tempfile.mkdtemp()
+    socket_name = os.path.join(tempdirname, 'deploy_unix_socket')
+    try:
+        main(args, socket_name)
+    finally:
+        os.remove(socket_name)
+        os.rmdir(tempdirname)

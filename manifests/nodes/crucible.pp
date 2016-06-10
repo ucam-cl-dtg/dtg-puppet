@@ -4,7 +4,7 @@ node 'crucible.dtg.cl.cam.ac.uk' {
   User<|title == sac92 |> { groups +>[ 'adm' ] }
   class {'dtg::isaac':}
 
-  package {['openjdk-7-jdk', 'unzip']:
+  package {['openjdk-8-jdk', 'unzip']:
     ensure => installed
   }
   ->
