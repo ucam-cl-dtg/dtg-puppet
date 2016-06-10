@@ -239,7 +239,7 @@ def sudo_capture(cmd):
                 machine.stderr.append(l.strip())
     if result.return_code:
         # Failed
-        machine_err(mc.name)
+        machine_err(machine.name)
     update_status()
     return result.return_code
 
