@@ -488,9 +488,11 @@ def run_latest_puppet(repourl, refspec):
                 machine_err(env.host)
             rc = sudo_capture('nice ./hooks/post-update')
             if rc:
+                machine_err(env.host)
                 update_progress(env.host, "Error running puppet.")
-    update_progress(env.host, "Applied puppet")
-    machine_succ(env.host)
+            else:
+                update_progress(env.host, "Applied puppet")
+                machine_succ(env.host)
 
 
 def add_remotes(repo, machines):
