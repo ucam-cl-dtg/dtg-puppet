@@ -4,10 +4,9 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   class { 'dtg::minimal': adm_sudoers => false}
 
   $pool_name = 'dtg-pool0'
-  $cl_share = "rw=@${local_subnet}"
-  $desktop_share = join($desktop_ips_array, ',rw=@')
-  $deviceanalyzer_share = "rw=@${deviceanalyzer_ip},rw=@${deviceanalyzer_upload_ip},rw=@deviceanalyzer-crunch0.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch1.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch2.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch3.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch4.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,ro=@earlybird.cl.cam.ac.uk,rw=@jenkins-master.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-datadivider.dtg.cl.cam.ac.uk,ro=@dac53.dtg.cam.ac.uk,ro=@deviceanalyzer-visitor-jk672.dtg.cam.ac.uk"
-  $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_share}"
+
+  $desktop_share = zfs_shareopts([],$desktop_ips_array,"rw=@${dtg_subnet}")
+  $deviceanalyzer_share = zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk","dac53.dtg.cl.cam.ac.uk","grapevine.cl.cam.ac.uk","earlybird.cl.cam.ac.uk","deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk"],[])
 
   # bonded nics
   dtg::kernelmodule::add{'bonding': }
@@ -59,25 +58,34 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'vms':
     pool_name  => $pool_name,
     fs_name    => 'vms',
-    share_opts => 'rw=@128.232.20.18,rw=@128.232.20.20,rw=@128.232.20.22,rw=@128.232.20.24,rw=@128.232.20.26,async',
+    share_opts => zfs_shareopts([],["husky0.dtg.cl.cam.ac.uk",
+                                    "husky1.dtg.cl.cam.ac.uk",
+                                    "husky2.dtg.cl.cam.ac.uk",
+                                    "husky3.dtg.cl.cam.ac.uk",
+                                    "husky4.dtg.cl.cam.ac.uk"])
   }
 
   dtg::zfs::fs{'isos':
     pool_name  => $pool_name,
     fs_name    => 'isos',
-    share_opts => "ro=@${dtg_subnet},async",
+    share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
   }
-
+  
   dtg::zfs::fs{'dwt27':
     pool_name  => $pool_name,
     fs_name    => 'dwt27',
-    share_opts => 'rw=@monnow.cl.cam.ac.uk,rw=@dwt27-crunch.dtg.cl.cam.ac.uk,async',
+    share_opts => zfs_shareopts([],["monnow.cl.cam.ac.uk",
+                                    "dwt27-crunch.dtg.cl.cam.ac.uk"]),
   }
 
   dtg::zfs::fs{'nakedscientists':
     pool_name  => $pool_name,
     fs_name    => 'nakedscientists',
-    share_opts => 'rw=@131.111.39.72,rw=@131.111.39.84,rw=@131.111.39.87,rw=@131.111.39.103,rw=@131.111.61.37,async',
+    share_opts => zfs_shareopts([],["131.111.39.72",
+                                    "131.111.39.84",
+                                    "131.111.39.87",
+                                    "131.111.39.103",
+                                    "131.111.61.37"]),
   }
 
   dtg::zfs::fs{'archive':
@@ -89,46 +97,52 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'archive/abbot-archive':
     pool_name  => $pool_name,
     fs_name    => 'archive/abbot-archive',
-    share_opts => "${dtg_share},async",
+    share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
   }
   ->  
   dtg::zfs::fs{'archive/retired-git-repos':
     pool_name  => $pool_name,
     fs_name    => 'archive/retired-git-repos',
-    share_opts => "${dtg_share},async",
+    share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
   }
   ->
-  dtg::zfs::fs{'time':
+  dtg::zfs::fs{'archive/time':
     pool_name  => $pool_name,
-    fs_name    => 'time',
-    share_opts => "${dtg_share},async",
+    fs_name    => 'archive/time',
+    share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
   }
-
 
   dtg::zfs::fs{'deviceanalyzer-graphing':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-graphing',
-    share_opts => "${dtg_share},${deviceanalyzer_share},ro=@isis.cl.cam.ac.uk,async",
+    share_opts => zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk",
+                                 "dac53.dtg.cl.cam.ac.uk",
+                                 "grapevine.cl.cam.ac.uk",
+                                 "earlybird.cl.cam.ac.uk",
+                                 "deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk",
+                                 "isis.cl.cam.ac.uk"],[],"ro=@${dtg_subnet}"),
   }
 
-  $saluki_share = 'rw=@128.232.98.206,rw=@128.232.98.207'
-  
   dtg::zfs::fs{ 'bayncore':
     pool_name  => $pool_name,
     fs_name    => 'bayncore',
-    share_opts => "${dtg_share},${saluki_share},async",
+    share_opts => zfs_shareopts([],["saluki1.dtg.cl.cam.ac.uk",
+                                    "saluki2.dtg.cl.cam.ac.uk"],"ro=@${dtg_subnet}"),
   }
 
   dtg::zfs::fs{'rwandadataset':
     pool_name  => $pool_name,
     fs_name    => 'rwandadataset',
-    share_opts => 'rw=@sa497-crunch-0.dtg.cl.cam.ac.uk,rw=@sa497-crunch-1.dtg.cl.cam.ac.uk,rw=@sa497-crunch-2.dtg.cl.cam.ac.uk,rw=@sa497-crunch-3.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,async',
+    share_opts => zfs_shareopts(["grapevine.cl.cam.ac.uk"],["sa497-crunch-0.dtg.cl.cam.ac.uk",
+                                                            "sa497-crunch-1.dtg.cl.cam.ac.uk",
+                                                            "sa497-crunch-2.dtg.cl.cam.ac.uk",
+                                                            "sa497-crunch-3.dtg.cl.cam.ac.uk"]),
   }
 
   dtg::zfs::fs{ 'caida-internet-traces-2014':
     pool_name  => $pool_name,
     fs_name    => 'caida-internet-traces-2014',
-    share_opts => "${dtg_share},async",
+    share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
   }
 
   dtg::zfs::fs{'backups':
@@ -152,7 +166,11 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'backups/deviceanalyzer':
     pool_name  => $pool_name,
     fs_name    => 'backups/deviceanalyzer',
-    share_opts => "${dtg_share},${deviceanalyzer_share},async",
+    share_opts => zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk",
+                                 "dac53.dtg.cl.cam.ac.uk",
+                                 "grapevine.cl.cam.ac.uk",
+                                 "earlybird.cl.cam.ac.uk",
+                                 "deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk"],[]),
   }
 
 
