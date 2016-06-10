@@ -1,6 +1,8 @@
 node 'york-staging.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   
+  class {'dtg::isaac':}
+  
   $tomcat_version = '8'
   
   # download api content repo from private repo (TODO)

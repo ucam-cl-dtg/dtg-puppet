@@ -6,10 +6,8 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $pool_name = 'dtg-pool0'
   $cl_share = "rw=@${local_subnet}"
   $desktop_share = join($desktop_ips_array, ',rw=@')
-  $deviceanalyzer_share = "rw=@${deviceanalyzer_ip},rw=@{deviceanalyzer_upload_ip}"
+  $deviceanalyzer_share = "rw=@${deviceanalyzer_ip},rw=@${deviceanalyzer_upload_ip},rw=@deviceanalyzer-crunch0.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch1.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch2.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch3.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-crunch4.dtg.cl.cam.ac.uk,ro=@grapevine.cl.cam.ac.uk,ro=@earlybird.cl.cam.ac.uk,rw=@jenkins-master.dtg.cl.cam.ac.uk,rw=@deviceanalyzer-datadivider.dtg.cl.cam.ac.uk,ro=@dac53.dtg.cam.ac.uk"
   $dtg_share = "rw=@${dtg_subnet},rw=@${desktop_share}"
-  $secgrp_subnet = '128.232.18.0/24'
-  $pig20_ip = '128.232.64.63'
 
   # bonded nics
   dtg::kernelmodule::add{'bonding': }
@@ -108,7 +106,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'deviceanalyzer':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer',
-    share_opts => "${dtg_share},${deviceanalyzer_share},ro=@${secgrp_subnet},ro=@${pig20_ip},async",
+    share_opts => "${dtg_share},${deviceanalyzer_share},async",
   }
 
   dtg::zfs::fs{'deviceanalyzer-datadivider':
@@ -120,7 +118,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'deviceanalyzer-graphing':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-graphing',
-    share_opts => "${dtg_share},ro=@isis.cl.cam.ac.uk,async",
+    share_opts => "${dtg_share},${deviceanalyzer_share},ro=@isis.cl.cam.ac.uk,async",
   }
 
   dtg::zfs::fs{ 'deviceanalyzer-nas02-backup':
