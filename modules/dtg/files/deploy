@@ -222,6 +222,24 @@ def sudo_capture(cmd):
             machine.stderr.append(l.strip())
         else:
             machine.stdout.append(l.strip())
+    # stdout is handled above by result but standard error needs to be dealt with too
+    stdout.close()
+    err = stderr.getvalue()
+    stderr.close()
+    if len(err) > 0:
+        for l in err.split('\n'):
+            try:
+                l = str(l).encode('ascii', errors='ignore')
+            except UnicodeDecodeError:
+                # Ignore any junk unicode printed. It's normally by
+                # Ubuntu printing out loading dots.
+                sys.stderr.write("%s\n" % l)
+                continue
+            else:
+                machine.stderr.append(l.strip())
+    if result.return_code:
+        # Failed
+        machine_err(mc.name)
     update_status()
     return result.return_code
 
@@ -417,6 +435,8 @@ def upgrade_mc():
                 'yes | '
                 'DEBIAN_FRONTEND=noninteractive '
                 'do-release-upgrade -f DistUpgradeViewNonInteractive'):
+            #Upgrade failed
+            update_progress(env.host, "Upgrade failed!")
             return
         update_progress(env.host, "OS upgrade successful")
         update_progress(env.host, "Cleaning up after OS upgrade")
