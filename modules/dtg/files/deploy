@@ -228,7 +228,7 @@ def sudo_capture(cmd):
 
 @task
 def get_os_versions():
-    return run("lsb_release -rs | sed 's/\.//'")
+    return run("lsb_release -rs | sed 's/\.//'", timeout=60)
 
 
 def must_update(mc, version):
@@ -495,7 +495,13 @@ def update_machines(machines, friendly_upgrade):
     current_task("Finding machines that should have an OS update.")
     upgrade_mcs = []
     for mc in machines:
-        version = execute(get_os_versions, hosts=[mc.hostname])
+        version = ''
+        try:
+            version = execute(get_os_versions, hosts=[mc.hostname])
+        except CommandTimeout:
+            update_progress(mc.name, "Timed out getting OS version")
+            machine_err(mc.name)
+            continue
         try:
             version = int(version[mc.hostname])
         except TypeError:
