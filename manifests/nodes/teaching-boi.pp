@@ -6,9 +6,7 @@ node /teaching-boi/ {
   $packages = ['build-essential']
 
   class { 'dtg::firewall::publichttp': }
-  class { 'dtg::firewall::80to8080':
-    private => false
-  }
+
 
   package{$packages:
     ensure => installed,
