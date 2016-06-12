@@ -222,13 +222,31 @@ def sudo_capture(cmd):
             machine.stderr.append(l.strip())
         else:
             machine.stdout.append(l.strip())
+    # stdout is handled above by result but standard error needs to be dealt with too
+    stdout.close()
+    err = stderr.getvalue()
+    stderr.close()
+    if len(err) > 0:
+        for l in err.split('\n'):
+            try:
+                l = str(l).encode('ascii', errors='ignore')
+            except UnicodeDecodeError:
+                # Ignore any junk unicode printed. It's normally by
+                # Ubuntu printing out loading dots.
+                sys.stderr.write("%s\n" % l)
+                continue
+            else:
+                machine.stderr.append(l.strip())
+    if result.return_code:
+        # Failed
+        machine_err(machine.name)
     update_status()
     return result.return_code
 
 
 @task
 def get_os_versions():
-    return run("lsb_release -rs | sed 's/\.//'")
+    return run("lsb_release -rs | sed 's/\.//'", timeout=60)
 
 
 def must_update(mc, version):
@@ -417,6 +435,8 @@ def upgrade_mc():
                 'yes | '
                 'DEBIAN_FRONTEND=noninteractive '
                 'do-release-upgrade -f DistUpgradeViewNonInteractive'):
+            #Upgrade failed
+            update_progress(env.host, "Upgrade failed!")
             return
         update_progress(env.host, "OS upgrade successful")
         update_progress(env.host, "Cleaning up after OS upgrade")
@@ -468,9 +488,11 @@ def run_latest_puppet(repourl, refspec):
                 machine_err(env.host)
             rc = sudo_capture('nice ./hooks/post-update')
             if rc:
+                machine_err(env.host)
                 update_progress(env.host, "Error running puppet.")
-    update_progress(env.host, "Applied puppet")
-    machine_succ(env.host)
+            else:
+                update_progress(env.host, "Applied puppet")
+                machine_succ(env.host)
 
 
 def add_remotes(repo, machines):
@@ -495,7 +517,13 @@ def update_machines(machines, friendly_upgrade):
     current_task("Finding machines that should have an OS update.")
     upgrade_mcs = []
     for mc in machines:
-        version = execute(get_os_versions, hosts=[mc.hostname])
+        version = ''
+        try:
+            version = execute(get_os_versions, hosts=[mc.hostname])
+        except CommandTimeout:
+            update_progress(mc.name, "Timed out getting OS version")
+            machine_err(mc.name)
+            continue
         try:
             version = int(version[mc.hostname])
         except TypeError:
