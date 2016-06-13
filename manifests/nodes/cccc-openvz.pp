@@ -14,6 +14,19 @@ node 'cccc-openvz.dtg.cl.cam.ac.uk' {
     provider    => 'openvz',
     interfaces  => ['eth0'],
     ipaddr      => ['192.168.2.1'],
+    nameserver  => $::ipaddress,
+    diskspace   => '4G:4G',
+  }
+  ->
+  virt { 'test-2':
+    ensure      => 'running',
+    os_template => 'ubuntu-15.10',
+    virt_type   => 'openvz',
+    autoboot    => 'true',
+    provider    => 'openvz',
+    interfaces  => ['eth0'],
+    ipaddr      => ['10.0.0.7'],
+    nameserver  => $::ipaddress,
     diskspace   => '4G:4G',
   }
   firewall { '033 nat for openvz containers':
@@ -47,7 +60,29 @@ node 'cccc-openvz.dtg.cl.cam.ac.uk' {
     source => '192.168.0.0/16',
     action => 'accept',
   }
-
+  firewall { '030-dns accept tcp 53 (dns) from openvz containers dummy':
+    proto  => 'tcp',
+    dport  => 53,
+    source => '10.0.0.0/16',
+    action => 'accept',
+  }
+  firewall { '031-dns accept udp 53 (dns) from openvz containers dummy':
+    proto  => 'udp',
+    dport  => 53,
+    source => '10.0.0.0/16',
+    action => 'accept',
+  }
+  dtg::add_user { 'rnc1':
+    real_name => 'Richard Clayton',
+    groups    => 'adm',
+    uid       => '1738',
+  } -> 
+  ssh_authorized_key {'rnc1':
+    ensure => present,
+    key    => 'AAAAB3NzaC1yc2EAAAABIwAAAIEAqKRiv2o4l9zOtNSyjS1kTqKK0r/4+z8VRhVQddCq+p93m19SwuA2kHDLZMy3fJRhZwuCE+F2fRNiX320/tgXjPM431mwVqZo2VcJXmZmn2HRwA+Iiakckqdc244qv/H0vlRGoPM1m156kZvKYAEa8y4pJq4azJMj+IGFf+n/+rs=',
+    type   => 'ssh-rsa',
+    user   => 'rnc1',
+  }
 }
 class apt::source::openvz {
   apt::source{ 'openvz':
