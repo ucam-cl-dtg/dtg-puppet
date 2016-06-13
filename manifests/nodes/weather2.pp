@@ -15,7 +15,7 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
                   'python-virtualenv', 'python3-virtualenv',
                   'libpq5', 'libpq-dev', 'postgresql-client',
                   'libfreetype6-dev', 'libpng-dev', 'pkg-config',
-                  'matplotlib', 'libjpeg-dev']
+                  'python3-matplotlib', 'libjpeg-dev']
   package {$packagelist:
         ensure => installed,
         before => [ Service['nginx'],
