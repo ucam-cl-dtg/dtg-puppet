@@ -23,12 +23,19 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
 
   # Packages which should be installed on all servers
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
-                  'apg', 'htop', 'nfs-common', 'emacs24-nox',
+                  'apg', 'htop', 'emacs24-nox',
                   'iptables-persistent', 'command-not-found', 'mlocate',
                   'bash-completion', 'apt-show-versions', 'iotop', 'byobu']
   package {
     $packagelist:
       ensure => installed
+  }
+
+  if ! $::virtual == 'openvzve' {
+    package {
+      'nfs-common':
+        ensure => installed
+    }
   }
 
   if $::operatingsystem == 'Debian' or $::virtual == 'openvzve' {
@@ -178,6 +185,8 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
   # Monitor using munin
   class { 'munin::node':
     node_allow_ips => [ escapeRegexp($::munin_server_ip), '^127\.0\.0\.1$' ],
+    node_timeout   => '60',
+    async_key      => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQC688SXcu+yWt+n2AVxb5hCnVt9W57EaIvtPdzKtUO1U+ErXa3urWdJ0Y7/X+8Jzly9v6lAFUYHrjo4AYWnO9pRymBBWHJxx3oZMFuQXxJ7F0HPztMBB1rcsLqEyILzg3M8uvqFqAuxIBzraO51V2qn+f/nSmREd4T88qIo2Vt8Y9jfr3HLAxyZ5TOXJu9fCnJMdcEYx7PdK6O7YeolNQ6UZINpHa5xpeaXGkho1bsCmcYphU/UFrhpVkp0wIw40FkJLP/qyUrKoJ32CSiro0OnovG+8nuXedJ8FmgTBHQP1J+Xw2Bykxka3cfw2RhWybNKBq2AnTCjZkyEN2wCKFCL+UHWKdporYksovZw2BDIbA0zOrROra7BMDFul1TGx0VFW9gCs6/K7uWWxUgWDYnyhnF49sAE4kdClY66DLLh0LSbw4YojB+PRbXHnDGcim9RXWtewy7mC/5ns2nsoQ5jx7Fol6RC+2Ko4X/fmQ4yc7LruEBDxwhSB+SgMNH/y2piQtaaFXBzOTnmdyTIA3iD1ZVBviQkFRWocGXYViFtqqXtODYUHSOKIHiksSiaE8ItCTwb3lV1aCmlLAebCpU48l5g6OwJtYn/KdWBVwNxAb+TWNeJZcMu00Z2lsXYoPZy7GGVFfHWztLgn1UgstPdTr5zc6g6IlT5lfKbyGof+w==',
   }
   munin::node::plugin{ 'apt_ubuntu':
     target => '/etc/puppet/modules/munin/files/contrib/plugins/ubuntu/apt_ubuntu',
@@ -249,7 +258,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
     content => "options nfs callback_tcpport=${::nfs_client_port}",
   }
 
-  if $::operatingsystem != 'Debian' {
+  if $::operatingsystem != 'Debian' and $::virtual != 'openvzve' {
     # Attempt to make DNS more robust by timing out quickly and retrying enough times that we will hit all of the configured DNS servers before failing
     file { '/etc/resolvconf/resolv.conf.d/tail':
       ensure => file,

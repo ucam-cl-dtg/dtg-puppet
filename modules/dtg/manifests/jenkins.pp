@@ -13,7 +13,7 @@ class dtg::jenkins {
   $jenkins_job_packages = [# One line per job's install list
     'graphviz',
     'inkscape',
-    'openjdk-7-jdk',
+    'openjdk-8-jdk',
     'reprepro','git-buildpackage', 'build-essential', 'cowbuilder', 'cowdancer', 'debootstrap','devscripts','pbuilder',
     'octave', 'octave-octgpr',
     'mysql-common',

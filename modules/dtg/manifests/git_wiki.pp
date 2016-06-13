@@ -1,7 +1,7 @@
 # git_wiki.pp
 # Maintainer: Lucian Carata <lc525@cam.ac.uk>
 #
-# This installs dtg-gollum (https://github.com/lc525/gollum-dtg),
+# This installs dtg-gollum (https://github.com/ucam-cl-dtg/gollum-dtg),
 # the DTG wiki server and corresponding git-backed wikis
 #
 
@@ -69,7 +69,7 @@ class dtg::git::gollum::main {
   vcsrepo {'/srv/gollum/':
     ensure   => latest,
     provider => 'git',
-    source   => 'git://github.com/lc525/gollum-dtg.git',
+    source   => 'git://github.com/ucam-cl-dtg/gollum-dtg.git',
     revision => 'dtg-multiwiki',
     owner    => 'lc525',
     group    => 'www-data',
@@ -102,7 +102,8 @@ class dtg::git::gollum::main {
   apache::module{'headers':} ->
 # Use letsencrypt to get a certificate
   class {'letsencrypt':
-    email => $::from_address,
+    email          => $::from_address,
+    configure_epel => false,
   } ->
   letsencrypt::certonly { $::fqdn:
     plugin      => 'webroot',
