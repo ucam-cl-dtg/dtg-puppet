@@ -215,7 +215,7 @@ node /otter(-\d+)?/ {
     unless      => 'psql -U log -h localhost -d log -t -c "select * from Log limit 1"'
   }
 
-  $packages = ['maven2','openjdk-8-jdk','puppet-el']
+  $packages = ['maven','openjdk-8-jdk','puppet-el']
   package{$packages:
     ensure => installed,
   }

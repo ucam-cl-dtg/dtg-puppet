@@ -104,7 +104,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   
   class {'dtg::firewall::privatehttp':}
 
-  $packages = ['maven2','openjdk-8-jdk','rssh','docker']
+  $packages = ['maven','openjdk-8-jdk','rssh','docker']
   package{$packages:
     ensure => installed
   }
