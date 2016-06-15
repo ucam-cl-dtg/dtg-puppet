@@ -21,6 +21,11 @@ import sys
 import threading
 import tempfile
 
+# paramiko is used for ssh transport, make sure its logs go somewhere. (stderr)
+import logging
+logging.getLogger('paramiko.transport').addHandler(logging.StreamHandler())
+logging.getLogger('paramiko').addHandler(logging.StreamHandler())
+
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
