@@ -73,7 +73,7 @@ if ( $::monitor ) {
     include_standard_hostgroups => false,
   }
 
-  munin::gatherer::configure_node { 'isaac-tickets': }
+  munin::gatherer::async_node { 'isaac-tickets': }
 }
 
 

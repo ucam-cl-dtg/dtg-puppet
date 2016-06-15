@@ -301,5 +301,5 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'bmcs' ],
   }
 
-  munin::gatherer::configure_node { 'nas04': }
+  munin::gatherer::async_node { 'nas04': }
 }

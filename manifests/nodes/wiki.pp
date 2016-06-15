@@ -8,5 +8,5 @@ if ( $::monitor ) {
     address    => 'wiki.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'https-servers' ],
   }
-  munin::gatherer::configure_node { 'wiki': }
+  munin::gatherer::async_node { 'wiki': }
 }

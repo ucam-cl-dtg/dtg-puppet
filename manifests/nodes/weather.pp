@@ -77,7 +77,7 @@ if ( $::monitor ) {
     address    => 'weather.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
-  munin::gatherer::configure_node { 'weather': }
+  munin::gatherer::async_node { 'weather': }
 }
 
 if ( $::is_backup_server ) {

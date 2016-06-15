@@ -12,5 +12,5 @@ node 'weather-legacy.dtg.cl.cam.ac.uk' {
 #    address    => 'weather-legacy.dtg.cl.cam.ac.uk',
 #    hostgroups => [ 'ssh-servers', 'http-servers' ],
 #  }
-#  munin::gatherer::configure_node { 'weather-legacy': }
+#  munin::gatherer::async_node { 'weather-legacy': }
 #}

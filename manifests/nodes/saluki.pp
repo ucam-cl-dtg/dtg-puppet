@@ -148,6 +148,6 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers'],
   }
   
-  munin::gatherer::configure_node { 'saluki1': }
-  munin::gatherer::configure_node { 'saluki2': }
+  munin::gatherer::async_node { 'saluki1': }
+  munin::gatherer::async_node { 'saluki2': }
 }

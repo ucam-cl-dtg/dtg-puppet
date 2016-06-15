@@ -14,5 +14,5 @@ node 'is364-scratch.dtg.cl.cam.ac.uk' {
 #    address    => 'is364-scratch.dtg.cl.cam.ac.uk',
 #    hostgroups => [ 'ssh-servers' ],
 #  }
-#  munin::gatherer::configure_node { 'is364': }
+#  munin::gatherer::async_node { 'is364': }
 #}

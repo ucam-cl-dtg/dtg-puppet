@@ -9,5 +9,5 @@ if ( $::monitor ) {
 #    address    => 'sak70-math.dtg.cl.cam.ac.uk',
 #    hostgroups => [ 'ssh-servers' ],
 #  }
-  munin::gatherer::configure_node { 'sak70-math': }
+  munin::gatherer::async_node { 'sak70-math': }
 }

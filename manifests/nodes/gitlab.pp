@@ -25,5 +25,5 @@ if ( $::monitor ) {
     address    => 'gitlab.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
-  munin::gatherer::configure_node { 'gitlab': }
+  munin::gatherer::async_node { 'gitlab': }
 }

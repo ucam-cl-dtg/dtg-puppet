@@ -259,5 +259,5 @@ if ( $::monitor ) {
     address    => 'otter.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
-  munin::gatherer::configure_node { 'otter': }
+  munin::gatherer::async_node { 'otter': }
 }

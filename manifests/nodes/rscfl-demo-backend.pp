@@ -7,5 +7,5 @@ node 'rscfl-demo-backend.dtg.cl.cam.ac.uk' {
 }
 
 if ( $::monitor ) {
-  munin::gatherer::configure_node { 'rscfl-demo-backend': }
+  munin::gatherer::async_node { 'rscfl-demo-backend': }
 }

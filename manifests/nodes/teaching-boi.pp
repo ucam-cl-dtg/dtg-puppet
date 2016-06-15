@@ -55,5 +55,5 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers' ],
   }
   
-  munin::gatherer::configure_node { 'teaching-boi': }
+  munin::gatherer::async_node { 'teaching-boi': }
 }

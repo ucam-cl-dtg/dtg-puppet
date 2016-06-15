@@ -43,5 +43,5 @@ if ( $::monitor ) {
     address    => 'balancer.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers', 'https-servers'],
   }
-  munin::gatherer::configure_node { 'balancer': }
+  munin::gatherer::async_node { 'balancer': }
 }

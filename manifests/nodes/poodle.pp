@@ -34,5 +34,5 @@ if ( $::monitor ) {
     address    => 'dns-1.dtg.cl.cam.ac.uk',
     hostgroups => [ 'dns-servers'],
   }
-  munin::gatherer::configure_node { 'poodle': }
+  munin::gatherer::async_node { 'poodle': }
 }

@@ -135,7 +135,7 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
 #    address    => 'containers-1.dtg.cl.cam.ac.uk',
 #    hostgroups => [ 'ssh-servers' , 'https-servers' ],
 #  }
-#  munin::gatherer::configure_node { 'containers-1': }
+#  munin::gatherer::async_node { 'containers-1': }
 #}
 
 class dtg::containers::apt_java {

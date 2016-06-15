@@ -108,5 +108,5 @@ if ( $::monitor ) {
     address    => 'deviceanalyzer-marketcache.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
-  munin::gatherer::configure_node { 'deviceanalyzer-marketcache': }
+  munin::gatherer::async_node { 'deviceanalyzer-marketcache': }
 }
