@@ -161,10 +161,10 @@ def update_status():
     if os.getpid() == orig_pid:
         # Dump to a file
         with open(OUT_PATH, "wb") as f:
-            os.fchmod(f.fileno(), 0644)
+            os.fchmod(f.fileno(), 0664)
             f.write(template.render(lick_status))
         with open(TASKS_PATH, "wb") as f:
-            os.fchmod(f.fileno(), 0644)
+            os.fchmod(f.fileno(), 0664)
             f.write(tasks_template.render(lick_status))
         prev_sent_tasks = len(lick_status["tasks"])
     else:
