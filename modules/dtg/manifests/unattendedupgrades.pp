@@ -39,16 +39,18 @@ class dtg::unattendedupgrades (
     mode   => '0755',
     source => 'puppet:///modules/dtg/sbin/postupdate-service-restart'
   }
-  file_line {'apt postupdate-service-restart':
-    ensure => present,
-    path   => '/etc/cron.daily/apt',
-    line   => 'output=`postupdate-service-restart 2>&1` || echo $output',
-  }
-  file_line {'old apt postupdate-service-restart':
-    ensure => absent,
-    path   => '/etc/cron.daily/apt',
-    line   => 'postupdate-service-restart',
-  }
+#In Ubuntu 16.04 unattended updates are no longer managed by cron.daily but systemd
+#The following will need to be hooked into systemd somehow in the future 
+#  file_line {'apt postupdate-service-restart':
+#    ensure => present,
+#    path   => '/etc/cron.daily/apt',
+#    line   => 'output=`postupdate-service-restart 2>&1` || echo $output',
+#  }
+#  file_line {'old apt postupdate-service-restart':
+#    ensure => absent,
+#    path   => '/etc/cron.daily/apt',
+#    line   => 'postupdate-service-restart',
+#  }
   file {'/usr/local/etc/':
     ensure => directory,
     owner  => 'root',
