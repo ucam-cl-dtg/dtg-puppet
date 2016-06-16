@@ -154,5 +154,5 @@ if ( $::monitor ) {
     hostgroups                  => [ 'http-servers' ],
     include_standard_hostgroups => false,
   }
-  munin::gatherer::configure_node { 'code': }
+  munin::gatherer::async_node { 'code': }
 }
