@@ -24,10 +24,10 @@ class dtg::unattendedupgrades (
     group   => 'adm',
   }
   file {'/etc/cron.daily/apt':
-    ensure => present,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
+    ensure => absent,
+  }
+  file {'/etc/cron.daily/apt.dpkg-bak':
+    ensure => absent,
   }
   package {'debian-goodies':
     ensure => installed,
