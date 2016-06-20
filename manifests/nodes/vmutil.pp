@@ -21,5 +21,5 @@ if ($::monitor) {
     address    => 'vmutil.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
-  munin::gatherer::configure_node { 'vmutil': }
+  munin::gatherer::async_node { 'vmutil': }
 }

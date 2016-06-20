@@ -215,7 +215,7 @@ node /otter(-\d+)?/ {
     unless      => 'psql -U log -h localhost -d log -t -c "select * from Log limit 1"'
   }
 
-  $packages = ['maven2','openjdk-8-jdk','puppet-el']
+  $packages = ['maven','openjdk-8-jdk','puppet-el']
   package{$packages:
     ensure => installed,
   }
@@ -259,5 +259,5 @@ if ( $::monitor ) {
     address    => 'otter.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
-  munin::gatherer::configure_node { 'otter': }
+  munin::gatherer::async_node { 'otter': }
 }

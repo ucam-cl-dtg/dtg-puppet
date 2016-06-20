@@ -54,5 +54,5 @@ if ( $::monitor ) {
 #    address    => 'sak70-vpnserver.dtg.cl.cam.ac.uk',
 #    hostgroups => [ 'ssh-servers' ],
 #  }
-  munin::gatherer::configure_node { 'sak70-vpnserver': }
+  munin::gatherer::async_node { 'sak70-vpnserver': }
 }

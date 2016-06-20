@@ -57,5 +57,5 @@ if ( $::monitor ) {
     address    => 'dns-0.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'dns-servers' ],
   }
-  munin::gatherer::configure_node { 'dns-0': }
+  munin::gatherer::async_node { 'dns-0': }
 }

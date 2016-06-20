@@ -125,5 +125,5 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'bmcs' ],
   }
 
-  munin::gatherer::configure_node { 'africa01': }
+  munin::gatherer::async_node { 'africa01': }
 }

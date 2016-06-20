@@ -48,7 +48,7 @@ if ( $::monitor ) {
     hostgroups                  => [ 'http-servers', 'https-servers' ],
     include_standard_hostgroups => false,
   }
-  munin::gatherer::configure_node { 'isaac-editor': }
+  munin::gatherer::async_node { 'isaac-editor': }
 }
 
 ## On a new server:

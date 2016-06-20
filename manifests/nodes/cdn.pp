@@ -172,5 +172,5 @@ if ( $::monitor ) {
     hostgroups => ['ssh-servers', 'http-servers', 'https-servers'],
   }
   
-  munin::gatherer::configure_node { 'cdn': }
+  munin::gatherer::async_node { 'cdn': }
 }

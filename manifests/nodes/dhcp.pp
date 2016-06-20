@@ -235,5 +235,5 @@ if ( $::monitor ) {
     address    => 'dhcp.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
-  munin::gatherer::configure_node { 'dhcp': }
+  munin::gatherer::async_node { 'dhcp': }
 }

@@ -6,9 +6,7 @@ node /teaching-boi/ {
   $packages = ['build-essential']
 
   class { 'dtg::firewall::publichttp': }
-  class { 'dtg::firewall::80to8080':
-    private => false
-  }
+
 
   package{$packages:
     ensure => installed,
@@ -57,5 +55,5 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers' ],
   }
   
-  munin::gatherer::configure_node { 'teaching-boi': }
+  munin::gatherer::async_node { 'teaching-boi': }
 }

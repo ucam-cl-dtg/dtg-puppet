@@ -4,5 +4,5 @@ if ( $::monitor ) {
     address    => 'learn.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
-  munin::gatherer::configure_node { 'learn': }
+  munin::gatherer::async_node { 'learn': }
 }

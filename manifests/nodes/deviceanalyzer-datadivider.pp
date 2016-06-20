@@ -35,5 +35,5 @@ if ( $::monitor ) {
     address    => 'dh526-datadivider.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
-  munin::gatherer::configure_node { 'dh526-datadivider': }
+  munin::gatherer::async_node { 'dh526-datadivider': }
 }

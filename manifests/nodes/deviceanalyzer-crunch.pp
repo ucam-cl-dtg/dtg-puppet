@@ -115,9 +115,9 @@ if ( $::monitor ) {
     address    => 'deviceanalyzer-crunch0.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
-  munin::gatherer::configure_node { 'deviceanalyzer-crunch0': }
-  munin::gatherer::configure_node { 'deviceanalyzer-crunch1': }
-  munin::gatherer::configure_node { 'deviceanalyzer-crunch2': }
-  munin::gatherer::configure_node { 'deviceanalyzer-crunch3': }
-  munin::gatherer::configure_node { 'deviceanalyzer-crunch4': }
+  munin::gatherer::async_node { 'deviceanalyzer-crunch0': }
+  munin::gatherer::async_node { 'deviceanalyzer-crunch1': }
+  munin::gatherer::async_node { 'deviceanalyzer-crunch2': }
+  munin::gatherer::async_node { 'deviceanalyzer-crunch3': }
+  munin::gatherer::async_node { 'deviceanalyzer-crunch4': }
 }

@@ -21,6 +21,11 @@ import sys
 import threading
 import tempfile
 
+# paramiko is used for ssh transport, make sure its logs go somewhere. (stderr)
+import logging
+logging.getLogger('paramiko.transport').addHandler(logging.StreamHandler())
+logging.getLogger('paramiko').addHandler(logging.StreamHandler())
+
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
 
@@ -119,7 +124,7 @@ PHYSICAL_MACHINES = [
     Machine('africa01', 'africa01' + DTG_DOM, PUPPET_BARE, False),
 ]
 
-UPDATE_BLACKLIST = ['cdn', 'weather', 'gitlab', 'nas04']
+UPDATE_BLACKLIST = ['cdn', 'weather', 'nas04']
 
 
 class RemoteHandler(RemoteProgress):

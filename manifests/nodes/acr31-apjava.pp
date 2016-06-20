@@ -23,5 +23,5 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
   
-  munin::gatherer::configure_node { 'acr31-apjava': }
+  munin::gatherer::async_node { 'acr31-apjava': }
 }

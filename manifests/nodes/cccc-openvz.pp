@@ -102,6 +102,6 @@ if ( $::monitor ) {
     address    => 'HOSTNAME.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
-  munin::gatherer::configure_node { 'HOSTNAME': }
+  munin::gatherer::async_node { 'HOSTNAME': }
 }
 */

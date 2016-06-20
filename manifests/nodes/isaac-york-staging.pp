@@ -77,7 +77,7 @@ node 'york-staging.dtg.cl.cam.ac.uk' {
   
   class {'dtg::firewall::publichttp':}
 
-  $packages = ['maven2','openjdk-8-jdk','rssh','mongodb','logwatch']
+  $packages = ['maven','openjdk-8-jdk','rssh','mongodb','logwatch']
   package{$packages:
     ensure => installed
   }

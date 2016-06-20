@@ -42,5 +42,5 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
   
-  munin::gatherer::configure_node { 'naps-camfort': }
+  munin::gatherer::async_node { 'naps-camfort': }
 }

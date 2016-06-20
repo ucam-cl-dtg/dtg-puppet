@@ -187,5 +187,5 @@ if ( $::monitor ) {
     address    => 'open-room-map.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
-  munin::gatherer::configure_node { 'open-room-map': }
+  munin::gatherer::async_node { 'open-room-map': }
 }

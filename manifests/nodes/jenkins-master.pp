@@ -10,5 +10,5 @@ if ( $::monitor ) {
     address    => 'jenkins-master.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
-  munin::gatherer::configure_node { 'jenkins-master': }
+  munin::gatherer::async_node { 'jenkins-master': }
 }
