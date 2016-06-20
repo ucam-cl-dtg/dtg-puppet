@@ -11,3 +11,9 @@ if ( $::monitor ) {
 #  }
   munin::gatherer::async_node { 'sak70-math': }
 }
+
+  # mount nas04 on startup
+  file_line { 'mount nas04':
+    line => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/backups/deviceanalyzer /nas4 nfs defaults 0 0',
+    path => '/etc/fstab',
+  }
