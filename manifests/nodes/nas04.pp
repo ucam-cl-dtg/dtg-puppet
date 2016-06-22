@@ -6,7 +6,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $pool_name = 'dtg-pool0'
 
   $desktop_share = zfs_shareopts([],$desktop_ips_array,"rw=@${dtg_subnet}")
-  $deviceanalyzer_share = zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk","dac53.dtg.cl.cam.ac.uk","grapevine.cl.cam.ac.uk","earlybird.cl.cam.ac.uk","deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk"],[])
+  $deviceanalyzer_share = zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk","dac53.dtg.cl.cam.ac.uk","grapevine.cl.cam.ac.uk","earlybird.cl.cam.ac.uk","deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk", "sak70-math.dtg.cl.cam.ac.uk"],[])
 
   # bonded nics
   dtg::kernelmodule::add{'bonding': }
@@ -116,7 +116,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-graphing',
     share_opts => zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk",
-                                 "dac53.dtg.cl.cam.ac.uk",
+                                 "dac53.dtg.cl.cam.ac.uk", "sak70-math.dtg.cl.cam.ac.uk",
                                  "grapevine.cl.cam.ac.uk",
                                  "earlybird.cl.cam.ac.uk",
                                  "deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk",
