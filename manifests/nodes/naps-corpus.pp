@@ -1,7 +1,7 @@
 node /naps-corpus/ {
   include 'dtg::minimal'
 
-  $packages = ['build-essentials','ghc']
+  $packages = ['build-essential','ghc']
 
   package{$packages:
     ensure => installed,
