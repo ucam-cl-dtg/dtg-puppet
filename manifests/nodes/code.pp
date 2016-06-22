@@ -114,8 +114,8 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'web/readyourmeter': source => 'git@code.dtg.cl.cam.ac.uk:web/readyourmeter'}
 
   #husky/scripts
-  dtg::git::mirror::repo{'husky/preseed': source => 'git@code.dtg.cl.cam.ac.uk:husky/preseed'}
-  dtg::git::mirror::repo{'husky/scripts': source => 'git@code.dtg.cl.cam.ac.uk:husky/scripts'}
+  dtg::git::mirror::repo{'husky/preseed': source => 'git@gitlab.dtg.cl.cam.ac.uk:infrastructure/preseed'}
+  dtg::git::mirror::repo{'husky/scripts': source => 'git@gitlab.dtg.cl.cam.ac.uk:infrastructure/scripts'}
 
   #dtg::git::mirror::repo{'': source => 'git@code.dtg.cl.cam.ac.uk:'}
   #dtg::git::mirror::repo{'': source => ''}
