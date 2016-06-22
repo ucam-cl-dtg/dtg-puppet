@@ -115,7 +115,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   ->
   file_line{'configure-varnish-vcl':
     notify => Service['varnish'],
-    line   => '-f /etc/varnish/cdn.vcl \',
+    line   => '-f /etc/varnish/cdn.vcl \\',
     path   => '/etc/default/varnish',
     match  => '.*-f /etc/varnish/.*vcl \\.*'
   }
