@@ -115,7 +115,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   ->
   file_line{'configure-varnish-vcl':
     notify => Service['varnish'],
-    line   => '-f /etc/varnish/cdn.vcl \\',
+    line   => '-f /etc/varnish/cdn.vcl \',
     path   => '/etc/default/varnish',
     match  => '.*-f /etc/varnish/.*vcl \\.*'
   }
@@ -129,7 +129,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   ->
   file_line{'varnish-setup-http-listening-ports':
     notify => Service['varnish'],
-    line   => "DAEMON_OPTS=\"-a :${varnish_http_port},:${varnish_ssl_port} \\",
+    line   => "DAEMON_OPTS=\"-a :${varnish_http_port} -a :${varnish_ssl_port} \\",
     path   => '/etc/default/varnish',
     match  => '^DAEMON_OPTS=.*'
   }
