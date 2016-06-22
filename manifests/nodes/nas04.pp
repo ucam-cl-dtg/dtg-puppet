@@ -6,7 +6,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $pool_name = 'dtg-pool0'
 
   $desktop_share = zfs_shareopts([],$desktop_ips_array,"rw=@${dtg_subnet}")
-  $deviceanalyzer_share = zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk","dac53.dtg.cl.cam.ac.uk","grapevine.cl.cam.ac.uk","earlybird.cl.cam.ac.uk","deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk"],[])
+  $deviceanalyzer_share = zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk","dac53.dtg.cl.cam.ac.uk","grapevine.cl.cam.ac.uk","earlybird.cl.cam.ac.uk","deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk", "sak70-math.dtg.cl.cam.ac.uk"],[])
 
   # bonded nics
   dtg::kernelmodule::add{'bonding': }
@@ -116,7 +116,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-graphing',
     share_opts => zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk",
-                                 "dac53.dtg.cl.cam.ac.uk",
+                                 "dac53.dtg.cl.cam.ac.uk", "sak70-math.dtg.cl.cam.ac.uk",
                                  "grapevine.cl.cam.ac.uk",
                                  "earlybird.cl.cam.ac.uk",
                                  "deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk",
@@ -170,6 +170,16 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     command => "nice -n 19 /bin/bash -c 'ssh root@malamute.dtg.cl.cam.ac.uk -i /home/backup/.ssh/id_rsa -o UserKnownHostsFile=/home/backup/.ssh/known_hosts zones/deviceanalyzer/archive@`sudo zfs list -H -t snapshot -d 1 -o name -S creation dtg-pool0/backups/deviceanalyzer/archive | head -n1 | cut --delim=\"@\" -f 2` | sudo zfs recv dtg-pool0/backups/deviceanalyzer/archive'",
     minute  => cron_minute("backup deviceanalyzer/archive"),
     hour    => cron_hour("backup deviceanalyzer/archive"),
+    weekday => "*",
+  }
+  ->
+  cron {"backup deviceanalyzer/analysis":
+    ensure  => present,
+    user    => 'backup',
+    environment => "MAILTO=dtg-infra@cl.cam.ac.uk",
+    command => "nice -n 19 /bin/bash -c 'ssh root@malamute.dtg.cl.cam.ac.uk -i /home/backup/.ssh/id_rsa -o UserKnownHostsFile=/home/backup/.ssh/known_hosts zones/deviceanalyzer/analysis@`sudo zfs list -H -t snapshot -d 1 -o name -S creation dtg-pool0/backups/deviceanalyzer/analysis | head -n1 | cut --delim=\"@\" -f 2` | sudo zfs recv dtg-pool0/backups/deviceanalyzer/analysis'",
+    minute  => cron_minute("backup deviceanalyzer/analysis"),
+    hour    => cron_hour("backup deviceanalyzer/analysis"),
     weekday => "*",
   }
   
