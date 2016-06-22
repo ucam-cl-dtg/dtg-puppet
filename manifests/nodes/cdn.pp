@@ -129,7 +129,7 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   ->
   file_line{'varnish-setup-http-listening-ports':
     notify => Service['varnish'],
-    line   => "DAEMON_OPTS=\"-a :${varnish_http_port},:${varnish_ssl_port} \\",
+    line   => "DAEMON_OPTS=\"-a :${varnish_http_port} -a :${varnish_ssl_port} \\",
     path   => '/etc/default/varnish',
     match  => '^DAEMON_OPTS=.*'
   }

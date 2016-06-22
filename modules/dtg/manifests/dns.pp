@@ -3,11 +3,13 @@ class dtg::dns ($dns_server = false) {
   # This config doesn't allow it through the firewall which must be done elsewhere.
   if !$dns_server {
     class { 'unbound':
-      interface    => ['::0','0.0.0.0'],
-      access       => [ $::local_subnet, '::1', '192.168.0.0/16'],
-      tcp_upstream => true,
-      num_threads  => $::processorcount,
-      prefetch     => 'yes',
+      interface            => ['::0','0.0.0.0'],
+      access               => [ $::local_subnet, '::1', '192.168.0.0/16'],
+      tcp_upstream         => true,
+      num_threads          => $::processorcount,
+      prefetch             => 'yes',
+      # Since we can't do DNS directly we need to specify -f
+      anchor_fetch_command => 'unbound-anchor -a /var/lib/unbound/root.key -v -f /etc/resolv.conf',
     }
   } else {
     class { 'unbound':
@@ -25,6 +27,7 @@ class dtg::dns ($dns_server = false) {
       statistics_cumulative => false,
       statistics_interval   => 0,
       control_enable        => 'yes',
+      anchor_fetch_command  => 'unbound-anchor -a /var/lib/unbound/root.key -v -f /etc/resolv.conf',
     }
   }
   unbound::forward { '.':
