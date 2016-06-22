@@ -72,11 +72,11 @@ if [ ! -d $PUPPETBARE ]; then
 	./bootstrap.sh
 fi
 
-# if the hostname is puppy* then we want to import dom0's key so
+# if the hostname is puppy* (or ubuntu) then we want to import dom0's key so
 # scripts can SSH in and sort this out. We don't want dom0 to
 # monkeysphere. We also generate a new fingerprint
 
-if [ $(echo $HOSTNAME | grep puppy) ]; then
+if [ $(echo $HOSTNAME | grep puppy) ] || [ "$HOSTNAME" = "ubuntu" ]; then
     rm -rf /etc/ssh/ssh_host_*
     ssh-keygen -t ed25519 -h -f /etc/ssh/ssh_host_ed25519_key < /dev/null
     ssh-keygen -t rsa -b 4096 -h -f /etc/ssh/ssh_host_rsa_key < /dev/null
