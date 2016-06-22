@@ -219,6 +219,12 @@ class admin_users {
       keys      => ['Russell Moore <rjm49@cam.ac.uk>'],
       uid       => 3651,
     }
+    dtg::add_user { 'mrd45':
+      real_name => 'Matthew Danish',
+      groups    => [],
+      keys      => ['Matthew Danish <mrd45@cam.ac.uk>'],
+      uid       => 3541,
+    }
 
     # System users which need to be present on all machines
     # This applies for example if the user needs to write data which
