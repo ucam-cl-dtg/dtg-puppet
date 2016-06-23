@@ -128,7 +128,7 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
     group    => 'root'
   }
   ->
-  file { '/etc/cdn-bare/hooks/post-update':
+  file { '/etc/www-bare/hooks/post-update':
     ensure => 'file',
     owner  => 'root',
     group  => 'root',
