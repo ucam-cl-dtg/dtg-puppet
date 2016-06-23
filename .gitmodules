@@ -78,7 +78,7 @@
 	url = https://github.com/garethr/garethr-docker.git
 [submodule "modules/unbound"]
 	path = modules/unbound
-	url = https://github.com/xaque208/puppet-unbound.git
+	url = https://github.com/ucam-cl-dtg/puppet-unbound.git
 [submodule "modules/puppet-sonarqube"]
 	path = modules/sonarqube
 	url = https://github.com/maestrodev/puppet-sonarqube.git
