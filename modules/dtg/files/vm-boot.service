@@ -1,0 +1,10 @@
+[Unit]
+SourcePath=/etc/init.d/vm-boot.sh
+Description=Run vm-boot.sh at startup
+
+[Service]
+ExecStart=/etc/init.d/vm-boot.sh
+TimeoutSec=30min
+
+[Install]
+WantedBy=multi-user.target
