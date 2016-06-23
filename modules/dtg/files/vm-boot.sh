@@ -69,7 +69,7 @@ fi
 if [ ! -d $PUPPETBARE ]; then
 	wget $BOOTSTRAP
 	chmod +x bootstrap.sh
-	./bootstrap.sh
+	./bootstrap.sh | tee --append /var/log/bootstrap.log
 fi
 
 # if the hostname is puppy* (or ubuntu) then we want to import dom0's key so
@@ -83,11 +83,11 @@ if [ $(echo $HOSTNAME | grep puppy) ] || [ "$HOSTNAME" = "ubuntu" ]; then
 
     mkdir -p /root/.ssh/
     echo "${DOM0_PUBLIC_KEY}" >> $AUTHORIZED_KEYS
-    if [  "$(ifconfig eth0 | grep -Eo ..\(\:..\){5})" = "00:16:3e:e8:14:24" ]; then 
-	echo dhcp > /etc/hostname
-	start hostname
-	cd /etc/puppet-bare
-	./hooks/post-update
+    if [  "$(ifconfig eth0 | grep -Eo ..\(\:..\){5})" = "00:16:3e:e8:14:24" ]; then
+        echo dhcp > /etc/hostname
+        start hostname
+        cd /etc/puppet-bare
+        ./hooks/post-update
     fi
     monkeysphere-authentication update-users
 else
