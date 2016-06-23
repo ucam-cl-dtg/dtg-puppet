@@ -2,6 +2,9 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
 
   # Set up the repositories, get some entropy then do everything else
   #  entropy needs to start being provided before it is consumed
+  # Do DNS last as fiddling with that while doing other things can cause other
+  #  things to fail
+  stage {'dns': } Stage['main'] -> Stage['dns']
   stage {'entropy': before => Stage['main'] }
   stage {'entropy-host': before => Stage['entropy'] }
   stage {'repos': before => Stage['entropy-host'] }
@@ -80,7 +83,10 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
     authorized_keys_file => '/var/lib/monkeysphere/authorized_keys/%u .ssh/authorized_keys',
   }
 
-  class { 'dtg::dns': dns_server => $dns_server }
+  class { 'dtg::dns':
+    dns_server => $dns_server,
+    stage => 'dns',
+  }
   class { 'dtg::git::config': }
   class { 'dtg::rsyslog': }
   class { 'etckeeper': require => Class['dtg::git::config'] }
