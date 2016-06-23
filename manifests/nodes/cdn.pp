@@ -1,4 +1,4 @@
-node 'cdn.dtg.cl.cam.ac.uk' {
+node /cdn(-\d+)?/ {
   include 'dtg::minimal'
 
   class {'dtg::isaac':}
