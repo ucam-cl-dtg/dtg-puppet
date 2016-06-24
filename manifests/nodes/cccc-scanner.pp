@@ -66,6 +66,11 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
     notify => Service['pound']
   }
 
+  exec{'generate pound dhparams':
+    command => 'openssl dhparam -out /etc/pound/dhparams.pem 3072',
+    creates => '/etc/pound/dhparams.pem',
+  }
+
   service { 'varnish':
       ensure  => 'running',
       enable  => true,
@@ -79,11 +84,12 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
   }
 
   file { '/etc/pound/pound.cfg':
-      mode   => '0644',
-      owner  => 'root',
-      group  => 'root',
-      source => 'puppet:///modules/dtg/cccc/pound.cfg',
-      notify => Service['pound']
+      mode    => '0644',
+      owner   => 'root',
+      group   => 'root',
+      source  => 'puppet:///modules/dtg/cccc/pound.cfg',
+      notify  => Service['pound'],
+      require => Exec['generate pound dhparams'],
   }
   ->
   file { '/etc/varnish/cdn.vcl':
