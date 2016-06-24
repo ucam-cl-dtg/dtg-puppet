@@ -93,28 +93,34 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
       group  => 'root',
       source => 'puppet:///modules/dtg/cdn/varnish/cdn.vcl'
   }
-  ->
-  file_line{'configure-varnish-vcl':
-    notify => Service['varnish'],
-    line   => '-f /etc/varnish/cdn.vcl \\',
-    path   => '/etc/default/varnish',
-    match  => '.*-f /etc/varnish/.*vcl \\.*'
+  file{'/etc/systemd/system/varnish.service.d/':
+      ensure => directory,
   }
-  ->
-  file_line{'configure-varnish-memory':
-    notify => Service['varnish'],
-    line   => "-s malloc,512m\"",
-    path   => '/etc/default/varnish',
-    match  => '.*-s malloc,.*"'
-  }
-  ->
-  file_line{'varnish-setup-http-listening-ports':
-    notify => Service['varnish'],
-    line   => "DAEMON_OPTS=\"-a :${varnish_http_port} -a :${varnish_ssl_port} \\",
-    path   => '/etc/default/varnish',
-    match  => '^DAEMON_OPTS=.*'
-  }
-  ->
+  file{'/etc/systemd/system/varnish.service.d/varnish.conf':
+      ensure  => file,
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      content => "[Unit]
+Description=Varnish HTTP accelerator
+Documentation=https://www.varnish-cache.org/docs/4.1/ man:varnishd
+
+[Service]
+Type=simple
+LimitNOFILE=131072
+LimitMEMLOCK=82000
+ExecStart=/usr/sbin/varnishd -j unix,user=vcache -F -a :${varnish_http_port} -a :${varnish_ssl_port} -T localhost:6082 -f /etc/varnish/cdn.vcl -S /etc/varnish/secret -s malloc,256m
+ExecReload=/usr/share/varnish/reload-vcl
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+
+[Install]
+WantedBy=multi-user.target
+",
+      notify  => Service['varnish']
+  } ->
   exec { 'start-apache':
     command => 'systemctl start apache2',
     unless  => 'systemctl is-active apache2.service',
