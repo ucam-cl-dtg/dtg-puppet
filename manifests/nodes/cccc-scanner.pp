@@ -114,6 +114,7 @@ Documentation=https://www.varnish-cache.org/docs/4.1/ man:varnishd
 Type=simple
 LimitNOFILE=131072
 LimitMEMLOCK=82000
+ExecStart=
 ExecStart=/usr/sbin/varnishd -j unix,user=vcache -F -a :${varnish_http_port} -a :${varnish_ssl_port} -T localhost:6082 -f /etc/varnish/cdn.vcl -S /etc/varnish/secret -s malloc,256m
 ExecReload=/usr/share/varnish/reload-vcl
 ProtectSystem=full
