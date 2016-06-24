@@ -121,6 +121,10 @@ WantedBy=multi-user.target
 ",
       notify  => Service['varnish']
   } ->
+  file{'/etc/systemd/system/multi-user.target.wants/varnish.service':
+    ensure => link,
+    target => '/etc/systemd/system/varnish.service.d/varnish.conf',
+  } ->
   exec { 'start-apache':
     command => 'systemctl start apache2',
     unless  => 'systemctl is-active apache2.service',
