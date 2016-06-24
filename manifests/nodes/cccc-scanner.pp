@@ -144,7 +144,7 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
   class {'letsencrypt':
     email          => $::from_address,
     configure_epel => false,
-    require        => Service['apache2']
+    require        => [Service['apache2'], Service['pound']]
   } ->
   letsencrypt::certonly { $::fqdn:
     plugin          => 'webroot',
@@ -152,7 +152,10 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
     manage_cron     => true,
     # Evil hack because pound requires everything in the same file
     additional_args => [" && cat /etc/letsencrypt/live/${::fqdn}/privkey.pem /etc/letsencrypt/live/${::fqdn}/fullchain.pem > /etc/letsencrypt/live/${::fqdn}/privkey_fullchain.pem"],
-    notify          => Service['pound']
+  } ->
+  exec {'restart pound':
+    command     => 'service pound restart',
+    refreshonly => true,
   }
 
   class {'dtg::firewall::publichttp':}
