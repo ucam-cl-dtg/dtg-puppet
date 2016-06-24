@@ -81,16 +81,16 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
 
   file { '/etc/pound/pound.cfg':
       mode   => '0644',
-      owner  => root,
-      group  => isaac,
-      source => 'puppet:///modules/dtg/cdn/pound/pound.cfg',
+      owner  => 'root',
+      group  => 'root',
+      source => 'puppet:///modules/dtg/cccc/pound.cfg',
       notify => Service['pound']
   }
   ->
   file { '/etc/varnish/cdn.vcl':
       mode   => '0755',
-      owner  => root,
-      group  => isaac,
+      owner  => 'root',
+      group  => 'root',
       source => 'puppet:///modules/dtg/cdn/varnish/cdn.vcl'
   }
   ->
@@ -144,7 +144,7 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
   class {'letsencrypt':
     email          => $::from_address,
     configure_epel => false,
-    require        => [Service['apache2'], Service['pound']]
+    require        => [Service['apache2'], Service['pound']],
   } ->
   letsencrypt::certonly { $::fqdn:
     plugin          => 'webroot',
