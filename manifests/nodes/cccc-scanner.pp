@@ -16,7 +16,6 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
   $apache_port = $apache_http_port
 
   class {'apache::ubuntu': } ->
-  apache::module {'cgi':} ->
   apache::module {'headers':} ->
   apache::module {'rewrite':} ->
   apache::module {'expires':} ->
