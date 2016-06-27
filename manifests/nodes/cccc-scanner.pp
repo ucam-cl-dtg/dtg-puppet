@@ -161,7 +161,7 @@ WantedBy=multi-user.target
   class {'letsencrypt':
     email          => $::from_address,
     configure_epel => false,
-    require        => [Service['apache2'], Service['pound'], Service['varnish']],
+    require        => [Service['apache2'], Service['pound'], Service['varnish'], Class['dtg::firewall::publichttp']],
   } ->
   exec {'letsencrypt first run without working pound':
     command => "letsencrypt --agree-tos certonly -a standalone -d ${::fqdn} && cat /etc/letsencrypt/live/${::fqdn}/privkey.pem /etc/letsencrypt/live/${::fqdn}/fullchain.pem > /etc/letsencrypt/live/${::fqdn}/privkey_fullchain.pem && service pound restart",
