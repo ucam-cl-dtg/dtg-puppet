@@ -89,14 +89,15 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
       group   => 'root',
       source  => 'puppet:///modules/dtg/cccc/pound.cfg',
       notify  => Service['pound'],
-      require => Exec['generate pound dhparams'],
+      require => [Exec['generate pound dhparams'], Package['pound']],
   }
-  ->
+
   file { '/etc/varnish/cdn.vcl':
       mode   => '0755',
       owner  => 'root',
       group  => 'root',
-      source => 'puppet:///modules/dtg/cdn/varnish/cdn.vcl'
+      source => 'puppet:///modules/dtg/cdn/varnish/cdn.vcl',
+      require => Package['varnish'],
   }
   file{'/etc/systemd/system/varnish.service.d/':
       ensure => directory,
@@ -160,7 +161,7 @@ WantedBy=multi-user.target
   class {'letsencrypt':
     email          => $::from_address,
     configure_epel => false,
-    require        => [Service['apache2'], Service['pound']],
+    require        => [Service['apache2'], Service['pound'], Service['varnish']],
   } ->
   exec {'letsencrypt first run without working pound':
     command => "letsencrypt --agree-tos certonly -a standalone -d ${::fqdn} && cat /etc/letsencrypt/live/${::fqdn}/privkey.pem /etc/letsencrypt/live/${::fqdn}/fullchain.pem > /etc/letsencrypt/live/${::fqdn}/privkey_fullchain.pem && service pound restart",
