@@ -69,6 +69,7 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
   exec{'generate pound dhparams':
     command => 'openssl dhparam -out /etc/pound/dhparams.pem 3072',
     creates => '/etc/pound/dhparams.pem',
+    timeout => '1200', # 20 minutes
   }
 
   service { 'varnish':
