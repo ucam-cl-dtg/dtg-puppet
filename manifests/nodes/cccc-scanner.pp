@@ -99,10 +99,10 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
       group  => 'root',
       source => 'puppet:///modules/dtg/cdn/varnish/cdn.vcl',
       require => Package['varnish'],
-  }
+  } ->
   file{'/etc/systemd/system/varnish.service.d/':
       ensure => directory,
-  }
+  } ->
   file{'/etc/systemd/system/varnish.service.d/varnish.conf':
       ensure  => file,
       owner   => 'root',
