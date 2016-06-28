@@ -185,6 +185,10 @@ WantedBy=multi-user.target
   class {'dtg::firewall::publichttp':}
 
   class {'dtg::firewall::publichttps':}
+
+  package{'zmap':
+    ensure => installed,
+  }
 }
 
 if ( $::monitor ) {

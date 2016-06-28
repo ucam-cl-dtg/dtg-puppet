@@ -35,3 +35,6 @@ find .git -type d -print0 | xargs -0 sudo chmod --quiet g+s || true
 
 # Delete any files that are not part of the git repository
 git clean -fffd
+
+# Stuff will be cached
+sudo service varnish restart
