@@ -1,7 +1,7 @@
 node /naps-corpus/ {
   include 'dtg::minimal'
 
-  $packages = ['build-essential','ghc','libblas-dev','liblapack-dev']
+  $packages = ['build-essential','ghc','libblas-dev','liblapack-dev','libpcre3-dev']
 
   package{$packages:
     ensure => installed,
