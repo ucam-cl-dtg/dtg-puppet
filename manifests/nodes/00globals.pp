@@ -152,12 +152,12 @@ class admin_users {
       keys      => ['Stephen Cummins (Main key) <sacummins@gmail.com>'],
       uid       => 3286,
     }
-    dtg::add_user { 'ags46':
-      real_name => 'Alistair Stead',
-      groups    => [ 'isaac' ],
-      keys      => ['Alistair Stead <ags46@cam.ac.uk>'],
-      uid       => 2815,
-    }
+    # dtg::add_user { 'ags46':
+    #   real_name => 'Alistair Stead',
+    #   groups    => [ 'isaac' ],
+    #   keys      => ['Alistair Stead <ags46@cam.ac.uk>'],
+    #   uid       => 2815,
+    # }
     dtg::add_user { 'sak70':
       real_name => 'Stephan Kollmann',
       groups    => [],
@@ -200,12 +200,12 @@ class admin_users {
       keys      => ['Andrea Franceschini (porto) <af599@cam.ac.uk>', 'Andrea Franceschini (omoikane) <af599@cam.ac.uk>'],
       uid       => 3619,
     }
-    dtg::add_user { 'jk672':
-      real_name => 'Nicolas Karsten',
-      groups    =>  [],
-      keys      => ['Nicolas Karsten <karsten@dice.hhu.de>'],
-      uid       => 3633,
-    }
+    # dtg::add_user { 'jk672':
+    #   real_name => 'Nicolas Karsten',
+    #   groups    =>  [],
+    #   keys      => ['Nicolas Karsten <karsten@dice.hhu.de>'],
+    #   uid       => 3633,
+    # }
     dtg::add_user { 'jps79':
       real_name => 'James Sharkey',
       groups    =>  ['isaac'],
