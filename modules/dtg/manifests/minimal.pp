@@ -1,4 +1,4 @@
-class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = true, $managefirewall = true, $dns_server = false) {
+class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = true, $managefirewall = true, $dns_server = false, $user_whitelist = undef) {
 
   # Set up the repositories, get some entropy then do everything else
   #  entropy needs to start being provided before it is consumed
@@ -153,9 +153,11 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
   monkeysphere::authorized_user_ids { 'root':
     user_ids => $ms_admin_user_ids
   }
+
   # Create the admin users
   class { 'admin_users':
     require => Class['dtg::email'],
+    user_whitelist => $user_whitelist,
   }
   # Allow admin users to push puppet config
   if $adm_sudoers {
