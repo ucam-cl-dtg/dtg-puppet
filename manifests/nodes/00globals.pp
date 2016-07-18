@@ -259,15 +259,6 @@ class admin_users ($user_whitelist = undef) {
       uid            => 2628,
       user_whitelist => $user_whitelist,
     }
-
-    dtg::add_user { 'jdw74':
-      real_name => 'James Wood',
-      groups    => [],
-      keys      => ['James Wood <jdw74@cam.ac.uk>'],
-      uid       => 238847,
-    }
-
-
     # System users which need to be present on all machines
     # This applies for example if the user needs to write data which
     # is nfs mounted
