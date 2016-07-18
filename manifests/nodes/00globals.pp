@@ -265,7 +265,6 @@ class admin_users ($user_whitelist = undef) {
       groups    => [],
       keys      => ['James Wood <jdw74@cam.ac.uk>'],
       uid       => 238847,
-      user_whitelist => $user_whitelist,
     }
 
 
