@@ -232,6 +232,15 @@ class admin_users {
       keys      => ['Martin Kleppmann <mk428@cam.ac.uk>'],
       uid       => 2628,
     }
+
+    dtg::add_user { 'jdw74':
+      real_name => 'James Wood',
+      groups    => [],
+      keys      => ['James Wood <jdw74@cam.ac.uk>'],
+      uid       => 238847,
+    }
+
+
     # System users which need to be present on all machines
     # This applies for example if the user needs to write data which
     # is nfs mounted
