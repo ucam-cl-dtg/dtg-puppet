@@ -3,9 +3,7 @@ node 'trvedata-signaltesting.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   ssh_authorized_key {'jdw74 key':
     ensure => present,
-    key    => 'ssh-rsa
-AAAAB3NzaC1yc2EAAAADAQABAAABAQDF6Bw1ogRxz8gXbqP2E2Wu7VeM+aFMqgF6m8KtZcU45sJkmZkNSt55uhcDaeW1b+He8p73uKyt0+QmMt+h916hDGx+NM+ZftQS1mC1gAwfqg8hro3CzbXgeULCjZS+ozt7Iqj7I1ONG6PSffr0keJ2xoVfQ8KhCyK4pjODq4aHICFQ1lG9+2xMjHni07Urbv5RJq+NXhhxo3/rgyV4mEig9Qzis6p6vTCYSCcAM7hllLD1PdifU87utV2/KKVRKrzEKXz/cYjfO25MeMf85CLKsG9qrIA+1Mk7+o8ZMYIce0pAreluD+HLJnNzC+EzQetlhfRQzxHdei1YEJdAZ8Hv
-james@dhcp-10-248-120-239.eduroam.wireless.private.cam.ac.uk',
+    key    => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDF6Bw1ogRxz8gXbqP2E2Wu7VeM+aFMqgF6m8KtZcU45sJkmZkNSt55uhcDaeW1b+He8p73uKyt0+QmMt+h916hDGx+NM+ZftQS1mC1gAwfqg8hro3CzbXgeULCjZS+ozt7Iqj7I1ONG6PSffr0keJ2xoVfQ8KhCyK4pjODq4aHICFQ1lG9+2xMjHni07Urbv5RJq+NXhhxo3/rgyV4mEig9Qzis6p6vTCYSCcAM7hllLD1PdifU87utV2/KKVRKrzEKXz/cYjfO25MeMf85CLKsG9qrIA+1Mk7+o8ZMYIce0pAreluD+HLJnNzC+EzQetlhfRQzxHdei1YEJdAZ8Hv',
     user   => 'jdw74',
     type   => 'ssh-rsa',
   }
