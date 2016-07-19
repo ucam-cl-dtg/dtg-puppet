@@ -9,6 +9,7 @@ import argparse
 import datetime
 from datetime import timedelta
 from fabric.api import cd, env, execute, output, parallel, run, sudo, show, task
+from fabric.exceptions import CommandTimeout
 from git import Repo, RemoteProgress
 from jinja2 import Environment, FileSystemLoader
 import os
