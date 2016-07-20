@@ -32,11 +32,6 @@ node /naps-camfort(-\d+)?/ {
     ensure => directory,
     owner  => acr31,
   }
-  ->
-  file{'/usr/local/camfort/static':
-    ensure => directory,
-    owner  => acr31,
-  }
 
   file{'/usr/local/camfort-webapp/workspaces':
     ensure => directory,
