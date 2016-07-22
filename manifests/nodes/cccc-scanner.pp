@@ -1,6 +1,11 @@
 node 'cccc-scanner.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 
+  class {'dtg::spoofer::ppa': stage => 'repos' }
+  package{'spoofer-prober':
+    ensure => installed
+  }
+
   # port configuration
   $apache_http_port = '8080'
   $apache_ssl_port = '8443'
@@ -199,4 +204,8 @@ if ( $::monitor ) {
   }
   
   munin::gatherer::async_node { 'cccc-scanner': }
+}
+
+class dtg::spoofer::ppa {
+  apt::ppa { 'ppa:matthewluckie/spoofer': }
 }
