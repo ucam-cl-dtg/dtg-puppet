@@ -1,6 +1,9 @@
 node /naps-camfort(-\d+)?/ {
   include 'dtg::minimal'
 
+  User<|title == mojpc2 |> { groups +>[ 'adm' ]}
+  User<|title == mrd45 |> { groups +>[ 'adm' ]}
+
   class {'apache::ubuntu': } ->
   apache::module {'cgi':} ->
   apache::site {'camfort':
@@ -21,6 +24,11 @@ node /naps-camfort(-\d+)?/ {
   }
 
   file{'/usr/local/camfort-webapp':
+    ensure => directory,
+    owner  => acr31,
+  }
+  
+  file{'/usr/local/camfort':
     ensure => directory,
     owner  => acr31,
   }
