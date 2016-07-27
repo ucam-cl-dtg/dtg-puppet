@@ -102,6 +102,11 @@ node 'africa01.dtg.cl.cam.ac.uk' {
 
 
   # CCCC Data
+  dtg::zfs::fs{'cccc':
+    pool_name  => $pool_name,
+    fs_name    => 'cccc',
+    share_opts => 'off',
+  } ->
   dtg::zfs::fs{'cccc/iplane-mirror':
     pool_name  => $pool_name,
     fs_name    => 'cccc/iplane-mirror',
