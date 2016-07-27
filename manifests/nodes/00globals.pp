@@ -275,8 +275,9 @@ class admin_users ($user_whitelist = undef) {
       gid => 40000,
       password => "*",
     }
+    # On africa01 hadoop is 40001
     group { "cccc-data" :
-      gid => 40001,
+      gid => 40002,
     }
     ->
     user { "cccc-data" :
@@ -284,8 +285,8 @@ class admin_users ($user_whitelist = undef) {
       comment => "CCCC data user",
       shell => "/usr/sbin/nologin",
       groups => "cccc-data",
-      uid => 40001,
-      gid => 40001,
+      uid => 40002,
+      gid => 40002,
       password => "*",
     }
     
