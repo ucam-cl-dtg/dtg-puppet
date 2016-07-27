@@ -74,7 +74,7 @@ group { 'rscfl':
 class admin_users ($user_whitelist = undef) {
     dtg::add_user { 'drt24':
         real_name      => 'Daniel Thomas',
-        groups         => [ 'adm', 'deviceanalyzer', 'dtg-adm' ],
+        groups         => [ 'adm', 'deviceanalyzer', 'dtg-adm', 'cccc-data' ],
         keys           => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
         uid            => 2607,
         user_whitelist => $user_whitelist,
@@ -132,7 +132,7 @@ class admin_users ($user_whitelist = undef) {
     }
     dtg::add_user { 'arb33':
       real_name      => 'Alastair Beresford',
-      groups         => [ 'isaac','adm','dtg-adm' ],
+      groups         => [ 'isaac','adm','dtg-adm', 'cccc-data' ],
       keys           => ['Alastair Beresford (ssh) <arb33@cam.ac.uk>'],
       uid            => 2125,
       user_whitelist => $user_whitelist,
@@ -273,6 +273,19 @@ class admin_users ($user_whitelist = undef) {
       groups => "www-deviceanalyzer",
       uid => 40000,
       gid => 40000,
+      password => "*",
+    }
+    group { "cccc-data" :
+      gid => 40001,
+    }
+    ->
+    user { "cccc-data" :
+      ensure => present,
+      comment => "CCCC data user",
+      shell => "/usr/sbin/nologin",
+      groups => "cccc-data",
+      uid => 40001,
+      gid => 40001,
       password => "*",
     }
     
