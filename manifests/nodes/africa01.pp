@@ -101,6 +101,18 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   }
 
 
+  # CCCC Data
+  dtg::zfs::fs{'cccc/iplane-mirror':
+    pool_name  => $pool_name,
+    fs_name    => 'cccc/iplane-mirror',
+    share_opts => 'off',
+  } ->
+  file {"/${pool_name}/cccc/iplane-mirror":
+    ensure => directory,
+    owner  => 'cccc-data',
+    group  => 'cccc-data',
+    mode   => 'ug+rwx',
+  }
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
 
