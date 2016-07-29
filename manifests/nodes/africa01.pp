@@ -118,6 +118,15 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     group  => 'cccc-data',
     mode   => 'ug+rwx',
   }
+  cron {"mirror iplane daily":
+    ensure      => present,
+    user        => 'cccc-data',
+    minute      => cron_minute("mirror iplane daily"),
+    hour        => 14,
+    weekday     => "*",
+    environment => "MAILTO=cccc-infra@cl.cam.ac.uk",
+    command     => 'bash -c "wget --recursive --level=2 --convert-links --timestamping --no-remove-listing --no-parent --domains=iplane.cs.washington.edu --wait=1 --limit-rate=5m --relative -e robots=off http://iplane.cs.washington.edu/data/iplane_logs/`date --date=yesterday --iso-8601 | sed \'s|-|/|g\'`" > /dev/null',
+  }
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
 
