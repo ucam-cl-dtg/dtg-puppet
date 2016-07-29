@@ -117,7 +117,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     owner  => 'cccc-data',
     group  => 'cccc-data',
     mode   => 'ug+rwx',
-  }
+  } ->
   cron {"mirror iplane daily":
     ensure      => present,
     user        => 'cccc-data',
@@ -126,6 +126,18 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     weekday     => "*",
     environment => "MAILTO=cccc-infra@cl.cam.ac.uk",
     command     => 'bash -c "cd /data-pool0/cccc/iplane-mirror && wget --recursive --level=2 --convert-links --timestamping --no-remove-listing --no-parent --domains=iplane.cs.washington.edu --wait=1 --limit-rate=5m --relative -e robots=off http://iplane.cs.washington.edu/data/iplane_logs/`date --date=yesterday --iso-8601 | sed \'s|-|/|g\'`" > /dev/null',
+  }
+
+  dtg::zfs::fs{'cccc/internet-map':
+    pool_name  => $pool_name,
+    fs_name    => 'cccc/internet-map',
+    share_opts => 'off',
+    require    => Dtg::Zfs::Fs['cccc'],
+  }
+
+  # Install go development environment
+  package{'golang':
+    ensure => installed,
   }
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
