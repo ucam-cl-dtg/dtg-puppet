@@ -1,7 +1,7 @@
-define bayncore_ssh_user($real_name,$uid) {
+define bayncore_ssh_user($real_name,$uid,$ensure = "present") {
   $username = $title
   user { $username:
-    ensure     => present,
+    ensure     => $ensure,
     comment    => "${real_name} <${email}>",
     home       => "/home/${username}",
     shell      => '/bin/bash',
@@ -14,6 +14,7 @@ define bayncore_ssh_user($real_name,$uid) {
   group { $username:
     require => User[$username],
     gid     => $uid,
+    ensure  => $ensure
   }
 }
 
