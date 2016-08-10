@@ -64,11 +64,13 @@ define bayncore_setup() {
   bayncore_ssh_user {'bpwc2':
     real_name => 'Ben Catterall (Undergraduate)',
     uid       => 231340,
+    ensure    => absent,
   }
 
   bayncore_ssh_user {'smj58':
     real_name => 'Siddhant Jayakumar (Undergraduate)',
     uid       => 229858,
+    ensure    => absent,
   }
 
   bayncore_ssh_user {'sa614':
@@ -81,7 +83,10 @@ define bayncore_setup() {
     uid       => 20005,
   }
 
-  
+  bayncore_ssh_user {'stephenblairchappell':
+    real_name => 'Stephen Blair-Chappell (Bayncore)',
+    uid       => 20006
+  }
 
 }
 
