@@ -61,6 +61,12 @@ node /isaac-\d+/ {
     hour    => 0,
     minute  => 0
   }
+  ->
+  cron { 'osticket-cron':
+    command => 'docker exec isaac-tickets php /var/www/html/api/cron.php',
+    user    => root,
+    minute  => '*/1'
+  }
 
   # Home directory of isaac user.
 
