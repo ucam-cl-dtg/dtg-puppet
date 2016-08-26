@@ -1,10 +1,10 @@
 node /gitlab-runner(-\d+)?/ {
   include 'dtg::minimal'
-  include 'docker'
 
   class {'dtg::scm':}
 
   class {'dtg::gitlab::runner::repos': stage => 'repos'}
+  class {'docker': stage => 'repos'}
 
   package {
     'gitlab-ci-multi-runner':
@@ -12,7 +12,7 @@ node /gitlab-runner(-\d+)?/ {
   }
 }
 
-class dtg::gilab::runner::repos{
+class dtg::gitlab::runner::repos{
   apt::source { 'gitlab-ci':
     location => 'https://packages.gitlab.com/runner/gitlab-ci-multi-runner/ubuntu/',
     repos    => 'main',
