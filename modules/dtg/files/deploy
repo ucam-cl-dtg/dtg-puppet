@@ -727,8 +727,7 @@ if __name__ == '__main__':
     OUT_PATH = "%s/%s" % (args.out_dir, OUT_FILE)
     OUT_URL = "https://www.cl.cam.ac.uk/research/dtg/infra/%s" % OUT_FILE
     TASKS_PATH = "%s/%s" % (args.out_dir, TASKS_FILE)
-    TASKS_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
-                                                               TASKS_FILE)
+    TASKS_URL = "https://www.cl.cam.ac.uk/research/dtg/infra/%s" % TASKS_FILE
     OUT_DIR = args.out_dir
 
     tempdirname = tempfile.mkdtemp()
