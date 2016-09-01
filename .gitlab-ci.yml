@@ -7,7 +7,7 @@ test-apply:
   stage: test
   allow_failure: true
   script:
-    - apt-get install -qq -o=Dpkg::Use-Pty=0 puppet-common
+    - apt-get install -y puppet-common git > /dev/null
     - git submodule init
     - git submodule update
     - FACTER_fqdn=default.dtg.cl.cam.ac.uk puppet apply --noop --modulepath=modules --node_name_value=default.dtg.cl.cam.ac.uk manifests/nodes/
@@ -17,7 +17,7 @@ test-apply:
 lint:
   stage: test
   script:
-    - apt-get install -qq -o=Dpkg::Use-Pty=0 puppet-lint
+    - apt-get install -y puppet-lint > /dev/null
     - puppet-lint .
   only:
     - branches
