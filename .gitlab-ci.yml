@@ -3,9 +3,8 @@ image: ubuntu:16.04
 before_script:
   - apt-get update -qq
 
-test-apply:
-  stage: test
-  allow_failure: true
+base-apply:
+  stage: build
   script:
     - apt-get install -y puppet-common git sudo > /dev/null
     - git submodule init -q
