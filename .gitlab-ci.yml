@@ -18,11 +18,6 @@ lint:
   stage: test
   script:
     - apt-get install -qq -o=Dpkg::Use-Pty=0 puppet-lint
-    - puppet-lint manifests/nodes
-    - puppet-lint modules/dtg
-    - puppet-lint modules/exim
-    - puppet-lint modules/gpg
-    - puppet-lint modules/munin
-    - puppet-lint modules/nagios
+    - puppet-lint .
   only:
     - branches
