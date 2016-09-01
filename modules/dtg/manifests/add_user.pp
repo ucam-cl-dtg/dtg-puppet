@@ -70,6 +70,6 @@ define dtg::add_user ( $real_name, $groups = '', $keys = undef, $uid, $dot_file_
     ->
     group { $username:
      ensure     => absent
-    }      
+    }
   }
 }
