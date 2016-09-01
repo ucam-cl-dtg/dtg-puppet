@@ -1,0 +1,21 @@
+image: ubuntu:16.04
+
+before_script:
+  - apt-get update -qq
+  - apt-get install -qq puppet-lint puppet-common
+
+test-apply:
+  stage: test
+  allow_failure: true
+  script:
+    - FACTER_fqdn=default.dtg.cl.cam.ac.uk puppet apply --noop --modulepath=modules --node_name_value=default.dtg.cl.cam.ac.uk manifests/nodes/
+
+lint:
+  stage: test
+  script:
+    - puppet-lint manifests/nodes
+    - puppet-lint modules/dtg
+    - puppet-lint modules/exim
+    - puppet-lint modules/gpg
+    - puppet-lint modules/munin
+    - puppet-lint modules/nagios
