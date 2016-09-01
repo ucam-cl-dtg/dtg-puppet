@@ -11,9 +11,9 @@ node 'gitlab.dtg.cl.cam.ac.uk' {
     configure_epel => false,
   } ->
   letsencrypt::certonly { $::fqdn:
-    plugin      => 'webroot',
+    plugin        => 'webroot',
     webroot_paths => ['/srv/git/gitlab/public/'],
-    manage_cron => true,
+    manage_cron   => true,
   }
 
 

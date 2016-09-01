@@ -262,32 +262,32 @@ class admin_users ($user_whitelist = undef) {
     # System users which need to be present on all machines
     # This applies for example if the user needs to write data which
     # is nfs mounted
-    group { "www-deviceanalyzer" :
+    group { 'www-deviceanalyzer' :
       gid => 40000,
     }
     ->
-    user { "www-deviceanalyzer" :
-      ensure => present,
-      comment => "DeviceAnalyzer WWW user",
-      shell => "/usr/sbin/nologin",
-      groups => "www-deviceanalyzer",
-      uid => 40000,
-      gid => 40000,
-      password => "*",
+    user { 'www-deviceanalyzer' :
+      ensure   => present,
+      comment  => 'DeviceAnalyzer WWW user',
+      shell    => '/usr/sbin/nologin',
+      groups   => 'www-deviceanalyzer',
+      uid      => 40000,
+      gid      => 40000,
+      password => '*',
     }
     # On africa01 hadoop is 40001
-    group { "cccc-data" :
+    group { 'cccc-data' :
       gid => 40002,
     }
     ->
-    user { "cccc-data" :
-      ensure => present,
-      comment => "CCCC data user",
-      shell => "/usr/sbin/nologin",
-      groups => "cccc-data",
-      uid => 40002,
-      gid => 40002,
-      password => "*",
+    user { 'cccc-data' :
+      ensure   => present,
+      comment  => 'CCCC data user',
+      shell    => '/usr/sbin/nologin',
+      groups   => 'cccc-data',
+      uid      => 40002,
+      gid      => 40002,
+      password => '*',
     }
     
 }
@@ -301,7 +301,7 @@ $ms_keyserver = 'keyserver.ubuntu.com'
 $ms_gpg_passphrase = 'not a secret passphrase - we rely on unix user protection'
 
 # Email config
-$smtp_server = "mail-serv.cl.cam.ac.uk"
+$smtp_server = 'mail-serv.cl.cam.ac.uk'
 
 # Nagios config
 $nagios_machine_fqdn = "monitor.${org_domain}"
