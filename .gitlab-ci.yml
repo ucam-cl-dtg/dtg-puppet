@@ -9,6 +9,8 @@ test-apply:
   allow_failure: true
   script:
     - FACTER_fqdn=default.dtg.cl.cam.ac.uk puppet apply --noop --modulepath=modules --node_name_value=default.dtg.cl.cam.ac.uk manifests/nodes/
+  only:
+    - branches
 
 lint:
   stage: test
@@ -19,3 +21,5 @@ lint:
     - puppet-lint modules/gpg
     - puppet-lint modules/munin
     - puppet-lint modules/nagios
+  only:
+    - branches
