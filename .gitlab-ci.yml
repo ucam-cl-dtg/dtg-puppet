@@ -7,7 +7,7 @@ test-apply:
   stage: test
   allow_failure: true
   script:
-    - apt-get install -y puppet-common git > /dev/null
+    - apt-get install -y puppet-common git sudo > /dev/null
     - git submodule init
     - git submodule update
     - FACTER_fqdn=default.dtg.cl.cam.ac.uk puppet apply --noop --modulepath=modules --node_name_value=default.dtg.cl.cam.ac.uk manifests/nodes/
