@@ -138,7 +138,7 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
 #  munin::gatherer::async_node { 'containers-1': }
 #}
 
-class dtg::containers::apt_java {
+class dtg::containers::apt_java { # lint:ignore:autoloader_layout repo class
   apt::ppa { 'ppa:webupd8team/java': }
   ->
   exec {'set-licence-selected':

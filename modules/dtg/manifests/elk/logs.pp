@@ -21,7 +21,7 @@ class dtg::elk::logs {
 
 }
 
-class dtg::apt_logstash {
+class dtg::apt_logstash { # lint:ignore:autoloader_layout repo class
   apt::source { 'elasticsearch-logstash':
         location => 'http://packages.elasticsearch.org/logstash/2.0/debian',
         release  => 'stable',
