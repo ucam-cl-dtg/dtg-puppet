@@ -60,8 +60,8 @@ orig_pid = os.getpid()
 prev_sent_tasks = 0
 
 DEFAULT_OUT_DIR = "/usr/groups/dtg/dtg-infra/www"
-OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
-TASKS_FILE = "tasks-%s" % OUT_FILE
+OUT_FILE = "lick-{}.html".format(datetime.datetime.now().isoformat("-"))
+TASKS_FILE = "tasks-{}".format(OUT_FILE)
 
 MESSAGE_BUFFER_SIZE = 2048 ** 2
 # Setting values larger than net.core.wmem_max won't work so you may need to do something like
@@ -167,8 +167,10 @@ def update_status():
     if os.getpid() == orig_pid:
         # Dump to a file
         with open(OUT_PATH, "wb") as f:
+            os.fchmod(f.fileno(), 0664)
             f.write(template.render(lick_status))
         with open(TASKS_PATH, "wb") as f:
+            os.fchmod(f.fileno(), 0664)
             f.write(tasks_template.render(lick_status))
         prev_sent_tasks = len(lick_status["tasks"])
     else:
