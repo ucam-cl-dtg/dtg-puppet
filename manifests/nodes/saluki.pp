@@ -12,7 +12,7 @@ define bayncore_ssh_user($real_name,$uid,$ensure = 'present') {
   }
   ->
   group { $username:
-    ensure  => $ensure
+    ensure  => $ensure,
     require => User[$username],
     gid     => $uid,
   }
