@@ -30,20 +30,20 @@ node 'weather.dtg.cl.cam.ac.uk' {
 #'
 #  }
 
-  group {"weather":
+  group {'weather':
     ensure => present,
-    gid => 200
+    gid    => 200
   }
   ->
-  user { "weather" :
-    ensure => present,
-    comment => "Weather service user",
-    home => "/home/weather",
-    shell => "/bin/bash",
-    groups => ["www-data","man","dtg","dtg-web"],
-    uid => 501,
-    gid => 200,
-    password => "*",
+  user { 'weather' :
+    ensure   => present,
+    comment  => 'Weather service user',
+    home     => '/home/weather',
+    shell    => '/bin/bash',
+    groups   => ['www-data','man','dtg','dtg-web'],
+    uid      => 501,
+    gid      => 200,
+    password => '*',
   }
   ->
   file {'/home/weather/.ssh/authorized_keys':
@@ -54,10 +54,10 @@ node 'weather.dtg.cl.cam.ac.uk' {
   }
   ->
   dtg::backup::serversetup_script {'weather backup':
-    content => "nice pg_dump -O weather | bzip2",
-    script_destination => "/home/weather/backup.sh",
-    user => "weather",
-    home => "/home/weather/",
+    content            => 'nice pg_dump -O weather | bzip2',
+    script_destination => '/home/weather/backup.sh',
+    user               => 'weather',
+    home               => '/home/weather/',
   }
   
   # Temporarily disable service restarts so that
