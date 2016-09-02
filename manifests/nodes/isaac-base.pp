@@ -168,8 +168,8 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   }
   ->
   file { '/local/data/rutherford/database-backup/isaac-database-backup.log':
-      path    => '/local/data/rutherford/database-backup/isaac-database-backup.log',
       ensure  => present,
+      path    => '/local/data/rutherford/database-backup/isaac-database-backup.log',
       replace => false,
       mode    => '0755',
       owner   => postgres,
@@ -216,7 +216,7 @@ class dtg::apt_elasticsearch {
         location => 'http://packages.elasticsearch.org/elasticsearch/1.4/debian',
         release  => 'stable',
         repos    => 'main',
-        include  =>  {'src'        => false},
+        include  =>  {'src' => false},
         key      =>  {
           'id'     => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
           'source' => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
@@ -227,6 +227,6 @@ class dtg::apt_elasticsearch {
         location => 'http://packages.elasticsearch.org/logstash/1.3/debian',
         release  => 'stable',
         repos    => 'main',
-        include  =>  {'src'        => false}
+        include  =>  {'src' => false}
   }
 }

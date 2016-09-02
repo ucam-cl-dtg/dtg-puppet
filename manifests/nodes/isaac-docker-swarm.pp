@@ -46,8 +46,8 @@ node /isaac-\d+/ {
   }
   ->
   file { '/local/data/database-backup/isaac-database-backup.log':
-      path    => '/local/data/database-backup/isaac-database-backup.log',
       ensure  => present,
+      path    => '/local/data/database-backup/isaac-database-backup.log',
       replace => false,
       mode    => '0664',
       owner   => isaac,

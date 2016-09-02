@@ -59,12 +59,12 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
   }
   ->
   file {["${tomcat_directory}/webapps/docs",
-         "${tomcat_directory}/webapps/ROOT",
-         "${tomcat_directory}/webapps/examples",
-         "${tomcat_directory}/webapps/host-manager",
-         "${tomcat_directory}/webapps/manager"]:
-           ensure => 'absent',
-           force  => true
+        "${tomcat_directory}/webapps/ROOT",
+        "${tomcat_directory}/webapps/examples",
+        "${tomcat_directory}/webapps/host-manager",
+        "${tomcat_directory}/webapps/manager"]:
+    ensure => 'absent',
+    force  => true
   }
   ->
   file {"${tomcat_directory}/logs":
