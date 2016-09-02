@@ -12,9 +12,9 @@ define bayncore_ssh_user($real_name,$uid,$ensure = 'present') {
   }
   ->
   group { $username:
+    ensure  => $ensure,
     require => User[$username],
     gid     => $uid,
-    ensure  => $ensure
   }
 }
 
@@ -34,16 +34,16 @@ define bayncore_setup() {
   }
   ->
   file_line { 'mount nas04':
+    ensure => present,
     line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore /mnt/bayncore nfs defaults 0 0',
     path   => '/etc/fstab',
-    ensure => present,
     notify => Exec['remount'],
   }
   ->
   file_line { 'mount home':
+    ensure => present,
     line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore/home /home nfs defaults 0 0',
     path   => '/etc/fstab',
-    ensure => present,
     notify => Exec['remount'],
   }
 
@@ -63,15 +63,15 @@ define bayncore_setup() {
   }
 
   bayncore_ssh_user {'bpwc2':
+    ensure    => absent,
     real_name => 'Ben Catterall (Undergraduate)',
     uid       => 231340,
-    ensure    => absent,
   }
 
   bayncore_ssh_user {'smj58':
+    ensure    => absent,
     real_name => 'Siddhant Jayakumar (Undergraduate)',
     uid       => 229858,
-    ensure    => absent,
   }
 
   bayncore_ssh_user {'sa614':
@@ -96,7 +96,9 @@ node /saluki(\d+)?/ {
 
   include 'nfs::server'
 
-  $packages = ['build-essential','linux-headers-generic','alien','libstdc++6:i386','vnc4server','bridge-utils','libgtk2.0-0','ubuntu-desktop','ubuntu-artwork']
+  $packages = ['build-essential','linux-headers-generic','alien',
+              'libstdc++6:i386','vnc4server','bridge-utils','libgtk2.0-0',
+              'ubuntu-desktop','ubuntu-artwork']
 
   package{$packages:
     ensure => installed,

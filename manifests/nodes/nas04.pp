@@ -6,7 +6,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $pool_name = 'dtg-pool0'
 
   $desktop_share = zfs_shareopts([],$desktop_ips_array,"rw=@${dtg_subnet}")
-  $deviceanalyzer_share = zfs_shareopts(['jenkins-master.dtg.cl.cam.ac.uk','dac53.dtg.cl.cam.ac.uk','grapevine.cl.cam.ac.uk','earlybird.cl.cam.ac.uk','deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk', 'sak70-math.dtg.cl.cam.ac.uk'],[])
+  $da_machines = ['jenkins-master.dtg.cl.cam.ac.uk',
+                  'dac53.dtg.cl.cam.ac.uk',
+                  'grapevine.cl.cam.ac.uk',
+                  'earlybird.cl.cam.ac.uk',
+                  'deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk',
+                  'sak70-math.dtg.cl.cam.ac.uk']
 
   # bonded nics
   dtg::kernelmodule::add{'bonding': }
@@ -115,28 +120,25 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'deviceanalyzer-graphing':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-graphing',
-    share_opts => zfs_shareopts(['jenkins-master.dtg.cl.cam.ac.uk',
-                                 'dac53.dtg.cl.cam.ac.uk', 'sak70-math.dtg.cl.cam.ac.uk',
-                                 'grapevine.cl.cam.ac.uk',
-                                 'earlybird.cl.cam.ac.uk',
-                                 'deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk',
-                                 'isis.cl.cam.ac.uk'],[],"ro=@${dtg_subnet}"),
+    share_opts => zfs_shareopts($da_machines,[],"ro=@${dtg_subnet}"),
   }
 
   dtg::zfs::fs{ 'bayncore':
     pool_name  => $pool_name,
     fs_name    => 'bayncore',
     share_opts => zfs_shareopts([],['saluki1.dtg.cl.cam.ac.uk',
-                                    'saluki2.dtg.cl.cam.ac.uk'],"ro=@${dtg_subnet}"),
+                                    'saluki2.dtg.cl.cam.ac.uk'],
+                                "ro=@${dtg_subnet}"),
   }
 
   dtg::zfs::fs{'rwandadataset':
     pool_name  => $pool_name,
     fs_name    => 'rwandadataset',
-    share_opts => zfs_shareopts(['grapevine.cl.cam.ac.uk'],['sa497-crunch-0.dtg.cl.cam.ac.uk',
-                                                            'sa497-crunch-1.dtg.cl.cam.ac.uk',
-                                                            'sa497-crunch-2.dtg.cl.cam.ac.uk',
-                                                            'sa497-crunch-3.dtg.cl.cam.ac.uk']),
+    share_opts => zfs_shareopts(['grapevine.cl.cam.ac.uk'],
+                                ['sa497-crunch-0.dtg.cl.cam.ac.uk',
+                                'sa497-crunch-1.dtg.cl.cam.ac.uk',
+                                'sa497-crunch-2.dtg.cl.cam.ac.uk',
+                                'sa497-crunch-3.dtg.cl.cam.ac.uk']),
   }
 
   dtg::zfs::fs{ 'caida-internet-traces-2014':
@@ -186,12 +188,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'backups/deviceanalyzer':
     pool_name  => $pool_name,
     fs_name    => 'backups/deviceanalyzer',
-    share_opts => zfs_shareopts(['jenkins-master.dtg.cl.cam.ac.uk',
-                                 'dac53.dtg.cl.cam.ac.uk',
-                                 'grapevine.cl.cam.ac.uk',
-                                 'earlybird.cl.cam.ac.uk',
-                                 'deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk',
-                                 'sak70-math.dtg.cl.cam.ac.uk'],[]),
+    share_opts => zfs_shareopts($da_machines, []),
   }
 
 
@@ -238,7 +235,8 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   }
   dtg::firewall::nfs {'nfs access from nakedscientists':
     source          => '131.111.39.64/26',
-    #131.111.39.65 - 131.111.39.126 which covers the four IP addresses we need to let through
+    #131.111.39.65 - 131.111.39.126
+    #which covers the four IP addresses we need to let through
     source_name     => 'nakedscientists',
     portmapper_port => $portmapper_port,
     nfs_port        => $nfs_port,
