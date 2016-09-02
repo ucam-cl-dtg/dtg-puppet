@@ -8,7 +8,7 @@ stages:
 syntax:
   stage: check
   script:
-    - "find . -name '*.pp' | puppet parser validate"
+    - "find . -name '*.pp' | xargs puppet parser validate"
   only:
     - branches
 
