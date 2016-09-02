@@ -1,22 +1,37 @@
-image: ubuntu:16.04
+image: dtg/puppet:16.04
 
-before_script:
-  - apt-get update -qq
+stages:
+  - check
+  - test
+  - style
+
+syntax:
+  stage: check
+  script:
+    - "find . -name '*.pp' | xargs puppet parser validate"
+  only:
+    - branches
 
 base-apply:
-  stage: build
+  stage: test
   script:
-    - apt-get install -y puppet-common git sudo > /dev/null
     - git submodule init -q
     - git submodule update -q
     - FACTER_fqdn=default.dtg.cl.cam.ac.uk puppet apply --noop --modulepath=modules --node_name_value=default.dtg.cl.cam.ac.uk manifests/nodes/
   only:
     - branches
 
-lint:
+lint-error:
   stage: test
   script:
-    - apt-get install -y puppet-lint > /dev/null
-    - puppet-lint .
+    - puppet-lint --error-level error .
+  only:
+    - branches
+
+lint-warn:
+  stage: style
+  allow_failure: true
+  script:
+    - puppet-lint --fail-on-warnings --error-level warning .
   only:
     - branches
