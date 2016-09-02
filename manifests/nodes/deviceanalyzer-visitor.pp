@@ -2,7 +2,7 @@ node /deviceanalyzer-visitor(-\w+)?/ {
   include 'dtg::minimal'
 
 
-  User<|title == jk672 |> { groups +>[ 'adm' ] }   
+  User<|title == jk672 |> { groups +>[ 'adm' ] }
 
   # For DA
   package {'autofs':

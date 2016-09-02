@@ -6,7 +6,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   $pool_name = 'dtg-pool0'
 
   $desktop_share = zfs_shareopts([],$desktop_ips_array,"rw=@${dtg_subnet}")
-  $deviceanalyzer_share = zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk","dac53.dtg.cl.cam.ac.uk","grapevine.cl.cam.ac.uk","earlybird.cl.cam.ac.uk","deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk", "sak70-math.dtg.cl.cam.ac.uk"],[])
+  $deviceanalyzer_share = zfs_shareopts(['jenkins-master.dtg.cl.cam.ac.uk','dac53.dtg.cl.cam.ac.uk','grapevine.cl.cam.ac.uk','earlybird.cl.cam.ac.uk','deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk', 'sak70-math.dtg.cl.cam.ac.uk'],[])
 
   # bonded nics
   dtg::kernelmodule::add{'bonding': }
@@ -58,11 +58,11 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'vms':
     pool_name  => $pool_name,
     fs_name    => 'vms',
-    share_opts => zfs_shareopts([],["husky0.dtg.cl.cam.ac.uk",
-                                    "husky1.dtg.cl.cam.ac.uk",
-                                    "husky2.dtg.cl.cam.ac.uk",
-                                    "husky3.dtg.cl.cam.ac.uk",
-                                    "husky4.dtg.cl.cam.ac.uk"])
+    share_opts => zfs_shareopts([],['husky0.dtg.cl.cam.ac.uk',
+                                    'husky1.dtg.cl.cam.ac.uk',
+                                    'husky2.dtg.cl.cam.ac.uk',
+                                    'husky3.dtg.cl.cam.ac.uk',
+                                    'husky4.dtg.cl.cam.ac.uk'])
   }
 
   dtg::zfs::fs{'isos':
@@ -74,32 +74,32 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'dwt27':
     pool_name  => $pool_name,
     fs_name    => 'dwt27',
-    share_opts => zfs_shareopts([],["monnow.cl.cam.ac.uk",
-                                    "dwt27-crunch.dtg.cl.cam.ac.uk"]),
+    share_opts => zfs_shareopts([],['monnow.cl.cam.ac.uk',
+                                    'dwt27-crunch.dtg.cl.cam.ac.uk']),
   }
 
   dtg::zfs::fs{'nakedscientists':
     pool_name  => $pool_name,
     fs_name    => 'nakedscientists',
-    share_opts => zfs_shareopts([],["131.111.39.72",
-                                    "131.111.39.84",
-                                    "131.111.39.87",
-                                    "131.111.39.103",
-                                    "131.111.61.37"]),
+    share_opts => zfs_shareopts([],['131.111.39.72',
+                                    '131.111.39.84',
+                                    '131.111.39.87',
+                                    '131.111.39.103',
+                                    '131.111.61.37']),
   }
 
   dtg::zfs::fs{'archive':
-    pool_name => $pool_name,
-    fs_name   => 'archive',
+    pool_name  => $pool_name,
+    fs_name    => 'archive',
     share_opts => 'off',
   }
-  ->  
+  ->
   dtg::zfs::fs{'archive/abbot-archive':
     pool_name  => $pool_name,
     fs_name    => 'archive/abbot-archive',
     share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
   }
-  ->  
+  ->
   dtg::zfs::fs{'archive/retired-git-repos':
     pool_name  => $pool_name,
     fs_name    => 'archive/retired-git-repos',
@@ -115,28 +115,28 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'deviceanalyzer-graphing':
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-graphing',
-    share_opts => zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk",
-                                 "dac53.dtg.cl.cam.ac.uk", "sak70-math.dtg.cl.cam.ac.uk",
-                                 "grapevine.cl.cam.ac.uk",
-                                 "earlybird.cl.cam.ac.uk",
-                                 "deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk",
-                                 "isis.cl.cam.ac.uk"],[],"ro=@${dtg_subnet}"),
+    share_opts => zfs_shareopts(['jenkins-master.dtg.cl.cam.ac.uk',
+                                 'dac53.dtg.cl.cam.ac.uk', 'sak70-math.dtg.cl.cam.ac.uk',
+                                 'grapevine.cl.cam.ac.uk',
+                                 'earlybird.cl.cam.ac.uk',
+                                 'deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk',
+                                 'isis.cl.cam.ac.uk'],[],"ro=@${dtg_subnet}"),
   }
 
   dtg::zfs::fs{ 'bayncore':
     pool_name  => $pool_name,
     fs_name    => 'bayncore',
-    share_opts => zfs_shareopts([],["saluki1.dtg.cl.cam.ac.uk",
-                                    "saluki2.dtg.cl.cam.ac.uk"],"ro=@${dtg_subnet}"),
+    share_opts => zfs_shareopts([],['saluki1.dtg.cl.cam.ac.uk',
+                                    'saluki2.dtg.cl.cam.ac.uk'],"ro=@${dtg_subnet}"),
   }
 
   dtg::zfs::fs{'rwandadataset':
     pool_name  => $pool_name,
     fs_name    => 'rwandadataset',
-    share_opts => zfs_shareopts(["grapevine.cl.cam.ac.uk"],["sa497-crunch-0.dtg.cl.cam.ac.uk",
-                                                            "sa497-crunch-1.dtg.cl.cam.ac.uk",
-                                                            "sa497-crunch-2.dtg.cl.cam.ac.uk",
-                                                            "sa497-crunch-3.dtg.cl.cam.ac.uk"]),
+    share_opts => zfs_shareopts(['grapevine.cl.cam.ac.uk'],['sa497-crunch-0.dtg.cl.cam.ac.uk',
+                                                            'sa497-crunch-1.dtg.cl.cam.ac.uk',
+                                                            'sa497-crunch-2.dtg.cl.cam.ac.uk',
+                                                            'sa497-crunch-3.dtg.cl.cam.ac.uk']),
   }
 
   dtg::zfs::fs{ 'caida-internet-traces-2014':
@@ -163,35 +163,35 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     comment          => 'Allow the backup user to use sudo for zfs',
   }
   ->
-  cron {"backup deviceanalyzer/archive":
-    ensure  => present,
-    user    => 'backup',
-    environment => "MAILTO=dtg-infra@cl.cam.ac.uk",
-    command => "nice -n 19 /bin/bash -c 'ssh root@malamute.dtg.cl.cam.ac.uk -i /home/backup/.ssh/id_rsa -o UserKnownHostsFile=/home/backup/.ssh/known_hosts zones/deviceanalyzer/archive@`sudo zfs list -H -t snapshot -d 1 -o name -S creation dtg-pool0/backups/deviceanalyzer/archive | head -n1 | cut --delim=\"@\" -f 2` | sudo zfs recv dtg-pool0/backups/deviceanalyzer/archive'",
-    minute  => cron_minute("backup deviceanalyzer/archive"),
-    hour    => cron_hour("backup deviceanalyzer/archive"),
-    weekday => "*",
+  cron {'backup deviceanalyzer/archive':
+    ensure      => present,
+    user        => 'backup',
+    environment => 'MAILTO=dtg-infra@cl.cam.ac.uk',
+    command     => "nice -n 19 /bin/bash -c 'ssh root@malamute.dtg.cl.cam.ac.uk -i /home/backup/.ssh/id_rsa -o UserKnownHostsFile=/home/backup/.ssh/known_hosts zones/deviceanalyzer/archive@`sudo zfs list -H -t snapshot -d 1 -o name -S creation dtg-pool0/backups/deviceanalyzer/archive | head -n1 | cut --delim=\"@\" -f 2` | sudo zfs recv dtg-pool0/backups/deviceanalyzer/archive'",
+    minute      => cron_minute('backup deviceanalyzer/archive'),
+    hour        => cron_hour('backup deviceanalyzer/archive'),
+    weekday     => '*',
   }
   ->
-  cron {"backup deviceanalyzer/analysis":
-    ensure  => present,
-    user    => 'backup',
-    environment => "MAILTO=dtg-infra@cl.cam.ac.uk",
-    command => "nice -n 19 /bin/bash -c 'ssh root@malamute.dtg.cl.cam.ac.uk -i /home/backup/.ssh/id_rsa -o UserKnownHostsFile=/home/backup/.ssh/known_hosts zones/deviceanalyzer/analysis@`sudo zfs list -H -t snapshot -d 1 -o name -S creation dtg-pool0/backups/deviceanalyzer/analysis | head -n1 | cut --delim=\"@\" -f 2` | sudo zfs recv dtg-pool0/backups/deviceanalyzer/analysis'",
-    minute  => cron_minute("backup deviceanalyzer/analysis"),
-    hour    => cron_hour("backup deviceanalyzer/analysis"),
-    weekday => "*",
+  cron {'backup deviceanalyzer/analysis':
+    ensure      => present,
+    user        => 'backup',
+    environment => 'MAILTO=dtg-infra@cl.cam.ac.uk',
+    command     => "nice -n 19 /bin/bash -c 'ssh root@malamute.dtg.cl.cam.ac.uk -i /home/backup/.ssh/id_rsa -o UserKnownHostsFile=/home/backup/.ssh/known_hosts zones/deviceanalyzer/analysis@`sudo zfs list -H -t snapshot -d 1 -o name -S creation dtg-pool0/backups/deviceanalyzer/analysis | head -n1 | cut --delim=\"@\" -f 2` | sudo zfs recv dtg-pool0/backups/deviceanalyzer/analysis'",
+    minute      => cron_minute('backup deviceanalyzer/analysis'),
+    hour        => cron_hour('backup deviceanalyzer/analysis'),
+    weekday     => '*',
   }
   
   dtg::zfs::fs{'backups/deviceanalyzer':
     pool_name  => $pool_name,
     fs_name    => 'backups/deviceanalyzer',
-    share_opts => zfs_shareopts(["jenkins-master.dtg.cl.cam.ac.uk",
-                                 "dac53.dtg.cl.cam.ac.uk",
-                                 "grapevine.cl.cam.ac.uk",
-                                 "earlybird.cl.cam.ac.uk",
-                                 "deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk",
-                                 "sak70-math.dtg.cl.cam.ac.uk"],[]),
+    share_opts => zfs_shareopts(['jenkins-master.dtg.cl.cam.ac.uk',
+                                 'dac53.dtg.cl.cam.ac.uk',
+                                 'grapevine.cl.cam.ac.uk',
+                                 'earlybird.cl.cam.ac.uk',
+                                 'deviceanalyzer-visitor-jk672.dtg.cl.cam.ac.uk',
+                                 'sak70-math.dtg.cl.cam.ac.uk'],[]),
   }
 
 

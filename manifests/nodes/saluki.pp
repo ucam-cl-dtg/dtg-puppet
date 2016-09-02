@@ -1,4 +1,4 @@
-define bayncore_ssh_user($real_name,$uid,$ensure = "present") {
+define bayncore_ssh_user($real_name,$uid,$ensure = 'present') {
   $username = $title
   user { $username:
     ensure     => $ensure,

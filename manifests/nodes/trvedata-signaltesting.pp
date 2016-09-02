@@ -9,10 +9,10 @@ node 'trvedata-signaltesting.dtg.cl.cam.ac.uk' {
   }
 
   dtg::add_user { 'jdw74':
-    real_name => 'James Wood',
-    groups    => ['adm'],
-    keys      => ['James Wood <jdw74@cam.ac.uk>'],
-    uid       => 238847,
+    real_name      => 'James Wood',
+    groups         => ['adm'],
+    keys           => ['James Wood <jdw74@cam.ac.uk>'],
+    uid            => 238847,
     user_whitelist => $user_whitelist,
 
   }

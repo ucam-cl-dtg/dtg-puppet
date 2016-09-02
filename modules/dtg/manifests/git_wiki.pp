@@ -106,9 +106,9 @@ class dtg::git::gollum::main {
     configure_epel => false,
   } ->
   letsencrypt::certonly { $::fqdn:
-    plugin      => 'webroot',
+    plugin        => 'webroot',
     webroot_paths => ['/srv/gollum/lib/gollum/frontend/public/'],
-    manage_cron => true,
+    manage_cron   => true,
   } ->
 # Configure the website
   apache::site{'gollum':

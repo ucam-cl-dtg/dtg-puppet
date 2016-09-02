@@ -14,7 +14,7 @@ class dtg::firewall::default {
     notify  => Exec['persist-firewall'],
   }
 }
-class dtg::firewall($interfacefile = "/etc/network/interfaces") inherits dtg::firewall::default {
+class dtg::firewall($interfacefile = '/etc/network/interfaces') inherits dtg::firewall::default {
   exec { 'persist-firewall':
     command     => '/sbin/iptables-save > /etc/iptables.rules',
     refreshonly => true,

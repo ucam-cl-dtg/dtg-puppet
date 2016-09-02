@@ -16,23 +16,21 @@ define dtg::backup::serversetup_script ($content, $script_destination, $user, $h
   }
 }
 
-/**
- * This defines the component that runs on the server to be backed up
- * backup_directory defines the directory to be backed up
- * script_destination is the destination to put the script which performs the
- *                    backup
- * user is the user to run as
- * home is the home directory of the user
- * backup_hosts is the comma separated list of hosts from which backups may be made for ssh from= line
- */
+# This defines the component that runs on the server to be backed up
+# backup_directory defines the directory to be backed up
+# script_destination is the destination to put the script which performs the
+#                    backup
+# user is the user to run as
+# home is the home directory of the user
+# backup_hosts is the comma separated list of hosts from which backups may be made for ssh from= line
 define dtg::backup::serversetup ($backup_directory, $script_destination, $user, $home, $backup_hosts = $::backup_hosts) {
   $backup_description = $name
-  dtg::backup::serversetup_script { "$name script":
-    content => template('dtg/backup-server.sh.erb'),
+  dtg::backup::serversetup_script { "${name} script":
+    content            => template('dtg/backup-server.sh.erb'),
     script_destination => $script_destination,
-    user => $user,
-    home => $home,
-    backup_hosts => $backup_hosts,
+    user               => $user,
+    home               => $home,
+    backup_hosts       => $backup_hosts,
   }
 }
 
@@ -48,16 +46,16 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
   } else {
     $realkey = $key
   }
-  group {"${user}":
+  group {$user:
     ensure => present,
   }
-  user {"${user}":
+  user {$user:
     ensure   => present,
-    password => "*",
+    password => '*',
     shell    => '/bin/sh',
     gid      => $user,
   }
-  file{"${realhome}":
+  file{$realhome:
     ensure => directory,
     owner  => $user,
     group  => $user,
@@ -68,7 +66,7 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
     homedir => $realhome
   }
 
-  file{"${directory}":
+  file{$directory:
     ensure => directory,
     owner  => $user,
     group  => $user,
@@ -76,9 +74,9 @@ class dtg::backup::host($directory, $user = 'backup', $home = undef, $key = unde
   }
   # Set sending address for $user to dtg-infra
   file_line {"${user}email":
-    ensure => present,
-    path   => '/etc/email-addresses',
-    line   => "${user}: dtg-infra@cl.cam.ac.uk",
+    ensure  => present,
+    path    => '/etc/email-addresses',
+    line    => "${user}: dtg-infra@cl.cam.ac.uk",
     require => [Package['exim'],User[$user]],
   }
 }
@@ -94,20 +92,20 @@ define dtg::backup::hostsetup($user, $group = $dtg::backup::host::user, $host, $
   $backupskey       = $dtg::backup::host::realkey
   $backupto = "${backupsdirectory}/${name}"
 
-  file {"${backupto}":
+  file {$backupto:
     ensure => directory,
     owner  => $backupsuser,
     group  => $group,
     mode   => 'u=rwx,g=rx,o=x',
   }
   cron {"backup ${name}":
-    ensure  => present,
-    user    => $backupsuser,
-    environment => "MAILTO=dtg-infra@cl.cam.ac.uk",
-    command => "nice -n 19 /bin/bash -c 'ssh -T -i ${backupskey} ${user}@${host} > ${backupto}/`date +\\%F_\\%T`.tar.bz2'",
-    minute  => cron_minute("backup ${name}"),
-    hour    => cron_hour("backup ${name}"),
-    weekday => $weekday,
-    require => File["${backupto}"],
+    ensure      => present,
+    user        => $backupsuser,
+    environment => 'MAILTO=dtg-infra@cl.cam.ac.uk',
+    command     => "nice -n 19 /bin/bash -c 'ssh -T -i ${backupskey} ${user}@${host} > ${backupto}/`date +\\%F_\\%T`.tar.bz2'",
+    minute      => cron_minute("backup ${name}"),
+    hour        => cron_hour("backup ${name}"),
+    weekday     => $weekday,
+    require     => File[$backupto],
   }
 }

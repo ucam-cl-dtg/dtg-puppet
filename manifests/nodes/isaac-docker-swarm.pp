@@ -4,7 +4,7 @@ node /isaac-\d+/ {
   class {'dtg::isaac':}
 
   class {'dtg::firewall':
-    interfacefile => "/etc/network/interfaces.d/eth0.cfg",
+    interfacefile => '/etc/network/interfaces.d/eth0.cfg',
   }
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}

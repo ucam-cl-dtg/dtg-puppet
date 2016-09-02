@@ -60,8 +60,8 @@ node 'oc243-algos' {
         'user'        => 'gerrit',
         'javaOptions' => '-classpath /usr/share/java/mysql.jar',
       },
-      'gerrit'      => {
-        'basePath'  => '/local/data/gerrit-data',
+      'gerrit'    => {
+        'basePath'        => '/local/data/gerrit-data',
         'canonicalWebUrl' => 'http://algorithms.dtg.cl.cam.ac.uk'
       },
       'httpd'     => {
