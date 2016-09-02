@@ -3,12 +3,12 @@
 # $mail_domain will be used for dc_readhost
 class exim::satellite ($smarthost, $mail_domain) {
   package {'exim':
-    name   => 'exim4-daemon-light',
     ensure => present,
+    name   => 'exim4-daemon-light',
   }
   file {'/etc/exim4/update-exim4.conf.conf':
-    content => template('exim/update-exim4.conf.conf.erb'),
     ensure  => file,
+    content => template('exim/update-exim4.conf.conf.erb'),
     require => Package['exim'],
     notify  => Exec['update-exim4.conf'],
   }
@@ -23,8 +23,8 @@ class exim::satellite ($smarthost, $mail_domain) {
   }
 
   package {'mailx':
-    name   => 'bsd-mailx',
     ensure => present,
+    name   => 'bsd-mailx',
   }
   package {'heirloom-mailx':
     ensure  => absent,
