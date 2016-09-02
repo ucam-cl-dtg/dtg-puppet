@@ -10,6 +10,15 @@ node /gitlab-runner(-\d+)?/ {
     'gitlab-ci-multi-runner':
     ensure => installed
   }
+
+  file { '/tmp/Dockerfile':
+    ensure => file,
+    source => 'puppet://modules/dtg/images/puppet'
+  }->
+  docker::image { 'dtg/puppet':
+    docker_file => '/tmp/Dockerfile',
+    image_tag   => '16.04',
+  }
 }
 
 class dtg::gitlab::runner::repos{

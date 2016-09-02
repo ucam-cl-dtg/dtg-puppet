@@ -1,0 +1,4 @@
+FROM ubuntu:16.04
+MAINTAINER Tom Bytheway <tb403@cam.ac.uk>
+RUN apt-get update -qq
+RUN apt-get install -qq puppet-common puppet-lint git sudo
