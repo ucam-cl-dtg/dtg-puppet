@@ -11,12 +11,8 @@ node /gitlab-runner(-\d+)?/ {
     ensure => installed
   }
 
-  file { '/tmp/Dockerfile':
-    ensure => file,
-    source => 'puppet://modules/dtg/images/puppet'
-  }->
   docker::image { 'dtg/puppet':
-    docker_file => '/tmp/Dockerfile',
+    docker_file => '/etc/puppet/modules/dtg/files/images/puppet',
     image_tag   => '16.04',
   }
 }
