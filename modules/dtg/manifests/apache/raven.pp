@@ -8,6 +8,6 @@ class dtg::apache::raven ($server_description) {
   #TODO(drt24): specify server description in raven config
 }
 # So that we can apply a stage to it
-class dtg::apache::raven::repos {
+class dtg::apache::raven::repos { # lint:ignore:autoloader_layout repos class
   apt::ppa {'ppa:ucam-cl-dtg/ucam': }
 }

@@ -36,7 +36,7 @@ class dtg::vm {
 
 }
 # So that we can appy a stage to it
-class dtg::vm::repos {
+class dtg::vm::repos { # lint:ignore:autoloader_layout repo class
   # This is Malcolm Scott's ppa containing xe-guest-utilities which installs
   # XenServer tools which we want on every VM.
   if $::operatingsystem == 'Ubuntu' {

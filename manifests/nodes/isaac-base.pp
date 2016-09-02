@@ -211,7 +211,7 @@ node /(\w+-)?isaac-(dev|staging|live)(.+)?/ {
   }
 }
 
-class dtg::apt_elasticsearch {
+class dtg::apt_elasticsearch { # lint:ignore:autoloader_layout repo class
   apt::source { 'elasticsearch-source':
         location => 'http://packages.elasticsearch.org/elasticsearch/1.4/debian',
         release  => 'stable',
