@@ -72,223 +72,227 @@ group { 'rscfl':
 
 
 class admin_users ($user_whitelist = undef) {
-    dtg::add_user { 'drt24':
-        real_name      => 'Daniel Thomas',
-        groups         => [ 'adm', 'deviceanalyzer', 'dtg-adm', 'cccc-data' ],
-        keys           => 'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>',
-        uid            => 2607,
-        user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'oc243':
-        real_name      => 'Oliver Chick',
-        groups         => [ 'adm', 'dtg-adm', 'rscfl'],
-        keys           => 'Oliver Chick <oc243@cam.ac.uk>',
-        uid            => 2834,
-        user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'lc525':
-        real_name      => 'Lucian Carata',
-        groups         => ['weather-adm', 'wiki-adm', 'rscfl'],
-        keys           => 'Lucian Carata <lc525@cam.ac.uk>',
-        uid            => 2925,
-        user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'jas250':
-        real_name      => 'James Snee',
-        groups         => ['rscfl'],
-        keys           => 'James Snee <jas250@cam.ac.uk>',
-        uid            => 2814,
-        user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'acr31':
-        real_name      => 'Andrew Rice',
-        groups         => ['adm', 'dtg-adm','weather-adm', 'wiki-adm'],
-        keys           => 'Andrew Rice <acr31@cam.ac.uk>',
-        uid            => 2132,
-        user_whitelist => $user_whitelist,
-    }
-#    dtg::add_user { 'dtw30':
-#        real_name      => 'Daniel Wagner',
-#        groups         => [],
-#        keys           => 'Daniel Wagner (ssh) <wagner.daniel.t@gmail.com>',
-#        uid            => 2712,
-#        user_whitelist => $user_whitelist,
-#    }
-#    dtg::add_user { 'ml421':
-#        real_name      => 'Mattias Linnap',
-#        groups         => [],
-#        keys           => ['Mattias Linnap <mattias@linnap.com>',
-#                           'Mattias Linnap (llynfi-ssh) <mattias@linnap.com>',
-#                           'Mattias Linnap (macmini-ssh) <mattias@linnap.com>'],
-#        uid            => 2610,
-#        user_whitelist => $user_whitelist,
-#    }
-    dtg::add_user { 'tb403':
-        real_name      => 'Thomas Bytheway',
-        groups         => [ 'scm-adm' ],
-        keys           => ['Thomas Bytheway <thomas.bytheway@cl.cam.ac.uk>'],
-        uid            => 3105,
-        user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'arb33':
-      real_name      => 'Alastair Beresford',
-      groups         => [ 'isaac','adm','dtg-adm', 'cccc-data' ],
-      keys           => ['Alastair Beresford (ssh) <arb33@cam.ac.uk>'],
-      uid            => 2125,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'ipd21':
-      real_name      => 'Ian Davies',
-      groups         => [ 'isaac' ],
-      keys           => ['Ian Davies (ssh) <ipd21@cam.ac.uk>'],
-      uid            => 2361,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'rss39':
-      real_name      => 'Ripduman Sohan',
-      groups         => [ 'africa', 'rscfl' ],
-      keys           => ['Ripduman Sohan (Cambridge Key) <ripduman.sohan@cl.cam.ac.uk>'],
-      uid            => 2134,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'sa497':
-      real_name      => 'Sherif Akoush',
-      groups         => [ 'africa' ],
-      keys           => ['sa497 <sa497@cam.ac.uk>'],
-      uid            => 2412,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'sac92':
-      real_name      => 'Stephen Cummins',
-      groups         => [ 'isaac' ],
-      keys           => ['Stephen Cummins (Main key) <sacummins@gmail.com>'],
-      uid            => 3286,
-      user_whitelist => $user_whitelist,
-    }
-    # dtg::add_user { 'ags46':
-    #   real_name      => 'Alistair Stead',
-    #   groups         => [ 'isaac' ],
-    #   keys           => ['Alistair Stead <ags46@cam.ac.uk>'],
-    #   uid            => 2815,
-    #   user_whitelist => $user_whitelist,
-    # }
+  dtg::add_user { 'drt24':
+    real_name      => 'Daniel Thomas',
+    groups         => [ 'adm', 'deviceanalyzer', 'dtg-adm', 'cccc-data' ],
+    keys           => [
+      'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>'],
+    uid            => 2607,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'oc243':
+    real_name      => 'Oliver Chick',
+    groups         => [ 'adm', 'dtg-adm', 'rscfl'],
+    keys           => 'Oliver Chick <oc243@cam.ac.uk>',
+    uid            => 2834,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'lc525':
+    real_name      => 'Lucian Carata',
+    groups         => ['weather-adm', 'wiki-adm', 'rscfl'],
+    keys           => 'Lucian Carata <lc525@cam.ac.uk>',
+    uid            => 2925,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'jas250':
+    real_name      => 'James Snee',
+    groups         => ['rscfl'],
+    keys           => 'James Snee <jas250@cam.ac.uk>',
+    uid            => 2814,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'acr31':
+    real_name      => 'Andrew Rice',
+    groups         => ['adm', 'dtg-adm','weather-adm', 'wiki-adm'],
+    keys           => 'Andrew Rice <acr31@cam.ac.uk>',
+    uid            => 2132,
+    user_whitelist => $user_whitelist,
+  }
+# dtg::add_user { 'dtw30':
+#   real_name      => 'Daniel Wagner',
+#   groups         => [],
+#   keys           => 'Daniel Wagner (ssh) <wagner.daniel.t@gmail.com>',
+#   uid            => 2712,
+#   user_whitelist => $user_whitelist,
+# }
+# dtg::add_user { 'ml421':
+#   real_name      => 'Mattias Linnap',
+#   groups         => [],
+#   keys           => ['Mattias Linnap <mattias@linnap.com>',
+#                      'Mattias Linnap (llynfi-ssh) <mattias@linnap.com>',
+#                      'Mattias Linnap (macmini-ssh) <mattias@linnap.com>'],
+#   uid            => 2610,
+#   user_whitelist => $user_whitelist,
+# }
+  dtg::add_user { 'tb403':
+    real_name      => 'Thomas Bytheway',
+    groups         => [ 'scm-adm' ],
+    keys           => ['Thomas Bytheway <thomas.bytheway@cl.cam.ac.uk>'],
+    uid            => 3105,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'arb33':
+    real_name      => 'Alastair Beresford',
+    groups         => [ 'isaac','adm','dtg-adm', 'cccc-data' ],
+    keys           => ['Alastair Beresford (ssh) <arb33@cam.ac.uk>'],
+    uid            => 2125,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'ipd21':
+    real_name      => 'Ian Davies',
+    groups         => [ 'isaac' ],
+    keys           => ['Ian Davies (ssh) <ipd21@cam.ac.uk>'],
+    uid            => 2361,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'rss39':
+    real_name      => 'Ripduman Sohan',
+    groups         => [ 'africa', 'rscfl' ],
+    keys           => [
+      'Ripduman Sohan (Cambridge Key) <ripduman.sohan@cl.cam.ac.uk>'],
+    uid            => 2134,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'sa497':
+    real_name      => 'Sherif Akoush',
+    groups         => [ 'africa' ],
+    keys           => ['sa497 <sa497@cam.ac.uk>'],
+    uid            => 2412,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'sac92':
+    real_name      => 'Stephen Cummins',
+    groups         => [ 'isaac' ],
+    keys           => ['Stephen Cummins (Main key) <sacummins@gmail.com>'],
+    uid            => 3286,
+    user_whitelist => $user_whitelist,
+  }
+# dtg::add_user { 'ags46':
+#   real_name      => 'Alistair Stead',
+#   groups         => [ 'isaac' ],
+#   keys           => ['Alistair Stead <ags46@cam.ac.uk>'],
+#   uid            => 2815,
+#   user_whitelist => $user_whitelist,
+# }
 
-    dtg::add_user { 'sak70':
-      real_name      => 'Stephan Kollmann',
-      groups         => [],
-      keys           => ['Stephan Kollmann (Computer Laboratory) <sak70@cam.ac.uk>'],
-      uid            => 3361,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'dwt27':
-      real_name      => 'David Turner',
-      groups         => [ 'weather-adm' ],
-      keys           => ['David W. Turner <david.w.turner@cl.cam.ac.uk>'],
-      uid            => 3195,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'dh526':
-      real_name      => 'Daniel Hintze',
-      groups         => [],
-      keys           => ['Daniel Hintze <daniel@hintze-it.de>'],
-      uid            => 3451,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'dac53':
-      real_name      => 'Diana Vasile',
-      groups         => ['adm', 'deviceanalyzer', 'dtg-adm'],
-      keys           => ['Diana Vasile <dac53@cam.ac.uk>'],
-      uid            => 3252,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'mojpc2':
-      real_name      => 'Mistral Contrastin',
-      groups         => [],
-      keys           => ['Mistral CONTRASTIN <mojpc2@cam.ac.uk>'],
-      uid            => 3476,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'amiae2':
-      real_name      => 'Ahmed Elmezeini',
-      groups         => [],
-      keys           => ['Ahmed Elmezeini <amiae2@cam.ac.uk>'],
-      uid            => 3581,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'af599':
-      real_name      => 'Andrea Franceschini',
-      groups         => [ 'isaac' ],
-      keys           => ['Andrea Franceschini (porto) <af599@cam.ac.uk>', 'Andrea Franceschini (omoikane) <af599@cam.ac.uk>'],
-      uid            => 3619,
-      user_whitelist => $user_whitelist,
-    }
-    # dtg::add_user { 'jk672':
-    #   real_name      => 'Nicolas Karsten',
-    #   groups         =>  [],
-    #   keys           => ['Nicolas Karsten <karsten@dice.hhu.de>'],
-    #   uid            => 3633,
-    #   user_whitelist => $user_whitelist,
-    # }
-    dtg::add_user { 'jps79':
-      real_name      => 'James Sharkey',
-      groups         =>  ['isaac'],
-      keys           => ['James Sharkey (CL) <jps79@cam.ac.uk>'],
-      uid            => 3622,
-      user_whitelist => $user_whitelist,
-    }
+  dtg::add_user { 'sak70':
+    real_name      => 'Stephan Kollmann',
+    groups         => [],
+    keys           => [
+      'Stephan Kollmann (Computer Laboratory) <sak70@cam.ac.uk>'],
+    uid            => 3361,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'dwt27':
+    real_name      => 'David Turner',
+    groups         => [ 'weather-adm' ],
+    keys           => ['David W. Turner <david.w.turner@cl.cam.ac.uk>'],
+    uid            => 3195,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'dh526':
+    real_name      => 'Daniel Hintze',
+    groups         => [],
+    keys           => ['Daniel Hintze <daniel@hintze-it.de>'],
+    uid            => 3451,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'dac53':
+    real_name      => 'Diana Vasile',
+    groups         => ['adm', 'deviceanalyzer', 'dtg-adm'],
+    keys           => ['Diana Vasile <dac53@cam.ac.uk>'],
+    uid            => 3252,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'mojpc2':
+    real_name      => 'Mistral Contrastin',
+    groups         => [],
+    keys           => ['Mistral CONTRASTIN <mojpc2@cam.ac.uk>'],
+    uid            => 3476,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'amiae2':
+    real_name      => 'Ahmed Elmezeini',
+    groups         => [],
+    keys           => ['Ahmed Elmezeini <amiae2@cam.ac.uk>'],
+    uid            => 3581,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'af599':
+    real_name      => 'Andrea Franceschini',
+    groups         => [ 'isaac' ],
+    keys           => ['Andrea Franceschini (porto) <af599@cam.ac.uk>',
+                      'Andrea Franceschini (omoikane) <af599@cam.ac.uk>'],
+    uid            => 3619,
+    user_whitelist => $user_whitelist,
+  }
+  # dtg::add_user { 'jk672':
+  #   real_name      => 'Nicolas Karsten',
+  #   groups         =>  [],
+  #   keys           => ['Nicolas Karsten <karsten@dice.hhu.de>'],
+  #   uid            => 3633,
+  #   user_whitelist => $user_whitelist,
+  # }
+  dtg::add_user { 'jps79':
+    real_name      => 'James Sharkey',
+    groups         =>  ['isaac'],
+    keys           => ['James Sharkey (CL) <jps79@cam.ac.uk>'],
+    uid            => 3622,
+    user_whitelist => $user_whitelist,
+  }
 
-    dtg::add_user { 'rjm49':
-      real_name      => 'Russell Moore',
-      groups         =>  [],
-      keys           => ['Russell Moore <rjm49@cam.ac.uk>'],
-      uid            => 3651,
-      user_whitelist => $user_whitelist,
-    }
-    dtg::add_user { 'mrd45':
-      real_name      => 'Matthew Danish',
-      groups         => [],
-      keys           => ['Matthew Danish <mrd45@cam.ac.uk>'],
-      uid            => 3541,
-      user_whitelist => $user_whitelist,
-    }
+  dtg::add_user { 'rjm49':
+    real_name      => 'Russell Moore',
+    groups         =>  [],
+    keys           => ['Russell Moore <rjm49@cam.ac.uk>'],
+    uid            => 3651,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'mrd45':
+    real_name      => 'Matthew Danish',
+    groups         => [],
+    keys           => ['Matthew Danish <mrd45@cam.ac.uk>'],
+    uid            => 3541,
+    user_whitelist => $user_whitelist,
+  }
 
-    dtg::add_user { 'mk428':
-      real_name      => 'Martin Kleppmann',
-      groups         => [],
-      keys           => ['Martin Kleppmann <mk428@cam.ac.uk>'],
-      uid            => 2628,
-      user_whitelist => $user_whitelist,
-    }
-    # System users which need to be present on all machines
-    # This applies for example if the user needs to write data which
-    # is nfs mounted
-    group { 'www-deviceanalyzer' :
-      gid => 40000,
-    }
-    ->
-    user { 'www-deviceanalyzer' :
-      ensure   => present,
-      comment  => 'DeviceAnalyzer WWW user',
-      shell    => '/usr/sbin/nologin',
-      groups   => 'www-deviceanalyzer',
-      uid      => 40000,
-      gid      => 40000,
-      password => '*',
-    }
-    # On africa01 hadoop is 40001
-    group { 'cccc-data' :
-      gid => 40002,
-    }
-    ->
-    user { 'cccc-data' :
-      ensure   => present,
-      comment  => 'CCCC data user',
-      shell    => '/usr/sbin/nologin',
-      groups   => 'cccc-data',
-      uid      => 40002,
-      gid      => 40002,
-      password => '*',
-    }
+  dtg::add_user { 'mk428':
+    real_name      => 'Martin Kleppmann',
+    groups         => [],
+    keys           => ['Martin Kleppmann <mk428@cam.ac.uk>'],
+    uid            => 2628,
+    user_whitelist => $user_whitelist,
+  }
+  # System users which need to be present on all machines
+  # This applies for example if the user needs to write data which
+  # is nfs mounted
+  group { 'www-deviceanalyzer' :
+    gid => 40000,
+  }
+  ->
+  user { 'www-deviceanalyzer' :
+    ensure   => present,
+    comment  => 'DeviceAnalyzer WWW user',
+    shell    => '/usr/sbin/nologin',
+    groups   => 'www-deviceanalyzer',
+    uid      => 40000,
+    gid      => 40000,
+    password => '*',
+  }
+  # On africa01 hadoop is 40001
+  group { 'cccc-data' :
+    gid => 40002,
+  }
+  ->
+  user { 'cccc-data' :
+    ensure   => present,
+    comment  => 'CCCC data user',
+    shell    => '/usr/sbin/nologin',
+    groups   => 'cccc-data',
+    uid      => 40002,
+    gid      => 40002,
+    password => '*',
+  }
     
 }
 # Admin user ids to be given root on the nodes via monkeysphere

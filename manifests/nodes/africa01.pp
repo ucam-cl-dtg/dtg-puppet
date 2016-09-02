@@ -21,7 +21,11 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'datashare':
     pool_name  => $pool_name,
     fs_name    => 'datashare',
-    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@airwolf.cl.cam.ac.uk,ro=@128.232.29.5,async',
+    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,\
+                   ro=@vm-sr-nile1.cl.cam.ac.uk,\
+                   ro=@wright.cl.cam.ac.uk,\
+                   ro=@airwolf.cl.cam.ac.uk,\
+                   ro=@128.232.29.5,async',
   }
 
   # Test FS so that we can monitor africa01 over NFS
@@ -32,7 +36,8 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   }
 
   # Backups
-  # We take backups of various servers onto nas01 these are run as low priority cron jobs
+  # We take backups of various servers onto nas01
+  # these are run as low priority cron jobs
   # and run as very restricted user.
   dtg::zfs::fs{'backups':
     pool_name  => $pool_name,
@@ -142,7 +147,8 @@ node 'africa01.dtg.cl.cam.ac.uk' {
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
 
-  $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config', 'libpcap-dev' , 'mountall' , 'liblz4-tool']
+  $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config',
+                  'libpcap-dev' , 'mountall' , 'liblz4-tool']
   package {
       $packagelist:
           ensure => installed
