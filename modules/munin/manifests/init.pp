@@ -1,36 +1,36 @@
 class munin::gatherer(
-  $listen_ip = "*",
-  $server_name = "munin",
+  $listen_ip = '*',
+  $server_name = 'munin',
   $tls_cert_file = undef,
   $tls_cert_chain_file = undef,
   $tls_key_file = undef,
-  $graph_strategy = "cgi",
-  $html_strategy = "cgi",
+  $graph_strategy = 'cgi',
+  $html_strategy = 'cgi',
   $alerts_email = $from_address,
-  $contact = "dtg",
-  $graph_data_size = "huge",
+  $contact = 'dtg',
+  $graph_data_size = 'huge',
   $extra_apache_config = '',
   $lets_encrypt = true,
 ) {
-  package { [ "munin", "libcgi-fast-perl", "libapache2-mod-fcgid" ]:
+  package { [ 'munin', 'libcgi-fast-perl', 'libapache2-mod-fcgid' ]:
     ensure => installed
   }
   exec {'Enable mod rewrite':
-    command   => "a2enmod rewrite"
+    command   => 'a2enmod rewrite'
   }
   file { '/etc/munin/munin-conf.d/':
-    ensure => directory,
+    ensure  => directory,
     require => Package['munin'],
   }
 
-  apache::site { "munin":
-    content => template("munin/munin.erb")
+  apache::site { 'munin':
+    content => template('munin/munin.erb')
   }
-  file { "/etc/apache2/conf.d/munin":
+  file { '/etc/apache2/conf.d/munin':
     ensure => absent,
   }
-  file { "/etc/munin/munin.conf":
-    content => template("munin/munin-conf.erb"),
+  file { '/etc/munin/munin.conf':
+    content => template('munin/munin-conf.erb'),
   }
   if $lets_encrypt {
     letsencrypt::certonly { $server_name:
@@ -54,57 +54,57 @@ class munin::gatherer::async(
 
 define munin::gatherer::configure_node ( $override_lines = '') {
   $munin_node_host = $title
-  file { "/etc/munin/munin-conf.d/$munin_node_host":
+  file { "/etc/munin/munin-conf.d/${munin_node_host}":
     ensure  => present,
-    content => template("munin/node.erb"),
-    require => File["/etc/munin/munin-conf.d/"],
+    content => template('munin/node.erb'),
+    require => File['/etc/munin/munin-conf.d/'],
   }
 }
 define munin::gatherer::async_node ( $override_lines = '') {
   $munin_node_host = $title
-  file { "/etc/munin/munin-conf.d/$munin_node_host":
+  file { "/etc/munin/munin-conf.d/${munin_node_host}":
     ensure  => present,
-    content => template("munin/node-async.erb"),
-    require => File["/etc/munin/munin-conf.d/"],
+    content => template('munin/node-async.erb'),
+    require => File['/etc/munin/munin-conf.d/'],
   }
 }
 
-define munin::node::plugin( $ensure = "symlink", $target = "") {
-  $base = "/usr/share/munin/plugins"
+define munin::node::plugin( $ensure = 'symlink', $target = '') {
+  $base = '/usr/share/munin/plugins'
   if ( $target ) {
     if ( $target =~ /\/.*/ ) {
       $target_path = $target
     } else {
-      $target_path = "$base/${target}"
+      $target_path = "${base}/${target}"
     }
   } else {
-    $target_path = "$base/${title}"
+    $target_path = "${base}/${title}"
   }
   $link = "/etc/munin/plugins/${title}"
 
-  file { "$link":
-    ensure => $ensure,
-    target => $target_path,
-    require => Package["munin-node"],
-    notify => Service["munin-node"],
+  file { $link:
+    ensure  => $ensure,
+    target  => $target_path,
+    require => Package['munin-node'],
+    notify  => Service['munin-node'],
 
   }
 }
 
 class munin::node (
   $node_allow_ips = ['^127\.0\.0\.1$'],
-  $node_timeout = "30",
+  $node_timeout = '30',
   $async = true,
   $async_key = '',
 ) {
-  package { [ "munin-node", "munin-plugins-extra", "libcache-cache-perl" ]:
+  package { [ 'munin-node', 'munin-plugins-extra', 'libcache-cache-perl' ]:
     ensure => installed
   } ->
-  exec { "munin-node-configure":
+  exec { 'munin-node-configure':
     command  => 'munin-node-configure --shell | sh',
     provider => shell,
   } ->
-  service { "munin-node":
+  service { 'munin-node':
     ensure => running
   }
 
@@ -125,16 +125,16 @@ class munin::node (
     }
   }
 
-  file { "/etc/munin/munin-node.conf":
-    ensure => present,
-    content => template("munin/munin-node.conf.erb"),
-    require => Package["munin-node"],
-    notify => Service[ "munin-node"]
+  file { '/etc/munin/munin-node.conf':
+    ensure  => present,
+    content => template('munin/munin-node.conf.erb'),
+    require => Package['munin-node'],
+    notify  => Service[ 'munin-node']
   }
   # Overrides for default content of munin-node so that we don't get noise from filesystems coming and going
   # Also specify the user required for the unbound plugins
   file { '/etc/munin/plugin-conf.d/z-overrides':
-    ensure => file,
+    ensure  => file,
     content => '[df*]
     env.warning 92
     env.critical 98
@@ -147,7 +147,7 @@ class munin::node (
     env.unbound_conf /etc/unbound/unbound.conf
     env.unbound_control /usr/sbin/unbound-control
 ',
-    require => Package["munin-node"],
-    notify => Service[ "munin-node"],
+    require => Package['munin-node'],
+    notify  => Service[ 'munin-node'],
   }
 }
