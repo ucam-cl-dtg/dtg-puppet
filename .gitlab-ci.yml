@@ -21,9 +21,17 @@ base-apply:
   only:
     - branches
 
-lint:
-  stage: style
+lint-error:
+  stage: test
   script:
-    - puppet-lint .
+    - puppet-lint --error-level error .
+  only:
+    - branches
+
+lint-warn:
+  stage: style
+  allow_failure: true
+  script:
+    - puppet-lint --fail-on-warnings --error-level warning .
   only:
     - branches
