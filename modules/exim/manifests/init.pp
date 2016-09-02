@@ -13,9 +13,9 @@ class exim::satellite ($smarthost, $mail_domain) {
     notify  => Exec['update-exim4.conf'],
   }
   file {'/etc/mailname':
-    ensure => file,
+    ensure  => file,
     content => $mail_domain,
-    notify => Exec['update-exim4.conf'],
+    notify  => Exec['update-exim4.conf'],
   }
 
   exec {'update-exim4.conf':
@@ -27,7 +27,7 @@ class exim::satellite ($smarthost, $mail_domain) {
     ensure => present,
   }
   package {'heirloom-mailx':
-    ensure => absent,
+    ensure  => absent,
     require => Package['mailx'],
   }
 }
