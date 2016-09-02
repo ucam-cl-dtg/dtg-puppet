@@ -7,7 +7,9 @@ node 'weather.dtg.cl.cam.ac.uk' {
 # Gives the weather-adm group admin on these machines.
   class {'dtg::weather': }
 
-  # ACR - removed these mounts. backups are now done by the backup servers ssh'ing into the vm and pulling the data through the ssh connection
+  # ACR - removed these mounts.
+  # Backups are now done by the backup servers ssh'ing into the vm
+  # and pulling the data through the ssh connection
   # Mount nas01 and africa01 in order to ship backups there.
   # First, install autofs:
 #  package {'autofs':

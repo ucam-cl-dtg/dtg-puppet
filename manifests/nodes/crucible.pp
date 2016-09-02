@@ -53,7 +53,7 @@ node 'crucible.dtg.cl.cam.ac.uk' {
   file_line { 'fisheye_crucible_instance_location':
       path => '/etc/environment',
       line => 'FISHEYE_INST="/var/lib/crucible_data"',
-   }
+  }
 # only required on initial installation
 #  ->
 #  file { '/var/lib/crucible_data/config.xml':

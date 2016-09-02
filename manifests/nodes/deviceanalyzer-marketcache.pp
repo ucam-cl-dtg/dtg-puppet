@@ -60,7 +60,8 @@ node /deviceanalyzer-marketcache/ {
     }
     
     
-    $packages = ['maven','openjdk-8-jdk','puppet-el','build-essential','ruby','ruby-dev','zlib1g-dev']
+    $packages = ['maven','openjdk-8-jdk','puppet-el','build-essential',
+                'ruby','ruby-dev','zlib1g-dev']
     package{$packages:
       ensure => installed,
     }
