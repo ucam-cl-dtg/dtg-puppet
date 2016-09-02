@@ -2,20 +2,21 @@ image: ubuntu:16.04
 
 before_script:
   - apt-get update -qq
-  - apt-get install -qq puppet-lint puppet-common
 
-test-apply:
-  stage: test
-  allow_failure: true
+base-apply:
+  stage: build
   script:
+    - apt-get install -y puppet-common git sudo > /dev/null
+    - git submodule init -q
+    - git submodule update -q
     - FACTER_fqdn=default.dtg.cl.cam.ac.uk puppet apply --noop --modulepath=modules --node_name_value=default.dtg.cl.cam.ac.uk manifests/nodes/
+  only:
+    - branches
 
 lint:
   stage: test
   script:
-    - puppet-lint manifests/nodes
-    - puppet-lint modules/dtg
-    - puppet-lint modules/exim
-    - puppet-lint modules/gpg
-    - puppet-lint modules/munin
-    - puppet-lint modules/nagios
+    - apt-get install -y puppet-lint > /dev/null
+    - puppet-lint .
+  only:
+    - branches
