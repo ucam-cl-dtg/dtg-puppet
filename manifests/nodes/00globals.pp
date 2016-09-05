@@ -30,7 +30,7 @@ $name_servers = [ # '128.232.21.15', Removed DTG DNS. Some software (NFS)
 $dns_name_servers = join($::name_servers, ' ')
 
 # Id certifiers people who can sign other users keys to certify them
-class ms_id_certifiers {
+class ms_id_certifiers { # lint:ignore:autoloader_layout config-class
   monkeysphere::add_id_certifier {
     'drt24': keyid => '5017A1EC0B2908E3CF647CCD551435D5D74933D9'
   }
@@ -71,7 +71,7 @@ group { 'rscfl':
 }
 
 
-class admin_users ($user_whitelist = undef) {
+class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
   dtg::add_user { 'drt24':
     real_name      => 'Daniel Thomas',
     groups         => [ 'adm', 'deviceanalyzer', 'dtg-adm', 'cccc-data' ],
