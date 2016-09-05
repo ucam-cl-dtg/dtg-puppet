@@ -84,7 +84,7 @@ node 'cccc-openvz.dtg.cl.cam.ac.uk' {
     user   => 'rnc1',
   }
 }
-class apt::source::openvz {
+class apt::source::openvz { # lint:ignore:autoloader_layout repo class
   apt::source{ 'openvz':
     location => 'http://download.openvz.org/debian',
     release  => 'wheezy',

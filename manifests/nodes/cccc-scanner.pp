@@ -206,6 +206,6 @@ if ( $::monitor ) {
   munin::gatherer::async_node { 'cccc-scanner': }
 }
 
-class dtg::spoofer::ppa {
+class dtg::spoofer::ppa { # lint:ignore:autoloader_layout repo class
   apt::ppa { 'ppa:matthewluckie/spoofer': }
 }

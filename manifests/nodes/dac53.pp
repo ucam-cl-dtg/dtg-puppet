@@ -9,10 +9,10 @@ node 'dac53.dtg.cl.cam.ac.uk' {
   }
   User<|title == dac53 |> { groups +>[ 'adm' ] }
   # mount nas02 on startup
- # file_line { 'mount nas02':
- #   line => 'nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
- #   path => '/etc/fstab',
- # }
+# file_line { 'mount nas02':
+#   line => 'nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer /nas2 nfs defaults 0 0',
+#   path => '/etc/fstab',
+# }
 
   # mount nas04 on startup
   file_line { 'mount nas04':

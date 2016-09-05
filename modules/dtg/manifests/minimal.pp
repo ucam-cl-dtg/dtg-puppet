@@ -11,13 +11,13 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
   # Manage apt sources lists
   if $manageapt {
     if $::operatingsystem == 'Ubuntu' {
-      class { 'aptrepository':
+      class { 'dtg::aptrepository':
         repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
         stage      => 'repos'
       }
     }
     if $::operatingsystem == 'Debian' {
-      class { 'aptrepository':
+      class { 'dtg::aptrepository':
         repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/debian/',
         stage      => 'repos'
       }
