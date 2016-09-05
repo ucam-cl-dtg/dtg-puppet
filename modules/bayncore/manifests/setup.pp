@@ -1,4 +1,4 @@
-define bayncore::setup() {
+class bayncore::setup{
 
   exec { 'remount':
     command     => '/bin/mount -a',
