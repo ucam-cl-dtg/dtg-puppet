@@ -83,9 +83,7 @@ node /saluki(\d+)?/ {
                 ],
   }
     
-  
-  include 'bayncore::setup'
-  include 'bayncore::ssh_users'
+  class{ 'bayncore::setup': } -> class{ 'bayncore::ssh_users': }
 }
 
 node /naps-bayncore/ {
@@ -93,9 +91,7 @@ node /naps-bayncore/ {
 
   $packages = ['build-essential','libstdc++6:i386','vnc4server']
   
-  include 'bayncore::setup'
-
-  include 'bayncore::ssh_users'
+  class{ 'bayncore::setup': } -> class{ 'bayncore::ssh_users': }
 
   package{$packages:
     ensure => installed,
