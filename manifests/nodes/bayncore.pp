@@ -1,90 +1,43 @@
-define bayncore_ssh_user($real_name,$uid,$ensure = 'present') {
-  $username = $title
-  user { $username:
-    ensure     => $ensure,
-    comment    => "${real_name} <${email}>",
-    home       => "/home/${username}",
-    shell      => '/bin/bash',
-    groups     => [],
-    uid        => $uid,
-    membership => 'minimum',
-    password   => '*',
-  }
-  ->
-  group { $username:
-    ensure  => $ensure,
-    require => User[$username],
-    gid     => $uid,
-  }
-}
 
-define bayncore_setup() {
-
-  exec { 'remount':
-    command     => '/bin/mount -a',
-    refreshonly => true,
-  }
-
-  package {['gfortran']:
-    ensure => installed,
-  }
-  
-  file {'/mnt/bayncore':
-    ensure => directory,
-  }
-  ->
-  file_line { 'mount nas04':
-    ensure => present,
-    line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore /mnt/bayncore nfs defaults 0 0',
-    path   => '/etc/fstab',
-    notify => Exec['remount'],
-  }
-  ->
-  file_line { 'mount home':
-    ensure => present,
-    line   => 'nas04.dtg.cl.cam.ac.uk:/dtg-pool0/bayncore/home /home nfs defaults 0 0',
-    path   => '/etc/fstab',
-    notify => Exec['remount'],
-  }
-
-  bayncore_ssh_user {'rogerphilp':
+class bayncore::ssh_users{ # lint:ignore:autoloader_layout
+  bayncore::ssh_user {'rogerphilp':
     real_name => 'Roger Philp (Bayncore)',
     uid       => 20000
   }
 
-  bayncore_ssh_user {'manelfernandez':
+  bayncore::ssh_user {'manelfernandez':
     real_name => 'Manel Fernandez (Bayncore)',
     uid       => 20001,
   }
 
-  bayncore_ssh_user {'francoisfayard':
+  bayncore::ssh_user {'francoisfayard':
     real_name => 'Francois Fayard (Bayncore)',
     uid       => 20004
   }
 
-  bayncore_ssh_user {'bpwc2':
+  bayncore::ssh_user {'bpwc2':
     ensure    => absent,
     real_name => 'Ben Catterall (Undergraduate)',
     uid       => 231340,
   }
 
-  bayncore_ssh_user {'smj58':
+  bayncore::ssh_user {'smj58':
     ensure    => absent,
     real_name => 'Siddhant Jayakumar (Undergraduate)',
     uid       => 229858,
   }
 
-  bayncore_ssh_user {'sa614':
+  bayncore::ssh_user {'sa614':
     real_name => 'Sam Ainsworth (PhD Student)',
     uid       => 3354,
   }
 
-  bayncore_ssh_user {'jankostrassburg':
+  bayncore::ssh_user {'jankostrassburg':
     real_name => 'Janko Strassburg (Bayncore)',
     uid       => 20005,
   }
 
-  bayncore_ssh_user {'stephenblairchappell':
+  bayncore::ssh_user {'stephenblairchappell':
     real_name => 'Stephen Blair-Chappell (Bayncore)',
     uid       => 20006
   }
@@ -130,9 +83,7 @@ node /saluki(\d+)?/ {
                 ],
   }
     
-  
-  bayncore_setup { 'saluki-users': }
-  
+  class{ 'bayncore::setup': } -> class{ 'bayncore::ssh_users': }
 }
 
 node /naps-bayncore/ {
@@ -140,7 +91,7 @@ node /naps-bayncore/ {
 
   $packages = ['build-essential','libstdc++6:i386','vnc4server']
   
-  bayncore_setup { 'naps-bayncore': }
+  class{ 'bayncore::setup': } -> class{ 'bayncore::ssh_users': }
 
   package{$packages:
     ensure => installed,
