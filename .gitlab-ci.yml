@@ -33,5 +33,7 @@ lint-warn:
   allow_failure: true
   script:
     - puppet-lint --fail-on-warnings --error-level warning .
+    - apt-get install -y shellcheck > /dev/null
+    - find modules/ -name '*.sh' -print0 | xargs -0 shellcheck
   only:
     - branches
