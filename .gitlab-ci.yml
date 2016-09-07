@@ -40,7 +40,6 @@ shellcheck:
   stage: style
   allow_failure: true
   script:
-    - apt-get install -y shellcheck > /dev/null
     - find modules/ -name '*.sh' -print0 | xargs -0 shellcheck
   only:
     - branches
