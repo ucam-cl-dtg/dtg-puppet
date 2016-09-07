@@ -35,3 +35,11 @@ lint-warn:
     - puppet-lint --fail-on-warnings --error-level warning .
   only:
     - branches
+
+shellcheck:
+  stage: style
+  allow_failure: true
+  script:
+    - find modules/ -name '*.sh' -print0 | xargs -0 shellcheck
+  only:
+    - branches
