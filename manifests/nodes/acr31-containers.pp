@@ -21,10 +21,6 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
     command => '/usr/sbin/usermod -aG docker www-data',
   }
   ->
-  file {'/etc/default/docker.io':
-    source => '/etc/default/docker'
-  }
-  ->
   docker::image { 'ubuntu':
     image_tag => '14.04'
   }
