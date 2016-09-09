@@ -16,5 +16,7 @@ function test-puppet() {
 
 for host in $domainNames
 do
+  echo "test-puppet ${host}"
   test-puppet "${host}"
+  echo "test-puppet ran for ${host}"
 done
