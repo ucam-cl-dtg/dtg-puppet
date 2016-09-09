@@ -48,6 +48,8 @@ shellcheck:
 apply-all:
   stage: integration
   script:
+    - git submodule init -q
+    - git submodule update -q
     - ./test-all-puppet.sh
   only:
     - branches
