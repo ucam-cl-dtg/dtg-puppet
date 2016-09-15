@@ -129,11 +129,10 @@ node 'deviceanalyzer-database.dtg.cl.cam.ac.uk' {
     ip_mask_allow_all_users    => '127.0.0.1/32',
     listen_addresses           => '*',
     ipv4acls                   => ['hostssl all all 127.0.0.1/32 md5',
-                                   'host androidusage androidusage 128.232.98.188/32 md5',
-                                   'host androidusage androidusage 128.232.21.105/32 md5',
-                                   'host androidusage androidusage 128.232.21.104/32 md5',
-                                   'host androidusage androidusage 128.232.21.132/32 md5',
-                                   ]
+                                  'host androidusage androidusage 128.232.98.188/32 md5',
+                                  'host androidusage androidusage 128.232.21.105/32 md5',
+                                  'host androidusage androidusage 128.232.21.104/32 md5',
+                                  'host androidusage androidusage 128.232.21.132/32 md5']
   }
   ->
   postgresql::server::db{'androidusage':
@@ -185,5 +184,5 @@ if ( $::monitor ) {
     address    => 'upload.deviceanalyzer.cl.cam.ac.uk',
     hostgroups => [ 'http-servers', 'https-servers', 'xml-servers'],
   }
-  munin::gatherer::configure_node { 'deviceanalyzer': }
+  munin::gatherer::async_node { 'deviceanalyzer': }
 }

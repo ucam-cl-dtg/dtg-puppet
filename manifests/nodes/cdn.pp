@@ -1,4 +1,4 @@
-node 'cdn.dtg.cl.cam.ac.uk' {
+node /cdn(-\d+)?/ {
   include 'dtg::minimal'
 
   class {'dtg::isaac':}
@@ -44,31 +44,19 @@ node 'cdn.dtg.cl.cam.ac.uk' {
     match => '^Listen .*443.*$'
   }
   ->
-  file_line{'apache-port-configure-http-virtual-directory':
-    line   => "<VirtualHost *:${apache_http_port}>",
-    path   => '/etc/apache2/sites-available/000-default.conf',
-    notify => Service['apache2'],
-    match  => '<VirtualHost \*:.*>'
-  }
-  ->
-  file { '/etc/apache2/cdn-config':
-    ensure => 'directory',
-    owner  => 'root',
-    group  => 'isaac',
-    mode   => '0755',
-  }
-  ->
-  file { '/etc/apache2/cdn-config/apache-cdn-rules.conf':
-      mode   => '0755',
-      owner  => root,
-      group  => isaac,
-      source => 'puppet:///modules/dtg/cdn/apache-cdn-rules.conf',
+  file { '/etc/apache2/conf-available/cachingserver-rules.conf':
+      mode   => 'u+rw,go+r',
+      owner  => 'root',
+      group  => 'root',
+      source => 'puppet:///modules/dtg/apache/cachingserver-rules.conf',
       notify => Service['apache2']
   }
 
   # stop apache so that we can use its old ports for pound
   exec { 'stop-apache':
-    command  => 'sudo systemctl stop apache2'
+    command => 'systemctl stop apache2',
+    onlyif  => 'lsof -i TCP | grep apache | grep \'*:http\'',
+    require => Package['lsof'],
   }
   ->
   package{ 'varnish':
@@ -129,14 +117,14 @@ node 'cdn.dtg.cl.cam.ac.uk' {
   ->
   file_line{'varnish-setup-http-listening-ports':
     notify => Service['varnish'],
-    line   => "DAEMON_OPTS=\"-a :${varnish_http_port},:${varnish_ssl_port} \\",
+    line   => "DAEMON_OPTS=\"-a :${varnish_http_port} -a :${varnish_ssl_port} \\",
     path   => '/etc/default/varnish',
     match  => '^DAEMON_OPTS=.*'
   }
   ->
   exec { 'start-apache':
-    command     => 'sudo systemctl start apache2',
-    refreshonly => true
+    command => 'systemctl start apache2',
+    unless  => 'systemctl is-active apache2.service',
   }
 
   vcsrepo { '/etc/cdn-bare':
@@ -172,5 +160,5 @@ if ( $::monitor ) {
     hostgroups => ['ssh-servers', 'http-servers', 'https-servers'],
   }
   
-  munin::gatherer::configure_node { 'cdn': }
+  munin::gatherer::async_node { 'cdn': }
 }

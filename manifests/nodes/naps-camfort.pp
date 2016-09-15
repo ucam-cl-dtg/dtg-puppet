@@ -1,6 +1,9 @@
 node /naps-camfort(-\d+)?/ {
   include 'dtg::minimal'
 
+  User<|title == mojpc2 |> { groups +>[ 'adm' ]}
+  User<|title == mrd45 |> { groups +>[ 'adm' ]}
+
   class {'apache::ubuntu': } ->
   apache::module {'cgi':} ->
   apache::site {'camfort':
@@ -24,6 +27,11 @@ node /naps-camfort(-\d+)?/ {
     ensure => directory,
     owner  => acr31,
   }
+  
+  file{'/usr/local/camfort':
+    ensure => directory,
+    owner  => acr31,
+  }
 
   file{'/usr/local/camfort-webapp/workspaces':
     ensure => directory,
@@ -42,5 +50,5 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
   
-  munin::gatherer::configure_node { 'naps-camfort': }
+  munin::gatherer::async_node { 'naps-camfort': }
 }

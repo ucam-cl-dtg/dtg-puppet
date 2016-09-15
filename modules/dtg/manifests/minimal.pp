@@ -1,20 +1,23 @@
-class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = true, $managefirewall = true, $dns_server = false) {
+class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = true, $managefirewall = true, $dns_server = false, $user_whitelist = undef) {
 
   # Set up the repositories, get some entropy then do everything else
   #  entropy needs to start being provided before it is consumed
+  # Do DNS last as fiddling with that while doing other things can cause other
+  #  things to fail
+  stage {'dns': } Stage['main'] -> Stage['dns']
   stage {'entropy': before => Stage['main'] }
   stage {'entropy-host': before => Stage['entropy'] }
   stage {'repos': before => Stage['entropy-host'] }
   # Manage apt sources lists
   if $manageapt {
     if $::operatingsystem == 'Ubuntu' {
-      class { 'aptrepository':
+      class { 'dtg::aptrepository':
         repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
         stage      => 'repos'
       }
     }
     if $::operatingsystem == 'Debian' {
-      class { 'aptrepository':
+      class { 'dtg::aptrepository':
         repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/debian/',
         stage      => 'repos'
       }
@@ -23,9 +26,10 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
 
   # Packages which should be installed on all servers
   $packagelist = ['traceroute', 'vim', 'screen', 'fail2ban', 'curl', 'tar',
-                  'apg', 'htop', 'emacs24-nox',
+                  'apg', 'htop', 'emacs24-nox', 'lsof',
                   'iptables-persistent', 'command-not-found', 'mlocate',
-                  'bash-completion', 'apt-show-versions', 'iotop', 'byobu']
+                  'bash-completion', 'apt-show-versions', 'iotop', 'byobu',
+                  'parted']
   package {
     $packagelist:
       ensure => installed
@@ -80,7 +84,10 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
     authorized_keys_file => '/var/lib/monkeysphere/authorized_keys/%u .ssh/authorized_keys',
   }
 
-  class { 'dtg::dns': dns_server => $dns_server }
+  class { 'dtg::dns':
+    dns_server => $dns_server,
+    stage      => 'dns',
+  }
   class { 'dtg::git::config': }
   class { 'dtg::rsyslog': }
   class { 'etckeeper': require => Class['dtg::git::config'] }
@@ -102,7 +109,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
   class { 'gpg': }
   class { 'monkeysphere':
     keyserver => $::ms_keyserver,
-    require => Class['dtg::email'],
+    require   => Class['dtg::email'],
   }
   # create hourly cron job to update users authorized_user_id files
   $ms_min = random_number(60)
@@ -147,9 +154,11 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
   monkeysphere::authorized_user_ids { 'root':
     user_ids => $ms_admin_user_ids
   }
+
   # Create the admin users
   class { 'admin_users':
-    require => Class['dtg::email'],
+    require        => Class['dtg::email'],
+    user_whitelist => $user_whitelist,
   }
   # Allow admin users to push puppet config
   if $adm_sudoers {

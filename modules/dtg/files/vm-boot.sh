@@ -69,25 +69,25 @@ fi
 if [ ! -d $PUPPETBARE ]; then
 	wget $BOOTSTRAP
 	chmod +x bootstrap.sh
-	./bootstrap.sh
+	./bootstrap.sh | tee --append /var/log/bootstrap.log
 fi
 
-# if the hostname is puppy* then we want to import dom0's key so
+# if the hostname is puppy* (or ubuntu) then we want to import dom0's key so
 # scripts can SSH in and sort this out. We don't want dom0 to
 # monkeysphere. We also generate a new fingerprint
 
-if [ $(echo $HOSTNAME | grep puppy) ]; then
+if [ $(echo $HOSTNAME | grep puppy) ] || [ "$HOSTNAME" = "ubuntu" ]; then
     rm -rf /etc/ssh/ssh_host_*
     ssh-keygen -t ed25519 -h -f /etc/ssh/ssh_host_ed25519_key < /dev/null
     ssh-keygen -t rsa -b 4096 -h -f /etc/ssh/ssh_host_rsa_key < /dev/null
 
     mkdir -p /root/.ssh/
     echo "${DOM0_PUBLIC_KEY}" >> $AUTHORIZED_KEYS
-    if [  "$(ifconfig eth0 | grep -Eo ..\(\:..\){5})" = "00:16:3e:e8:14:24" ]; then 
-	echo dhcp > /etc/hostname
-	start hostname
-	cd /etc/puppet-bare
-	./hooks/post-update
+    if [  "$(ifconfig eth0 | grep -Eo ..\(\:..\){5})" = "00:16:3e:e8:14:24" ]; then
+        echo dhcp > /etc/hostname
+        start hostname
+        cd /etc/puppet-bare
+        ./hooks/post-update
     fi
     monkeysphere-authentication update-users
 else

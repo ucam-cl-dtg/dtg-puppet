@@ -2,8 +2,8 @@ node 'gitlab-pedant.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
   class {'dtg::scm':}
   firewall { '030 accept on 5000':
-    proto => 'tcp',
-    dport => 5000,
+    proto  => 'tcp',
+    dport  => 5000,
     action => 'accept',
   }
 }
@@ -14,5 +14,5 @@ if ( $::monitor ) {
     address    => 'gitlab-pedant.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers'],
   }
-  munin::gatherer::configure_node { 'gitlab-pedant': }
+  munin::gatherer::async_node { 'gitlab-pedant': }
 }

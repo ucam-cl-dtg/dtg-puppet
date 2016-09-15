@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -e
+
+bare_repo="/etc/www-bare"
+target="/var/www"
+
+# post-update hook for /etc/puppet-bare to update /etc/puppet and apply config
+echo '---- Pulling changes into /var/www -----'
+
+#If there's no www directory, create it
+if ! [ -d "$target" ]; then
+	mkdir "$target"
+fi
+
+cd "$target"
+unset GIT_DIR
+
+#if there isn't a git repository in the target directory, initialise it
+if ! [ -d .git ]; then
+	git init --shared=group
+	git remote add bare "$bare_repo"
+fi
+
+
+git pull --quiet bare  master
+
+# Make sure the permissions on the files we've created are such that
+# future people can run this script: set the group to adm, mirror
+# permissions from user to group, set group sticky
+sudo chmod -R --quiet g+u . .git || true
+sudo chgrp -R --quiet adm . .git || true
+find . -type d -print0 | xargs -0 -s 256 sudo chmod --quiet g+s || true
+find .git -type d -print0 | xargs -0 sudo chmod --quiet g+s || true
+
+# Delete any files that are not part of the git repository
+git clean -fffd
+
+# Stuff will be cached
+sudo service varnish restart

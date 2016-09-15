@@ -21,10 +21,6 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
     command => '/usr/sbin/usermod -aG docker www-data',
   }
   ->
-  file {'/etc/default/docker.io':
-    source => '/etc/default/docker'
-  }
-  ->
   docker::image { 'ubuntu':
     image_tag => '14.04'
   }
@@ -59,12 +55,12 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
   }
   ->
   file {["${tomcat_directory}/webapps/docs",
-         "${tomcat_directory}/webapps/ROOT",
-         "${tomcat_directory}/webapps/examples",
-         "${tomcat_directory}/webapps/host-manager",
-         "${tomcat_directory}/webapps/manager"]:
-           ensure => 'absent',
-           force  => true
+        "${tomcat_directory}/webapps/ROOT",
+        "${tomcat_directory}/webapps/examples",
+        "${tomcat_directory}/webapps/host-manager",
+        "${tomcat_directory}/webapps/manager"]:
+    ensure => 'absent',
+    force  => true
   }
   ->
   file {"${tomcat_directory}/logs":
@@ -135,10 +131,10 @@ node /acr31-containers(-\d+)?|containers(-\d+)?/ {
 #    address    => 'containers-1.dtg.cl.cam.ac.uk',
 #    hostgroups => [ 'ssh-servers' , 'https-servers' ],
 #  }
-#  munin::gatherer::configure_node { 'containers-1': }
+#  munin::gatherer::async_node { 'containers-1': }
 #}
 
-class dtg::containers::apt_java {
+class dtg::containers::apt_java { # lint:ignore:autoloader_layout repo class
   apt::ppa { 'ppa:webupd8team/java': }
   ->
   exec {'set-licence-selected':

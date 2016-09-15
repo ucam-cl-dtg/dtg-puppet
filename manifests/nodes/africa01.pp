@@ -21,7 +21,11 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'datashare':
     pool_name  => $pool_name,
     fs_name    => 'datashare',
-    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,ro=@wright.cl.cam.ac.uk,ro=@airwolf.cl.cam.ac.uk,ro=@128.232.29.5,async',
+    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,\
+                   ro=@vm-sr-nile1.cl.cam.ac.uk,\
+                   ro=@wright.cl.cam.ac.uk,\
+                   ro=@airwolf.cl.cam.ac.uk,\
+                   ro=@128.232.29.5,async',
   }
 
   # Test FS so that we can monitor africa01 over NFS
@@ -32,7 +36,8 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   }
 
   # Backups
-  # We take backups of various servers onto nas01 these are run as low priority cron jobs
+  # We take backups of various servers onto nas01
+  # these are run as low priority cron jobs
   # and run as very restricted user.
   dtg::zfs::fs{'backups':
     pool_name  => $pool_name,
@@ -101,10 +106,49 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   }
 
 
+  # CCCC Data
+  dtg::zfs::fs{'cccc':
+    pool_name  => $pool_name,
+    fs_name    => 'cccc',
+    share_opts => 'off',
+  } ->
+  dtg::zfs::fs{'cccc/iplane-mirror':
+    pool_name  => $pool_name,
+    fs_name    => 'cccc/iplane-mirror',
+    share_opts => 'off',
+  } ->
+  file {"/${pool_name}/cccc/iplane-mirror":
+    ensure => directory,
+    owner  => 'cccc-data',
+    group  => 'cccc-data',
+    mode   => 'ug+rwx',
+  } ->
+  cron {'mirror iplane daily':
+    ensure      => present,
+    user        => 'cccc-data',
+    minute      => cron_minute('mirror iplane daily'),
+    hour        => 14,
+    weekday     => '*',
+    environment => 'MAILTO=cccc-infra@cl.cam.ac.uk',
+    command     => 'bash -c "cd /data-pool0/cccc/iplane-mirror && wget --recursive --level=2 --convert-links --timestamping --no-remove-listing --no-parent --domains=iplane.cs.washington.edu --wait=1 --limit-rate=5m --relative -e robots=off http://iplane.cs.washington.edu/data/iplane_logs/`date --date=yesterday --iso-8601 | sed \'s|-|/|g\'`" > /dev/null',
+  }
+
+  dtg::zfs::fs{'cccc/internet-map':
+    pool_name  => $pool_name,
+    fs_name    => 'cccc/internet-map',
+    share_opts => 'off',
+    require    => Dtg::Zfs::Fs['cccc'],
+  }
+
+  # Install go development environment
+  package{'golang':
+    ensure => installed,
+  }
 
   User<|title == sa497 |> { groups +>[ 'adm' ]}
 
-  $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config', 'libpcap-dev' , 'mountall' , 'liblz4-tool']
+  $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config',
+                  'libpcap-dev' , 'mountall' , 'liblz4-tool']
   package {
       $packagelist:
           ensure => installed
@@ -125,5 +169,5 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'bmcs' ],
   }
 
-  munin::gatherer::configure_node { 'africa01': }
+  munin::gatherer::async_node { 'africa01': }
 }

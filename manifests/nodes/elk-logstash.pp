@@ -11,5 +11,5 @@ if ( $::monitor ) {
     address    => 'elk-logstash.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'rsyslog-servers' ],
   }
-  munin::gatherer::configure_node { 'elk-logstash': }
+  munin::gatherer::async_node { 'elk-logstash': }
 }

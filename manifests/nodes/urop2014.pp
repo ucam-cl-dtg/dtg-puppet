@@ -51,5 +51,5 @@ node /urop2014(-\d+)?.dtg.cl.cam.ac.uk/ {
 
 }
 if ( $::monitor ) {
-  munin::gatherer::configure_node { 'urop2014': }
+  munin::gatherer::async_node { 'urop2014': }
 }

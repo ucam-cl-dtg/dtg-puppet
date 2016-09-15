@@ -9,6 +9,7 @@ import argparse
 import datetime
 from datetime import timedelta
 from fabric.api import cd, env, execute, output, parallel, run, sudo, show, task
+from fabric.exceptions import CommandTimeout
 from git import Repo, RemoteProgress
 from jinja2 import Environment, FileSystemLoader
 import os
@@ -20,6 +21,11 @@ from StringIO import StringIO
 import sys
 import threading
 import tempfile
+
+# paramiko is used for ssh transport, make sure its logs go somewhere. (stderr)
+import logging
+logging.getLogger('paramiko.transport').addHandler(logging.StreamHandler())
+logging.getLogger('paramiko').addHandler(logging.StreamHandler())
 
 
 DTG_DOM = '.dtg.cl.cam.ac.uk'
@@ -54,8 +60,8 @@ orig_pid = os.getpid()
 prev_sent_tasks = 0
 
 DEFAULT_OUT_DIR = "/usr/groups/dtg/dtg-infra/www"
-OUT_FILE = "lick-%s.html" % (str(datetime.datetime.now()).replace(" ", "-"))
-TASKS_FILE = "tasks-%s" % OUT_FILE
+OUT_FILE = "lick-{}.html".format(datetime.datetime.now().isoformat("-"))
+TASKS_FILE = "tasks-{}".format(OUT_FILE)
 
 MESSAGE_BUFFER_SIZE = 2048 ** 2
 # Setting values larger than net.core.wmem_max won't work so you may need to do something like
@@ -119,7 +125,7 @@ PHYSICAL_MACHINES = [
     Machine('africa01', 'africa01' + DTG_DOM, PUPPET_BARE, False),
 ]
 
-UPDATE_BLACKLIST = ['cdn', 'weather', 'gitlab', 'nas04']
+UPDATE_BLACKLIST = ['cdn', 'weather', 'nas04']
 
 
 class RemoteHandler(RemoteProgress):
@@ -161,8 +167,10 @@ def update_status():
     if os.getpid() == orig_pid:
         # Dump to a file
         with open(OUT_PATH, "wb") as f:
+            os.fchmod(f.fileno(), 0664)
             f.write(template.render(lick_status))
         with open(TASKS_PATH, "wb") as f:
+            os.fchmod(f.fileno(), 0664)
             f.write(tasks_template.render(lick_status))
         prev_sent_tasks = len(lick_status["tasks"])
     else:
@@ -488,9 +496,11 @@ def run_latest_puppet(repourl, refspec):
                 machine_err(env.host)
             rc = sudo_capture('nice ./hooks/post-update')
             if rc:
+                machine_err(env.host)
                 update_progress(env.host, "Error running puppet.")
-    update_progress(env.host, "Applied puppet")
-    machine_succ(env.host)
+            else:
+                update_progress(env.host, "Applied puppet")
+                machine_succ(env.host)
 
 
 def add_remotes(repo, machines):
@@ -719,8 +729,7 @@ if __name__ == '__main__':
     OUT_PATH = "%s/%s" % (args.out_dir, OUT_FILE)
     OUT_URL = "https://www.cl.cam.ac.uk/research/dtg/infra/%s" % OUT_FILE
     TASKS_PATH = "%s/%s" % (args.out_dir, TASKS_FILE)
-    TASKS_URL = "https://www.cl.cam.ac.uk/~%s/dtg-infra/%s" % (os.getenv("USER"),
-                                                               TASKS_FILE)
+    TASKS_URL = "https://www.cl.cam.ac.uk/research/dtg/infra/%s" % TASKS_FILE
     OUT_DIR = args.out_dir
 
     tempdirname = tempfile.mkdtemp()

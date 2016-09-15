@@ -18,6 +18,6 @@ class dtg::husky-scripts {
 
 }
 
-class dtg::apt_husky_scripts {
+class dtg::apt_husky_scripts { # lint:ignore:autoloader_layout repo class
     apt::ppa {'ppa:ucam-cl-dtg/dtg-husky': }
 }

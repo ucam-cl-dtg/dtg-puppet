@@ -10,6 +10,6 @@ class dtg::autologin {
     source => 'puppet:///modules/dtg/autologin.conf',
     owner  => 'root',
     group  => 'root',
-    mode   => '0755',
+    mode   => 'u+rw,go+r',
   }
 }

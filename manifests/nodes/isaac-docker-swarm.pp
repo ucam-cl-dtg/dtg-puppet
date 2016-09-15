@@ -4,7 +4,7 @@ node /isaac-\d+/ {
   class {'dtg::isaac':}
 
   class {'dtg::firewall':
-    interfacefile => "/etc/network/interfaces.d/eth0.cfg",
+    interfacefile => '/etc/network/interfaces.d/eth0.cfg',
   }
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
@@ -46,8 +46,8 @@ node /isaac-\d+/ {
   }
   ->
   file { '/local/data/database-backup/isaac-database-backup.log':
-      path    => '/local/data/database-backup/isaac-database-backup.log',
       ensure  => present,
+      path    => '/local/data/database-backup/isaac-database-backup.log',
       replace => false,
       mode    => '0664',
       owner   => isaac,
@@ -60,6 +60,12 @@ node /isaac-\d+/ {
     user    => root,
     hour    => 0,
     minute  => 0
+  }
+  ->
+  cron { 'osticket-cron':
+    command => 'docker exec isaac-tickets php /var/www/html/api/cron.php',
+    user    => root,
+    minute  => '*/1'
   }
 
   # Home directory of isaac user.

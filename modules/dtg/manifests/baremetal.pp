@@ -15,7 +15,7 @@ class dtg::baremetal {
   exec { 'update-grub':
     subscribe   => File['/etc/default/grub'],
     refreshonly => true,
-    onlyif => "test \"`uname -v` == 'Brandz virtual linux'\""
+    onlyif      => "test \"`uname -v` == 'Brandz virtual linux'\""
   }
   
 }

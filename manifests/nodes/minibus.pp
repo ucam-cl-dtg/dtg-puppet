@@ -4,5 +4,5 @@ if ( $::monitor ) {
     address    => 'minibus.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'http-servers' ],
   }
-  munin::gatherer::configure_node { 'minibus': }
+  munin::gatherer::async_node { 'minibus': }
 }

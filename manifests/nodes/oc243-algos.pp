@@ -20,7 +20,9 @@ node 'oc243-algos' {
     source => 'puppet:///modules/dtg/b64.py',
   }
   class {'apache::ubuntu': } ->
-  class {'dtg::apache::raven': server_description => 'Part IA algorithms code review'}->
+  class {'dtg::apache::raven':
+    server_description => 'Part IA algorithms code review'
+  }->
   apache::module {'proxy':} ->
   apache::module {'proxy_http':} ->
   apache::module {'ssl':} ->
@@ -60,8 +62,8 @@ node 'oc243-algos' {
         'user'        => 'gerrit',
         'javaOptions' => '-classpath /usr/share/java/mysql.jar',
       },
-      'gerrit'      => {
-        'basePath'  => '/local/data/gerrit-data',
+      'gerrit'    => {
+        'basePath'        => '/local/data/gerrit-data',
         'canonicalWebUrl' => 'http://algorithms.dtg.cl.cam.ac.uk'
       },
       'httpd'     => {

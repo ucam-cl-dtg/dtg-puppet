@@ -147,5 +147,5 @@ node /^weather2(-dev)?.dtg.cl.cam.ac.uk$/ {
 #    address    => 'weather2.dtg.cl.cam.ac.uk',
 #    hostgroups => [ 'ssh-servers', 'http-servers' ],
 #  }
-#  munin::gatherer::configure_node { 'weather2': }
+#  munin::gatherer::async_node { 'weather2': }
 #}

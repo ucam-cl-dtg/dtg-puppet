@@ -2,11 +2,13 @@
 # groups may be provided to specify additional groups such as adm
 # keys are the array of character for character gpg key user ids for the user
 #  these will be use with monkeyshpere to provide ssh keys
-define dtg::add_user ( $real_name, $groups = '', $keys = undef, $uid) {
+define dtg::add_user ( $real_name, $groups = '', $keys = undef, $uid, $dot_file_repo = undef, $user_whitelist = undef) {
 
     $username = $title
     $email = "${username}@cam.ac.uk"
 
+  if (! $user_whitelist or $username in $user_whitelist) {
+    
     user { $username:
         ensure     => present,
         comment    => "${real_name} <${email}>",
@@ -44,4 +46,30 @@ define dtg::add_user ( $real_name, $groups = '', $keys = undef, $uid) {
         real_name => $real_name,
         require   => File["/home/${username}/"],
     }
+
+    # If the user has a dotfile repo
+    if ($dot_file_repo != undef) {
+        vcsrepo { "/home/${username}/.dot_files/":
+            ensure   => latest,
+            provider => git,
+            source   => $dot_file_repo,
+            user     => $username,
+            require  => [File["/home/${username}/"], User[$username]],
+        } ->
+        file { "/home/${username}/.profile":
+            ensure => link,
+            target => "/home/${username}/.dot_files/.profile",
+            owner  => $username,
+        }
+    }
+  }
+  else {
+    user { $username:
+      ensure     => absent
+    }
+    ->
+    group { $username:
+      ensure     => absent
+    }
+  }
 }

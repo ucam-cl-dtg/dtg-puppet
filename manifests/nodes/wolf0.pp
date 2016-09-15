@@ -6,9 +6,9 @@ node /wolf(\d+)?/ {
 }
 
 if ( $::monitor ) {
-  munin::gatherer::configure_node { 'wolf0': }
-  munin::gatherer::configure_node { 'wolf1': }
-  munin::gatherer::configure_node { 'wolf2': }
+  munin::gatherer::async_node { 'wolf0': }
+  munin::gatherer::async_node { 'wolf1': }
+  munin::gatherer::async_node { 'wolf2': }
 
   nagios::monitor { 'wolf2-bmc':
     parents    => '',

@@ -15,10 +15,7 @@ node 'dhcp.dtg.cl.cam.ac.uk' {
   }
 
   class { 'dhcp':
-   dnsdomain    => [
-                     $org_domain,
-                    '128.232.20.in-addr.arpa',
-                    ],
+    dnsdomain   => [$org_domain, '21.232.128.in-addr.arpa'],
     nameservers => $name_servers,
     ntpservers  => $ntp_servers,
     interfaces  => ['eth0'],
@@ -235,5 +232,5 @@ if ( $::monitor ) {
     address    => 'dhcp.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
-  munin::gatherer::configure_node { 'dhcp': }
+  munin::gatherer::async_node { 'dhcp': }
 }
