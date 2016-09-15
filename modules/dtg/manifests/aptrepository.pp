@@ -5,6 +5,9 @@ class dtg::aptrepository($repository) {
     purge => { 'sources.list'    => true },
     stage => $stage,
   }
+  package{'apt-transport-https':
+    ensure => installed,
+  }
   if $::operatingsystem == 'Ubuntu' {
     # Include main repository
     apt::source { 'main':

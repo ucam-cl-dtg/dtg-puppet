@@ -4,6 +4,7 @@ stages:
   - check
   - test
   - style
+  - integration
 
 syntax:
   stage: check
@@ -41,5 +42,14 @@ shellcheck:
   allow_failure: true
   script:
     - find modules/ -name '*.sh' -print0 | xargs -0 shellcheck
+  only:
+    - branches
+
+apply-all:
+  stage: integration
+  script:
+    - git submodule init -q
+    - git submodule update -q
+    - ./test-all-puppet.sh
   only:
     - branches
