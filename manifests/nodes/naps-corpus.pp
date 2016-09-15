@@ -3,7 +3,7 @@ node /naps-corpus/ {
   $packages = ['build-essential','ghc','libblas-dev','liblapack-dev','libpcre3-dev']
 
   class { 'dtg::minimal':
-    user_whitelist => ['acr31','dao29','mojpc2','mrd45']
+    user_whitelist => ['acr31','dao29','mojpc2','mrd45','drt24']
   }
   
 

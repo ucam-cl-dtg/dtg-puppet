@@ -42,8 +42,8 @@ define dtg::nexus::fetch (
     
     if !defined(Package['unzip']) {
       package{'unzip':
-  name   => 'unzip',
-  ensure => installed,
+        name   => 'unzip',
+        ensure => installed,
       }
     }
 
@@ -71,4 +71,3 @@ define dtg::nexus::fetch (
     err('Unrecognised action')
   }
 }
-       

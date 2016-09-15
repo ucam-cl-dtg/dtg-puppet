@@ -3,7 +3,7 @@
 define dtg::sshkeygen ($homedir = undef) {
   $user = $name
   if ($homedir) {
-    $sshdir = "$homedir/.ssh/"
+    $sshdir = "${homedir}/.ssh/"
   } else {
     $sshdir = "/srv/${user}/.ssh/"
   }

@@ -175,6 +175,6 @@ deviceanalyzer-graphing   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-graph
   # /usr/share/tomcat${tomcat_version}/{.ssh/{id_rsa,id_rsa.pub},.m2/settings.xml,.android/debug.keystore} need to be got from secrets server
 }
 # So that we can appy a stage to it
-class dtg::jenkins::repos {
+class dtg::jenkins::repos { # lint:ignore:autoloader_layout repo class
   apt::ppa {'ppa:ucam-cl-dtg/jenkins': }
 }

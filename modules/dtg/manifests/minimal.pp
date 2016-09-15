@@ -11,13 +11,13 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
   # Manage apt sources lists
   if $manageapt {
     if $::operatingsystem == 'Ubuntu' {
-      class { 'aptrepository':
+      class { 'dtg::aptrepository':
         repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/ubuntu/',
         stage      => 'repos'
       }
     }
     if $::operatingsystem == 'Debian' {
-      class { 'aptrepository':
+      class { 'dtg::aptrepository':
         repository => 'http://www-uxsup.csx.cam.ac.uk/pub/linux/debian/',
         stage      => 'repos'
       }
@@ -85,7 +85,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
 
   class { 'dtg::dns':
     dns_server => $dns_server,
-    stage => 'dns',
+    stage      => 'dns',
   }
   class { 'dtg::git::config': }
   class { 'dtg::rsyslog': }
@@ -108,7 +108,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
   class { 'gpg': }
   class { 'monkeysphere':
     keyserver => $::ms_keyserver,
-    require => Class['dtg::email'],
+    require   => Class['dtg::email'],
   }
   # create hourly cron job to update users authorized_user_id files
   $ms_min = random_number(60)
@@ -156,7 +156,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
 
   # Create the admin users
   class { 'admin_users':
-    require => Class['dtg::email'],
+    require        => Class['dtg::email'],
     user_whitelist => $user_whitelist,
   }
   # Allow admin users to push puppet config

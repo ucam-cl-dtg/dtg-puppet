@@ -18,7 +18,8 @@ class dtg::dns ($dns_server = false) {
       interface               => ['::0','0.0.0.0'],
       access                  => [ $::local_subnet, '::1', '192.168.0.0/16'],
       tcp_upstream            => true,
-      num_threads             => $::processorcount,
+      num_threads             => $::processorcount * 64,
+      num_queries_per_thread  => 2048,
     # neg_cache_size          => '8m',
       key_cache_size          => '32m',
       rrset_cache_size        => '384m',
@@ -32,6 +33,12 @@ class dtg::dns ($dns_server = false) {
       anchor_fetch_command    => 'unbound-anchor -a /var/lib/unbound/root.key -v -f /etc/resolv.conf',
       # This download will fail as unbound won't be configured yet
       skip_roothints_download => true,
+    }
+    augeas { 'disable-dhcp-override-of-forward-config':
+      context => '/files/etc/default/unbound',
+      changes => ['set RESOLVCONF_FORWARDERS false'],
+      notify  => Service['unbound'],
+      require => Package['unbound'],
     }
   }
   unbound::forward { '.':

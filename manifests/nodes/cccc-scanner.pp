@@ -99,10 +99,10 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
   }
 
   file { '/etc/varnish/cdn.vcl':
-      mode   => '0755',
-      owner  => 'root',
-      group  => 'root',
-      source => 'puppet:///modules/dtg/cdn/varnish/cdn.vcl',
+      mode    => '0755',
+      owner   => 'root',
+      group   => 'root',
+      source  => 'puppet:///modules/dtg/cdn/varnish/cdn.vcl',
       require => Package['varnish'],
   } ->
   file{'/etc/systemd/system/varnish.service.d/':
@@ -206,6 +206,6 @@ if ( $::monitor ) {
   munin::gatherer::async_node { 'cccc-scanner': }
 }
 
-class dtg::spoofer::ppa {
+class dtg::spoofer::ppa { # lint:ignore:autoloader_layout repo class
   apt::ppa { 'ppa:matthewluckie/spoofer': }
 }

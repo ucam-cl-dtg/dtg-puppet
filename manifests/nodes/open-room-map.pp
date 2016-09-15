@@ -126,7 +126,8 @@ node /open-room-map(-\d+)?/ {
   # python-scipy, python-jinja2 is used by the machineroom site in /var/www/research/dtg/openroommap/machineroom
   # libdbd-pg-perli is used by the inventory site in /var/www/research/dtg/openroommap/inventory
   # libmath-polygon-perl is used by the rooms site /var/www/research/dtg/openroommap/rooms/
-  $openroommappackages = ['python-scipy','python-jinja2' ,'libdbd-pg-perl', 'libmath-polygon-perl','python-psycopg2']
+  $openroommappackages = ['python-scipy','python-jinja2' ,'libdbd-pg-perl',
+                          'libmath-polygon-perl','python-psycopg2']
   package{$openroommappackages:
     ensure => installed,
   }
