@@ -12,7 +12,6 @@ $from_address = 'dtg-infra@cl.cam.ac.uk'
 $ntp_servers = [
   'ntp2.csx.cam.ac.uk',
   'ntp1.csx.cam.ac.uk',
-  'ntp1.retrosnub.co.uk',
   'ntp1a.cl.cam.ac.uk',
   'ntp1b.cl.cam.ac.uk',
   'ntp1c.cl.cam.ac.uk',
