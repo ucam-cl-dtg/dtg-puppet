@@ -28,12 +28,3 @@ deviceanalyzer   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer'
   }
 
 }
-
-if ( $::monitor ) {
-  nagios::monitor { 'dh526-datadivider':
-    parents    => '',
-    address    => 'dh526-datadivider.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers' ],
-  }
-  munin::gatherer::async_node { 'dh526-datadivider': }
-}

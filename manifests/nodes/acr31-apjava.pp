@@ -15,13 +15,3 @@ node /acr31-apjava/ {
   }
   
 }
-
-if ( $::monitor ) {
-  nagios::monitor { 'acr31-apjava':
-    parents    => 'nas04',
-    address    => 'acr31-apjava.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers', 'http-servers'],
-  }
-  
-  munin::gatherer::async_node { 'acr31-apjava': }
-}
