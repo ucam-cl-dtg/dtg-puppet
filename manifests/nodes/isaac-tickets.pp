@@ -62,6 +62,7 @@ node 'isaac-tickets.dtg.cl.cam.ac.uk' {
 
 if ( $::monitor ) {
   nagios::monitor { 'isaac-tickets-external':
+    parents                     =>  '',
     address                     => 'tickets.isaacphysics.org',
     hostgroups                  => [ 'http-servers', 'https-servers' ],
     include_standard_hostgroups => false,

@@ -38,6 +38,7 @@ node 'isaac-editor.dtg.cl.cam.ac.uk' {
 
 if ( $::monitor ) {
   nagios::monitor { 'isaac-editor-external':
+    parents                     => '',
     address                     => 'editor.isaacphysics.org',
     hostgroups                  => [ 'http-servers', 'https-servers' ],
     include_standard_hostgroups => false,
