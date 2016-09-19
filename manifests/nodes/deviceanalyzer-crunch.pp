@@ -108,16 +108,3 @@ node /deviceanalyzer-crunch5/ {
     source => 'puppet:///modules/dtg/deviceanalyzer/distanalysis.initd',
   }
 }
-
-if ( $::monitor ) {
-  nagios::monitor { 'deviceanalyzer-crunch0':
-    parents    => 'nas04',
-    address    => 'deviceanalyzer-crunch0.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers', 'http-servers' ],
-  }
-  munin::gatherer::async_node { 'deviceanalyzer-crunch0': }
-  munin::gatherer::async_node { 'deviceanalyzer-crunch1': }
-  munin::gatherer::async_node { 'deviceanalyzer-crunch2': }
-  munin::gatherer::async_node { 'deviceanalyzer-crunch3': }
-  munin::gatherer::async_node { 'deviceanalyzer-crunch4': }
-}
