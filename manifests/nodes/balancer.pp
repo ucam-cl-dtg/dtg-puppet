@@ -37,11 +37,3 @@ node /balancer(-\d+)?/ {
   }
 }
 
-if ( $::monitor ) {
-  nagios::monitor { 'balancer':
-    parents    => 'nas04',
-    address    => 'balancer.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers', 'http-servers', 'https-servers'],
-  }
-  munin::gatherer::async_node { 'balancer': }
-}

@@ -37,18 +37,11 @@ node 'isaac-editor.dtg.cl.cam.ac.uk' {
 }
 
 if ( $::monitor ) {
-  nagios::monitor { 'isaac-editor':
-    parents    => 'nas04',
-    address    => 'isaac-editor.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers', 'http-servers'],
-  }
   nagios::monitor { 'isaac-editor-external':
-    parents                     => 'isaac-editor',
     address                     => 'editor.isaacphysics.org',
     hostgroups                  => [ 'http-servers', 'https-servers' ],
     include_standard_hostgroups => false,
   }
-  munin::gatherer::async_node { 'isaac-editor': }
 }
 
 ## On a new server:
