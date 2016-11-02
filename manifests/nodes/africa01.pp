@@ -4,17 +4,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
 
   class { 'dtg::bonding': address => '128.232.23.175'}
 
-  class { 'dtg::firewall::hadoopcluster': }
-
   class {'dtg::zfs': }
-
-  class {'dtg::firewall::publichttp':}
-  ->
-  firewall {'060 accept all 8080':
-    proto  => 'tcp',
-    dport  => '8080',
-    action => 'accept',
-  }
 
   $pool_name = 'data-pool0'
 
