@@ -95,7 +95,6 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     require => Package['autofs'],
   }
 
-
   # CCCC Data
   dtg::zfs::fs{'cccc':
     pool_name  => $pool_name,

@@ -292,6 +292,19 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     gid      => 40002,
     password => '*',
   }
+  # user for backups
+  group { 'cccc-backup':
+    ensure => present,
+    gid    => 40003,
+  }
+  user { 'cccc-backup':
+    ensure   => present,
+    comment  => 'CCCC backup user',
+    password => '*',
+    gid      => 40003,
+    uid      => 40003,
+  }
+
     
 }
 # Admin user ids to be given root on the nodes via monkeysphere
