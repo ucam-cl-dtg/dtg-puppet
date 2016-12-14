@@ -134,11 +134,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'rwandadataset':
     pool_name  => $pool_name,
     fs_name    => 'rwandadataset',
-    share_opts => zfs_shareopts(['grapevine.cl.cam.ac.uk'],
-                                ['sa497-crunch-0.dtg.cl.cam.ac.uk',
-                                'sa497-crunch-1.dtg.cl.cam.ac.uk',
-                                'sa497-crunch-2.dtg.cl.cam.ac.uk',
-                                'sa497-crunch-3.dtg.cl.cam.ac.uk']),
+    share_opts => zfs_shareopts(['grapevine.cl.cam.ac.uk'], []),
   }
 
   dtg::zfs::fs{ 'caida-internet-traces-2014':

@@ -135,8 +135,6 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     ensure => installed,
   }
 
-  User<|title == sa497 |> { groups +>[ 'adm' ]}
-
   $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config',
                   'libpcap-dev' , 'mountall' , 'liblz4-tool']
   package {
