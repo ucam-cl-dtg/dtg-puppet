@@ -91,6 +91,22 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   }
 
 
+  # CCCC
+  # Mount archive.cl.cam.ac.uk
+  file {'/etc/auto.mnt':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 'a=r',
+    content => 'archive-cccc   archive.cl.cam.ac.uk:/export/cccc',
+  } ->
+  file_line {'mount remote filesystems':
+    line    => '/mnt   /etc/auto.mnt',
+    path    => '/etc/auto.master',
+    require => Package['autofs'],
+  }
+
+
   # CCCC Data
   dtg::zfs::fs{'cccc':
     pool_name  => $pool_name,
@@ -131,7 +147,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   }
 
   $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config',
-                  'libpcap-dev' , 'mountall' , 'liblz4-tool']
+                  'libpcap-dev' , 'mountall' , 'liblz4-tool', 'autofs']
   package {
       $packagelist:
           ensure => installed
