@@ -13,7 +13,6 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     fs_name    => 'datashare',
     share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,\
                    ro=@vm-sr-nile1.cl.cam.ac.uk,\
-                   ro=@wright.cl.cam.ac.uk,\
                    ro=@airwolf.cl.cam.ac.uk,\
                    ro=@128.232.29.5,async',
   }
@@ -52,10 +51,6 @@ node 'africa01.dtg.cl.cam.ac.uk' {
 
   dtg::nfs::firewall {'dtg':
     source          => '128.232.20.0/22',
-  }
-
-  dtg::nfs::firewall {'wright.cl.cam.ac.uk':
-    source          => 'wright.cl.cam.ac.uk',
   }
 
   dtg::nfs::firewall {'airwolf.cl.cam.ac.uk':
