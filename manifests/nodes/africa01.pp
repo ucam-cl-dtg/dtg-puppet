@@ -11,10 +11,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'datashare':
     pool_name  => $pool_name,
     fs_name    => 'datashare',
-    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,\
-                   ro=@vm-sr-nile1.cl.cam.ac.uk,\
-                   ro=@airwolf.cl.cam.ac.uk,\
-                   ro=@128.232.29.5,async',
+    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,async',
   }
 
   # Test FS so that we can monitor africa01 over NFS
@@ -51,14 +48,6 @@ node 'africa01.dtg.cl.cam.ac.uk' {
 
   dtg::nfs::firewall {'dtg':
     source          => '128.232.20.0/22',
-  }
-
-  dtg::nfs::firewall {'airwolf.cl.cam.ac.uk':
-    source          => 'airwolf.cl.cam.ac.uk',
-  }
-
-  dtg::nfs::firewall {'128.232.29.5':
-    source          => '128.232.29.5',
   }
 
   # Device Analyzer
