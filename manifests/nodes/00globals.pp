@@ -303,6 +303,7 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     password => '*',
     gid      => 40003,
     uid      => 40003,
+    home     => '/home/cccc-backup/',
   }
 
     
