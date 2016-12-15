@@ -95,6 +95,12 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     require => Package['autofs'],
   }
 
+  file {'/home/cccc-backup/':
+    ensure => directory,
+    owner  => 'cccc-backup',
+    group  => 'cccc-backup',
+    mode   => '0750',
+  }
   file {'/home/cccc-backup/.ssh/':
     ensure => directory,
     owner  => 'cccc-backup',
