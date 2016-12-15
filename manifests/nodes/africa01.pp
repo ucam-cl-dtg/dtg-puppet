@@ -94,6 +94,18 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     path    => '/etc/auto.master',
     require => Package['autofs'],
   }
+  ssh_authorized_key {'cccc-backup key 3':
+    ensure => present,
+    key    => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDOb30ukReiQXDipoNG/UiqQPxymjt8qwiWxZl2yfguLf7CgyEaamTFYmQfoeeqWAC79HXB6E49+JoYJkSC0AcK9wOu1PqjoLgzyWbkn6Mb0woBLziLbDlRktB0wX3o+TeQz4juVRaPHwoRC2knXQhR6LIQmhUIx5b0FBu88IVte53CXJxYaTPMEORqgP8AzOReu6KPvgtyXNkMCtxJSqbNdu5ISrgOmddrDtigW+vhFY/0sFv1Ab/++UIm1FaRcQWTEIOlEaoXUstrLeWPa/CE85FJWvDMMuPDLVLD0Pqpnj3qGg5eGHDrw6HSjS4tEN3gO/V9Fx7nENb6tZ/nfXo2EdFXvAWtBWAtI4HXoumLEJTkpAV3OsMJtTzAH47vr0ullg+58md/cAFp/tS+ZgCy9T1Y++klD/r8HMf43WTz8F2GHz8XXnsnYuHAbVYs5ztht8vECcv6vkxQDqk2YLOshyrEfNb3BOSn7EpHEwifM5FKovVi7fslKKkHLtj7KoehuYGqEOqttUHpb7VW7mFRDLg1kbyWs+MbRg8Duez1OGfq9zTxR9figzaJuamvUDKM4J532h0+4Wlb3C5Aeu+0Yv2e0YhYWjIkJtxWvLh5+AS8/AYzMJpTbXQed6E9qZTyHNW3HuFnqBhiVguVoUpked2vjJFewoA5Tj8bna26yw==',
+    user   => 'cccc-backup',
+    type   => 'ssh-rsa',
+  }
+  ssh_authorized_key {'cccc-backup key 4':
+    ensure => present,
+    key    => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQD0UfVs3Qwj2QTm0CKWlgiCS5EJcWFLtCrHXXr2U8kkpPA6RYpz2K/yv6b6j8W18qQKZj9MxmgZQeFEeoSKL0BfJs2vVLn8DY3z+23SiehvVQeWpzJnYOGcZAs7jjfAC9u3hE4VCGI23zik4A492EnybjRtifHfyhOExNXWmL+MmLGNaDihoSQhQI2pVnuOpAhOLp9n9xqBSluR0sDh0Y66osEKatyb3hcvK0vZOkh11BetDZXz3Bt31iSZVvuKwg4MeS+J++QZkol3Kd01dhnRJZ17XakqU6mdbS6S22kxwN57wjYmAUEwuCOe8NqyEjioNRd54b9fsxHlK9HhaneW0EurSCs2X88Da9je5cFGaIrbaJIskYW06clXosnmzzn4rs60dm/tO7TGO//J7Xlh8+Og+jurZXM2wEsnGMokXsuobw6jYRAumCBG9a6HakakSTcMPvF2QmilFYGUpttjXpOJPxhVwtNtrtbfvuIbDoYZ1C1NCyXwUzDvZLHlaMfBtf7HCZhz5W7bIF/Poqj7EfvtQBQrUblTqdegFQp20QxAta9FBiYhr8A87ZD1sfFea3kcMnnnlKglICVck5xkfhIiZwFkSNiBRLvmqRkW87hSF24hoWvws9O3GCD0ENc8lwarwd7beBnUnB2jaUUel1n8kLoCAqpESopTFJvluQ==',
+    user   => 'cccc-backup',
+    type   => 'ssh-rsa',
+  }
 
   # CCCC Data
   dtg::zfs::fs{'cccc':
