@@ -35,6 +35,26 @@ class dtg::git_wiki {
     user               => 'git',
     home               => '/srv/git/',
   }
+
+  package { 'python3 python3-requests':
+    ensure => installed,
+  }->
+  user {'lunch':
+    ensure     => present,
+    home       => '/srv/lunch',
+    managehome => true,
+  }->
+  vcsrepo { '/srv/lunch':
+    ensure   => present,
+    provider => git,
+    source   => 'ssh://git@gitlab.dtg.cl.cam.ac.uk:tb403/dtg-lunch-notify.git',
+  }->
+  cron { 'dtg-lunch':
+    command => '/usr/bin/python3 /srv/lunch/dtg-lunch.py',
+    user => 'lunch',
+    hour => 9,
+    minute => 0,
+  }
 }
 
 if ( $::is_backup_server ) {
