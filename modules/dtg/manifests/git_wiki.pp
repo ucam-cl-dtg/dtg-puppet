@@ -51,9 +51,9 @@ class dtg::git_wiki {
   }->
   cron { 'dtg-lunch':
     command => '/usr/bin/python3 /srv/lunch/dtg-lunch.py',
-    user => 'lunch',
-    hour => 9,
-    minute => 0,
+    user    => 'lunch',
+    hour    => 9,
+    minute  => 0,
   }
 }
 
