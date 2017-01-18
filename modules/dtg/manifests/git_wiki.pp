@@ -36,7 +36,7 @@ class dtg::git_wiki {
     home               => '/srv/git/',
   }
 
-  package { 'python3 python3-requests':
+  package { ['python3', 'python3-requests']:
     ensure => installed,
   }->
   user {'lunch':
