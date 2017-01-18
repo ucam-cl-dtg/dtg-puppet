@@ -47,7 +47,7 @@ class dtg::git_wiki {
   vcsrepo { '/srv/lunch':
     ensure   => present,
     provider => git,
-    source   => 'ssh://git@gitlab.dtg.cl.cam.ac.uk:tb403/dtg-lunch-notify.git',
+    source   => 'ssh://git@gitlab.dtg.cl.cam.ac.uk/tb403/dtg-lunch-notify.git',
   }->
   cron { 'dtg-lunch':
     command => '/usr/bin/python3 /srv/lunch/dtg-lunch.py',
