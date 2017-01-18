@@ -38,7 +38,7 @@ class dtg::git_wiki {
 
   package { ['python3', 'python3-requests']:
     ensure => installed,
-  }->
+  }
   user {'lunch':
     ensure     => present,
     home       => '/srv/lunch',
