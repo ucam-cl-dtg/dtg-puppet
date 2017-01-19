@@ -3,7 +3,7 @@ class dtg::git::gollum::main {
   vcsrepo {'/srv/gollum/':
     ensure   => latest,
     provider => 'git',
-    source   => 'git://github.com/ucam-cl-dtg/gollum-dtg.git',
+    source   => 'https://github.com/ucam-cl-dtg/gollum-dtg.git',
     revision => 'dtg-multiwiki',
     owner    => 'lc525',
     group    => 'www-data',
