@@ -5,6 +5,10 @@ Exec {
   logoutput => 'on_failure',
 }
 
+Cron {
+  environment => 'MAILTO=dtg-infra@cl.cam.ac.uk',
+}
+
 $org_domain = 'dtg.cl.cam.ac.uk'
 
 $from_address = 'dtg-infra@cl.cam.ac.uk'
