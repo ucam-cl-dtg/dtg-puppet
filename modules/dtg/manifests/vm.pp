@@ -22,7 +22,7 @@ class dtg::vm {
   cron {'xenstore-write-sudoers':
     ensure  => present,
     user    => 'root',
-    command => 'sudo xenstore-write "data/sudoers" "$(for x in `ls /etc/sudoers.d`; do getent group $x; done | cut -d \':\' -f 4 |  tr \',\' \'\n\' | sort | uniq | grep -e  ^[a-z]*[a-z][0-9][0-9]*$ | sed \':a;N;$!ba;s/\n/ /g\')"',
+    command => 'sudo xenstore write "data/sudoers" "$(for x in `ls /etc/sudoers.d`; do getent group $x; done | cut -d \':\' -f 4 |  tr \',\' \'\n\' | sort | uniq | grep -e  ^[a-z]*[a-z][0-9][0-9]*$ | sed \':a;N;$!ba;s/\n/ /g\')"',
     minute  => cron_minute('xenstore-write-sudoers'),
     hour    => '*',
   }
@@ -30,7 +30,7 @@ class dtg::vm {
   cron {'xenstore-write-sudoers-reboot':
     ensure  => present,
     user    => 'root',
-    command => 'sudo xenstore-write "data/sudoers" "$(for x in `ls /etc/sudoers.d`; do getent group $x; done | cut -d \':\' -f 4 |  tr \',\' \'\n\' | sort | uniq | grep -e  ^[a-z]*[a-z][0-9][0-9]*$ | sed \':a;N;$!ba;s/\n/ /g\')"',
+    command => 'sudo xenstore write "data/sudoers" "$(for x in `ls /etc/sudoers.d`; do getent group $x; done | cut -d \':\' -f 4 |  tr \',\' \'\n\' | sort | uniq | grep -e  ^[a-z]*[a-z][0-9][0-9]*$ | sed \':a;N;$!ba;s/\n/ /g\')"',
     special => 'reboot',
   }
 
