@@ -2,7 +2,10 @@ node /wolf(\d+)?/ {
   include 'dtg::minimal'
 
   class { 'dtg::rscfl': }
-  class { 'dtg::autologin': }
+  if !$::is_virtual {
+    # This is already included elsewhere for VMs
+    class { 'dtg::autologin': }
+  }
 }
 
 if ( $::monitor ) {
