@@ -11,7 +11,7 @@ domainNames=$(dig -t AXFR  cl.cam.ac.uk @dns0.cl.cam.ac.uk | grep .dtg.cl.cam.ac
 
 function test-puppet() {
   # This expects to be run inside the dtg-puppet repository e.g. ~/git/infrastructure/dtg-puppet
-  sudo -H FACTER_fqdn="${1}".dtg.cl.cam.ac.uk puppet apply --noop --modulepath=modules --node_name_value="${1}".dtg.cl.cam.ac.uk manifests/nodes/
+  sudo -H FACTER_hostname="${1}" FACTER_fqdn="${1}".dtg.cl.cam.ac.uk puppet apply --noop --modulepath=modules --node_name_value="${1}".dtg.cl.cam.ac.uk manifests/nodes/
 }
 
 for host in $domainNames
