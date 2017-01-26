@@ -18,7 +18,7 @@ base-apply:
   script:
     - git submodule init -q
     - git submodule update -q
-    - FACTER_fqdn=default.dtg.cl.cam.ac.uk puppet apply --noop --modulepath=modules --node_name_value=default.dtg.cl.cam.ac.uk manifests/nodes/
+    - FACTER_hostname=default FACTER_fqdn=default.dtg.cl.cam.ac.uk puppet apply --noop --modulepath=modules --node_name_value=default.dtg.cl.cam.ac.uk manifests/nodes/
   only:
     - branches
 
