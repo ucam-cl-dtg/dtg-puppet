@@ -50,6 +50,7 @@ apply-all:
   script:
     - git submodule init -q
     - git submodule update -q
+    - FACTER_hostname=default FACTER_fqdn=default.dtg.cl.cam.ac.uk puppet apply --modulepath=modules --node_name_value=default.dtg.cl.cam.ac.uk manifests/nodes/
     - ./test-all-puppet.sh
   only:
     - branches
