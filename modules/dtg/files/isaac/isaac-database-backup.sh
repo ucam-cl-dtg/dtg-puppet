@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 #Requires 'backups' and 'latest' directories to be available
 echo "Started isaac db backup at `date "+%Y-%m-%d %l:%M"`"
