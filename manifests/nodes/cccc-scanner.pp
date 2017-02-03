@@ -22,7 +22,16 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
     key    => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDBJKNbz1FFbLPmxyee0UImDcWSiz9hLItSp5FdQ/seHfpFZYbUYLQ/P+RY4iKpg5DYd9WluIifWEBcsIMuAjAVncxRzGPQ8xRbjM8xMSZPQsHI6wSqbFiZnO4LPfmNzUAZR8cpaBMuVDpCSnGC9Nt6V1kzcyQ2VMFWvKKbVRozXGKw3MqXsYsjZuAea2GnY2xL/4vSLmrsvzGw1jZV1cYzxEoYADM8WF+z5X+jRfU922sTaAUvpwTP131/YTNAqT/9qv8jv0AnKmjn42pA0i3d/bYbS3Qn/diKzj+ObeLEQVdGL4QNAb+3XO88BIjHr9tyrn06T8fFRn4JECFWwrMB3g+0Esp02dDC3LtOwS718cxp+utaTxNH9xv4DzQEwajKv/HCEmBB9yw/qYW4Cz9w2lGH/tJvPOZaywg/cvtsZNm94UGPp0Tpyr1X0mBQz6jiz5WaiUyo71c+I3teQpxRePfxp0++JQVvQjfmLy7AX0RErKGEtCGVUsDZ/WBlBv9QLvVz07TLinn60PZR6pZj6wMCVvYLIfWqI9WcyttJhai3mCKF9klrmkxuxr8LnnQ8nhuBhOxlCW7QoKedyJmEktxYEhHakAqgMk4C3c95ufpZ8x8basM6MbIyJVO1xipYkyRn+UYmGaXJYpPOulIo+SPmEWr4i2RG3Siwhh/iOw==',
     type   => 'ssh-rsa',
     user   => 'amv42',
+  } ->
+  file_line{'amv42 soft nofile limit':
+    line => 'amv42            soft    nofile          4096',
+    path => '/etc/security/limits.conf',
+  } ->
+  file_line{'amv42 hard nofile limit':
+    line => 'amv42            hard    nofile          8192',
+    path => '/etc/security/limits.conf',
   }
+
 
   class {'dtg::spoofer::ppa': stage => 'repos' }
   package{'spoofer-prober':
