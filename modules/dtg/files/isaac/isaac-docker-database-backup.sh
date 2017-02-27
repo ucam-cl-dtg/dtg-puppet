@@ -5,20 +5,14 @@
 
 echo "Started isaac db backup at `date "+%Y-%m-%d %l:%M"`"
 ISAAC_BACKUP_FILE="/local/data/database-backup/backups/isaac-live-db-`date +%Y-%m-%d`.sql.gz"
-TICKETS_BACKUP_FILE="/local/data/database-backup/backups/isaac-tickets-db-`date +%Y-%m-%d`.sql.gz"
 
 # Dump the Isaac DB
 /local/src/isaac-api/src/main/resources/db_scripts/dump-db.sh live | gzip > $ISAAC_BACKUP_FILE
 chown isaac:isaac $ISAAC_BACKUP_FILE
 
-# Dump the OSTicket DB
-docker exec isaac-tickets-db mysqldump -u osticket -posticket osticket | gzip > $TICKETS_BACKUP_FILE
-chown isaac:isaac $TICKETS_BACKUP_FILE
-
 # Copy the latest
-rm /local/data/database-backup/latest/*
+rm /local/data/database-backup/latest/isaac-live-db-*
 cp $ISAAC_BACKUP_FILE /local/data/database-backup/latest
-cp $TICKETS_BACKUP_FILE /local/data/database-backup/latest
 
 # Removes backups that are older than 10 days
 find "/local/data/database-backup/backups" -type f -prune -mtime +10 -exec rm -f {} \;

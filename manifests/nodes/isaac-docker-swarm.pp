@@ -1,4 +1,4 @@
-node /isaac-\d+/ {
+node /isaac-1/ {
   class { 'dtg::minimal': managefirewall => false }
 
   class {'dtg::isaac':}
