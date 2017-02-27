@@ -243,6 +243,20 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     uid            => 3622,
     user_whitelist => $user_whitelist,
   }
+  dtg::add_user { 'mlt47':
+    real_name      => 'Meurig Thomas',
+    groups         =>  ['isaac'],
+    keys           => ['Meurig Thomas (ssh) <mlt47@cam.ac.uk'],
+    uid            => 3840,
+    user_whitelist => $user_whitelist,
+  }
+  dtg::add_user { 'du220':
+    real_name      => 'Daniel Underwood',
+    groups         =>  ['isaac'],
+    keys           => ['Daniel Underwood (ssh) <du220@cam.ac.uk>'],
+    uid            => 3845,
+    user_whitelist => $user_whitelist,
+  }
 
   dtg::add_user { 'rjm49':
     real_name      => 'Russell Moore',
