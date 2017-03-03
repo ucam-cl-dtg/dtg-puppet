@@ -88,7 +88,7 @@ node /isaac-[23]/ {
 
 ## Config only for main live server, not standby.
 
-if ( $::fqdn =~ /(\w+-)?isaac-3/ ) { 
+if ( $::fqdn =~ /(\w+-)?isaac-3/ ) {
   file { '/local/data/isaac-osticket-database-backup.sh':
       mode   => '0755',
       owner  => isaac,
