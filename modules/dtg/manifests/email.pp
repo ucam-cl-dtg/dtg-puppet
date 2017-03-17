@@ -1,8 +1,8 @@
 # Set up email related config - exim et. al.
-class dtg::email {
+class dtg::email ($smarthost) {
   # Make it possible to send email (if correct from address is used)
   class { 'exim::satellite':
-    smarthost   => 'mail-serv.cl.cam.ac.uk',
+    smarthost   => $smarthost,
     mail_domain => 'cl.cam.ac.uk',
   }
   # Set sending address for root to dtg-infra

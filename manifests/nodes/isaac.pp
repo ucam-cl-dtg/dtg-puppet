@@ -1,5 +1,5 @@
 node /isaac-[23]/ {
-  class { 'dtg::minimal': managefirewall => false }
+  class { 'dtg::minimal': managefirewall => false, email_smarthost => 'ppsw.cam.ac.uk' }
 
   class {'dtg::isaac':}
 

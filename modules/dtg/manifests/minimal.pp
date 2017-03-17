@@ -1,4 +1,4 @@
-class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = true, $managefirewall = true, $dns_server = false, $user_whitelist = undef) {
+class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = true, $managefirewall = true, $dns_server = false, $user_whitelist = undef, $email_smarthost = 'mail-serv.cl.cam.ac.uk') {
 
   # Set up the repositories, get some entropy then do everything else
   #  entropy needs to start being provided before it is consumed
@@ -104,7 +104,7 @@ class dtg::minimal ($manageapt = true, $adm_sudoers = true, $manageentropy = tru
   }
 
   # Make it possible to send email (if correct from address is used)
-  class { 'dtg::email': }
+  class { 'dtg::email': smarthost => $email_smarthost }
 
   class { 'gpg': }
   class { 'monkeysphere':
