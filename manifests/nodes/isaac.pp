@@ -1,5 +1,10 @@
 node /isaac-[23]/ {
-  class { 'dtg::minimal': managefirewall => false, email_smarthost => 'ppsw.cam.ac.uk' }
+  class { 'dtg::minimal': 
+    managefirewall => false, 
+    exim_local_interfaces => '0.0.0.0',
+    exim_smarthost => 'ppsw.cam.ac.uk', 
+    exim_relay_nets => '10.0.0.0/9',
+ }
 
   class {'dtg::isaac':}
 
@@ -8,6 +13,7 @@ node /isaac-[23]/ {
   }
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
+  class {'dtg::firewall::isaacsmtp':}
   
   # User to own DB Backups
   user {'isaac':

@@ -1,7 +1,8 @@
 # Exim configuration for client servers telling them which smtp server to use
 # $smarthost will be used as the dc_smarthost
 # $mail_domain will be used for dc_readhost
-class exim::satellite ($smarthost, $mail_domain) {
+# $local_interfaces will be used for dc_local_interfaces
+class exim::satellite ($local_interfaces, $smarthost, $relay_nets, $mail_domain) {
   package {'exim':
     ensure => present,
     name   => 'exim4-daemon-light',
