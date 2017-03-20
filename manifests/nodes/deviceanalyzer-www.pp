@@ -59,6 +59,18 @@ node 'deviceanalyzer-www' {
     mode   => '0755',
   }
 
+  # Use letsencrypt to get a certificate
+  class {'letsencrypt':
+    email          => $::from_address,
+    configure_epel => false,
+  } ->
+  letsencrypt::certonly { $::fqdn:
+    domains       => ['deviceanalyzer.cl.cam.ac.uk', 'upload.deviceanalyzer.cl.cam.ac.uk', 'secure.deviceanalyzer.cl.cam.ac.uk'],
+    plugin        => 'webroot',
+    webroot_paths => ['/usr/share/jetty8/webapps/'],
+    manage_cron   => true,
+  }
+
   file {'/nas2':
     ensure => link,
     target => '/deviceanalyzer/data',
