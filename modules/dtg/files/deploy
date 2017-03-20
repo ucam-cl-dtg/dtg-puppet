@@ -123,6 +123,7 @@ PHYSICAL_MACHINES = [
     Machine('saluki1', 'saluki1' + DTG_DOM, PUPPET_BARE, False),
     Machine('saluki2', 'saluki2' + DTG_DOM, PUPPET_BARE, False),
     Machine('africa01', 'africa01' + DTG_DOM, PUPPET_BARE, False),
+    Machine('deviceanalyzer', 'deviceanalyzer' + DTG_DOM, PUPPET_BARE, False),
 ]
 
 UPDATE_BLACKLIST = ['cdn', 'weather', 'nas04']
