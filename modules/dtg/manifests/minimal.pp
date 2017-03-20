@@ -62,7 +62,7 @@ class dtg::minimal ($manageapt = true,
   }
 
   # Packages that should not be installed on a server
-  $banned_packages = ['sl', 'emacs23-common', 'emacs23-bin-common', 'whoopsie', 'locate', 'runit']
+  $banned_packages = ['sl', 'emacs23-common', 'emacs23-bin-common', 'whoopsie', 'locate', 'runit', 'ntpdate']
 
   package {
     $banned_packages:
