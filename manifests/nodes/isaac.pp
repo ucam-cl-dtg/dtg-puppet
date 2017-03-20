@@ -1,10 +1,10 @@
 node /isaac-[23]/ {
-  class { 'dtg::minimal': 
-    managefirewall => false, 
+  class { 'dtg::minimal':
+    managefirewall => false,
     exim_local_interfaces => '0.0.0.0',
-    exim_smarthost => 'ppsw.cam.ac.uk', 
+    exim_smarthost => 'ppsw.cam.ac.uk',
     exim_relay_nets => '10.0.0.0/9',
- }
+  }
 
   class {'dtg::isaac':}
 

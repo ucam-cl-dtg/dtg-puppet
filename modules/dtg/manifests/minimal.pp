@@ -1,9 +1,9 @@
-class dtg::minimal ($manageapt = true, 
-                    $adm_sudoers = true, 
-                    $manageentropy = true, 
-                    $managefirewall = true, 
-                    $dns_server = false, 
-                    $user_whitelist = undef, 
+class dtg::minimal ($manageapt = true,
+                    $adm_sudoers = true,
+                    $manageentropy = true,
+                    $managefirewall = true,
+                    $dns_server = false,
+                    $user_whitelist = undef,
                     $exim_local_interfaces = '127.0.0.1 ; ::1',
                     $exim_smarthost = 'mail-serv.cl.cam.ac.uk',
                     $exim_relay_nets = '') {
@@ -62,7 +62,7 @@ class dtg::minimal ($manageapt = true,
   }
 
   # Packages that should not be installed on a server
-  $banned_packages = ['sl', 'emacs23-common', 'emacs23-bin-common', 'whoopsie', 'locate', 'runit']
+  $banned_packages = ['sl', 'emacs23-common', 'emacs23-bin-common', 'whoopsie', 'locate', 'runit', 'ntpdate']
 
   package {
     $banned_packages:
@@ -112,10 +112,10 @@ class dtg::minimal ($manageapt = true,
   }
 
   # Make it possible to send email (if correct from address is used)
-  class { 'dtg::email': 
+  class { 'dtg::email':
     local_interfaces => $exim_local_interfaces,
-    smarthost => $exim_smarthost, 
-    relay_nets => $exim_relay_nets, 
+    smarthost => $exim_smarthost,
+    relay_nets => $exim_relay_nets,
   }
 
   class { 'gpg': }
