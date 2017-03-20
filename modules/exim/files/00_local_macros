@@ -1,0 +1,31 @@
+# We'll attempt to sign every email that we see go past, using the from domain
+# and the existence of relevant private key files to decide if we have permission
+# to sign for that domain or not. If we don't, we leave the message unsigned.
+# We expect relevant private keys and selector text files to be in the directory
+#    /etc/exim4/dkim
+# with appropriate permissions (owned by Debian-exim and readable).
+
+# Which canonicalisation should we use for DKIM: relaxed or simple:
+#    'relaxed' allows common minor alterations to headers
+#    'simple' allows no modifications, which is more secure but may fail erroneously
+DKIM_CANON = relaxed
+
+# Which domain to sign as:
+#     This can be any domain. Here, extract the 'from' domain out of the email
+#     using $sender_address_domain
+DKIM_DOMAIN = $sender_address_domain
+
+# What domain 'selector' text should we use:
+#     Here, extract the selector to use from a file named using the domain name,
+#     for example the contents of 'example.com.selector'
+#     If the file doesn't exist, default to using the selector 'mail'
+#     The DNS for the DKIM record must use this selector
+DKIM_SEL_FILE = /etc/exim4/dkim/${sender_address_domain}.selector
+DKIM_SELECTOR = ${if exists{DKIM_SEL_FILE}{${readfile{DKIM_SEL_FILE}{}}}{mail}}
+
+# Which private key file to use:
+#     If we are allowed to sign for a domain, assume a private key file
+#     exists with the domain name, e.g. 'example.com-private.pem'
+#     If that file does not exist, no not attempt to sign the message
+DKIM_FILE = /etc/exim4/dkim/${sender_address_domain}-private.pem
+DKIM_PRIVATE_KEY = ${if exists{DKIM_FILE}{DKIM_FILE}{0}}
