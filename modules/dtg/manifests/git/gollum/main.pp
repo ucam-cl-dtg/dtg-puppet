@@ -34,6 +34,9 @@ class dtg::git::gollum::main {
   class{'apache':} ->
   apache::module {'ssl':} ->
   apache::module{'headers':} ->
+  apache::module{'autoindex':
+    ensure  => absent
+  } ->
 # Use letsencrypt to get a certificate
   class {'letsencrypt':
     email          => $::from_address,
