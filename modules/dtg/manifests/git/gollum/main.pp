@@ -5,7 +5,7 @@ class dtg::git::gollum::main {
     provider => 'git',
     source   => 'https://github.com/ucam-cl-dtg/gollum-dtg.git',
     revision => 'dtg-multiwiki',
-    owner    => 'lc525',
+    owner    => 'www-data',
     group    => 'www-data',
   }
   exec {'install gollum bundle':
