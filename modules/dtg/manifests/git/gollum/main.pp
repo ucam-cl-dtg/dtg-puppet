@@ -4,7 +4,7 @@ class dtg::git::gollum::main {
     ensure   => latest,
     provider => 'git',
     source   => 'https://github.com/ucam-cl-dtg/gollum-dtg.git',
-    revision => 'dtg-multiwiki',
+    revision => 'dtg-multiwiki-livewriting',
     owner    => 'www-data',
     group    => 'www-data',
   }
