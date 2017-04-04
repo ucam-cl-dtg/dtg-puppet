@@ -14,6 +14,7 @@ node /isaac-[23]/ {
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
   class {'dtg::firewall::isaacsmtp':}
+  class {'dtg::firewall::vrrp':}
   
   # User to own DB Backups
   user {'isaac':
