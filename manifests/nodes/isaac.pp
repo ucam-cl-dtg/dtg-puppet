@@ -112,19 +112,19 @@ if ( $::fqdn =~ /(\w+-)?isaac-3/ ) {
       group   => isaac,
       content => '# OSTicket backup log files'
   }
-#  ->
-#  cron { 'osticket-cron':
-#    command => 'docker exec isaac-tickets php /var/www/html/api/cron.php',
-#    user    => root,
-#    minute  => '*/1'
-#  }
-#   ->
-#  cron {'isaac-osticket-backup':
-#    command => '/local/data/isaac-osticket-database-backup.sh >> /local/data/database-backup/isaac-osticket-backup.log',
-#    user    => root,
-#    hour    => 0,
-#    minute  => 0
-#  }
+  ->
+  cron { 'osticket-cron':
+    command => 'docker exec isaac-tickets php /var/www/html/api/cron.php',
+    user    => root,
+    minute  => '*/1'
+  }
+  ->
+  cron {'isaac-osticket-backup':
+    command => '/local/data/isaac-osticket-database-backup.sh >> /local/data/database-backup/isaac-osticket-backup.log',
+    user    => root,
+    hour    => 0,
+    minute  => 0
+  }
 }
 
 # Configure backup server to pull things from the VIRTUAL Isaac IP.
