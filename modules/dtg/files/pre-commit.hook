@@ -2,3 +2,5 @@
 set -e
 
 find -name "*.pp" | xargs puppet parser validate --modulepath=modules
+
+puppet-lint --error-level error manifests/ modules/{bayncore,dtg,exim,gpg,munin,nagios}/
