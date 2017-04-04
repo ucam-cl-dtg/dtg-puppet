@@ -116,7 +116,7 @@ if ( $::fqdn =~ /(\w+-)?isaac-3/ ) {
   cron { 'osticket-cron':
     command => 'docker exec isaac-tickets php /var/www/html/api/cron.php',
     # Not postmaster, because that goes into tickets...
-    environment => 'MAILTO=osticket-cron@isaacphysics.org', 
+    environment => 'MAILTO=osticket-cron@isaacphysics.org',
     user    => root,
     minute  => '*/1'
   }
