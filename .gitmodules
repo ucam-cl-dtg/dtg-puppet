@@ -129,4 +129,4 @@
 	url = https://github.com/ucam-cl-dtg/Nagios-Munin.git
 [submodule "modules/rrdcached"]
 	path = modules/rrdcached
-	url = https://github.com/booo/puppet-rrdcached.git
+	url = https://github.com/ucam-cl-dtg/puppet-rrdcached.git
