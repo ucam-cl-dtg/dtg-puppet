@@ -11,6 +11,7 @@ class munin::gatherer(
   $graph_data_size = 'huge',
   $extra_apache_config = '',
   $lets_encrypt = true,
+  $rrdcached = true,
 ) {
   package { [ 'munin', 'libcgi-fast-perl', 'libapache2-mod-fcgid' ]:
     ensure => installed
@@ -38,6 +39,17 @@ class munin::gatherer(
       webroot_paths => ['/var/cache/munin/www/'],
       manage_cron   => true,
       require       => Class['letsencrypt'],
+    }
+  }
+  if $rrdcached {
+    class {'rrdcached':
+      jump_dir => '/var/lib/munin',
+      gid      => 'rrdcached',
+      mode     => '660',
+    } ->
+    group { 'rrdcached':
+      ensure => present,
+      members => ['rrdcached', 'munin', 'www-data'],
     }
   }
 }
