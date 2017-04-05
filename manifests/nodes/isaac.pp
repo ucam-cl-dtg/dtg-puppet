@@ -1,9 +1,9 @@
 node /isaac-[23]/ {
   class { 'dtg::minimal':
-    managefirewall => false,
+    managefirewall        => false,
     exim_local_interfaces => '0.0.0.0',
-    exim_smarthost => 'ppsw.cam.ac.uk',
-    exim_relay_nets => '10.0.0.0/9',
+    exim_smarthost        => 'ppsw.cam.ac.uk',
+    exim_relay_nets       => '10.0.0.0/9',
   }
 
   class {'dtg::isaac':}
@@ -114,11 +114,11 @@ if ( $::fqdn =~ /(\w+-)?isaac-3/ ) {
   }
   ->
   cron { 'osticket-cron':
-    command => 'docker exec isaac-tickets php /var/www/html/api/cron.php',
+    command     => 'docker exec isaac-tickets php /var/www/html/api/cron.php',
     # Not postmaster, because that goes into tickets...
     environment => 'MAILTO=osticket-cron@isaacphysics.org',
-    user    => root,
-    minute  => '*/1'
+    user        => root,
+    minute      => '*/1'
   }
   ->
   cron {'isaac-osticket-backup':
