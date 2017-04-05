@@ -15,7 +15,7 @@ node /isaac-[23]/ {
   class {'dtg::firewall::publichttps':}
   class {'dtg::firewall::isaacsmtp':}
   class {'dtg::firewall::vrrp':}
-  
+
   # User to own DB Backups
   user {'isaac':
     ensure => present,
@@ -139,4 +139,11 @@ if ( $::is_backup_server ) {
     weekday => '*',
     require => Class['dtg::backup::host'],
   }
+}
+
+# Configure munin to monitor main and standby servers:
+
+if ( $::monitor ) {
+  munin::gatherer::async_node { 'isaac-2': }
+  munin::gatherer::async_node { 'isaac-3': }
 }
