@@ -118,6 +118,8 @@ node 'code.dtg.cl.cam.ac.uk' {
     source => 'https://github.com/puppetlabs/puppetlabs-stdlib.git'}
   dtg::git::mirror::repo{'puppet/modules/rabbitmq':
     source => 'git://github.com/puppetlabs/puppetlabs-rabbitmq.git'}
+  dtg::git::mirror::repo{'puppet/modules/rrdcached':
+    source => 'https://github.com/booo/puppet-rrdcached.git'}
   dtg::git::mirror::repo{'puppet/modules/rsyslog':
     source => 'https://github.com/saz/puppet-rsyslog.git'}
   dtg::git::mirror::repo{'puppet/modules/rvm':
