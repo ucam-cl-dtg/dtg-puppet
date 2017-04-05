@@ -127,3 +127,6 @@
 [submodule "modules/munin/files/nagios-munin"]
 	path = modules/munin/files/nagios-munin
 	url = https://github.com/ucam-cl-dtg/Nagios-Munin.git
+[submodule "modules/rrdcached"]
+	path = modules/rrdcached
+	url = https://github.com/booo/puppet-rrdcached.git
