@@ -43,13 +43,22 @@ class munin::gatherer(
   }
   if $rrdcached {
     class {'rrdcached':
-      jump_dir => '/var/lib/munin',
+      jump_dir => '/local/data/munin/',
       gid      => 'rrdcached',
+      user     => 'munin',
+      group    => 'munin',
       mode     => '660',
+      timeout  => '300',
+      delay    => '150',
     } ->
     group { 'rrdcached':
       ensure => present,
       members => ['rrdcached', 'munin', 'www-data'],
+    } ->
+    file {'/var/lib/rrdcached/journal/':
+      ensure => directory,
+      owner  => 'munin',
+      group  => 'munin',
     }
   }
 }
