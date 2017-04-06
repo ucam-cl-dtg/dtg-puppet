@@ -52,8 +52,16 @@ class munin::gatherer(
       delay    => '150',
     } ->
     group { 'rrdcached':
-      ensure => present,
+      ensure  => present,
       members => ['rrdcached', 'munin', 'www-data'],
+    } ->
+    user {'munin':
+      ensure => present,
+      groups => ['rrdcached'],
+    } ->
+    user {'www-data':
+      ensure => present,
+      groups => ['rrdcached'],
     } ->
     file {'/var/lib/rrdcached/journal/':
       ensure => directory,
