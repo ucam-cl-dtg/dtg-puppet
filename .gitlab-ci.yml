@@ -33,7 +33,7 @@ lint-warn:
   stage: style
   allow_failure: true
   script:
-    - puppet-lint --fail-on-warnings --error-level warning .
+    - puppet-lint --fail-on-warnings --error-level warning manifests/ modules/{bayncore,dtg,exim,gpg,munin,nagios}/
   only:
     - branches
 
@@ -41,7 +41,7 @@ shellcheck:
   stage: style
   allow_failure: true
   script:
-    - find modules/ -name '*.sh' -print0 | xargs -0 shellcheck
+    - find modules/{bayncore,dtg,exim,gpg,munin,nagios}/ -name '*.sh' -print0 | xargs -0 shellcheck
   only:
     - branches
 
