@@ -25,7 +25,7 @@ base-apply:
 lint-error:
   stage: test
   script:
-    - puppet-lint --error-level error .
+    - puppet-lint --error-level error manifests/ modules/{bayncore,dtg,exim,gpg,munin,nagios}/
   only:
     - branches
 
