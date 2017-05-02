@@ -28,11 +28,11 @@ dig = subprocess.run("dig -t AXFR  cl.cam.ac.uk @dns0.cl.cam.ac.uk | "
                      "cut -d '.' -f 1",
                      shell=True, stdout=subprocess.PIPE, check=True)
 
-hosts = dig.output.decode("UTF-8").strip().split("\n")
+hosts = dig.stdout.decode("UTF-8").strip().split("\n")
 
 with concurrent.futures.ThreadPoolExecutor() as ex:
     for fs in concurrent.futures.as_completed(ex.map(test_puppet, hosts)):
         name, res = fs.result()
         if res.returncode != 0:
-            print(res.output.decode("UTF-8"))
+            print(res.stdout.decode("UTF-8"))
         print("test-puppet ran for {} with rc={}".format(name, res.returncode))
