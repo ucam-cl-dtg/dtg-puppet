@@ -2,6 +2,7 @@
 
 import concurrent.futures
 import subprocess
+import sys
 
 
 def test_puppet(host):
@@ -30,9 +31,15 @@ dig = subprocess.run("dig -t AXFR  cl.cam.ac.uk @dns0.cl.cam.ac.uk | "
 
 hosts = dig.stdout.decode("UTF-8").strip().split("\n")
 
-with concurrent.futures.ThreadPoolExecutor() as ex:
-    for fs in concurrent.futures.as_completed(ex.map(test_puppet, hosts)):
-        name, res = fs.result()
+exit_code = 0
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
+    for ftr in concurrent.futures.as_completed([ex.submit(test_puppet, host) for host in hosts]):
+        name, res = ftr.result()
         if res.returncode != 0:
+            exit_code = 1
             print(res.stdout.decode("UTF-8"))
         print("test-puppet ran for {} with rc={}".format(name, res.returncode))
+        sys.stdout.flush()
+
+sys.exit(exit_code)
