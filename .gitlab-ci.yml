@@ -25,7 +25,13 @@ base-apply:
 lint-error:
   stage: test
   script:
-    - puppet-lint --error-level error manifests/ modules/{bayncore,dtg,exim,gpg,munin,nagios}/
+    - puppet-lint --error-level error manifests/
+    - puppet-lint --error-level error modules/bayncore/
+    - puppet-lint --error-level error modules/dtg/
+    - puppet-lint --error-level error modules/exim/
+    - puppet-lint --error-level error modules/gpg/
+    - puppet-lint --error-level error modules/munin/
+    - puppet-lint --error-level error modules/nagios/
   only:
     - branches
 
@@ -33,7 +39,13 @@ lint-warn:
   stage: style
   allow_failure: true
   script:
-    - puppet-lint --fail-on-warnings --error-level warning manifests/ modules/{bayncore,dtg,exim,gpg,munin,nagios}/
+    - puppet-lint --fail-on-warnings --error-level warning manifests/
+    - puppet-lint --fail-on-warnings --error-level warning modules/bayncore/
+    - puppet-lint --fail-on-warnings --error-level warning modules/dtg/
+    - puppet-lint --fail-on-warnings --error-level warning modules/exim/
+    - puppet-lint --fail-on-warnings --error-level warning modules/gpg/
+    - puppet-lint --fail-on-warnings --error-level warning modules/munin/
+    - puppet-lint --fail-on-warnings --error-level warning modules/nagios/
   only:
     - branches
 
