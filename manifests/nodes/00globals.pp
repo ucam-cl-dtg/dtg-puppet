@@ -72,7 +72,9 @@ group { 'isaac':
 group { 'rscfl':
   ensure => present,
 }
-
+group { 'neat':
+  ensure => present,
+}
 
 class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
   dtg::add_user { 'drt24':
@@ -280,6 +282,15 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     uid            => 2628,
     user_whitelist => $user_whitelist,
   }
+
+  dtg::add_user { 'akmf3':
+    real_name      => 'Ayat Fekry',
+    groups         => ['neat'],
+    keys           => ['akmf3 <akmf3@cl.cam.ac.uk>'],
+    uid            => 3701,
+    user_whitelist => $user_whitelist,
+  }
+
   # System users which need to be present on all machines
   # This applies for example if the user needs to write data which
   # is nfs mounted
