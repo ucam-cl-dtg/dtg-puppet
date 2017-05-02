@@ -1,5 +1,7 @@
 image: dtg/puppet:16.04
 
+cache: []
+
 stages:
   - check
   - test
