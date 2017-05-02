@@ -1,8 +1,12 @@
 # VM for akmf3 bigdata analytics project
 
 
-node 'bda.dtg.cl.cam.ac.uk' {
+node /bda(-\d+)?/ {
   include 'dtg::minimal'
-  User<|title == akmf3 |> { groups +>[ 'dtg' ] }
+
+ dtg::sudoers_group{'neat':
+    group_name => 'neat',
+  } 
   
 }
+
