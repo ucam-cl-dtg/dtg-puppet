@@ -4,7 +4,7 @@
 node /bda(-\d+)?/ {
   include 'dtg::minimal'
 
- dtg::sudoers_group{'neat':
+  dtg::sudoers_group{'neat':
     group_name => 'neat',
   } 
   
