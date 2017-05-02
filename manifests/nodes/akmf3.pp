@@ -6,7 +6,6 @@ node /bda(-\d+)?/ {
 
   dtg::sudoers_group{'neat':
     group_name => 'neat',
-  } 
-  
+  }
 }
 
