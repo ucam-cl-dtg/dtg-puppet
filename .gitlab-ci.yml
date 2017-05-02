@@ -64,6 +64,6 @@ apply-all:
     - git submodule update -q
     - apt-get update -qq
     - FACTER_hostname=default FACTER_fqdn=default.dtg.cl.cam.ac.uk puppet apply --modulepath=modules --node_name_value=default.dtg.cl.cam.ac.uk manifests/nodes/
-    - ./test-all-puppet.sh
+    - ./test-all-puppet.py
   only:
     - branches
