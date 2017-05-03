@@ -6,7 +6,7 @@ import sys
 
 
 def test_puppet(host):
-    return host, subprocess.run('sudo -H FACTER_fqdn="{0}.dtg.cl.cam.ac.uk" '
+    return host, subprocess.run('sudo -H FACTER_fqdn="{0}.dtg.cl.cam.ac.uk" FACTER_hostname="{0}" '
                                 'puppet apply --noop --modulepath=modules --node_name_value={0}.dtg.cl.cam.ac.uk '
                                 'manifests/nodes/'.format(host),
                                 shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
