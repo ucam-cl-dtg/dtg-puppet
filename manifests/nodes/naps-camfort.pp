@@ -44,11 +44,5 @@ node /naps-camfort(-\d+)?/ {
 }
 
 if ( $::monitor ) {
-  nagios::monitor { 'naps-camfort':
-    parents    => 'nas04',
-    address    => 'naps-camfort.dtg.cl.cam.ac.uk',
-    hostgroups => [ 'ssh-servers', 'http-servers'],
-  }
-  
   munin::gatherer::async_node { 'naps-camfort': }
 }
