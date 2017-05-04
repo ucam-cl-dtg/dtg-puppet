@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ `whoami` != "www-deviceanalyzer" ]; then 
+if [ "$(whoami)" != "www-deviceanalyzer" ]; then
     echo "This script should be run as the www-deviceanalyzer user"
     exit;
 fi

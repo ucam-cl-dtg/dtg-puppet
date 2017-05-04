@@ -17,7 +17,7 @@ DOM0_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAujx2sop6KNPYr6v/IWEpFITi964
 APT_TS=/var/lib/apt/periodic/update-success-stamp
 # if there is a /dev/xvdb without partitions, let's use it
 
-mounted=`mount | grep /dev/xvdb`
+mounted=$(mount | grep /dev/xvdb)
 if [ -e /dev/xvdb ] && [ ! -e /dev/xvdb1 ] && [[ -z $mounted ]]; then
     echo "Creating a filesystem on /dev/xvdb"
     mkfs.ext4 /dev/xvdb
@@ -42,7 +42,7 @@ last_apt=0
 if [ -f ${APT_TS} ]; then
     last_apt=$(stat -c %Y ${APT_TS})
 fi
-diff=$(($now-$last_apt))
+diff=$((now-last_apt))
 
 if [[ $diff -gt 86400 ]]; then
 

@@ -32,18 +32,27 @@ git init --bare --shared=group
 
 # create post-update hook to pull in changes to the real puppet repo
 target="$admin_bare_repo/hooks/post-update"
-printf "echo ---- Pulling changes into /etc/puppet -----\n\n" > "$target"
-printf "cd /etc/puppet\n" >> "$target"
-printf "unset GIT_DIR\n" >> "$target"
-printf "git pull --recurse-submodules=yes bare  master\n" >> "$target"
-printf "git submodule sync\n" >> "$target"
-printf "git submodule update --init\n\n" >> "$target"
-printf "sudo chmod -R --quiet g+u . .git || true\n\n" >> "$target"
-printf "sudo chgrp -R --quiet adm . .git || true\n\n" >> "$target"
-printf "find . -type d -print0 | sudo xargs -0 -s 256 chmod --quiet g+s || true\n\n" >> "$target"
-printf "find .git -type d -print0 | sudo xargs -0 -s 256 chmod --quiet g+s || true\n\n" >> "$target"
-printf "echo ---- Applying new recipes ----\n\n" >> "$target"
-printf "sudo -H puppet apply --verbose --modulepath modules manifests/nodes/" >> "$target"
+cat > $target << EOM
+echo ---- Pulling changes into /etc/puppet -----
+
+cd /etc/puppet
+unset GIT_DIR
+git pull --recurse-submodules=yes bare  master
+git submodule sync
+git submodule update --init
+
+sudo chmod -R --quiet g+u . .git || true
+
+sudo chgrp -R --quiet adm . .git || true
+
+find . -type d -print0 | sudo xargs -0 -s 256 chmod --quiet g+s || true
+
+find .git -type d -print0 | sudo xargs -0 -s 256 chmod --quiet g+s || true
+
+echo ---- Applying new recipes ----
+
+sudo -H puppet apply --verbose --modulepath modules manifests/nodes/
+EOM
 
 chmod 775 hooks/post-update
 
