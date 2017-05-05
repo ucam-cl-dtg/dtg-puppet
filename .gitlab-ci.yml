@@ -39,7 +39,6 @@ lint-warn:
 
 shellcheck:
   stage: style
-  allow_failure: true
   script:
     - find modules/{bayncore,dtg,exim,gpg,munin,nagios}/ -name '*.sh' -print0 | xargs -0 shellcheck
   only:
