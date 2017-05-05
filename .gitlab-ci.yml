@@ -23,7 +23,7 @@ base-apply:
     - branches
 
 lint-error:
-  stage: test
+  stage: style
   script:
     - ./puppet-lint.py --err
   only:
