@@ -83,7 +83,7 @@ if echo "$HOSTNAME" | grep -q puppy || [ "$HOSTNAME" = "ubuntu" ]; then
 
     mkdir -p /root/.ssh/
     echo "${DOM0_PUBLIC_KEY}" >> $AUTHORIZED_KEYS
-    if [  "$(ifconfig eth0 | grep -Eo ..\(\:..\){5})" = "00:16:3e:e8:14:24" ]; then
+    if [  "$(ifconfig eth0 | grep -Eo "..(:..){5}")" = "00:16:3e:e8:14:24" ]; then
         echo dhcp > /etc/hostname
         start hostname
         cd /etc/puppet-bare
