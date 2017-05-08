@@ -4,12 +4,13 @@ import concurrent.futures
 import subprocess
 import sys
 
-try:
-    import termcolor
-    colored = termcolor.colored
-except ImportError:
-    colored = lambda t, _: t
 
+def colored(txt, clr):
+    if clr == "red":
+        clr_code = "\033[31m"
+    elif clr == "green":
+        clr_code = "\033[32m"
+    return "{}{}\033[0m".format(clr_code, txt)
 
 paths = ["manifests",
          "modules/bayncore",
