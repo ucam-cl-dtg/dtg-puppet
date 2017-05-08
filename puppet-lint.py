@@ -42,10 +42,7 @@ else:
     sys.exit(1)
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
-    for ftr in concurrent.futures.as_completed([ex.submit(puppet_lint,
-                                                          path,
-                                                          doc)
-                                                for path in paths]):
+    for ftr in [ex.submit(puppet_lint, path, doc) for path in paths]:
         path, res = ftr.result()
 
         if res.returncode == 0:
