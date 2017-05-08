@@ -26,6 +26,5 @@ class dtg::firewall::80to8080 ($private = true) inherits dtg::firewall::default 
     dport  => '8080',
     action => 'accept',
     source => $firewall_src,
-    }
   }
 }
