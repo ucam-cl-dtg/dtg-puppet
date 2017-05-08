@@ -57,6 +57,6 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
                                                                path),
                           "red"))
             exit_code = 1
-            print(res.stdout.decode("UTF-8"))
+            print(res.stdout.decode("UTF-8").strip())
         sys.stdout.flush()
 sys.exit(exit_code)
