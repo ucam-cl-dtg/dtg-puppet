@@ -1,6 +1,6 @@
 node 'vmutil.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
-  class { 'dtg::husky-scripts': }
+  class { 'dtg::husky_scripts': }
 
   User<|title == dwt27 |> { groups +>[ 'adm' ]}
 

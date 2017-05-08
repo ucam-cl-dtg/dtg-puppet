@@ -3,7 +3,7 @@ class dtg::rscfl {
   class {'dtg::firewall::avahi':}
 
   class {'distcc':
-    listen_ip_range => $dtg_subnet,
+    listen_ip_range => $::dtg_subnet,
     listen_on_ip    => '127.0.0.1',
   }
 

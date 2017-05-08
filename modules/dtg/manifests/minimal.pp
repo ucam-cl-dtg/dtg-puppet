@@ -69,10 +69,10 @@ class dtg::minimal ($manageapt = true,
       ensure => purged
   }
 
-  if ($virtual == 'xenu') and $manageapt {
+  if ($::virtual == 'xenu') and $::manageapt {
     class {'dtg::vm':}
   }
-  if ($virtual == 'physical') and $manageapt {
+  if ($::virtual == 'physical') and $::manageapt {
     class {'dtg::baremetal':}
   }
 
@@ -99,7 +99,10 @@ class dtg::minimal ($manageapt = true,
   class { 'dtg::git::config': }
   class { 'dtg::rsyslog': }
   class { 'etckeeper': require => Class['dtg::git::config'] }
-  class { 'ntp': servers => $ntp_servers, package_ensure => latest, }
+  class { 'ntp':
+    servers        => $::ntp_servers,
+    package_ensure => latest,
+  }
   # Get entropy then do gpg and then monkeysphere
   if $manageentropy {
     class { 'dtg::entropy': stage => 'entropy-host' }
@@ -114,8 +117,8 @@ class dtg::minimal ($manageapt = true,
   # Make it possible to send email (if correct from address is used)
   class { 'dtg::email':
     local_interfaces => $exim_local_interfaces,
-    smarthost => $exim_smarthost,
-    relay_nets => $exim_relay_nets,
+    smarthost        => $exim_smarthost,
+    relay_nets       => $exim_relay_nets,
   }
 
   class { 'gpg': }
@@ -164,7 +167,7 @@ class dtg::minimal ($manageapt = true,
   # Add the certifiers who sign the users
   class { 'ms_id_certifiers': }
   monkeysphere::authorized_user_ids { 'root':
-    user_ids => $ms_admin_user_ids
+    user_ids => $::ms_admin_user_ids
   }
 
   # Create the admin users
@@ -235,7 +238,7 @@ class dtg::minimal ($manageapt = true,
   munin::node::plugin{'fs_readonly':}
   munin::node::plugin{'df_abs':}
 
-  if ($virtual == 'physical') {
+  if ($::virtual == 'physical') {
     munin::node::plugin{'hddtemp_smartctl':}
     munin::node::plugin{'sensors_fan': target => 'sensors_'}
     munin::node::plugin{'sensors_temp': target => 'sensors_'}

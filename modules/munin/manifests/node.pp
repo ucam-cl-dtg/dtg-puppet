@@ -24,10 +24,10 @@ class munin::node (
       require => Service['munin-node'],
     } ->
     ssh_authorized_key { 'munin-async':
+      ensure  => 'present',
       user    => 'munin-async',
       type    => 'ssh-rsa',
       key     => $async_key,
-      ensure  => 'present',
       options => ['no-port-forwarding', 'no-agent-forwarding', 'no-X11-forwarding', 'no-pty', 'no-user-rc', 'command="/usr/share/munin/munin-async --spoolfetch"']
     }
   }

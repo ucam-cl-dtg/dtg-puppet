@@ -3,7 +3,7 @@
 # The name of the backup will be used as the directory name for the subdir containing the backups
 # user is the user to ssh in as
 # host is the host to ssh into
-define dtg::backup::hostsetup($user, $group = $dtg::backup::host::user, $host, $weekday) { #needs to have a configurable backup group + default
+define dtg::backup::hostsetup($user, $host, $weekday, $group = $dtg::backup::host::user) { #needs to have a configurable backup group + default
   $backupsdirectory = $dtg::backup::host::directory
   $backupsuser      = $dtg::backup::host::user
   $backupskey       = $dtg::backup::host::realkey

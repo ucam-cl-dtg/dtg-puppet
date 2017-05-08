@@ -4,9 +4,9 @@ class dtg::entropy::host ($certificate, $private_key, $ca, $crl = false){
   }
   group { 'egd-host': ensure => present, }
   user { 'egd-host':
+    ensure  => present,
     gid     => 'egd-host',
     comment => 'Entropy Generating Device user',
-    ensure  => present,
   }
   file { '/var/lib/stunnel4/egd-host':
     ensure  => directory,
@@ -25,7 +25,11 @@ class dtg::entropy::host ($certificate, $private_key, $ca, $crl = false){
     output   => '/egd-host.log',
     user     => 'egd-host',
     group    => 'egd-host',
-    services => {'egd-host'    => {accept    => '7776'}},
+    services => {
+      'egd-host' => {
+        accept => '7776'
+      }
+    },
     connect  => '777',
     client   => false,
     protocol => false,

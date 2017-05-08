@@ -15,13 +15,17 @@ class dtg::firewall::80to8080 ($private = true) inherits dtg::firewall::default 
     toports     => '8080',
     destination => '127.0.0.1/8',
   }
+  
+  $firewall_src = $private ? {
+    true  => $::local_subnet,
+    false => undef,
+  }
+  
   firewall { '020 accept on 8080':
     proto  => 'tcp',
     dport  => '8080',
     action => 'accept',
-    source => $private ? {
-      true  => $::local_subnet,
-      false => undef,
+    source => $firewall_src,
     }
   }
 }

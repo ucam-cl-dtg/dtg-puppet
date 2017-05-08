@@ -3,9 +3,9 @@ class dtg::email ($local_interfaces, $smarthost, $relay_nets) {
   # Make it possible to send email (if correct from address is used)
   class { 'exim::satellite':
     local_interfaces => $local_interfaces,
-    smarthost   => $smarthost,
-    relay_nets  => $relay_nets,
-    mail_domain => 'cl.cam.ac.uk',
+    smarthost        => $smarthost,
+    relay_nets       => $relay_nets,
+    mail_domain      => 'cl.cam.ac.uk',
   }
   # Set sending address for root to dtg-infra
   file_line {'rootemail':
