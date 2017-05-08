@@ -3,13 +3,16 @@
 import concurrent.futures
 import subprocess
 import sys
+import time
 
 
 def test_puppet(host):
-    return host, subprocess.run('sudo -H FACTER_fqdn="{0}.dtg.cl.cam.ac.uk" FACTER_hostname="{0}" '
-                                'puppet apply --noop --modulepath=modules --node_name_value={0}.dtg.cl.cam.ac.uk '
-                                'manifests/nodes/'.format(host),
-                                shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    start = time.time()
+    ret = subprocess.run('sudo -H FACTER_fqdn="{0}.dtg.cl.cam.ac.uk" FACTER_hostname="{0}" '
+                         'puppet apply --noop --modulepath=modules --node_name_value={0}.dtg.cl.cam.ac.uk '
+                         'manifests/nodes/'.format(host),
+                         shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return host, ret, time.time() - start
 
 dig = subprocess.run("dig -t AXFR  cl.cam.ac.uk @dns0.cl.cam.ac.uk | "
                      "grep .dtg.cl.cam.ac.uk | "
@@ -35,11 +38,11 @@ exit_code = 0
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
     for ftr in concurrent.futures.as_completed([ex.submit(test_puppet, host) for host in hosts]):
-        name, res = ftr.result()
+        name, res, elapsed = ftr.result()
         if res.returncode != 0:
             exit_code = 1
             print(res.stdout.decode("UTF-8"))
-        print("test-puppet ran for {} with rc={}".format(name, res.returncode))
+        print("test-puppet ran as {} for {:.1f}s with rc={}".format(name, elapsed, res.returncode))
         sys.stdout.flush()
 
 sys.exit(exit_code)
