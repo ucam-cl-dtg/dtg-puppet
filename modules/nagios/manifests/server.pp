@@ -8,14 +8,14 @@ class nagios::server inherits nagios::params {
   File { owner => 'root', group => 'root',}
 
   file { "${nagios_base_dir}/conf.d/contacts_nagios2.cfg":
-    content => template('nagios/nagios3/conf.d/contacts_nagios2.cfg.erb'),
     ensure  => present,
+    content => template('nagios/nagios3/conf.d/contacts_nagios2.cfg.erb'),
     notify  => Service['nagios3'],
     require => Package['nagios3']
   }
   file { "${nagios_base_dir}/conf.d/generic-host_nagios2.cfg":
-    source  => 'puppet:///modules/nagios/nagios3/conf.d/generic-host_nagios2.cfg',
     ensure  => present,
+    source  => 'puppet:///modules/nagios/nagios3/conf.d/generic-host_nagios2.cfg',
     notify  => Service['nagios3'],
     require => Package['nagios3']
   }
@@ -25,8 +25,8 @@ class nagios::server inherits nagios::params {
     require => Package['nagios3']
   }
   file { "${nagios_base_dir}/commands.cfg":
-    content => template('nagios/nagios3/commands.cfg.erb'),
     ensure  => present,
+    content => template('nagios/nagios3/commands.cfg.erb'),
     notify  => Service['nagios3'],
     require => Package['nagios3']
   }
@@ -36,29 +36,29 @@ class nagios::server inherits nagios::params {
     require => Package['nagios3']
   }
   file { "${nagios_base_dir}/cgi.cfg":
-    source  => 'puppet:///modules/nagios/nagios3/cgi.cfg',
     ensure  => present,
+    source  => 'puppet:///modules/nagios/nagios3/cgi.cfg',
     notify  => Service['nagios3'],
     require => Package['nagios3']
   }
   file { "${nagios_base_dir}/apache2.conf":
-    source  => 'puppet:///modules/nagios/nagios3/apache2.conf',
     ensure  => present,
+    source  => 'puppet:///modules/nagios/nagios3/apache2.conf',
     notify  => Service['nagios3'],
     require => Package['nagios3']
   }
 
   # Include plugin config directory 
   file { "${nagios_plugins_base_dir}/":
-    source  => 'puppet:///modules/nagios/nagios-plugins/config',
     ensure  => directory,
+    source  => 'puppet:///modules/nagios/nagios-plugins/config',
     recurse => true,
     notify  => Service['nagios3'],
     require => Package['nagios3']
   }
   file { "${nagios_plugins_base_dir}/epager.cfg":
-    content => template('nagios/nagios-plugins/config/epager.cfg.erb'),
     ensure  => file,
+    content => template('nagios/nagios-plugins/config/epager.cfg.erb'),
     notify  => Service['nagios3'],
     require => Package['nagios3']
   }
@@ -129,8 +129,8 @@ class nagios::server inherits nagios::params {
     require => Package['nagios3'],
   }
   service { 'nagios3':
-    enable  => true,
     ensure  => running,
+    enable  => true,
     require => Package['nagios3'],
   }
 
@@ -169,8 +169,8 @@ class nagios::server inherits nagios::params {
   apache::site { 'nagios':
     content => template('nagios/apache/nagios.conf.erb')
   }
-  if $nagios_ssl {
-    letsencrypt::certonly { $nagios_server:
+  if $::nagios_ssl {
+    letsencrypt::certonly { $::nagios_server:
       plugin        => 'webroot',
       webroot_paths => ['/usr/share/nagios3/htdocs/'],
       manage_cron   => true,

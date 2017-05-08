@@ -14,9 +14,9 @@ class dtg::maven::sshmirror (
     source => 'puppet:///modules/dtg/nexus/maven-sshmirror-cron',
   }
   cron {'maven-sshmirror':
+    ensure  => 'present',
     command => '/usr/local/bin/maven-sshmirror-cron',
     user    => 'nexus',
-    ensure  => 'present',
     minute  => cron_minute('maven-sshmirror'),
     require => File['/usr/local/bin/maven-sshmirror-cron'],
   }
@@ -25,8 +25,8 @@ class dtg::maven::sshmirror (
     ensure => present,
   }
   user {'maven':
-    gid    => 'maven',
     ensure => present,
+    gid    => 'maven',
     home   => '/home/maven',
   }
   # We need somewhere to store authorized uids and authorized_keys

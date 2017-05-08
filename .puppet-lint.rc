@@ -1,2 +1,3 @@
 --no-80chars-check
 --no-quoted_booleans-check
+--no-class_inherits_from_params_class-check

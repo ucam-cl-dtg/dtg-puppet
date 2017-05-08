@@ -2,7 +2,9 @@ class dtg::aptrepository($repository) {
   # Manage apt sources lists
   #  Use puppet to manage sources.list but allow manual stuff inside sources.list.d
   class { 'apt':
-    purge => { 'sources.list'    => true },
+    purge => {
+      'sources.list' => true
+    },
     stage => $stage,
   }
   package{'apt-transport-https':

@@ -2,7 +2,7 @@ define bayncore::ssh_user($real_name,$uid,$ensure = 'present') {
   $username = $title
   user { $username:
     ensure     => $ensure,
-    comment    => "${real_name} <${email}>",
+    comment    => $real_name,
     home       => "/home/${username}",
     shell      => '/bin/bash',
     groups     => [],

@@ -216,7 +216,9 @@ class dtg::apt_elasticsearch { # lint:ignore:autoloader_layout repo class
         location => 'http://packages.elasticsearch.org/elasticsearch/1.4/debian',
         release  => 'stable',
         repos    => 'main',
-        include  =>  {'src' => false},
+        include  =>  {
+          'src' => false
+        },
         key      =>  {
           'id'     => '46095ACC8548582C1A2699A9D27D666CD88E42B4',
           'source' => 'http://packages.elasticsearch.org/GPG-KEY-elasticsearch',
@@ -227,6 +229,8 @@ class dtg::apt_elasticsearch { # lint:ignore:autoloader_layout repo class
         location => 'http://packages.elasticsearch.org/logstash/1.3/debian',
         release  => 'stable',
         repos    => 'main',
-        include  =>  {'src' => false}
+        include  =>  {
+          'src' => false
+        }
   }
 }

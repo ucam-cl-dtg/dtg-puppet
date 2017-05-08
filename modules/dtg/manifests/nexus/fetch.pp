@@ -2,8 +2,8 @@ define dtg::nexus::fetch (
   $artifact_name,                                           # the name of the artifact to download from nexus
   $artifact_version,                                        # its version number
   $artifact_type,                                           # the type: war, zip, jar etc.
-  $artifact_classifier = 'ANY',                             # classifier e.g. live or leave as ANY (default)
   $destination_directory,                                   # the directory to store the downloaded file in
+  $artifact_classifier = 'ANY',                             # classifier e.g. live or leave as ANY (default)
   $nexus_server_name = 'http://maven.dtg.cl.cam.ac.uk',     # nexus server host name (include http, ommit trailing slash)
   $nexus_user = 'dtg',                                      # username for nexus server
   $nexus_password = 'PetliujyowzaddOn',                     # password for nexus server
@@ -31,8 +31,8 @@ define dtg::nexus::fetch (
   if $action == 'NONE' {
     if $symlink != 'NONE' {
       file{ $symlink:
-        require => Wget::Fetch["nexus-fetch-${destination_filename}"],
         ensure  => link,
+        require => Wget::Fetch["nexus-fetch-${destination_filename}"],
         target  => $destination_path,
       }
     }
@@ -42,8 +42,8 @@ define dtg::nexus::fetch (
     
     if !defined(Package['unzip']) {
       package{'unzip':
-        name   => 'unzip',
         ensure => installed,
+        name   => 'unzip',
       }
     }
 
@@ -61,8 +61,8 @@ define dtg::nexus::fetch (
     
     if $symlink != 'NONE' {
       file{ $symlink:
-        require => Exec["unzip-${destination_filename}"],
         ensure  => link,
+        require => Exec["unzip-${destination_filename}"],
         target  => $unzip_target,
       }
     }

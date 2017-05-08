@@ -2,9 +2,9 @@
 define dtg::sshtunnelhost ($username, $home, $destination, $keys) {
   group { $username: ensure => present, }
   user { $username:
+    ensure  => present,
     gid     => $username,
     comment => 'SSH tunnel host user',
-    ensure  => present,
 #    purge_ssh_keys => true, # Only available in later versions of puppet
     home    => $home,
   }

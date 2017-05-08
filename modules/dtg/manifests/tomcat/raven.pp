@@ -1,18 +1,18 @@
 class dtg::tomcat::raven inherits dtg::tomcat {
   class {'dtg::tomcat::raven::repo': stage => 'repos'}
-  file { "/etc/${tomcat}/raven_pubkey.crt":
+  file { "/etc/${dtg::tomcat::tomcat}/raven_pubkey.crt":
     source  => 'puppet:///modules/dtg/raven/pubkey2.crt',
     mode    => '0644',
     owner   => 'root',
-    group   => $tomcat,
-    require => Package[$tomcat],
+    group   => $dtg::tomcat::tomcat,
+    require => Package[$dtg::tomcat::tomcat],
   }
-  file { "/etc/${tomcat}/server.xml":
-    source  => "puppet:///modules/dtg/raven/${tomcat}_server.xml",
+  file { "/etc/${dtg::tomcat::tomcat}/server.xml":
+    source  => "puppet:///modules/dtg/raven/${dtg::tomcat::tomcat}_server.xml",
     mode    => '0644',
     owner   => 'root',
-    group   => $tomcat,
-    require => Package[$tomcat]
+    group   => $dtg::tomcat::tomcat,
+    require => Package[$dtg::tomcat::tomcat]
   }
   package{'libucamwebauth-java':
     ensure  => installed,
@@ -22,7 +22,7 @@ class dtg::tomcat::raven inherits dtg::tomcat {
     ensure  => installed,
     require => Package['libucamwebauth-java'],
   }
-  $tomcatlib = "/usr/share/${tomcat}/lib/"
+  $tomcatlib = "/usr/share/${dtg::tomcat::tomcat}/lib/"
   file {"${tomcatlib}/webauth.jar":
     ensure  => link,
     target  => '/usr/share/java/ucamwebauth.jar',

@@ -15,13 +15,16 @@ class dtg::firewall::portforward ($src,$dest,$private) inherits dtg::firewall::d
     toports     => $dest,
     destination => '127.0.0.1/8',
   }
+
+  $firewall_src = $private ? {
+    true  => $::local_subnet,
+    false => undef,
+  }
+  
   firewall { "020 accept on ${dest}":
     proto  => 'tcp',
     dport  => $dest,
     action => 'accept',
-    source => $private ? {
-      true  => $::local_subnet,
-      false => undef,
-    }
+    source => $firewall_src,
   }
 }

@@ -1,4 +1,4 @@
-class dtg::husky-scripts {
+class dtg::husky_scripts {
 
     # Setup cl-dtg-make-vm
 

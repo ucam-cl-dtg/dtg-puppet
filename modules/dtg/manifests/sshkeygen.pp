@@ -17,7 +17,7 @@ define dtg::sshkeygen ($homedir = undef) {
   exec {"gen-${user}-sshkey":
     command => "ssh-keygen -q -N '' -t rsa -b 4096 -f ${sshfile}",
     user    => $user,
-    group   => $group,
+    group   => $user,
     creates => $sshfile,
     require => File[$sshdir],
   }

@@ -11,8 +11,8 @@ class dtg::maven::nexus (
     ensure => present,
   }
   user {'nexus':
-    gid    => 'nexus',
     ensure => present,
+    gid    => 'nexus',
   }
   file {'/local/data/nexus':
     ensure => directory,
@@ -101,9 +101,9 @@ class dtg::maven::nexus (
   }
   # Start nexus on reboot
   cron {'nexus':
+    ensure  => present,
     command => '/srv/nexus/nexus/bin/nexus start',
     user    => 'nexus',
-    ensure  => present,
     special => 'reboot',
     require => File['/srv/nexus/nexus/'],
   }

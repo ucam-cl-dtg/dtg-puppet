@@ -4,9 +4,9 @@ class dtg::entropy::client ($cafile, $host_address, $host_port = '7776', $local_
   }
   group { 'egd-client': ensure => present, }
   user { 'egd-client':
+    ensure  => present,
     gid     => 'egd-client',
     comment => 'Entropy Generating Device client user',
-    ensure  => present,
   }
   file { '/var/lib/stunnel4/egd-client':
     ensure  => directory,
@@ -22,7 +22,11 @@ class dtg::entropy::client ($cafile, $host_address, $host_port = '7776', $local_
     output   => '/egd-client.log',
     user     => 'egd-client',
     group    => 'egd-client',
-    services => { 'egd-client'    => {accept    => $local_port}},
+    services => {
+      'egd-client' => {
+        accept => $local_port
+      }
+    },
     connect  => "${host_address}:${host_port}",
     client   => true,
     verify   => 3,
