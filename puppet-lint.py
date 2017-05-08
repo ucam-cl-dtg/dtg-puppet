@@ -22,7 +22,9 @@ paths = ["manifests",
 
 def puppet_lint(path, doc=False):
     args = ["puppet-lint", "--fail-on-warnings", "--error-level", "warning"]
-    if not doc:
+    if doc:
+        args += ["--only-checks", "documentation"]
+    else:
         args += ["--no-documentation-check"]
     args += [path]
     return path, subprocess.run(args,
