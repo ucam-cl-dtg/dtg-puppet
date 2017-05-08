@@ -20,12 +20,10 @@ paths = ["manifests",
          "modules/nagios"]
 
 
-def puppet_lint(path, warn=False):
-    args = ["puppet-lint"]
-    if warn:
-        args += ["--fail-on-warnings", "--error-level", "warning"]
-    else:
-        args += ["--error-level", "error"]
+def puppet_lint(path, doc=False):
+    args = ["puppet-lint", "--fail-on-warnings", "--error-level", "warning"]
+    if not doc:
+        args += ["--no-documentation-check"]
     args += [path]
     return path, subprocess.run(args,
                                 stdout=subprocess.PIPE,
@@ -33,11 +31,11 @@ def puppet_lint(path, warn=False):
 
 exit_code = 0
 
-if sys.argv[1] == "--warn":
-    warn = True
-    mode_txt = "warn"
+if sys.argv[1] == "--doc":
+    doc = True
+    mode_txt = "doc"
 elif sys.argv[1] == "--err":
-    warn = False
+    doc = False
     mode_txt = "err"
 else:
     print("Error, must specify either --err or --warn")
@@ -46,7 +44,7 @@ else:
 with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
     for ftr in concurrent.futures.as_completed([ex.submit(puppet_lint,
                                                           path,
-                                                          warn)
+                                                          doc)
                                                 for path in paths]):
         path, res = ftr.result()
 

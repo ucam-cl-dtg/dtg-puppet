@@ -29,11 +29,11 @@ lint-error:
   only:
     - branches
 
-lint-warn:
+lint-doc:
   stage: style
   allow_failure: true
   script:
-    - ./puppet-lint.py --warn
+    - ./puppet-lint.py --doc
   only:
     - branches
 
