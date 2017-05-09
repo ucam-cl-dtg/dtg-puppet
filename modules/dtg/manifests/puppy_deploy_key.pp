@@ -19,7 +19,7 @@ class dtg::puppy_deploy_key {
     ensure => file,
     owner  => 'root',
     group  => 'adm',
-    mode   => '0640',
+    mode   => '0600',
     source => 'puppet:///modules/dtg/files/ssh/puppy-deploy-public',
   }
 
