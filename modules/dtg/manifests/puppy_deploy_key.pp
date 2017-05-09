@@ -8,6 +8,13 @@ class dtg::puppy_deploy_key {
     },
   }
 
+  # SSH Private Deploy Key
+  # Best practices forbid ssh private keys in version control
+  # However in this case it has been deemed acceptable as all
+  # repositories that the key will grant access to should be ones
+  # that may be publically read anyway. The deploy key on gitlab
+  # is appropriatly flagged with a bold warning that the key may
+  # be publically accessible.
   file {'/etc/ssh/puppy-deploy-public':
     ensure => file,
     owner  => 'root',
