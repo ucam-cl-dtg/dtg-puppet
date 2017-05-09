@@ -17,7 +17,7 @@ class dtg::puppy_deploy_key {
     owner   => 'root',
     group   => 'adm',
     mode    => '0600',
-    source  => 'puppet:///modules/dtg/files/ssh/puppy-deploy-public',
+    source  => 'puppet:///modules/dtg/ssh/puppy-deploy-public',
     require => [ File['/root/.ssh'] ],
   }
 
@@ -26,7 +26,7 @@ class dtg::puppy_deploy_key {
     owner   => 'root',
     group   => 'adm',
     mode    => '0644',
-    source  => 'puppet:///modules/dtg/files/ssh/puppy-deploy-public.pub',
+    source  => 'puppet:///modules/dtg/ssh/puppy-deploy-public.pub',
     require => [ File['/root/.ssh'] ],
   }
 
