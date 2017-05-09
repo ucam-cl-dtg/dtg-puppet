@@ -130,3 +130,6 @@
 [submodule "modules/rrdcached"]
 	path = modules/rrdcached
 	url = https://github.com/ucam-cl-dtg/puppet-rrdcached.git
+[submodule "modules/ssh"]
+	path = modules/ssh
+	url = https://github.com/saz/puppet-ssh.git
