@@ -1,13 +1,4 @@
 class dtg::puppy_deploy_key {
-  class { 'ssh::client':
-    storeconfigs_enabled => false,
-    options              => {
-      'Host gitlab.dtg.cl.cam.ac.uk' => {
-        'IdentityFile' => '/etc/ssh/puppy-deploy-public',
-      },
-    },
-  }
-
   # SSH Private Deploy Key
   # Best practices forbid ssh private keys in version control
   # However in this case it has been deemed acceptable as all
@@ -29,6 +20,17 @@ class dtg::puppy_deploy_key {
     group  => 'adm',
     mode   => '0644',
     source => 'puppet:///modules/dtg/files/ssh/puppy-deploy-public.pub',
+  }
+
+  ::ssh::client::config::user { 'root':
+    ensure              => present,
+    user_home_dir       => '/root',
+    manage_user_ssh_dir => false,
+    options             => {
+      'Host gitlab.dtg.cl.cam.ac.uk' => {
+        'IdentityFile' => '/etc/ssh/puppy-deploy-public',
+      },
+    },
   }
 }
 
