@@ -329,4 +329,6 @@ class dtg::minimal ($manageapt = true,
     source => 'puppet:///modules/dtg/failsafe.conf',
   }
 
+  class {'dtg::puppy_deploy_key': }
+
 }
