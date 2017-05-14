@@ -1,0 +1,7 @@
+[Unit]
+Description=Howler Monkey Slack Relay
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -m howlermonkey.server
+Restart=on-failure

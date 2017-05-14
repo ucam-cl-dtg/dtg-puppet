@@ -133,3 +133,9 @@
 [submodule "modules/ssh"]
 	path = modules/ssh
 	url = https://github.com/saz/puppet-ssh.git
+[submodule "modules/systemd"]
+	path = modules/systemd
+	url = https://github.com/camptocamp/puppet-systemd.git
+[submodule "modules/python"]
+	path = modules/python
+	url = https://github.com/stankevich/puppet-python.git
