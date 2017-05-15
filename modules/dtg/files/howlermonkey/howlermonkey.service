@@ -3,5 +3,6 @@ Description=Howler Monkey Slack Relay
 
 [Service]
 Type=simple
+User=howlermonkey
 ExecStart=/usr/bin/python3 -m howlermonkey.server
 Restart=on-failure
