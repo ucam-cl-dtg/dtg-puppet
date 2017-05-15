@@ -37,7 +37,7 @@ class dtg::minimal ($manageapt = true,
                   'apg', 'htop', 'emacs24-nox', 'lsof',
                   'iptables-persistent', 'command-not-found', 'mlocate',
                   'bash-completion', 'apt-show-versions', 'iotop', 'byobu',
-                  'parted']
+                  'parted', 'python3']
   package {
     $packagelist:
       ensure => installed
