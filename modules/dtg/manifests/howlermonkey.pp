@@ -1,13 +1,10 @@
 class dtg::howlermonkey {
-  user {'howlermonkey':
-    ensure => present,
+  package { ['python3-requests', 'python3-yaml']:
+    ensure => installed,
   }
-  systemd::unit_file { 'howlermonkey.service':
-    source => 'puppet:///modules/dtg/howlermonkey/howlermonkey.service',
-  }
-  ~> service { 'howlermonkey':
-    ensure  => running,
-    enable  => true,
-    require => [ User['howlermonkey'], Python::Pip['howlermonkey'] ],
+  -> python::pip { 'howlermonkey':
+    ensure  => latest,
+    pkgname => 'howlermonkey',
+    require => [ Package['python3'] ],
   }
 }

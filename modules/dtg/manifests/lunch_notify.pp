@@ -1,4 +1,5 @@
 class dtg::lunch_notify {
+  include 'dtg::howlermonkey'
   user {'lunch':
     ensure     => present,
     home       => '/srv/lunch',
@@ -15,6 +16,6 @@ class dtg::lunch_notify {
     user    => 'lunch',
     hour    => 9,
     minute  => 0,
-    require => [ Python::Pip['howlermonkey'] ],
+    require => [ Class['dtg::howlermonkey'] ],
   }
 }

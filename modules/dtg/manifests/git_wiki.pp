@@ -36,7 +36,7 @@ class dtg::git_wiki {
     home               => '/srv/git/',
   }
 
-  class {'dtg::howlermonkey':}
+  class {'dtg::howlermonkey::server':}
   class {'dtg::lunch_notify':}
 }
 
