@@ -9,6 +9,6 @@ class dtg::howlermonkey::server {
   ~> service { 'howlermonkey':
     ensure  => running,
     enable  => true,
-    require => [ Class['dtg::howlermonkey'] ],
+    require => [ User['howlermonkey'], Class['dtg::howlermonkey'] ],
   }
 }
