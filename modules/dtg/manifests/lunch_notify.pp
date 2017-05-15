@@ -1,5 +1,4 @@
 class dtg::lunch_notify {
-  include dtg::packages::howlermonkey
   user {'lunch':
     ensure     => present,
     home       => '/srv/lunch',

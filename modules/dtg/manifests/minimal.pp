@@ -37,7 +37,7 @@ class dtg::minimal ($manageapt = true,
                   'apg', 'htop', 'emacs24-nox', 'lsof',
                   'iptables-persistent', 'command-not-found', 'mlocate',
                   'bash-completion', 'apt-show-versions', 'iotop', 'byobu',
-                  'parted']
+                  'parted', 'python3', 'python3-yaml', 'python3-requests']
   package {
     $packagelist:
       ensure => installed
@@ -67,6 +67,12 @@ class dtg::minimal ($manageapt = true,
   package {
     $banned_packages:
       ensure => purged
+  }
+
+  python::pip { 'howlermonkey':
+    ensure  => latest,
+    pkgname => 'howlermonkey',
+    require => [ Package[$packagelist] ],
   }
 
   if ($::virtual == 'xenu') and $::manageapt {

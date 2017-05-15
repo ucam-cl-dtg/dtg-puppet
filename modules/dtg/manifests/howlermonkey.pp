@@ -1,6 +1,4 @@
-
 class dtg::howlermonkey {
-  include dtg::packages::howlermonkey
   user {'howlermonkey':
     ensure => present,
   }
@@ -13,4 +11,3 @@ class dtg::howlermonkey {
     require => [ User['howlermonkey'], Python::Pip['howlermonkey'] ],
   }
 }
-
