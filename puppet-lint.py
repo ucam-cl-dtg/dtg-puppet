@@ -41,7 +41,7 @@ elif sys.argv[1] == "--err":
     doc = False
     mode_txt = "err"
 else:
-    print("Error, must specify either --err or --warn")
+    print("Error, must specify either --err or --doc")
     sys.exit(1)
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
