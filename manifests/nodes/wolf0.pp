@@ -9,7 +9,6 @@ node /wolf(\d+)?/ {
 }
 
 if ( $::monitor ) {
-  munin::gatherer::async_node { 'wolf0': }
   munin::gatherer::async_node { 'wolf1': }
   munin::gatherer::async_node { 'wolf2': }
 
