@@ -1,4 +1,7 @@
 if ( $::monitor ) {
+  munin::gatherer::configure_node { 'shalmaneser3':
+    address => 'shalmaneser3.sec.cl.cam.ac.uk',
+  }
   nagios::monitor { 'shalmaneser3':
     parents    => '',
     address    => 'shalmaneser3.sec.cl.cam.ac.uk',
