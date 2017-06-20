@@ -329,6 +329,11 @@ class dtg::minimal ($manageapt = true,
     source => 'puppet:///modules/dtg/failsafe.conf',
   }
 
+  # Remove unnecessary file that causes apt warnings
+  file{'/etc/apt/apt.conf.d/50unattended-upgrades.ucf-dist':
+    ensure => absent
+  }
+
   class {'dtg::puppy_deploy_key': }
 
 }
