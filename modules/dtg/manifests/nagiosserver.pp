@@ -42,6 +42,10 @@ class dtg::nagiosserver {
   }
   ->
   nagios::service {
+    'ping':
+      service_hostgroup_name => 'ping-servers',
+      service_description    => 'PING',
+      service_check_command  => 'check_ping!500.0,20%!1000.0,60%';
     'http':
       service_hostgroup_name =>'http-servers',
       service_description    =>'HTTP',
