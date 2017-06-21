@@ -47,16 +47,16 @@ class dtg::nagiosserver {
       service_description    => 'PING',
       service_check_command  => 'check_ping!500.0,20%!1000.0,60%';
     'http':
-      service_hostgroup_name =>'http-servers',
-      service_description    =>'HTTP',
+      service_hostgroup_name => 'http-servers',
+      service_description    => 'HTTP',
       service_check_command  => 'check_http';
     'https':
-      service_hostgroup_name =>'https-servers',
-      service_description    =>'HTTPS',
+      service_hostgroup_name => 'https-servers',
+      service_description    => 'HTTPS',
       service_check_command  => 'check_https';
     'https-cert':
-      service_hostgroup_name =>'https-servers',
-      service_description    =>'HTTPS',
+      service_hostgroup_name => 'https-servers',
+      service_description    => 'HTTPS Certificate',
       service_check_command  => 'check_https_cert';
     'ssh':
       service_hostgroup_name =>'ssh-servers',
