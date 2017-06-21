@@ -17,7 +17,7 @@ nonefound="Found 0 processes using old versions of upgraded files"
 checkrestartcommand='sudo checkrestart -b /usr/local/etc/checkrestart_blacklist'
 
 # If the output indicates that checkrestart can do nothing then skip
-ckrestart=`$checkrestartcommand`
+ckrestart=$($checkrestartcommand)
 if [[ $ckrestart == *"(0 distinct packages)"* ]]; then
 	exit 0
 fi
@@ -43,13 +43,13 @@ fi
 if [[ $ckrestart == *openjdk* ]]; then
 	echo "Need to restart some java"
 	# Get the list of pids of java processes, perl puts the newlines back in
-	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/usr/lib/jvm.*|\1|' | grep '^[0-9]*$'`
+	pids=$(echo "$ckrestart" | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/usr/lib/jvm.*|\1|' | grep '^[0-9]*$')
 	for pid in $pids; do
 		if [[ -n "$pid" ]]; then
-			username=`getent passwd $(cat /proc/$pid/status | grep Uid | tr '[:space:]' ' ' | cut -d " " -f 2) | cut -d ':' -f 1`
+			username=$(getent passwd "$(grep Uid "/proc/$pid/status" | tr '[:space:]' ' ' | cut -d " " -f 2)" | cut -d ':' -f 1)
 			if [[ $username == tomcat* ]] || [[ $username == sonar ]] || [[ $username == elasticsearch ]] || [[ $username == crucible ]] ; then
 				echo "Triggering $username restart"
-				sudo service $username restart
+				sudo service "$username" restart
 			fi
 		fi
 	done
@@ -58,26 +58,26 @@ fi
 if [[ $ckrestart == */bin/sleep* ]] || [[ $ckrestart == */bin/login* ]] || [[ $ckrestart == */sbin/sulogin* ]] || [[ $ckrestart == */usr/bin/ssh-agent* ]] || [[ $ckrestart == */sbin/getty* ]] || [[ $ckrestart == */sbin/agetty* ]] || [[ $ckrestart == */sbin/mingetty* ]]; then
 	echo "Need to restart sleep, login, ssh-agent or getty"
 	# Get the list of pids of login and sleep processes, perl puts the newlines back in
-	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's&.*\s\+\([0-9]\+\)\s\+\(\(/bin/login\)\|\(/sbin/sulogin\)\|\(/bin/sleep\)\|\(/usr/bin/ssh-agent\)\|\(/sbin/getty\)\|\(/sbin/agetty\)\|\(/sbin/mingetty\)\).*&\1&' | grep '^[0-9]*$'`
+	pids=$(echo "$ckrestart" | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's&.*\s\+\([0-9]\+\)\s\+\(\(/bin/login\)\|\(/sbin/sulogin\)\|\(/bin/sleep\)\|\(/usr/bin/ssh-agent\)\|\(/sbin/getty\)\|\(/sbin/agetty\)\|\(/sbin/mingetty\)\).*&\1&' | grep '^[0-9]*$')
 	# These can safely be killed as login will respawn and sleep will just move something earlier (or in the case it occurs - monkeysphere - just be restarted)
 	for pid in $pids; do
-		echo "Killing: "`ps --pid $pid | tail -n 1`
-		sudo kill $pid
+		echo "Killing: $(ps --pid "$pid" | tail -n 1)"
+		sudo kill "$pid"
 	done
 fi
 
 if [[ $ckrestart == */bin/bash* ]] ; then
 	echo "Need to restart some bash"
 	# Get the list of pids of bash processes, perl puts the newlines back in
-	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/bin/bash.*|\1|' | grep '^[0-9]*$'`
+	pids=$(echo "$ckrestart" | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/bin/bash.*|\1|' | grep '^[0-9]*$')
 	for pid in $pids; do
-		psout=`ps --pid $pid | tail -n 1 | tr -s '[:space:]' ' '`
-		if [[ `echo $psout | cut -d ' ' -f 2` == 'hvc0' ]]; then
+		psout=$(ps --pid "$pid" | tail -n 1 | tr -s '[:space:]' ' ')
+		if [[ $(echo "$psout" | cut -d ' ' -f 2) == 'hvc0' ]]; then
 			echo "Killing hvc0 bash"
-			sudo kill $pid
+			sudo kill "$pid"
 			break
 		fi
-		if [[ `echo $psout | cut -d ' ' -f 4` == 'xe-daemon' ]]; then
+		if [[ $(echo "$psout" | cut -d ' ' -f 4) == 'xe-daemon' ]]; then
 			echo "Restarting xe-linux-distribution"
 			sudo service xe-linux-distribution restart
 		fi
@@ -87,10 +87,10 @@ fi
 if [[ $ckrestart == */sbin/dhclient* ]] ; then
 	echo "need to restart dhclient"
 	# Get the list of pids of bash processes, perl puts the newlines back in
-	pids=`echo $ckrestart | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/sbin/dhclient.*|\1|' | grep '^[0-9]*$'`
+	pids=$(echo "$ckrestart" | perl -pe 's/(.*?)\s([0-9].*?)/\1\n \2/g' | sed 's|.*\s\+\([0-9]\+\)\s\+/sbin/dhclient.*|\1|' | grep '^[0-9]*$')
 	for pid in $pids; do
 		echo "Killing dhclient and starting it"
-		sudo kill $pid
+		sudo kill "$pid"
 		sudo dhclient
 		break
 	done
@@ -111,7 +111,7 @@ fi
 
 # Try and automatically restart as much as we can
 # When $nonefound exists it is the only line and so the rest does not execute.
-services=`$checkrestartcommand | grep --line-regexp 'service [a-zA-Z0-9\.\-]* restart' | sed 's/service \([a-Z0-9\.\-]*\) restart/\1/'`
+services=$($checkrestartcommand | grep --line-regexp 'service [a-zA-Z0-9\.\-]* restart' | sed 's/service \([a-Z0-9\.\-]*\) restart/\1/')
 
 if [ ! -z "$services" ]; then
 	echo "Restarting services: $services"
