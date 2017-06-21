@@ -91,4 +91,11 @@ class dtg::nagiosserver {
       service_description    =>'BMCs',
       service_check_command  => 'check_tcp!623';
   }
+  ->
+  nagios::servicedependency {
+    'https':
+      sd_hostgroup_name                => 'https-servers',
+      sd_service_description           => 'HTTPS',
+      sd_dependent_service_description => 'HTTPS Certificate';
+  }
 }

@@ -1,0 +1,7 @@
+define servicedependency{
+  hostgroup_name                  <%= @sd_hostgroup_name %>
+  service_description             <%= @sd_service_description %>
+  dependent_service_description   <%= @sd_dependent_service_description %>
+  execution_failure_criteria      <%= @sd_execution_failure_criteria %>
+  notification_failure_criteria   <%= @sd_notification_failure_criteria %>
+}
