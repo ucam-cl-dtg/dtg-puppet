@@ -91,15 +91,3 @@ node /isaac-1/ {
     home               => '/usr/share/isaac/',
   }
 }
-
-# Configure backup server to pull things from here.
-
-if ( $::is_backup_server ) {
-  dtg::backup::hostsetup{'isaac_physics_docker_db':
-    user    => 'isaac',
-    group   => 'isaac',
-    host    => 'isaac-1.dtg.cl.cam.ac.uk',
-    weekday => '*',
-    require => Class['dtg::backup::host'],
-  }
-}
