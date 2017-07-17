@@ -6,7 +6,12 @@ class dtg::firewall::zookeeper inherits dtg::firewall::default {
   }
   firewall { '011 accept all zookeeper election traffic':
     proto  => 'tcp',
-    dport  => '3181',
+    dport  => '2888',
+    action => 'accept',
+  }
+  firewall { '011 accept all zookeeper election traffic':
+    proto  => 'tcp',
+    dport  => '3888',
     action => 'accept',
   }
 }
