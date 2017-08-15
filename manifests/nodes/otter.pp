@@ -1,4 +1,4 @@
-node /otter(-\d+)?/ {
+node /^otter(-\d+)?/ {
 
   $dashboard_version = '1.0.10-SNAPSHOT'
   $handins_version   = '1.0.6-SNAPSHOT'
