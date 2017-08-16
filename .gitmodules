@@ -75,7 +75,7 @@
 	url = https://github.com/ucam-cl-dtg/contrib.git
 [submodule "modules/docker"]
 	path = modules/docker
-	url = https://github.com/garethr/garethr-docker.git
+	url = https://github.com/ucam-cl-dtg/garethr-docker.git
 [submodule "modules/unbound"]
 	path = modules/unbound
 	url = https://github.com/xaque208/puppet-unbound.git
