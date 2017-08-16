@@ -8,7 +8,7 @@ node /^acr31-pottery/ {
     owner  => 'root'
   }
   ->
-  package{docker-ce:
+  package{'docker-ce':
     ensure => installed,
   }
   ->
