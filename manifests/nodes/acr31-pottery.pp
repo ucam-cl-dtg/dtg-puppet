@@ -1,7 +1,7 @@
 node /^acr31-pottery/ {
   include 'dtg::minimal'
 
-  class {'dtg::pottery::docker': stage => 'repos' }
+  class {'dtg::pottery::aptsources': stage => 'repos' }
   
   file{'/local/data/docker':
     ensure => directory,
@@ -29,7 +29,6 @@ node /^acr31-pottery/ {
     image_tag => '16.04'
   }
     
-  class {'dtg::pottery::gitlab': stage => 'repos' }
   class {'dtg::firewall::publichttps':} ->
   class {'dtg::firewall::portforward': src=>'443',dest=>'8443',private=>false}
 
@@ -40,7 +39,7 @@ node /^acr31-pottery/ {
   }
 }
 
-class dtg::pottery::gitlab { # lint:ignore:autoloader_layout repo class
+class dtg::pottery::aptsources { # lint:ignore:autoloader_layout repo class
   apt::source{ 'gitlab':
     location => 'https://packages.gitlab.com/gitlab/gitlab-ce/ubuntu/',
     release  => 'xenial',
@@ -50,9 +49,7 @@ class dtg::pottery::gitlab { # lint:ignore:autoloader_layout repo class
       'source' => 'https://packages.gitlab.com/gpg.key',
     }
   }
-}
-
-class dtg::pottery::docker { # lint:ignore:autoloader_layout repo class
+  ->
   apt::source{ 'docker':
     location => 'https://download.docker.com/linux/ubuntu',
     release  => 'xenial',
