@@ -61,7 +61,7 @@ if [[ $diff -gt 86400 ]]; then
 		# applied puppet to this machine.
 
 		cd /etc/puppet-bare
-		git fetch --quiet git://git.dtg.cl.cam.ac.uk/puppet/dtg-puppet.git
+		git fetch --quiet git://github.com/ucam-cl-dtg/dtg-puppet.git
 		./hooks/post-update
 	fi
 fi
