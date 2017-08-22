@@ -69,10 +69,10 @@ class dtg::minimal ($manageapt = true,
       ensure => purged
   }
 
-  if ($::virtual == 'xenu') and $::manageapt {
+  if ($::virtual == 'xenu') and $manageapt {
     class {'dtg::vm':}
   }
-  if ($::virtual == 'physical') and $::manageapt {
+  if ($::virtual == 'physical') and $manageapt {
     class {'dtg::baremetal':}
   }
 
