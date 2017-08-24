@@ -3,31 +3,31 @@ node /^acr31-pottery/ {
 
   class {'dtg::pottery::aptsources': stage => 'repos' }
   
-  # file{'/local/data/docker':
-  #   ensure => directory,
-  #   owner  => 'root'
-  # }
-  # ->
-  # package{'docker-ce':
-  #   ensure => installed,
-  # }
-  # ->
-  # class { 'docker':
-  #   tcp_bind                    => 'tcp://127.0.0.1:2375',
-  #   socket_bind                 => 'unix:///var/run/docker.sock',
-  #   root_dir                    => '/local/data/docker',
-  #   use_upstream_package_source => false,
-  #   manage_package              => false,
-  # }
-  # ->
-  # exec {'add-www-data-to-docker-group':
-  #   unless  => "/bin/grep -q '^docker:\\S*www-data' /etc/group",
-  #   command => '/usr/sbin/usermod -aG docker www-data',
-  # }
-  # ->
-  # docker::image { 'ubuntu':
-  #   image_tag => '16.04'
-  # }
+  file{'/local/data/docker':
+    ensure => directory,
+    owner  => 'root'
+  }
+  ->
+  package{'docker-ce':
+    ensure => installed,
+  }
+  ->
+  class { 'docker':
+    tcp_bind                    => 'tcp://127.0.0.1:2375',
+    socket_bind                 => 'unix:///var/run/docker.sock',
+    root_dir                    => '/local/data/docker',
+    use_upstream_package_source => false,
+    manage_package              => false,
+  }
+  ->
+  exec {'add-www-data-to-docker-group':
+    unless  => "/bin/grep -q '^docker:\\S*www-data' /etc/group",
+    command => '/usr/sbin/usermod -aG docker www-data',
+  }
+  ->
+  docker::image { 'ubuntu':
+    image_tag => '16.04'
+  }
     
   class {'dtg::firewall::publichttps':}
   ->
@@ -61,7 +61,7 @@ node /^acr31-pottery/ {
   file {'/etc/apache2/AAHeaderKey.conf':
     owner => 'root',
     group => 'root',
-    mode => '600'
+    mode  => '0600'
   }
   ->
   exec {'generate-AACookieKey':
@@ -72,11 +72,11 @@ node /^acr31-pottery/ {
   file {'/etc/apache2/AACookieKey.conf':
     owner => 'root',
     group => 'root',
-    mode => '600'
+    mode  => '0600'
   }
   
   class { 'postgresql::globals':
-    version => '9.5',
+    version  => '9.5',
     encoding => 'UTF-8',
     locale   => "'en_GB.UTF8'"
   }
