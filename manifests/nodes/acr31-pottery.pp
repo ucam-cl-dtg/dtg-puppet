@@ -29,27 +29,52 @@ node /^acr31-pottery/ {
     image_tag => '16.04'
   }
     
-  class {'dtg::firewall::publichttps':} ->
-  class {'dtg::firewall::portforward': src=>'443',dest=>'8443',private=>false}
+  class {'dtg::firewall::publichttps':}
+  ->
+  class {'dtg::firewall::publichttp':}
 
-  $packages = ['openjdk-8-jdk','libapr1','tomcat8','gitlab-ce']
+  $packages = ['openjdk-8-jdk','libapr1','tomcat8','golang-go',]
 
   package{$packages:
     ensure => installed,
   }
+
+  class {'apache::ubuntu': }
+  ->
+  class {'dtg::apache::raven':
+    server_description => 'Pottery'
+  }
+  ->
+  apache::module {'proxy':}
+  ->
+  apache::module {'proxy_http':}
+  ->
+  apache::site {'pottery':
+    source => 'puppet:///modules/dtg/apache/pottery.conf',
+  }
+  
+  class { 'postgresql::globals':
+    version => '9.5',
+    encoding => 'UTF-8',
+    locale   => "'en_GB.UTF8'"
+  }
+  ->
+  class { 'postgresql::server':
+    ip_mask_deny_postgres_user => '0.0.0.0/0',
+    ip_mask_allow_all_users    => '127.0.0.1/32',
+    listen_addresses           => '*',
+    ipv4acls                   => ['hostssl all all 127.0.0.1/32 md5'],
+  }
+  ->
+  postgresql::server::db{'gogs':
+    user     => 'gogs',
+    password => 'gogs',
+    grant    => 'ALL',
+  }
+  
 }
 
 class dtg::pottery::aptsources { # lint:ignore:autoloader_layout repo class
-  apt::source{ 'gitlab':
-    location => 'https://packages.gitlab.com/gitlab/gitlab-ce/ubuntu/',
-    release  => 'xenial',
-    repos    => 'main',
-    key      => {
-      'id'     => '1A4C919DB987D435939638B914219A96E15E78F4',
-      'source' => 'https://packages.gitlab.com/gpg.key',
-    }
-  }
-  ->
   apt::source{ 'docker':
     location => 'https://download.docker.com/linux/ubuntu',
     release  => 'xenial',
