@@ -113,7 +113,7 @@ node /^acr31-pottery/ {
   }
   ->
   exec { 'chown-/home/git':
-    command => 'chown -R git.git /home/git',
+    command     => 'chown -R git.git /home/git',
     refreshonly => true
   }
   ->
@@ -130,9 +130,9 @@ node /^acr31-pottery/ {
   }
   ->
   file {'/home/git/gogs/custom/conf/app.ini':
-    owner => 'git',
-    group => 'git',
-    mode => '0600',
+    owner   => 'git',
+    group   => 'git',
+    mode    => '0600',
     content => template('dtg/gogs/app.ini.erb')
   }
   ->
