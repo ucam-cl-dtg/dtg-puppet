@@ -1,0 +1,64 @@
+APP_NAME = Gogs
+RUN_USER = git
+RUN_MODE = prod
+
+[server]
+PROTOCOL         = http
+DOMAIN           = <%=@gogs_domain%>
+ROOT_URL         = <%=@gogs_root_url%>
+HTTP_ADDR        = 0.0.0.0
+HTTP_PORT        = 3000
+SSH_ROOT_PATH    = /home/git/.ssh
+DISABLE_SSH      = false
+SSH_PORT         = 22
+START_SSH_SERVER = false
+OFFLINE_MODE     = false
+RAVEN_HEADER_KEY = UNSET
+
+
+[database]
+DB_TYPE  = postgres
+HOST     = 127.0.0.1:5432
+NAME     = gogs
+USER     = gogs
+PASSWD   = gogs
+SSL_MODE = disable
+PATH     = data/gogs.db
+
+[repository]
+ROOT = /home/git/gogs-repositories
+DISABLE_HTTP_GIT = true
+NABLE_LOCAL_PATH_MIGRATION = false
+FORCE_PRIVATE = true
+
+[repository.upload]
+ENABLED = false
+
+[release.attachment]
+ENABLED = false
+
+[mailer]
+ENABLED = false
+
+[service]
+REGISTER_EMAIL_CONFIRM = false
+ENABLE_NOTIFY_MAIL     = false
+DISABLE_REGISTRATION   = true
+ENABLE_CAPTCHA         = true
+REQUIRE_SIGNIN_VIEW    = true
+
+[picture]
+DISABLE_GRAVATAR        = false
+ENABLE_FEDERATED_AVATAR = true
+
+[session]
+PROVIDER = file
+
+[log]
+MODE      = file
+LEVEL     = Info
+ROOT_PATH = /home/git/gogs-log
+
+[security]
+INSTALL_LOCK = true
+SECRET_KEY   = UNSET

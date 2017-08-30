@@ -39,6 +39,10 @@ node /^acr31-pottery/ {
     ensure => installed,
   }
 
+  # used by the app.ini template
+  $gogs_domain = 'acr31-pottery.dtg.cl.cam.ac.uk'
+  $gogs_root_url = 'http://acr31-pottery.dtg.cl.cam.ac.uk/gogs/'
+  
   class {'apache::ubuntu': }
   ->
   class {'dtg::apache::raven':
@@ -93,7 +97,64 @@ node /^acr31-pottery/ {
     password => 'gogs',
     grant    => 'ALL',
   }
-  
+
+  user {'git':
+    ensure => 'present',
+    shell  => '/bin/bash',
+    home   => '/home/git',
+  }
+  ->
+  dtg::nexus::fetch{'download-gogs':
+    artifact_name         => 'gogs',
+    artifact_version      => '1.0.0-SNAPSHOT',
+    artifact_type         => 'zip',
+    destination_directory => '/home/git',
+    action                => 'unzip',
+  }
+  ->
+  exec { 'chown-/home/git':
+    command => 'chown -R git.git /home/git',
+    refreshonly => true
+  }
+  ->
+  file {'/etc/systemd/system/gogs.service':
+    source => 'puppet:///modules/dtg/gogs/gogs.service'
+  }
+  ->
+  file {'/home/git/gogs/custom':
+    ensure => 'directory'
+  }
+  ->
+  file {'/home/git/gogs/custom/conf':
+    ensure => 'directory'
+  }
+  ->
+  file {'/home/git/gogs/custom/conf/app.ini':
+    owner => 'git',
+    group => 'git',
+    mode => '0600',
+    content => template('dtg/gogs/app.ini.erb')
+  }
+  ->
+  exec {'app-ini-set-raven-key':
+    command => '/bin/bash -c "HEADER_KEY=`/usr/bin/cut -d \" \" -f2 /etc/apache2/AAHeaderKey.conf `; /bin/sed -i \"s/RAVEN_HEADER_KEY.*/RAVEN_HEADER_KEY = \${HEADER_KEY}/\" /home/git/gogs/custom/conf/app.ini"'
+  }
+  ->
+  exec {'app-ini-set-gogs-key':
+    command => '/bin/bash -c "SECRET_KEY=`cat /etc/apache2/AACookieKey.conf | /usr/bin/sha1sum | /usr/bin/cut -d \" \" -f 1`; /bin/sed -i \"s/SECRET_KEY.*/SECRET_KEY = \${SECRET_KEY}/\" /home/git/gogs/custom/conf/app.ini"'
+  }
+  ->
+  exec {'systemctl-daemon-reload':
+    command => '/bin/systemctl daemon-reload'
+  }
+  ->
+  exec {'enable-gogs-service':
+    command => '/bin/systemctl enable gogs.service'
+  }
+  ->
+  exec {'restart-gogs-service':
+    command => '/bin/systemctl restart gogs.service'
+  }
 }
 
 class dtg::pottery::aptsources { # lint:ignore:autoloader_layout repo class
