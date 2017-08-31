@@ -53,10 +53,6 @@ node /^acr31-pottery/ {
   ->
   apache::module {'proxy_http':}
   ->
-  apache::site {'pottery':
-    source => 'puppet:///modules/dtg/apache/pottery.conf',
-  }
-  ->
   exec {'generate-AAHeaderKey':
     command => '/bin/bash -c "echo -n \"AAHeaderKey \"; openssl rand -hex 24" > /etc/apache2/AAHeaderKey.conf',
     creates => '/etc/apache2/AAHeaderKey.conf'
@@ -78,7 +74,11 @@ node /^acr31-pottery/ {
     group => 'root',
     mode  => '0600'
   }
-  
+  ->
+  apache::site {'pottery':
+    source => 'puppet:///modules/dtg/apache/pottery.conf',
+  }
+
   class { 'postgresql::globals':
     version  => '9.5',
     encoding => 'UTF-8',
