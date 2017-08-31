@@ -28,8 +28,11 @@ PATH     = data/gogs.db
 [repository]
 ROOT = /home/git/gogs-repositories
 DISABLE_HTTP_GIT = true
-NABLE_LOCAL_PATH_MIGRATION = false
+ENABLE_LOCAL_PATH_MIGRATION = false
 FORCE_PRIVATE = true
+
+[admin]
+DISABLE_REGULAR_ORG_CREATION = true
 
 [repository.upload]
 ENABLED = false
