@@ -1,43 +1,9 @@
 node /^acr31-pottery/ {
   include 'dtg::minimal'
 
-  class {'dtg::pottery::aptsources': stage => 'repos' }
-  
-  file{'/local/data/docker':
-    ensure => directory,
-    owner  => 'root'
-  }
-  ->
-  package{'docker-ce':
-    ensure => installed,
-  }
-  ->
-  class { 'docker':
-    tcp_bind                    => 'tcp://127.0.0.1:2375',
-    socket_bind                 => 'unix:///var/run/docker.sock',
-    root_dir                    => '/local/data/docker',
-    use_upstream_package_source => false,
-    manage_package              => false,
-  }
-  ->
-  exec {'add-www-data-to-docker-group':
-    unless  => "/bin/grep -q '^docker:\\S*www-data' /etc/group",
-    command => '/usr/sbin/usermod -aG docker www-data',
-  }
-  ->
-  docker::image { 'ubuntu':
-    image_tag => '16.04'
-  }
-    
   class {'dtg::firewall::publichttps':}
   ->
   class {'dtg::firewall::publichttp':}
-
-  $packages = ['openjdk-8-jdk','libapr1','tomcat8','golang-go',]
-
-  package{$packages:
-    ensure => installed,
-  }
 
   # used by the app.ini template
   $gogs_domain = 'acr31-pottery.dtg.cl.cam.ac.uk'
@@ -154,17 +120,5 @@ node /^acr31-pottery/ {
   ->
   exec {'restart-gogs-service':
     command => '/bin/systemctl restart gogs.service'
-  }
-}
-
-class dtg::pottery::aptsources { # lint:ignore:autoloader_layout repo class
-  apt::source{ 'docker':
-    location => 'https://download.docker.com/linux/ubuntu',
-    release  => 'xenial',
-    repos    => 'stable',
-    key      => {
-      'id'     => '9DC858229FC7DD38854AE2D88D81803C0EBFCD88',
-      'source' => 'https://download.docker.com/linux/ubuntu/gpg',
-    }
   }
 }
