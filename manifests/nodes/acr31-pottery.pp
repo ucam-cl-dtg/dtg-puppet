@@ -80,7 +80,6 @@ node /^acr31-pottery/ {
   ->
   exec { 'chown-/home/git':
     command     => 'chown -R git.git /home/git',
-    refreshonly => true
   }
   ->
   file {'/etc/systemd/system/gogs.service':
