@@ -8,7 +8,7 @@ DOMAIN           = <%=@gogs_domain%>
 ROOT_URL         = <%=@gogs_root_url%>
 HTTP_ADDR        = 0.0.0.0
 HTTP_PORT        = 3000
-SSH_ROOT_PATH    = /home/git/.ssh
+SSH_ROOT_PATH    = /local/data/git/.ssh
 DISABLE_SSH      = false
 SSH_PORT         = 22
 START_SSH_SERVER = false
@@ -26,7 +26,7 @@ SSL_MODE = disable
 PATH     = data/gogs.db
 
 [repository]
-ROOT = /home/git/gogs-repositories
+ROOT = /local/data/gogs-repositories
 DISABLE_HTTP_GIT = true
 ENABLE_LOCAL_PATH_MIGRATION = false
 FORCE_PRIVATE = true
@@ -60,7 +60,7 @@ PROVIDER = file
 [log]
 MODE      = file
 LEVEL     = Info
-ROOT_PATH = /home/git/gogs-log
+ROOT_PATH = /local/data/gogs-log
 
 [security]
 INSTALL_LOCK = true

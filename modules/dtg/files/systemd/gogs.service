@@ -1,0 +1,17 @@
+[Unit]
+Description=Gogs
+After=syslog.target
+After=network.target
+After=postgresql.service
+
+[Service]
+Type=simple
+User=git
+Group=git
+WorkingDirectory=/local/data/gogs
+ExecStart=/local/data/gogs/gogs web
+Restart=always
+Environment=USER=git HOME=/local/data/git-home
+
+[Install]
+WantedBy=multi-user.target

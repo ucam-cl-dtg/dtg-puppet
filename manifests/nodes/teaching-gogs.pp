@@ -67,34 +67,43 @@ node /^teaching-gogs/ {
   user {'git':
     ensure => 'present',
     shell  => '/bin/bash',
-    home   => '/home/git',
+    home   => '/local/data/git-home',
+  }
+  ->
+  file {'/local/data/gogs':
+    ensure => 'directory',
+    owner  => 'git'
   }
   ->
   dtg::nexus::fetch{'download-gogs':
     artifact_name         => 'gogs',
     artifact_version      => '1.0.0-SNAPSHOT',
     artifact_type         => 'zip',
-    destination_directory => '/home/git',
+    destination_directory => '/local/data/gogs',
     action                => 'unzip',
   }
   ->
-  exec { 'chown-/home/git':
-    command     => 'chown -R git.git /home/git',
+  exec { 'chown-/local/data/git-home':
+    command     => 'chown -R git.git /local/data/git-home',
+  }
+  ->
+  exec { 'chown-/local/data/gogs':
+    command     => 'chown -R git.git /local/data/gogs',
   }
   ->
   file {'/etc/systemd/system/gogs.service':
     source => 'puppet:///modules/dtg/gogs/gogs.service'
   }
   ->
-  file {'/home/git/gogs/custom':
+  file {'/local/data/gogs/custom':
     ensure => 'directory'
   }
   ->
-  file {'/home/git/gogs/custom/conf':
+  file {'/local/data/gogs/custom/conf':
     ensure => 'directory'
   }
   ->
-  file {'/home/git/gogs/custom/conf/app.ini':
+  file {'/local/data/gogs/custom/conf/app.ini':
     owner   => 'git',
     group   => 'git',
     mode    => '0600',
@@ -102,11 +111,26 @@ node /^teaching-gogs/ {
   }
   ->
   exec {'app-ini-set-raven-key':
-    command => '/bin/bash -c "HEADER_KEY=`/usr/bin/cut -d \" \" -f2 /etc/apache2/AAHeaderKey.conf `; /bin/sed -i \"s/RAVEN_HEADER_KEY.*/RAVEN_HEADER_KEY = \${HEADER_KEY}/\" /home/git/gogs/custom/conf/app.ini"' # lint:ignore:single_quote_string_with_variables
+    command => '/bin/bash -c "HEADER_KEY=`/usr/bin/cut -d \" \" -f2 /etc/apache2/AAHeaderKey.conf `; /bin/sed -i \"s/RAVEN_HEADER_KEY.*/RAVEN_HEADER_KEY = \${HEADER_KEY}/\" /local/data/gogs/custom/conf/app.ini"' # lint:ignore:single_quote_string_with_variables
   }
   ->
   exec {'app-ini-set-gogs-key':
-    command => '/bin/bash -c "SECRET_KEY=`cat /etc/apache2/AACookieKey.conf | /usr/bin/sha1sum | /usr/bin/cut -d \" \" -f 1`; /bin/sed -i \"s/SECRET_KEY.*/SECRET_KEY = \${SECRET_KEY}/\" /home/git/gogs/custom/conf/app.ini"' # lint:ignore:single_quote_string_with_variables
+    command => '/bin/bash -c "SECRET_KEY=`cat /etc/apache2/AACookieKey.conf | /usr/bin/sha1sum | /usr/bin/cut -d \" \" -f 1`; /bin/sed -i \"s/SECRET_KEY.*/SECRET_KEY = \${SECRET_KEY}/\" /local/data/gogs/custom/conf/app.ini"' # lint:ignore:single_quote_string_with_variables
+  }
+  ->
+  file {'/local/data/gogs-repositories':
+    ensure => 'directory',
+    owner  => 'git'
+  }
+  ->
+  file {'/local/data/gogs-log':
+    ensure => 'directory',
+    owner  => 'git'
+  }
+  ->
+  file {'/etc/systemd/system/gogs.service':
+    ensure => 'present',
+    source => 'puppet:///modules/dtg/systemd/gogs.service',
   }
   ->
   exec {'systemctl-daemon-reload':
