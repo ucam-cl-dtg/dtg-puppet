@@ -129,11 +129,6 @@ node /^teaching-gogs/ {
     owner  => 'git'
   }
   ->
-  file {'/etc/systemd/system/gogs.service':
-    ensure => 'present',
-    source => 'puppet:///modules/dtg/systemd/gogs.service',
-  }
-  ->
   exec {'systemctl-daemon-reload':
     command => '/bin/systemctl daemon-reload'
   }

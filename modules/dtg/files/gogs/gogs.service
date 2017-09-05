@@ -8,10 +8,10 @@ After=postgresql.service
 Type=simple
 User=git
 Group=git
-WorkingDirectory=/home/git/gogs
-ExecStart=/home/git/gogs/gogs web
+WorkingDirectory=/local/data/gogs
+ExecStart=/local/data/gogs/gogs web
 Restart=always
-Environment=USER=git HOME=/home/git
+Environment=USER=git HOME=/local/data/git-home
 
 [Install]
 WantedBy=multi-user.target
