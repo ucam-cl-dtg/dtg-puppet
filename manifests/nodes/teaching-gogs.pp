@@ -48,7 +48,8 @@ node /^teaching-gogs/ {
   class { 'postgresql::globals':
     version  => '9.5',
     encoding => 'UTF-8',
-    locale   => "'en_GB.UTF8'"
+    locale   => "'en_GB.UTF8'",
+    datadir  => '/local/data/postgres'
   }
   ->
   class { 'postgresql::server':
