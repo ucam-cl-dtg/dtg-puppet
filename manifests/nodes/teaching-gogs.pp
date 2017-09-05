@@ -141,4 +141,9 @@ node /^teaching-gogs/ {
   exec {'restart-gogs-service':
     command => '/bin/systemctl restart gogs.service'
   }
+
+  package{'tomcat8':
+    ensure => "installed",
+  }
+  
 }
