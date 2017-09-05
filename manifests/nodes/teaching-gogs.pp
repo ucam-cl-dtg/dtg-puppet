@@ -45,10 +45,6 @@ node /^teaching-gogs/ {
     source => 'puppet:///modules/dtg/apache/gogs.conf',
   }
 
-  file {'/local/data/postgres':
-    ensure => 'directory'
-  }
-  ->
   class { 'postgresql::globals':
     version  => '9.5',
     encoding => 'UTF-8',
