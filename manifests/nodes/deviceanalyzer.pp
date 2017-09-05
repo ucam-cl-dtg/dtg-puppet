@@ -184,5 +184,5 @@ if ( $::monitor ) {
     address    => 'upload.deviceanalyzer.cl.cam.ac.uk',
     hostgroups => [ 'http-servers', 'https-servers', 'xml-servers'],
   }
-  munin::gatherer::async_node { 'deviceanalyzer': }
+  munin::gatherer::async_node { 'deviceanalyzer-www': }
 }
