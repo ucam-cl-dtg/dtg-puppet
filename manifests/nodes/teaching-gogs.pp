@@ -80,7 +80,7 @@ node /^teaching-gogs/ {
     artifact_name         => 'gogs',
     artifact_version      => '1.0.0-SNAPSHOT',
     artifact_type         => 'zip',
-    destination_directory => '/local/data/',
+    destination_directory => '/local/data/gogs',
     action                => 'unzip',
   }
   ->
