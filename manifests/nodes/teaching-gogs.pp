@@ -71,11 +71,6 @@ node /^teaching-gogs/ {
     home   => '/local/data/git-home',
   }
   ->
-  file {'/local/data/gogs':
-    ensure => 'directory',
-    owner  => 'git'
-  }
-  ->
   dtg::nexus::fetch{'download-gogs':
     artifact_name         => 'gogs',
     artifact_version      => '1.0.0-SNAPSHOT',
