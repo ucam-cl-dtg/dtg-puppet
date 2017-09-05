@@ -1,4 +1,4 @@
-[<%= @munin_node_host %>.<%= @org_domain %>]
-  address ssh://munin-async@<%= @munin_node_host %>.<%= @org_domain %> /usr/share/munin/munin-async --spooldir /var/lib/munin-async/ --spoolfetch
+[<%= @munin_node_full_hostname %>]
+  address ssh://munin-async@<%= @munin_node_full_hostname %> /usr/share/munin/munin-async --spooldir /var/lib/munin-async/ --spoolfetch
   use_node_name yes
   <%= @override_lines %>
