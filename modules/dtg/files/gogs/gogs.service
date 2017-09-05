@@ -8,8 +8,8 @@ After=postgresql.service
 Type=simple
 User=git
 Group=git
-WorkingDirectory=/local/data/gogs
-ExecStart=/local/data/gogs/gogs web
+WorkingDirectory=/local/data/gogs/gogs
+ExecStart=/local/data/gogs/gogs/gogs web
 Restart=always
 Environment=USER=git HOME=/local/data/git-home
 
