@@ -1,4 +1,4 @@
-node /^acr31-pottery/ {
+node /^teaching-gogs/ {
   include 'dtg::minimal'
 
   class {'dtg::firewall::publichttps':}
@@ -6,13 +6,13 @@ node /^acr31-pottery/ {
   class {'dtg::firewall::publichttp':}
 
   # used by the app.ini template
-  $gogs_domain = 'acr31-pottery.dtg.cl.cam.ac.uk'
-  $gogs_root_url = 'http://acr31-pottery.dtg.cl.cam.ac.uk/gogs/'
+  $gogs_domain = 'teaching-gogs.dtg.cl.cam.ac.uk'
+  $gogs_root_url = 'http://teaching-gogs.dtg.cl.cam.ac.uk/'
   
   class {'apache::ubuntu': }
   ->
   class {'dtg::apache::raven':
-    server_description => 'Pottery'
+    server_description => 'Gogs'
   }
   ->
   apache::module {'proxy':}
@@ -41,8 +41,8 @@ node /^acr31-pottery/ {
     mode  => '0600'
   }
   ->
-  apache::site {'pottery':
-    source => 'puppet:///modules/dtg/apache/pottery.conf',
+  apache::site {'gogs':
+    source => 'puppet:///modules/dtg/apache/gogs.conf',
   }
 
   class { 'postgresql::globals':
