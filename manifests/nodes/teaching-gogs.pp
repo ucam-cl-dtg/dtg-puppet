@@ -143,7 +143,7 @@ node /^teaching-gogs/ {
   }
 
   package{'tomcat8':
-    ensure => "installed",
+    ensure => 'installed',
   }
   
 }
