@@ -1,4 +1,4 @@
-gnode /^teaching-gogs/ {
+node /^teaching-gogs/ {
   include 'dtg::minimal'
 
   class {'dtg::firewall::publichttps':}
