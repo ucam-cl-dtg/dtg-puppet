@@ -6,8 +6,8 @@ node /^teaching-gogs/ {
   class {'dtg::firewall::publichttp':}
 
   # used by the app.ini template
-  $gogs_domain = 'teaching-gogs.dtg.cl.cam.ac.uk'
-  $gogs_root_url = 'http://teaching-gogs.dtg.cl.cam.ac.uk/'
+  $gogs_domain = 'gogs.cl.cam.ac.uk'
+  $gogs_root_url = 'http://gogs.cl.cam.ac.uk/gogs'
   
   class {'apache::ubuntu': }
   ->
