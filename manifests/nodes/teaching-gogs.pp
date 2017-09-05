@@ -96,15 +96,15 @@ node /^teaching-gogs/ {
     source => 'puppet:///modules/dtg/gogs/gogs.service'
   }
   ->
-  file {'/local/data/gogs/custom':
+  file {'/local/data/gogs/gogs/custom':
     ensure => 'directory'
   }
   ->
-  file {'/local/data/gogs/custom/conf':
+  file {'/local/data/gogs/gogs/custom/conf':
     ensure => 'directory'
   }
   ->
-  file {'/local/data/gogs/custom/conf/app.ini':
+  file {'/local/data/gogs/gogs/custom/conf/app.ini':
     owner   => 'git',
     group   => 'git',
     mode    => '0600',
@@ -112,11 +112,11 @@ node /^teaching-gogs/ {
   }
   ->
   exec {'app-ini-set-raven-key':
-    command => '/bin/bash -c "HEADER_KEY=`/usr/bin/cut -d \" \" -f2 /etc/apache2/AAHeaderKey.conf `; /bin/sed -i \"s/RAVEN_HEADER_KEY.*/RAVEN_HEADER_KEY = \${HEADER_KEY}/\" /local/data/gogs/custom/conf/app.ini"' # lint:ignore:single_quote_string_with_variables
+    command => '/bin/bash -c "HEADER_KEY=`/usr/bin/cut -d \" \" -f2 /etc/apache2/AAHeaderKey.conf `; /bin/sed -i \"s/RAVEN_HEADER_KEY.*/RAVEN_HEADER_KEY = \${HEADER_KEY}/\" /local/data/gogs/gogs/custom/conf/app.ini"' # lint:ignore:single_quote_string_with_variables
   }
   ->
   exec {'app-ini-set-gogs-key':
-    command => '/bin/bash -c "SECRET_KEY=`cat /etc/apache2/AACookieKey.conf | /usr/bin/sha1sum | /usr/bin/cut -d \" \" -f 1`; /bin/sed -i \"s/SECRET_KEY.*/SECRET_KEY = \${SECRET_KEY}/\" /local/data/gogs/custom/conf/app.ini"' # lint:ignore:single_quote_string_with_variables
+    command => '/bin/bash -c "SECRET_KEY=`cat /etc/apache2/AACookieKey.conf | /usr/bin/sha1sum | /usr/bin/cut -d \" \" -f 1`; /bin/sed -i \"s/SECRET_KEY.*/SECRET_KEY = \${SECRET_KEY}/\" /local/data/gogs/gogs/custom/conf/app.ini"' # lint:ignore:single_quote_string_with_variables
   }
   ->
   file {'/local/data/gogs-repositories':
