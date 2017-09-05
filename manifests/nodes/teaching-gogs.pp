@@ -1,4 +1,4 @@
-node /^teaching-gogs/ {
+gnode /^teaching-gogs/ {
   include 'dtg::minimal'
 
   class {'dtg::firewall::publichttps':}
@@ -70,6 +70,10 @@ node /^teaching-gogs/ {
     shell  => '/bin/bash',
     home   => '/local/data/git-home',
   }
+  file {'/local/data/git-home':
+    ensure => 'directory',
+    owner  => 'git',
+  }
   ->
   dtg::nexus::fetch{'download-gogs':
     artifact_name         => 'gogs',
@@ -116,7 +120,8 @@ node /^teaching-gogs/ {
   ->
   file {'/local/data/gogs-repositories':
     ensure => 'directory',
-    owner  => 'git'
+    owner  => 'git',
+    group  => 'git',
   }
   ->
   file {'/local/data/gogs-log':
