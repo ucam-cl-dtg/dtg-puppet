@@ -6,6 +6,8 @@ node 'faucet.sec.cl.cam.ac.uk' {
     user_whitelist => ['drt24', 'rnc1', 'rss39']
   }
 
+  User<|title == rss39 |> { groups +>[ 'adm' ] }
+
   dtg::add_user { 'rnc1':
     real_name => 'Richard Clayton',
     groups    => 'adm',
