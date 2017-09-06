@@ -44,7 +44,10 @@ class dtg::dns ($dns_server = false) {
   unbound::forward { '.':
     address => [
       '131.111.8.42', #UIS
-      '131.111.12.20', #UIS # unbound round robins so we only want the ip addresses we will use
+      '131.111.12.20', #UIS
+      '2001:630:212:8::d:0', #UIS
+      '2001:630:212:12::d:1', #UIS
+# unbound round robins so we only want the ip addresses we will use
 #      '128.232.1.2', #CL
 #      '128.232.1.3', #CL
 #      '8.8.8.8', # Google
