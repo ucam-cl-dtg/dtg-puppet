@@ -3,7 +3,8 @@ node 'faucet.sec.cl.cam.ac.uk' {
   $packages = ['build-essential', 'libpcap-dev']
 
   class { 'dtg::minimal':
-    user_whitelist => ['drt24', 'rnc1', 'rss39']
+    user_whitelist      => ['drt24', 'rnc1', 'rss39'],
+    firewall_ssh_source => $::local_subnet, # sysadmin firewall should also enforce this
   }
 
   User<|title == rss39 |> { groups +>[ 'adm' ] }

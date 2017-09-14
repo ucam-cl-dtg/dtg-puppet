@@ -1,6 +1,6 @@
 #iptables firewalling for nodes
 
-class dtg::firewall($interfacefile = '/etc/network/interfaces') inherits dtg::firewall::default {
+class dtg::firewall($ssh_source, $interfacefile = '/etc/network/interfaces') inherits dtg::firewall::default {
   exec { 'persist-firewall':
     command     => '/sbin/iptables-save > /etc/iptables.rules',
     refreshonly => true,
@@ -21,6 +21,8 @@ class dtg::firewall($interfacefile = '/etc/network/interfaces') inherits dtg::fi
 #  resources { "firewall":
 #    purge => true
 #  }
-  class {'dtg::firewall::pre':}->
+  class {'dtg::firewall::pre':
+    ssh_source => $ssh_source,
+  }->
   class {'dtg::firewall::post':}
 }
