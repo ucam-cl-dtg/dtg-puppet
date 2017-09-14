@@ -120,8 +120,6 @@ ORIGIN = [
 PHYSICAL_MACHINES = [
     Machine('nas04', 'nas04' + DTG_DOM, PUPPET_BARE, False),
     Machine('entropy', 'entropy' + DTG_DOM, PUPPET_BARE, False),
-    Machine('saluki1', 'saluki1' + DTG_DOM, PUPPET_BARE, False),
-    Machine('saluki2', 'saluki2' + DTG_DOM, PUPPET_BARE, False),
     Machine('africa01', 'africa01' + DTG_DOM, PUPPET_BARE, False),
     Machine('deviceanalyzer-www', 'deviceanalyzer-www' + DTG_DOM, PUPPET_BARE, False),
 ]
