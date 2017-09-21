@@ -283,6 +283,14 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     user_whitelist => $user_whitelist,
   }
 
+  dtg::add_user { 'jz448':
+    real_name      => 'Stan Zhang',
+    groups         => [],
+    keys           => ['Stan Zhang (ssh) <jz448@cam.ac.uk>'],
+    uid            => 3960,
+    user_whitelist => $user_whitelist,
+  }
+
   dtg::add_user { 'akmf3':
     real_name      => 'Ayat Fekry',
     groups         => ['neat'],
@@ -290,6 +298,7 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     uid            => 3701,
     user_whitelist => $user_whitelist,
   }
+
 
   # System users which need to be present on all machines
   # This applies for example if the user needs to write data which
