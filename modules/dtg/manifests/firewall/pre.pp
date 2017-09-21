@@ -1,5 +1,5 @@
 # The first rules which do the accepting
-class dtg::firewall::pre inherits dtg::firewall::default {
+class dtg::firewall::pre ($ssh_source) inherits dtg::firewall::default {
   Firewall {
     require => undef,
   }
@@ -22,6 +22,7 @@ class dtg::firewall::pre inherits dtg::firewall::default {
   firewall { '003 accept all ssh':
     proto  => 'tcp',
     dport  => '22',
+    source => $ssh_source,
     action => 'accept',
   }->
   firewall { '004 accept munin from muninserver':

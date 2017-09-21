@@ -2,6 +2,7 @@ class dtg::minimal ($manageapt = true,
                     $adm_sudoers = true,
                     $manageentropy = true,
                     $managefirewall = true,
+                    $firewall_ssh_source = '0.0.0.0/0',
                     $dns_server = false,
                     $user_whitelist = undef,
                     $exim_local_interfaces = '127.0.0.1 ; ::1',
@@ -248,7 +249,9 @@ class dtg::minimal ($manageapt = true,
   # Include default firewall rules
 
   if $managefirewall {
-    class { 'dtg::firewall': }
+    class { 'dtg::firewall':
+      ssh_source => $firewall_ssh_source,
+    }
   }
   
   sshkey {'localhost':

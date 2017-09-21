@@ -87,7 +87,7 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
   }
   dtg::add_user { 'oc243':
     real_name      => 'Oliver Chick',
-    groups         => [ 'adm', 'dtg-adm', 'rscfl'],
+    groups         => [ 'adm', 'rscfl'],
     keys           => 'Oliver Chick <oc243@cam.ac.uk>',
     uid            => 2834,
     user_whitelist => $user_whitelist,
@@ -99,13 +99,13 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     uid            => 2925,
     user_whitelist => $user_whitelist,
   }
-  dtg::add_user { 'jas250':
-    real_name      => 'James Snee',
-    groups         => ['rscfl'],
-    keys           => 'James Snee <jas250@cam.ac.uk>',
-    uid            => 2814,
-    user_whitelist => $user_whitelist,
-  }
+#  dtg::add_user { 'jas250':
+#    real_name      => 'James Snee',
+#    groups         => ['rscfl'],
+#    keys           => 'James Snee <jas250@cam.ac.uk>',
+#    uid            => 2814,
+#    user_whitelist => $user_whitelist,
+#  }
   dtg::add_user { 'acr31':
     real_name      => 'Andrew Rice',
     groups         => ['adm', 'dtg-adm','weather-adm', 'wiki-adm'],
@@ -158,13 +158,13 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     uid            => 2134,
     user_whitelist => $user_whitelist,
   }
-  dtg::add_user { 'sa497':
-    real_name      => 'Sherif Akoush',
-    groups         => [ 'africa' ],
-    keys           => ['sa497 <sa497@cam.ac.uk>'],
-    uid            => 2412,
-    user_whitelist => $user_whitelist,
-  }
+#  dtg::add_user { 'sa497':
+#    real_name      => 'Sherif Akoush',
+#    groups         => [ 'africa' ],
+#    keys           => ['sa497 <sa497@cam.ac.uk>'],
+#    uid            => 2412,
+#    user_whitelist => $user_whitelist,
+#  }
   dtg::add_user { 'sac92':
     real_name      => 'Stephen Cummins',
     groups         => [ 'isaac' ],
@@ -195,13 +195,13 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     uid            => 3195,
     user_whitelist => $user_whitelist,
   }
-  dtg::add_user { 'dh526':
-    real_name      => 'Daniel Hintze',
-    groups         => [],
-    keys           => ['Daniel Hintze <daniel@hintze-it.de>'],
-    uid            => 3451,
-    user_whitelist => $user_whitelist,
-  }
+#  dtg::add_user { 'dh526':
+#    real_name      => 'Daniel Hintze',
+#    groups         => [],
+#    keys           => ['Daniel Hintze <daniel@hintze-it.de>'],
+#    uid            => 3451,
+#    user_whitelist => $user_whitelist,
+#  }
   dtg::add_user { 'dac53':
     real_name      => 'Diana Vasile',
     groups         => ['adm', 'deviceanalyzer', 'dtg-adm'],
@@ -216,13 +216,13 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     uid            => 3476,
     user_whitelist => $user_whitelist,
   }
-  dtg::add_user { 'amiae2':
-    real_name      => 'Ahmed Elmezeini',
-    groups         => [],
-    keys           => ['Ahmed Elmezeini <amiae2@cam.ac.uk>'],
-    uid            => 3581,
-    user_whitelist => $user_whitelist,
-  }
+#  dtg::add_user { 'amiae2':
+#    real_name      => 'Ahmed Elmezeini',
+#    groups         => [],
+#    keys           => ['Ahmed Elmezeini <amiae2@cam.ac.uk>'],
+#    uid            => 3581,
+#    user_whitelist => $user_whitelist,
+#  }
   dtg::add_user { 'af599':
     real_name      => 'Andrea Franceschini',
     groups         => [ 'isaac' ],

@@ -9,6 +9,7 @@ node /isaac-[23]/ {
   class {'dtg::isaac':}
 
   class {'dtg::firewall':
+    ssh_source    => '0.0.0.0/0',
     interfacefile => '/etc/network/interfaces.d/eth0.cfg',
   }
   class {'dtg::firewall::publichttp':}

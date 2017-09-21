@@ -122,14 +122,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => zfs_shareopts($da_machines,[],"ro=@${dtg_subnet}"),
   }
 
-  dtg::zfs::fs{ 'bayncore':
-    pool_name  => $pool_name,
-    fs_name    => 'bayncore',
-    share_opts => zfs_shareopts([],['saluki1.dtg.cl.cam.ac.uk',
-                                    'saluki2.dtg.cl.cam.ac.uk'],
-                                "ro=@${dtg_subnet}"),
-  }
-
   dtg::zfs::fs{'rwandadataset':
     pool_name  => $pool_name,
     fs_name    => 'rwandadataset',
