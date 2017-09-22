@@ -43,6 +43,9 @@ class ms_id_certifiers { # lint:ignore:autoloader_layout config-class
   monkeysphere::add_id_certifier {
     'acr31': keyid => '43BF45D11B36F45C3F07DA49BDB889325CACF039'
   }
+  monkeysphere::add_id_certifier {
+    'alastair@beresford.me.uk': keyid => '9217482DD647864144BA10D883F49FBF1144D9B3'
+  }
 }
 # Admin users to be given an account on all machines
 group { 'dtg-adm':
