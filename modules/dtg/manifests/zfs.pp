@@ -7,6 +7,7 @@ class dtg::zfs(
   $zfs_debug     = 'no',
   $zfs_debug_dmu = 'no',
   $zfs_sleep     = 0,
+  $zfs_poolname  = 'dtg-pool0',
   ) {
 
   package {'linux-headers-generic':
@@ -79,8 +80,7 @@ class dtg::zfs(
     target => '/usr/share/munin/plugins/zlist',
   }
 
-  #FIXME bug, this refers to dtg-pool0 which is only true on nas04
-  file {'/etc/munin/plugins/zfs_fs_dtg-pool0':
+  file {"/etc/munin/plugins/zfs_fs_${zfs_poolname}":
     ensure => link,
     target => '/usr/share/munin/plugins/zfs-filesystem-graph',
   }
