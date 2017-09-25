@@ -4,9 +4,11 @@ node 'africa01.dtg.cl.cam.ac.uk' {
 
   class { 'dtg::bonding': address => '128.232.23.175'}
 
-  class {'dtg::zfs': }
-
   $pool_name = 'data-pool0'
+
+  class {'dtg::zfs':
+    zfs_poolname => $pool_name,
+  }
 
   dtg::zfs::fs{'datashare':
     pool_name  => $pool_name,
