@@ -25,7 +25,10 @@ node 'faucet.sec.cl.cam.ac.uk' {
   package{$packages:
     ensure => installed,
   }
-  
+
+  class {'dtg::zfs':
+    zfs_poolname => 'data',
+  }
 }
 
 if ( $::monitor ) {
