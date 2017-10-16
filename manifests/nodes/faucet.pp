@@ -20,6 +20,13 @@ node 'faucet.sec.cl.cam.ac.uk' {
     type   => 'ssh-rsa',
     user   => 'rnc1',
   }
+
+  ssh_authorized_key {'rss39':
+    ensure => present,
+    key    => 'AAAAB3NzaC1yc2EAAAABIwAAAIEAyfPhaw2OA+emyBtpNiyH/Bpl3cvLT5rfaQIPAohpQXVAybpufH/vKFGUOWILBoGtyE08kw3gUL+5tE7wtAr2cfyfnSGrLdvai/khnI4oUxRyEJN61FzmR61Q2ZfxpdzWgjqPl15ISpYcNKnodUVIMor524+3NAR281Cr7999zsk=',
+    type   => 'ssh-rsa',
+    user   => 'rss39',
+  }
   
 
   package{$packages:
