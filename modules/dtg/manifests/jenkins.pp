@@ -2,7 +2,6 @@ class dtg::jenkins {
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::80to8080': private => false}
   class {'dtg::tomcat::raven':}
-  class {'dtg::jenkins::repos': stage => 'repos'}
   $tomcat_version = '8'
   #packages required by jenkins jobs
   $jenkins_job_packages = [# One line per job's install list
