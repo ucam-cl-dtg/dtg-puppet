@@ -57,7 +57,7 @@
 	url = git://github.com/puppetlabs/puppetlabs-rabbitmq.git
 [submodule "modules/nfs"]
 	path = modules/nfs
-	url = git://github.com/stankevich/puppet-nfs.git
+	url = git://github.com/ucam-cl-dtg/puppet-nfs.git
 [submodule "modules/smartd"]
 	path = modules/smartd
 	url = git://github.com/jhoblitt/puppet-smartd.git
