@@ -2,13 +2,7 @@ class dtg::jenkins {
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::80to8080': private => false}
   class {'dtg::tomcat::raven':}
-  class {'dtg::jenkins::repos': stage => 'repos'}
   $tomcat_version = '8'
-  # To help build debian packages in jenkins
-  package {'jenkins-debian-glue':
-    ensure  => present,
-    require => Apt::Ppa['ppa:ucam-cl-dtg/jenkins'],
-  }
   #packages required by jenkins jobs
   $jenkins_job_packages = [# One line per job's install list
     'graphviz',
@@ -170,11 +164,6 @@ deviceanalyzer-graphing   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-graph
   }
 
   #TODO(drt24) Default to java7
-  # Modify /etc/jenkins/debian_glue to point at precise and have main and universe components
   # Restore jenkins jobs from backups
   # /usr/share/tomcat${tomcat_version}/{.ssh/{id_rsa,id_rsa.pub},.m2/settings.xml,.android/debug.keystore} need to be got from secrets server
-}
-# So that we can appy a stage to it
-class dtg::jenkins::repos { # lint:ignore:autoloader_layout repo class
-  apt::ppa {'ppa:ucam-cl-dtg/jenkins': }
 }
