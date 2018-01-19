@@ -1,6 +1,6 @@
 class dtg::minimal ($manageapt = true,
                     $adm_sudoers = true,
-                    $manageentropy = true,
+                    $manageentropy = false,
                     $managefirewall = true,
                     $firewall_ssh_source = '0.0.0.0/0',
                     $dns_server = false,
@@ -112,6 +112,10 @@ class dtg::minimal ($manageapt = true,
       host_address => 'entropy.dtg.cl.cam.ac.uk',
       stage        => 'entropy',
       require      => File['/usr/local/share/ssl/cafile'],
+    }
+  } else {
+    package {'stunnel4':
+      ensure => purged
     }
   }
 
