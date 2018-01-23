@@ -33,9 +33,9 @@ class dtg::nagiosserver {
     'elasticsearch':
       hostgroup_name  => 'elasticsearch-servers',
       hostgroup_alias => 'Elasticsearch servers';
-    'entropy':
-      hostgroup_name  => 'entropy-servers',
-      hostgroup_alias => 'Entropy servers';
+#    'entropy':
+#      hostgroup_name  => 'entropy-servers',
+#      hostgroup_alias => 'Entropy servers';
     'bmc':
       hostgroup_name  => 'bmcs',
       hostgroup_alias => 'BMCs';
@@ -82,10 +82,10 @@ class dtg::nagiosserver {
       service_hostgroup_name =>'elasticsearch-servers',
       service_description    =>'Elasticsearch',
       service_check_command  => 'check_tcp!9200';
-    'entropy':
-      service_hostgroup_name =>'entropy-servers',
-      service_description    =>'Entropy',
-      service_check_command  => 'check_tcp!7776';
+#    'entropy':
+#      service_hostgroup_name =>'entropy-servers',
+#      service_description    =>'Entropy',
+#      service_check_command  => 'check_tcp!7776';
     'bmc':
       service_hostgroup_name =>'bmcs',
       service_description    =>'BMCs',
