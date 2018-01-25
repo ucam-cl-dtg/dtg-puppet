@@ -113,10 +113,6 @@ class dtg::minimal ($manageapt = true,
       stage        => 'entropy',
       require      => File['/usr/local/share/ssl/cafile'],
     }
-  } else {
-    package {'stunnel4':
-      ensure => purged
-    }
   }
 
   # Make it possible to send email (if correct from address is used)
