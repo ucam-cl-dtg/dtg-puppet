@@ -37,6 +37,7 @@ sudo -u maltego bash -c "xauth add \"$authority\"
   sudoers::allowed_command{ 'maltego':
     command          => 'ALL',
     group            => 'cccc-data',
+    run_as           => 'maltego',
     require_password => false,
     comment          => 'Allow cccc users to run maltego as the maltego user',
   }
