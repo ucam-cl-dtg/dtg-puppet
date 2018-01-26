@@ -28,13 +28,14 @@ node 'cccc-maltego.dtg.cl.cam.ac.uk' {
     owner   => 'root',
     group   => 'root',
     content => '#!/usr/bin/env bash
-xauth add $(xauth -f ~$SUDO_USER/.Xauthority list| tail -1)
-/usr/bin/maltego
+authority=$(xauth -f ~/.Xauthority list| tail -1)
+sudo -u maltego bash -c "xauth add \"$authority\"
+/usr/bin/maltego"
 ',
 }
   ->
   sudoers::allowed_command{ 'maltego':
-    command          => '/usr/local/bin/start-maltego.sh',
+    command          => 'ALL',
     group            => 'cccc-data',
     require_password => false,
     comment          => 'Allow cccc users to run maltego as the maltego user',
