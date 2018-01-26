@@ -16,11 +16,17 @@ node 'cccc-maltego.dtg.cl.cam.ac.uk' {
     uid       => '3308',
     groups    => 'cccc-data',
   }
-  user { 'maltego':
-    ensure   => present,
-    comment  => 'Maltego User',
+  dtg::user { 'maltego':
+    real_name  => 'Maltego User',
     groups   => ['cccc-data'],
-    password => '*',
+    keys     => [
+      'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>'],
+  } ->
+  ssh_authorized_key {'maltego-rnc1':
+    ensure => present,
+    key    => 'AAAAB3NzaC1yc2EAAAABIwAAAIEAqKRiv2o4l9zOtNSyjS1kTqKK0r/4+z8VRhVQddCq+p93m19SwuA2kHDLZMy3fJRhZwuCE+F2fRNiX320/tgXjPM431mwVqZo2VcJXmZmn2HRwA+Iiakckqdc244qv/H0vlRGoPM1m156kZvKYAEa8y4pJq4azJMj+IGFf+n/+rs=',
+    type   => 'ssh-rsa',
+    user   => 'maltego',
   }
   file{'/usr/local/bin/start-maltego.sh':
     ensure  => file,
@@ -28,6 +34,7 @@ node 'cccc-maltego.dtg.cl.cam.ac.uk' {
     owner   => 'root',
     group   => 'root',
     content => '#!/usr/bin/env bash
+set -e
 authority=$(xauth -f ~/.Xauthority list| tail -1)
 sudo -u maltego bash -c "xauth add \"$authority\"
 /usr/bin/maltego"
