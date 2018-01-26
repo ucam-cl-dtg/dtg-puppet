@@ -16,6 +16,18 @@ node 'cccc-maltego.dtg.cl.cam.ac.uk' {
     uid       => '3308',
     groups    => 'cccc-data',
   }
+  user { 'maltego':
+    ensure   => present,
+    comment  => 'Maltego User',
+    groups   => ['cccc-data'],
+    password => '*',
+  }
+  sudoers::allowed_command{ 'maltego':
+    command          => '/usr/bin/maltego',
+    group            => 'cccc-data',
+    require_password => false,
+    comment          => 'Allow cccc users to run maltego as the maltego user',
+  }
   class { 'java': }
 }
 
