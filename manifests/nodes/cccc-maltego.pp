@@ -22,8 +22,19 @@ node 'cccc-maltego.dtg.cl.cam.ac.uk' {
     groups   => ['cccc-data'],
     password => '*',
   }
+  file{'/usr/local/bin/start-maltego.sh':
+    ensure  => file,
+    mode    => 'u+rwx,og+rx',
+    owner   => 'root',
+    group   => 'root',
+    content => '#!/usr/bin/env bash
+xauth add $(xauth -f ~$SUDO_USER/.Xauthority list| tail -1)
+/usr/bin/maltego
+',
+}
+  ->
   sudoers::allowed_command{ 'maltego':
-    command          => '/usr/bin/maltego',
+    command          => '/usr/local/bin/start-maltego.sh',
     group            => 'cccc-data',
     require_password => false,
     comment          => 'Allow cccc users to run maltego as the maltego user',
