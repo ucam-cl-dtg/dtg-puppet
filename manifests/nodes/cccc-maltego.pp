@@ -17,10 +17,10 @@ node 'cccc-maltego.dtg.cl.cam.ac.uk' {
     groups    => 'cccc-data',
   }
   dtg::add_user { 'maltego':
-    real_name  => 'Maltego User',
-    groups     => ['cccc-data'],
-    uid        => '1369',
-    keys       => [
+    real_name => 'Maltego User',
+    groups    => ['cccc-data'],
+    uid       => '1369',
+    keys      => [
       'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>'],
   } ->
   ssh_authorized_key {'maltego-rnc1':
