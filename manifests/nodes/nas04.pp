@@ -101,7 +101,8 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'users/acr31':
     pool_name  => $pool_name,
     fs_name    => 'users/acr31',
-    share_opts => zfs_shareopts([],['acr31-queens.dtg.cl.cam.ac.uk']),
+    share_opts => zfs_shareopts([],['acr31-queens.dtg.cl.cam.ac.uk',
+                                    'acr31-misc.dtg.cl.cam.ac.uk']),
   }
 
   dtg::zfs::fs{'archive':
