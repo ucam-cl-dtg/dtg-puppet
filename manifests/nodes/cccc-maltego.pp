@@ -19,8 +19,8 @@ node 'cccc-maltego.dtg.cl.cam.ac.uk' {
   ssh_authorized_key {'ah793':
     ensure => present,
     key    => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDASSD6MvZH7uFbmz5rKtX9ht+4DO83Vu7SkpEdc1JPBkn3dO6xs5zZyjMWzADuckv/zu0e85RMvbBk59Rs58qzjPy3e7mEHHAcD8znFE2LCgsNUeC6DT6iYfv+v+MKxtzuxzNN5yH0SOOF2ArBVSGu9sGELT5BRYfO3iWJKAsvRMLegjJzOsQKScx7URJbgHEDmRgMSHImi8UucrGOJD1Z+3xQCAWk8tWZZDsoaFKn9YldzPxNbCB0Z6zsDlzjQeWTEjab312aF1567i++1g+BfuRsS4HSj2Rif8D1inPVhlR63aTddePQ4V9OkBwbBUpJ8W1aoq5aEwlHDcnKGa/5+FPrSPQoWtnGe87uFFOqztrPhDYFi1UP16mEl01tbjnzNZyKXTTnSvGzD7CY5T28ji+XTHpHSPlBn3Sixhivx83XwSk4KqikZ4jy0nkk8JF8pTjXFh6lJlECmHXvbsz0YrCSpGU8TUBa7S44ibFTF/x/Lx2QDJcKpJBBhgscUvuIF0RXBbZ/RBE9rO7XbilwaVKJ7FjWyKh4OwMJdZSUK7WnL+phRfDmo862q3yJ1bcu/eV0aYmtMorALPczgVszRxwAFsiuePPeiIDiwyv8hh6XsTgC/+oLddKMTcvTT+B/EatRCEqJN1exubXpwW6pUQoj+MYnOuV6vJ7ZXxJ12w==',
-    type  => 'ssh-rsa',
-    user  => 'ah793',
+    type   => 'ssh-rsa',
+    user   => 'ah793',
   }
   dtg::add_user { 'maltego':
     real_name => 'Maltego User',
@@ -38,8 +38,8 @@ node 'cccc-maltego.dtg.cl.cam.ac.uk' {
   ssh_authorized_key {'maltego-ah793':
     ensure => present,
     key    => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDASSD6MvZH7uFbmz5rKtX9ht+4DO83Vu7SkpEdc1JPBkn3dO6xs5zZyjMWzADuckv/zu0e85RMvbBk59Rs58qzjPy3e7mEHHAcD8znFE2LCgsNUeC6DT6iYfv+v+MKxtzuxzNN5yH0SOOF2ArBVSGu9sGELT5BRYfO3iWJKAsvRMLegjJzOsQKScx7URJbgHEDmRgMSHImi8UucrGOJD1Z+3xQCAWk8tWZZDsoaFKn9YldzPxNbCB0Z6zsDlzjQeWTEjab312aF1567i++1g+BfuRsS4HSj2Rif8D1inPVhlR63aTddePQ4V9OkBwbBUpJ8W1aoq5aEwlHDcnKGa/5+FPrSPQoWtnGe87uFFOqztrPhDYFi1UP16mEl01tbjnzNZyKXTTnSvGzD7CY5T28ji+XTHpHSPlBn3Sixhivx83XwSk4KqikZ4jy0nkk8JF8pTjXFh6lJlECmHXvbsz0YrCSpGU8TUBa7S44ibFTF/x/Lx2QDJcKpJBBhgscUvuIF0RXBbZ/RBE9rO7XbilwaVKJ7FjWyKh4OwMJdZSUK7WnL+phRfDmo862q3yJ1bcu/eV0aYmtMorALPczgVszRxwAFsiuePPeiIDiwyv8hh6XsTgC/+oLddKMTcvTT+B/EatRCEqJN1exubXpwW6pUQoj+MYnOuV6vJ7ZXxJ12w==',
-    type  => 'ssh-rsa',
-    user  => 'maltego',
+    type   => 'ssh-rsa',
+    user   => 'maltego',
   }
   file{'/usr/local/bin/start-maltego.sh':
     ensure  => file,
