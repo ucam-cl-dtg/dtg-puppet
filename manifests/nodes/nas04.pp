@@ -49,9 +49,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   class {'dtg::zfs': }
 
   class {'zfs_auto_snapshot':
-    fs_names => [ "${pool_name}/bayncore",
-                  "${pool_name}/deviceanalyzer-graphing",
-                  "${pool_name}/dwt27",
+    fs_names => [ "${pool_name}/deviceanalyzer-graphing",
                   "${pool_name}/rscfl",
                   "${pool_name}/vms",
                   "${pool_name}/rwandadataset",
