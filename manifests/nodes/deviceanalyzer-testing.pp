@@ -2,6 +2,7 @@ node /deviceanalyzer-testing/ {
   include 'dtg::minimal'
 
   group { 'rd572' :
+    ensure => present,
   }
   ->
   user { 'rd572':
