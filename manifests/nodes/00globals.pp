@@ -302,6 +302,14 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     user_whitelist => $user_whitelist,
   }
 
+  dtg::add_user { 'jsp50':
+    real_name      => 'Jovan Powar',
+    groups         => [],
+    keys           => [],
+    uid            => 3729,
+    user_whitelist => $user_whitelist,
+  }
+
 
   # System users which need to be present on all machines
   # This applies for example if the user needs to write data which
