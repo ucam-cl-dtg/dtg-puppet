@@ -51,8 +51,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   class {'zfs_auto_snapshot':
     fs_names => [ "${pool_name}/deviceanalyzer-graphing",
                   "${pool_name}/rscfl",
-                  "${pool_name}/vms",
-                  "${pool_name}/rwandadataset",
+                  "${pool_name}/vms"
                   ]
   }
 
@@ -131,18 +130,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     pool_name  => $pool_name,
     fs_name    => 'deviceanalyzer-graphing',
     share_opts => zfs_shareopts($da_machines,[],"ro=@${dtg_subnet}"),
-  }
-
-  dtg::zfs::fs{'rwandadataset':
-    pool_name  => $pool_name,
-    fs_name    => 'rwandadataset',
-    share_opts => zfs_shareopts(['grapevine.cl.cam.ac.uk'], []),
-  }
-
-  dtg::zfs::fs{ 'caida-internet-traces-2014':
-    pool_name  => $pool_name,
-    fs_name    => 'caida-internet-traces-2014',
-    share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
   }
 
   dtg::zfs::fs{'backups':
