@@ -72,13 +72,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
   }
   
-  dtg::zfs::fs{'dwt27':
-    pool_name  => $pool_name,
-    fs_name    => 'dwt27',
-    share_opts => zfs_shareopts([],['monnow.cl.cam.ac.uk',
-                                    'dwt27-crunch.dtg.cl.cam.ac.uk']),
-  }
-
   dtg::zfs::fs{'nakedscientists':
     pool_name  => $pool_name,
     fs_name    => 'nakedscientists',
