@@ -305,7 +305,7 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
   dtg::add_user { 'jsp50':
     real_name      => 'Jovan Powar',
     groups         => [],
-    keys           => [],
+    keys           => ['Jovan Powar (Generated on aria with perma email) <jsp50@cst.cam.ac.uk>'],
     uid            => 3729,
     user_whitelist => $user_whitelist,
   }
@@ -355,7 +355,7 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     home     => '/home/cccc-backup/',
   }
 
-    
+
 }
 # Admin user ids to be given root on the nodes via monkeysphere
 $ms_admin_user_ids = [
