@@ -10,7 +10,8 @@ node 'nas04.dtg.cl.cam.ac.uk' {
                   'dac53.dtg.cl.cam.ac.uk',
                   'grapevine.cl.cam.ac.uk',
                   'earlybird.cl.cam.ac.uk',
-                  'sak70-math.dtg.cl.cam.ac.uk']
+                  'sak70-math.dtg.cl.cam.ac.uk',
+                  'acr31-misc.dtg.cl.cam.ac.uk']
 
   # bonded nics
   dtg::kernelmodule::add{'bonding': }
