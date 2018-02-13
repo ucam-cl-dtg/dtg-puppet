@@ -3,7 +3,8 @@
 node 'sensorid-www.dtg.cl.cam.ac.uk' {
   include 'dtg::minimal'
 
-  class {'dtg::firewall::privatehttp':}
+  class {'dtg::firewall::publichttp':}
+  class {'dtg::firewall::publichttps':}
   
   # Packages which should be installed
   $packagelist = ['nginx']
