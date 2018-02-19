@@ -178,7 +178,7 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'nfs-servers' ],
   }
   nagios::monitor { 'africa01-bmc':
-    parents    => 'se18-r8-sw1',
+    parents    => '',
     address    => 'africa01-bmc.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'bmcs' ],
   }
