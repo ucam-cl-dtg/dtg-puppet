@@ -13,7 +13,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'datashare':
     pool_name  => $pool_name,
     fs_name    => 'datashare',
-    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,async',
+    share_opts => 'off',
   }
 
   # Test FS so that we can monitor africa01 over NFS
@@ -156,12 +156,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     require    => Dtg::Zfs::Fs['cccc'],
   }
 
-  # Install go development environment
-  package{'golang':
-    ensure => installed,
-  }
-
-  $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config',
+  $packagelist = ['golang', 'bison' , 'flex', 'autoconf' , 'pkg-config',
                   'libpcap-dev' , 'mountall' , 'liblz4-tool', 'autofs']
   package {
       $packagelist:
