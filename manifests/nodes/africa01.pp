@@ -196,6 +196,11 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     password   => 'mirai',
     encoding   => 'UTF-8',
     tablespace => 'cccc',
+  } ->
+  postgresql::server::extension{'ip4r':
+    ensure       => present,
+    package_name => 'postgresql-9.5-ip4r',
+    database     => 'mirai',
   }
   # Creating a home directory for the postgresql user for the database
   # This is so that automated processes can connect to load data into the database
@@ -211,6 +216,8 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     group  => 'cccc-mirai',
     mode   => '0700',
   } ->
+  # TODO(drt24) add a command restriction so that this can only be used to load data
+  #             into the database.
   ssh_authorized_key {'cccc-mirai':
     ensure => present,
     key    => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDbRwo2I5AU9nlJdRGJzuRXV/TAWqzyUfwcrpxvbQs2FL3QwcXrEi8BFAf9PjncNhWb4gJql4l9+fttKOn0+DFG/rWQqiCk9Uj/gSDLr1O01ZgsxnL67FubCy1Q26KFMedmCxvFnvKxQP4NX4YSkVXr6qJg5iHr9bRfSsebaoVlrQC263Tl+KFrvg80JpLGpZcGOaAZWq+WR/GOjvDfsKn4rjU3WRrYns04rG5RhcEyuRvXxfW4Q3FD59Yyc4f0ukC/mXxyuX2BPAUHaAU6+ttL1acLLfpwqrWjQfdn+1wkx4W5z45oA9uYIfB7C4j/qBDE/1EeGOUzJRd5XraFgT5fQkuC6L99QHC+VINxkbqokUt6aGDC6HXFKZRLxzOMZHGTZpy+sj+JZNrdyokRMGTJHGGWlOzeM8tzYJArEOfZpApWERcxmxUtebV2hWuyeizUyoixH2iV+kFeol+e8VMVC3meX3JYftL1HJ1CqyT4yzO2JIj4XDcLaATpczc4NssP6M+Zog91rYMDwH9t+GAm52L8sh4+l1rbb9aXyxd9JLri3zBKTKUfBGzEUd9En578UXa7tpfb1gDpLHrRU94JlmEqJuhoGEBR7XsL/8nkN13y4F1uh78X77tuaEYYCG+5ccYO2UjmcQStXtCqdOQlpza0bAkmU+7KFoaSR1HvMw==',
