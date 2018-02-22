@@ -354,6 +354,19 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     uid      => 40003,
     home     => '/home/cccc-backup/',
   }
+  # user for miria database
+  group { 'cccc-mirai':
+    ensure => present,
+    gid    => 40004,
+  }
+  user { 'cccc-mirai':
+    ensure   => present,
+    comment  => 'CCCC mirai database user',
+    password => '*',
+    gid      => 40004,
+    uid      => 40004,
+    home     => '/home/cccc-mirai/',
+  }
 
 
 }
