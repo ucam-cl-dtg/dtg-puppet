@@ -160,6 +160,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     pool_name         => $pool_name,
     fs_name           => 'cccc/postgresql',
     share_opts        => 'off',
+    # Extra options set per http://open-zfs.org/wiki/Performance_tuning#PostgreSQL
     extra_opts_string => '-o recordsize=8K -o logbias=throughput',
     require           => Dtg::Zfs::Fs['cccc'],
   }
@@ -168,8 +169,8 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     pool_name         => $pool_name,
     fs_name           => 'postgresql',
     share_opts        => 'off',
+    # Extra options set per http://open-zfs.org/wiki/Performance_tuning#PostgreSQL
     extra_opts_string => '-o recordsize=8K',
-    require           => Dtg::Zfs::Fs['cccc'],
   }
 
   class { 'postgresql::globals':
@@ -196,6 +197,8 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     encoding   => 'UTF-8',
     tablespace => 'cccc',
   }
+  # Creating a home directory for the postgresql user for the database
+  # This is so that automated processes can connect to load data into the database
   file {'/home/cccc-mirai/':
     ensure => directory,
     owner  => 'cccc-mirai',
