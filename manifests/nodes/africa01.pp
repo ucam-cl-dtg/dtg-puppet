@@ -186,34 +186,34 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     listen_addresses           => '*',
     ipv4acls                   => ['local all all peer'],
   }
-  -> # Performance tuning for higher memory usage
+  # Performance tuning for higher memory usage
   postgresql::server::config_entry{'max_wal_size':
     ensure => present,
     value  => '10G',
-  } ->
+  }
   postgresql::server::config_entry{'shared_buffers':
     ensure => present,
     value  => '1GB',
-  } ->
+  }
   postgresql::server::config_entry{'temp_buffers':
     ensure => present,
     value  => '64MB',
-  } ->
+  }
   postgresql::server::config_entry{'work_mem':
     ensure => present,
     value  => '1GB',
-  } ->
+  }
   postgresql::server::config_entry{'maintenance_work_mem':
     ensure => present,
     value  => '2GB',
-  } ->
+  }
   postgresql::server::config_entry{'effective_io_concurrency':
     ensure => present,
     value  => '4',
-  } ->
+  }
   postgresql::server::tablespace{'cccc':
     location => "/${pool_name}/cccc/postgresql/",
-    require  => Dtg::Zfs::Fs['cccc/postgresql']
+    require  => [Class['postgresql::server'], Dtg::Zfs::Fs['cccc/postgresql']],
   } ->
   postgresql::server::db{'mirai':
     user       => 'cccc-mirai',
