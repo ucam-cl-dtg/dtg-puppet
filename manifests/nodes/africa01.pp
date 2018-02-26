@@ -189,7 +189,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   # Performance tuning for higher memory usage
   postgresql::server::config_entry{'max_wal_size':
     ensure => present,
-    value  => '10G',
+    value  => '10GB',
   }
   postgresql::server::config_entry{'shared_buffers':
     ensure => present,
