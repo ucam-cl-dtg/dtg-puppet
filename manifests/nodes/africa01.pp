@@ -156,6 +156,15 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     require    => Dtg::Zfs::Fs['cccc'],
   }
 
+  # Postgresql keeps getting restarted halfway through the data transfer so turn off the automatic restarts for the moment
+  file {'/etc/default/postupdate-service-restart':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 'a=r',
+    content => 'ACTION=false',
+  }
+
   dtg::zfs::fs{'cccc/postgresql':
     pool_name         => $pool_name,
     fs_name           => 'cccc/postgresql',
