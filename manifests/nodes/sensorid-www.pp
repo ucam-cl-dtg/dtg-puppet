@@ -14,4 +14,5 @@ node 'sensorid-www.dtg.cl.cam.ac.uk' {
   }
   
   User<|title == jz448 |> { groups +>[ 'adm' ] }
+  User<|title == jsp50 |> { groups +>[ 'adm' ] }
 }
