@@ -260,7 +260,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
 
   $packagelist = ['golang', 'bison' , 'flex', 'autoconf' , 'pkg-config',
                   'libpcap-dev' , 'mountall' , 'liblz4-tool', 'autofs',
-                  'socat']
+                  'socat', 'libdbd-pg-perl']
   package {
       $packagelist:
           ensure => installed
