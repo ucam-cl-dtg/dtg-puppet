@@ -1,6 +1,6 @@
-define dtg::zfs::fs ($pool_name, $fs_name, $share_opts, $compress_opts='on') {
+define dtg::zfs::fs ($pool_name, $fs_name, $share_opts, $compress_opts='on', $extra_opts_string='') {
   exec { "zfs create ${pool_name}/${fs_name}":
-    command => "sudo zfs create -o compression=${compress_opts} -o sharenfs=${share_opts} ${pool_name}/${fs_name}",
+    command => "sudo zfs create -o compression=${compress_opts} -o sharenfs=${share_opts} ${extra_opts_string} ${pool_name}/${fs_name}",
     onlyif  => "[  ! -d /${pool_name}/${fs_name} ]",
   }
   ->

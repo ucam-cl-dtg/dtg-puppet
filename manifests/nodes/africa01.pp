@@ -13,7 +13,7 @@ node 'africa01.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'datashare':
     pool_name  => $pool_name,
     fs_name    => 'datashare',
-    share_opts => 'ro=@vm-sr-nile0.cl.cam.ac.uk,ro=@vm-sr-nile1.cl.cam.ac.uk,async',
+    share_opts => 'off',
   }
 
   # Test FS so that we can monitor africa01 over NFS
@@ -156,13 +156,111 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     require    => Dtg::Zfs::Fs['cccc'],
   }
 
-  # Install go development environment
-  package{'golang':
-    ensure => installed,
+  # Postgresql keeps getting restarted halfway through the data transfer so turn off the automatic restarts for the moment
+  file {'/etc/default/postupdate-service-restart':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => 'a=r',
+    content => 'ACTION=false',
   }
 
-  $packagelist = ['bison' , 'flex', 'autoconf' , 'pkg-config',
-                  'libpcap-dev' , 'mountall' , 'liblz4-tool', 'autofs']
+  dtg::zfs::fs{'cccc/postgresql':
+    pool_name         => $pool_name,
+    fs_name           => 'cccc/postgresql',
+    share_opts        => 'off',
+    # Extra options set per http://open-zfs.org/wiki/Performance_tuning#PostgreSQL
+    extra_opts_string => '-o recordsize=8K -o logbias=throughput',
+    require           => Dtg::Zfs::Fs['cccc'],
+  }
+
+  dtg::zfs::fs{'postgresql':
+    pool_name         => $pool_name,
+    fs_name           => 'postgresql',
+    share_opts        => 'off',
+    # Extra options set per http://open-zfs.org/wiki/Performance_tuning#PostgreSQL
+    extra_opts_string => '-o recordsize=8K',
+  }
+
+  class { 'postgresql::globals':
+    version      => '9.5',
+    datadir      => "/${pool_name}/postgresql/",
+    needs_initdb => true,
+    require      => Dtg::Zfs::Fs['postgresql'],
+  }
+  ->
+  class { 'postgresql::server':
+    ip_mask_deny_postgres_user => '0.0.0.0/0',
+    ip_mask_allow_all_users    => '127.0.0.1/32',
+    listen_addresses           => '*',
+    ipv4acls                   => ['local all all peer'],
+  }
+  # Performance tuning for higher memory usage
+  postgresql::server::config_entry{'max_wal_size':
+    ensure => present,
+    value  => '10GB',
+  }
+  postgresql::server::config_entry{'shared_buffers':
+    ensure => present,
+    value  => '1GB',
+  }
+  postgresql::server::config_entry{'temp_buffers':
+    ensure => present,
+    value  => '64MB',
+  }
+  postgresql::server::config_entry{'work_mem':
+    ensure => present,
+    value  => '1GB',
+  }
+  postgresql::server::config_entry{'maintenance_work_mem':
+    ensure => present,
+    value  => '2GB',
+  }
+  postgresql::server::config_entry{'effective_io_concurrency':
+    ensure => present,
+    value  => '4',
+  }
+  postgresql::server::tablespace{'cccc':
+    location => "/${pool_name}/cccc/postgresql/",
+    require  => [Class['postgresql::server'], Dtg::Zfs::Fs['cccc/postgresql']],
+  } ->
+  postgresql::server::db{'mirai':
+    user       => 'cccc-mirai',
+    password   => 'mirai',
+    encoding   => 'UTF-8',
+    tablespace => 'cccc',
+  } ->
+  postgresql::server::extension{'ip4r':
+    ensure       => present,
+    package_name => 'postgresql-9.5-ip4r',
+    database     => 'mirai',
+  }
+  # Creating a home directory for the postgresql user for the database
+  # This is so that automated processes can connect to load data into the database
+  file {'/home/cccc-mirai/':
+    ensure => directory,
+    owner  => 'cccc-mirai',
+    group  => 'cccc-mirai',
+    mode   => '0750',
+  }
+  file {'/home/cccc-mirai/.ssh/':
+    ensure => directory,
+    owner  => 'cccc-mirai',
+    group  => 'cccc-mirai',
+    mode   => '0700',
+  } ->
+  # TODO(drt24) add a command restriction so that this can only be used to load data
+  #             into the database.
+  ssh_authorized_key {'cccc-mirai':
+    ensure => present,
+    key    => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDbRwo2I5AU9nlJdRGJzuRXV/TAWqzyUfwcrpxvbQs2FL3QwcXrEi8BFAf9PjncNhWb4gJql4l9+fttKOn0+DFG/rWQqiCk9Uj/gSDLr1O01ZgsxnL67FubCy1Q26KFMedmCxvFnvKxQP4NX4YSkVXr6qJg5iHr9bRfSsebaoVlrQC263Tl+KFrvg80JpLGpZcGOaAZWq+WR/GOjvDfsKn4rjU3WRrYns04rG5RhcEyuRvXxfW4Q3FD59Yyc4f0ukC/mXxyuX2BPAUHaAU6+ttL1acLLfpwqrWjQfdn+1wkx4W5z45oA9uYIfB7C4j/qBDE/1EeGOUzJRd5XraFgT5fQkuC6L99QHC+VINxkbqokUt6aGDC6HXFKZRLxzOMZHGTZpy+sj+JZNrdyokRMGTJHGGWlOzeM8tzYJArEOfZpApWERcxmxUtebV2hWuyeizUyoixH2iV+kFeol+e8VMVC3meX3JYftL1HJ1CqyT4yzO2JIj4XDcLaATpczc4NssP6M+Zog91rYMDwH9t+GAm52L8sh4+l1rbb9aXyxd9JLri3zBKTKUfBGzEUd9En578UXa7tpfb1gDpLHrRU94JlmEqJuhoGEBR7XsL/8nkN13y4F1uh78X77tuaEYYCG+5ccYO2UjmcQStXtCqdOQlpza0bAkmU+7KFoaSR1HvMw==',
+    user   => 'cccc-mirai',
+    type   => 'ssh-rsa',
+  }
+
+  $packagelist = ['golang', 'bison' , 'flex', 'autoconf' , 'pkg-config',
+                  'libpcap-dev' , 'mountall' , 'liblz4-tool', 'autofs',
+                  'socat', 'libdbd-pg-perl']
   package {
       $packagelist:
           ensure => installed
@@ -178,7 +276,7 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers', 'nfs-servers' ],
   }
   nagios::monitor { 'africa01-bmc':
-    parents    => 'se18-r8-sw1',
+    parents    => '',
     address    => 'africa01-bmc.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'bmcs' ],
   }

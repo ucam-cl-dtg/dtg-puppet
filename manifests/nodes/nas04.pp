@@ -279,12 +279,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
 if ( $::monitor ) {
   nagios::monitor { 'nas04':
-    parents    => 'se18-r8-sw1',
+    parents    => '',
     address    => 'nas04.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'nfs-servers' ],
   }
   nagios::monitor { 'nas04-bmc':
-    parents    => 'se18-r8-sw1',
+    parents    => '',
     address    => 'nas04-bmc.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'bmcs' ],
   }

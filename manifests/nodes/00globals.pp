@@ -51,6 +51,13 @@ class ms_id_certifiers { # lint:ignore:autoloader_layout config-class
 group { 'dtg-adm':
   ensure => present,
 }
+# Placeholder group to bump up the maximum used gid so that automatically
+# added gids are guaranteed to be above 50000
+# Allocated gids should be from 40000
+group { 'placeholder':
+  ensure => present,
+  gid    => 50000,
+}
 # Delegated administration of central services
 group { 'scm-adm':
   ensure => present,
@@ -78,6 +85,7 @@ group { 'rscfl':
 group { 'neat':
   ensure => present,
 }
+## All new groups should have a specified gid to avoid clashes
 
 class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
   dtg::add_user { 'drt24':
@@ -353,6 +361,19 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     gid      => 40003,
     uid      => 40003,
     home     => '/home/cccc-backup/',
+  }
+  # user for miria database
+  group { 'cccc-mirai':
+    ensure => present,
+    gid    => 40005,
+  }
+  user { 'cccc-mirai':
+    ensure   => present,
+    comment  => 'CCCC mirai database user',
+    password => '*',
+    gid      => 40005,
+    uid      => 40005,
+    home     => '/home/cccc-mirai/',
   }
 
 
