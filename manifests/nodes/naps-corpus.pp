@@ -1,4 +1,6 @@
 node /naps-corpus/ {
+  
+  User<|title == mrd45 |> { groups +>[ 'adm' ]}
 
   $packages = ['build-essential','ghc','libblas-dev','liblapack-dev','libpcre3-dev']
 
