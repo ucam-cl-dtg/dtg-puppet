@@ -18,6 +18,13 @@ node /isaac-[23]/ {
   class {'dtg::firewall::vrrp':}
   class {'dtg::firewall::zookeeper':}
 
+  firewall { '015 accept from 10.0.0.0/8 zookeeper client traffic':
+    proto  => 'tcp',
+    dport  => '2181',
+    source => '10.0.0.0/8',
+    action => 'accept',
+  }
+  
   # User to own DB Backups
   user {'isaac':
     ensure => present,
