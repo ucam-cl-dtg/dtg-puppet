@@ -71,8 +71,7 @@ node /isaac-[23]/ {
     minute  => 0
   }
 
-  # Home directory of isaac user.
-
+  # Home directory of isaac user:
   file { ['/usr/share/isaac/', '/usr/share/isaac/.ssh']:
     ensure => 'directory',
     owner  => 'isaac',
@@ -110,8 +109,9 @@ node /isaac-[23]/ {
 }
 
 ## Config only for main live server, not standby.
-
 if ( $::fqdn =~ /(\w+-)?isaac-3/ ) {
+
+  # Tickets database backup:
   file { '/local/data/isaac-osticket-database-backup.sh':
       mode   => '0755',
       owner  => isaac,
@@ -172,7 +172,6 @@ if ( $::fqdn =~ /(\w+-)?isaac-3/ ) {
 }
 
 # Configure backup server to pull things from the VIRTUAL Isaac IP.
-
 if ( $::is_backup_server ) {
   dtg::backup::hostsetup{'isaac_physics_live_db':
     user    => 'isaac',
@@ -183,9 +182,10 @@ if ( $::is_backup_server ) {
   }
 }
 
-# Configure munin to monitor main and standby servers:
-
+# Configure nagios and munin:
 if ( $::monitor ) {
+
+  # Configure munin for both machines:
   munin::gatherer::async_node { 'isaac-2': }
   munin::gatherer::async_node { 'isaac-3': }
 
