@@ -93,6 +93,20 @@ node /isaac-[23]/ {
     user               => 'isaac',
     home               => '/usr/share/isaac/',
   }
+
+  # ssh-notify Script:
+  file { '/local/data/ssh-notify.sh':
+      mode   => '0755',
+      owner  => isaac,
+      group  => isaac,
+      source => 'puppet:///modules/dtg/isaac/ssh-notify.sh'
+  }
+  ->
+  file_line { 'ssh-notify-pam.d':
+    line => 'session optional pam_exec.so seteuid /local/data/ssh-notify.sh',
+    path => '/etc/pam.d/sshd',
+  }
+
 }
 
 ## Config only for main live server, not standby.
