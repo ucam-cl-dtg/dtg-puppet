@@ -8,13 +8,13 @@
 if ( [ -e /local/data/webhook-url ] && [ "$PAM_USER" != "munin-async" ] && [ "$PAM_USER" != "isaac" ] ); then
 
     # Slack configuration:
-    url=`cat /local/data/webhook-url`
+    url=$(cat /local/data/webhook-url)
     channel="#compsci-ssh"
 
     # Info about the machine:
-    timestamp="`TZ=Europe/London date +'%-d %B %Y at %l:%M%p %Z'`"
-    host="`hostname`"
-    ip_addresses="`ip addr list net0`"
+    timestamp="$(TZ=Europe/London date +'%-d %B %Y at %l:%M%p %Z')"
+    host="$(hostname)"
+    ip_addresses="$(ip addr list net0)"
 
     # Info about the trigger:
     if ([ "$PAM_TYPE" = "open_session" ]); then
@@ -37,6 +37,6 @@ if ( [ -e /local/data/webhook-url ] && [ "$PAM_USER" != "munin-async" ] && [ "$P
     # Content of the message:
     content="\"attachments\": [ { \"mrkdwn_in\": [\"text\", \"fallback\"], \"fallback\": \"SSH $action: $PAM_USER at \`$host\`\", \"text\": \"SSH $action at \`$host\`\", \"fields\": [ { \"title\": \"User\", \"value\": \"$PAM_USER\", \"short\": true }, { \"title\": \"IP Address\", \"value\": \"$PAM_RHOST\", \"short\": true }, { \"title\": \"Time\", \"value\": \"$timestamp\", \"short\": true },{ \"title\": \"Action\", \"value\": \"$action\", \"short\": true } ], \"color\": \"$colour\" } ]"
 
-    curl -X POST --data-urlencode "payload={\"channel\": \"$channel\", \"mrkdwn\": true, \"username\": \"ssh-bot\", $content, \"icon_emoji\": \":computer:\"}" $url
+    curl -X POST --data-urlencode "payload={\"channel\": \"$channel\", \"mrkdwn\": true, \"username\": \"ssh-bot\", $content, \"icon_emoji\": \":computer:\"}" "$url"
 
 fi
