@@ -4,12 +4,13 @@ node /isaac-[23]/ {
     exim_local_interfaces => '0.0.0.0',
     exim_smarthost        => 'ppsw.cam.ac.uk',
     exim_relay_nets       => '10.0.0.0/9',
+    user_whitelist        => ['acr31','drt24','arb33','jps79','ipd21','sac92','af599','mlt47','du220','rjm49'],
   }
 
   class {'dtg::isaac':}
 
   class {'dtg::firewall':
-    ssh_source    => '0.0.0.0/0',
+    ssh_source    => $::local_subnet,
     interfacefile => '/etc/network/interfaces.d/eth0.cfg',
   }
   class {'dtg::firewall::publichttp':}
