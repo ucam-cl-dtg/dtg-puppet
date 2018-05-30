@@ -148,4 +148,25 @@ if ( $::is_backup_server ) {
 if ( $::monitor ) {
   munin::gatherer::async_node { 'isaac-2': }
   munin::gatherer::async_node { 'isaac-3': }
+
+ # Configure nagios to monitor live site:
+  nagios::monitor { 'isaac-physics':
+    parents    => '',
+    address    => 'isaacphysics.org',
+    hostgroups => ['https-servers'],
+  }
+  # Configure nagios to monitor editor:
+  nagios::monitor { 'isaac-editor-external':
+    parents                     => '',
+    address                     => 'editor.isaacphysics.org',
+    hostgroups                  => [ 'http-servers', 'https-servers' ],
+    include_standard_hostgroups => false,
+  }
+  # Configure nagios to monitor tickets:
+  nagios::monitor { 'isaac-tickets-external':
+    parents                     =>  '',
+    address                     => 'tickets.isaacphysics.org',
+    hostgroups                  => [ 'http-servers', 'https-servers' ],
+    include_standard_hostgroups => false,
+  }
 }
