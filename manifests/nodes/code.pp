@@ -139,12 +139,6 @@ node 'code.dtg.cl.cam.ac.uk' {
   dtg::git::mirror::repo{'puppet/modules/zfs-auto-snapshot':
     source => 'https://github.com/ucam-cl-dtg/puppet-zfs-auto-snapshot.git'}
 
-
-  # cdn
-  dtg::git::mirror::repo{'isaac/cdn':
-    source => 'git@code.dtg.cl.cam.ac.uk:isaac/cdn'}
-
-
   #time project - transport
   dtg::git::mirror::repo{'time/batchupdaters':
     source => 'git@code.dtg.cl.cam.ac.uk:time/batchupdaters'}
