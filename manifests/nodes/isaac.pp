@@ -143,6 +143,32 @@ if ( $::fqdn =~ /(\w+-)?isaac-3/ ) {
     hour    => 0,
     minute  => 0
   }
+
+  # Postgres Vacuum log and cron job:
+  file { '/local/data/isaac-docker-database-vacuum.sh':
+      mode   => '0755',
+      owner  => isaac,
+      group  => isaac,
+      source => 'puppet:///modules/dtg/isaac/isaac-docker-database-vacuum.sh'
+  }
+  ->
+  file { '/var/log/isaac/isaac-vacuum.log':
+      ensure  => present,
+      path    => '/var/log/isaac/isaac-vacuum.log',
+      replace => false,
+      mode    => '0664',
+      owner   => isaac,
+      group   => isaac,
+      content => '# Postgres Vacuum Log'
+  }
+  ->
+  cron {'isaac-vacuum-db':
+    command => '/local/data/isaac-docker-database-vacuum.sh >> /var/log/isaac/isaac-vacuum.log',
+    user    => root,
+    hour    => 3,
+    minute  => 33,
+  }
+
 }
 
 # Configure backup server to pull things from the VIRTUAL Isaac IP.
