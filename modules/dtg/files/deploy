@@ -124,7 +124,7 @@ PHYSICAL_MACHINES = [
     Machine('deviceanalyzer-www', 'deviceanalyzer-www' + DTG_DOM, PUPPET_BARE, False),
 ]
 
-UPDATE_BLACKLIST = ['cdn', 'weather', 'nas04']
+UPDATE_BLACKLIST = ['weather', 'nas04']
 
 
 class RemoteHandler(RemoteProgress):
