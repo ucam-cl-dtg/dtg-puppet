@@ -189,7 +189,7 @@ if ( $::monitor ) {
   munin::gatherer::async_node { 'isaac-2': }
   munin::gatherer::async_node { 'isaac-3': }
 
- # Configure nagios to monitor live site:
+  # Configure nagios to monitor live site:
   nagios::monitor { 'isaac-physics':
     parents    => '',
     address    => 'isaacphysics.org',
