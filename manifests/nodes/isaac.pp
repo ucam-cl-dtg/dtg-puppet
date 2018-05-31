@@ -7,6 +7,9 @@ node /isaac-[23]/ {
     user_whitelist        => ['acr31','drt24','arb33','jps79','ipd21','sac92','af599','mlt47','du220','rjm49'],
   }
 
+  User<|title == jps79 |> { groups +>[ 'adm' ] }
+  User<|title == ipd21 |> { groups +>[ 'adm' ] }
+  
   class {'dtg::isaac':}
 
   class {'dtg::firewall':
