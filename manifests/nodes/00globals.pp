@@ -90,7 +90,7 @@ group { 'neat':
 class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
   dtg::add_user { 'drt24':
     real_name      => 'Daniel Thomas',
-    groups         => [ 'adm', 'deviceanalyzer', 'dtg-adm', 'cccc-data' ],
+    groups         => [ 'adm', 'deviceanalyzer', 'dtg-adm', 'cccc-data', 'weather-adm' ],
     keys           => [
       'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>'],
     uid            => 2607,
