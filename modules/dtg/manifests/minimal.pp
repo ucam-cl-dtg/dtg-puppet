@@ -2,6 +2,7 @@ class dtg::minimal ($manageapt = true,
                     $adm_sudoers = true,
                     $manageentropy = false,
                     $managefirewall = true,
+                    $send_rsyslog = true,
                     $firewall_ssh_source = '0.0.0.0/0',
                     $dns_server = false,
                     $user_whitelist = undef,
@@ -98,7 +99,11 @@ class dtg::minimal ($manageapt = true,
     stage      => 'dns',
   }
   class { 'dtg::git::config': }
-  class { 'dtg::rsyslog': }
+
+  if $send_rsyslog {
+    class { 'dtg::rsyslog': }
+  }
+
   class { 'etckeeper': require => Class['dtg::git::config'] }
   class { 'ntp':
     servers        => $::ntp_servers,
