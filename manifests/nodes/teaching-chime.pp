@@ -40,6 +40,7 @@ node /^teaching-chime/ {
   }
 
   file_line { 'sshd_port_222':
+    notify  => Service['sshd'], 
     path  => '/etc/ssh/sshd_config',
     line  => 'Port 222',
     match => '^Port 22$',
@@ -84,7 +85,7 @@ node /^teaching-chime/ {
   }
   ->
   dtg::nexus::fetch{'download-chime':
-    group_id              => 'uk.ac.cam.cl.dtg.teaching',
+    groupId              => 'uk.ac.cam.cl.dtg.teaching',
     artifact_name         => 'chime',
     artifact_version      => '1.0.0-SNAPSHOT',
     artifact_type         => 'war',
