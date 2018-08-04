@@ -90,7 +90,7 @@ node /^teaching-chime/ {
     artifact_version      => '1.0.0-SNAPSHOT',
     artifact_type         => 'war',
     destination_directory => '/opt/chime/servlet',
-    symlink               => "/var/lib/tomcat${tomcat_version}/webapps/openroommap.war",
+    symlink               => "/var/lib/tomcat8/webapps/openroommap.war",
   }
 
 
