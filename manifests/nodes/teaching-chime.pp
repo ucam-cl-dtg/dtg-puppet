@@ -4,8 +4,6 @@ node /^teaching-chime/ {
   class {'dtg::firewall::publichttps':}
   ->
   class {'dtg::firewall::publichttp':}
-
-
   ->
   class {'dtg::apache::raven':
     server_description => 'Chime'
@@ -41,6 +39,19 @@ node /^teaching-chime/ {
     source => 'puppet:///modules/dtg/apache/chime.conf',
   }
 
+  file_line { 'sshd_port_222':
+    path  => '/etc/ssh/sshd_config',
+    line  => 'Port 222',
+    match => '^Port 22$',
+  }
+  ->
+  firewall { '007 accept on 222':
+    proto  => 'tcp',
+    dport  => '222',
+    action => 'accept',
+    source => '0.0.0.0/0',
+  }
+  
   class { 'postgresql::globals':
     version      => '9.5',
     encoding     => 'UTF-8',
