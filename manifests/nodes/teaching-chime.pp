@@ -85,7 +85,7 @@ node /^teaching-chime/ {
   }
   ->
   dtg::nexus::fetch{'download-chime':
-    groupId              => 'uk.ac.cam.cl.dtg.teaching',
+    groupID               => 'uk.ac.cam.cl.dtg.teaching',
     artifact_name         => 'chime',
     artifact_version      => '1.0.0-SNAPSHOT',
     artifact_type         => 'war',
