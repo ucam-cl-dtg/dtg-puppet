@@ -82,5 +82,14 @@ node /^teaching-chime/ {
     owner => 'tomcat8',
     group => 'tomcat8',
   }
+  ->
+  dtg::nexus::fetch{'download-gogs':
+    artifact_name         => 'chime',
+    artifact_version      => '1.0.0-SNAPSHOT',
+    artifact_type         => 'zip',
+    destination_directory => '/opt/chime',
+    action                => 'unzip',
+  }
+
 
 }
