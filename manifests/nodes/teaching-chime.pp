@@ -83,12 +83,12 @@ node /^teaching-chime/ {
     group => 'tomcat8',
   }
   ->
-  dtg::nexus::fetch{'download-gogs':
+  dtg::nexus::fetch{'download-chime':
     artifact_name         => 'chime',
     artifact_version      => '1.0.0-SNAPSHOT',
-    artifact_type         => 'zip',
-    destination_directory => '/opt/chime',
-    action                => 'unzip',
+    artifact_type         => 'war',
+    destination_directory => '/opt/chime/servlet',
+    symlink               => "/var/lib/tomcat${tomcat_version}/webapps/openroommap.war",
   }
 
 
