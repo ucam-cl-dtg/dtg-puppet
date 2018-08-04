@@ -62,14 +62,14 @@ node /^teaching-chime/ {
     grant    => 'ALL',
   }
 
-  package{'tomcat9':
+  package{'tomcat8':
     ensure => 'installed',
   }
   ->
   file {'/opt/chime':
     ensure => 'directory',
-    owner => 'tomcat9',
-    group => 'tomcat9',
+    owner => 'tomcat8',
+    group => 'tomcat8',
   }
 
 }
