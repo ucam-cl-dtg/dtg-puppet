@@ -1,4 +1,4 @@
-node /^teaching-gogs/ {
+node /^teaching-chime/ {
   include 'dtg::minimal'
 
   class {'dtg::firewall::publichttps':}
@@ -67,9 +67,9 @@ node /^teaching-gogs/ {
   }
   ->
   file {'/opt/chime':
-    ensure => 'directory'
-    owner => 'tomcat9'
-    group => 'tomcat9'
+    ensure => 'directory',
+    owner => 'tomcat9',
+    group => 'tomcat9',
   }
 
 }
