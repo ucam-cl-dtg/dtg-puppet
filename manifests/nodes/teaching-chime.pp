@@ -35,7 +35,7 @@ node /^teaching-chime/ {
     mode  => '0600'
   }
   ->
-  apache::site {'gogs':
+  apache::site {'chime':
     source => 'puppet:///modules/dtg/apache/chime.conf',
   }
 
