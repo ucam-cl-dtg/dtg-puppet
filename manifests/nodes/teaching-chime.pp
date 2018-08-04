@@ -110,4 +110,11 @@ node /^teaching-chime/ {
     toports     => '2222',
     destination => '127.0.0.1/8',
   }
+  ->
+  firewall { '032 accept on 2222':
+    proto  => 'tcp',
+    dport  => '2222',
+    action => 'accept',
+    source => '0.0.0.0/0',
+  }
 }
