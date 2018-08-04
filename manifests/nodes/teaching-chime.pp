@@ -93,5 +93,21 @@ node /^teaching-chime/ {
     symlink               => "/var/lib/tomcat8/webapps/chime.war",
   }
 
-
+  firewall { '030 redirect 22 to 2222':
+    dport   => '22',
+    table   => 'nat',
+    chain   => 'PREROUTING',
+    jump    => 'REDIRECT',
+    iniface => 'eth0',
+    toports => '2222',
+  }
+  ->
+  firewall { '031 redirect 22 to 2222 localhost':
+    dport       => '22',
+    table       => 'nat',
+    chain       => 'OUTPUT',
+    jump        => 'REDIRECT',
+    toports     => '2222',
+    destination => '127.0.0.1/8',
+  }
 }
