@@ -40,10 +40,10 @@ node /^teaching-chime/ {
   }
 
   file_line { 'sshd_port_222':
-    notify  => Service['sshd'], 
-    path  => '/etc/ssh/sshd_config',
-    line  => 'Port 222',
-    match => '^Port 22$',
+    notify => Service['sshd'],
+    path   => '/etc/ssh/sshd_config',
+    line   => 'Port 222',
+    match  => '^Port 22$',
   }
   ->
   firewall { '007 accept on 222':
@@ -80,8 +80,8 @@ node /^teaching-chime/ {
   ->
   file {'/opt/chime':
     ensure => 'directory',
-    owner => 'tomcat8',
-    group => 'tomcat8',
+    owner  => 'tomcat8',
+    group  => 'tomcat8',
   }
   ->
   dtg::nexus::fetch{'download-chime':
@@ -90,7 +90,7 @@ node /^teaching-chime/ {
     artifact_version      => '1.0.0-SNAPSHOT',
     artifact_type         => 'war',
     destination_directory => '/opt/chime/servlet',
-    symlink               => "/var/lib/tomcat8/webapps/chime.war",
+    symlink               => '/var/lib/tomcat8/webapps/chime.war',
   }
 
   firewall { '030 redirect 22 to 2222':
