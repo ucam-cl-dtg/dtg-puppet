@@ -83,15 +83,6 @@ node /^teaching-chime/ {
     owner  => 'tomcat8',
     group  => 'tomcat8',
   }
-  ->
-  dtg::nexus::fetch{'download-chime':
-    groupID               => 'uk.ac.cam.cl.dtg.teaching',
-    artifact_name         => 'chime',
-    artifact_version      => '1.0.0-SNAPSHOT',
-    artifact_type         => 'war',
-    destination_directory => '/opt/chime/servlet',
-    symlink               => '/var/lib/tomcat8/webapps/chime.war',
-  }
 
   firewall { '030 redirect 22 to 2222':
     dport   => '22',
