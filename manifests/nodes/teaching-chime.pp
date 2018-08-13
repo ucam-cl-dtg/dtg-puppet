@@ -35,8 +35,20 @@ node /^teaching-chime/ {
     mode  => '0600'
   }
   ->
+  apache::module {'headers':}
+  ->
   apache::site {'chime':
     source => 'puppet:///modules/dtg/apache/chime.conf',
+  }
+
+  class {'letsencrypt':
+    email          => $::from_address,
+    configure_epel => false,
+  } ->
+  letsencrypt::certonly { 'chime.cl.cam.ac.uk':
+    plugin        => 'webroot',
+    webroot_paths => ['/var/www/'],
+    manage_cron   => true,
   }
 
   file_line { 'sshd_port_222':
