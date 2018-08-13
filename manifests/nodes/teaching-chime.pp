@@ -5,6 +5,8 @@ node /^teaching-chime/ {
   ->
   class {'dtg::firewall::publichttp':}
   ->
+  class {'apache':}
+  ->
   class {'dtg::apache::raven':
     server_description => 'Chime'
   }
@@ -36,6 +38,10 @@ node /^teaching-chime/ {
   }
   ->
   apache::module {'headers':}
+  ->
+  apache::module {'rewrite':}
+  ->
+  apache::module {'ssl':}
   ->
   apache::site {'chime':
     source => 'puppet:///modules/dtg/apache/chime.conf',
