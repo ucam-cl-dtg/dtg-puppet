@@ -318,6 +318,13 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     user_whitelist => $user_whitelist,
   }
 
+  dtg::add_user { 'xh303':
+    real_name      => 'Xueyuan Han',
+    groups         => [],
+    keys           => ['Xueyuan Han (xh303) <xh303@cam.ac.uk>'],
+    uid            => 3730,
+    user_whitelist => $user_whitelist,
+  }
 
   # System users which need to be present on all machines
   # This applies for example if the user needs to write data which
