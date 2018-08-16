@@ -322,7 +322,7 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     real_name      => 'Xueyuan Han',
     groups         => [],
     keys           => ['Xueyuan Han (xh303) <xh303@cam.ac.uk>'],
-    uid            => 3730,
+    uid            => 4107,
     user_whitelist => $user_whitelist,
   }
 
