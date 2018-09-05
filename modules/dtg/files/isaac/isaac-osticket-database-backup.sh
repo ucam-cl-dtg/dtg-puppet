@@ -17,12 +17,22 @@ TICKETS_BACKUP_FILE="/local/data/database-backup/backups/isaac-tickets-db-$(date
 #          password=osticket
 docker exec isaac-tickets-db mysqldump -u osticket osticket | gzip > "$TICKETS_BACKUP_FILE"
 
+
+# Generate AES key
+openssl rand -base64 128 -out "$TICKETS_BACKUP_FILE".key
+# Encrypt backup with AES key
+openssl enc -aes-256-cbc -salt -in "$TICKETS_BACKUP_FILE" -out "$TICKETS_BACKUP_FILE".enc -pass file:"$TICKETS_BACKUP_FILE".key
+# Encrypt AES key with public key
+openssl rsautl -encrypt -oaep -inkey /local/data/isaac-backup.public.pem -pubin -in "$TICKETS_BACKUP_FILE".key -out "$TICKETS_BACKUP_FILE".key.enc
+# Delete plaintext files
+rm -f "$TICKETS_BACKUP_FILE" "$TICKETS_BACKUP_FILE".key
+
 # Change the backup file ownership:
-chown isaac:isaac "$TICKETS_BACKUP_FILE"
+chown isaac:isaac "$TICKETS_BACKUP_FILE"*
 
 # Copy the latest:
 rm /local/data/database-backup/latest/isaac-tickets-db-*
-cp "$TICKETS_BACKUP_FILE" /local/data/database-backup/latest
+cp "$TICKETS_BACKUP_FILE"* /local/data/database-backup/latest
 
 # Removes backups that are older than 10 days:
 find "/local/data/database-backup/backups" -type f -prune -mtime +10 -exec rm -f {} \;
