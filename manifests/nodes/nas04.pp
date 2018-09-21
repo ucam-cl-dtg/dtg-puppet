@@ -80,7 +80,9 @@ node 'nas04.dtg.cl.cam.ac.uk' {
                                     '131.111.39.84',
                                     '131.111.39.87',
                                     '131.111.39.103',
-                                    '131.111.61.37']),
+                                    '131.111.61.37',
+                                    '81.201.132.39',
+                                    '81.201.132.24']),
   }
 
   dtg::zfs::fs{'users':
@@ -228,6 +230,28 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::firewall::nfs {'nfs access from nakedscientists medschl':
     source          => '131.111.61.37',
     source_name     => 'nakedscientists medschl',
+    portmapper_port => $portmapper_port,
+    nfs_port        => $nfs_port,
+    lockd_tcpport   => $lockd_tcpport,
+    lockd_udpport   => $lockd_udpport,
+    mountd_port     => $mountd_port,
+    rquotad_port    => $rquotad_port,
+    statd_port      => $statd_port,
+  }
+  dtg::firewall::nfs {'nfs access from nakedscientists web main':
+    source          => '81.201.132.39',
+    source_name     => 'nakedscientists web main',
+    portmapper_port => $portmapper_port,
+    nfs_port        => $nfs_port,
+    lockd_tcpport   => $lockd_tcpport,
+    lockd_udpport   => $lockd_udpport,
+    mountd_port     => $mountd_port,
+    rquotad_port    => $rquotad_port,
+    statd_port      => $statd_port,
+  }
+  dtg::firewall::nfs {'nfs access from nakedscientists web reserve':
+    source          => '81.201.132.24',
+    source_name     => 'nakedscientists web reserve',
     portmapper_port => $portmapper_port,
     nfs_port        => $nfs_port,
     lockd_tcpport   => $lockd_tcpport,
