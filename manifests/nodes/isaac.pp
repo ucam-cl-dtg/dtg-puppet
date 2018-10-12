@@ -58,6 +58,13 @@ node /isaac-[23]/ {
       source => 'puppet:///modules/dtg/isaac/isaac-docker-database-backup.sh'
   }
   ->
+  file { '/local/data/isaac-backup.public.pem':
+      mode   => '0755',
+      owner  => isaac,
+      group  => isaac,
+      source => 'puppet:///modules/dtg/isaac/isaac-backup.public.pem'
+  }
+  ->
   file { '/local/data/database-backup/isaac-database-backup.log':
       ensure  => present,
       path    => '/local/data/database-backup/isaac-database-backup.log',
