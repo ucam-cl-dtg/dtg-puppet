@@ -117,6 +117,27 @@ node /isaac-[23]/ {
     path => '/etc/pam.d/sshd',
   }
 
+  # Update sysctl.conf to disable IPV6 and support ElasticSearch.
+  file_line { 'disable_ipv6_1':
+    line => 'net.ipv6.conf.all.disable_ipv6 = 1',
+    path => '/etc/sysctl.conf',
+  }
+  ->
+  file_line { 'disable_ipv6_2':
+    line => 'net.ipv6.conf.default.disable_ipv6 = 1',
+    path => '/etc/sysctl.conf',
+  }
+  ->
+  file_line { 'disable_ipv6_3':
+    line => 'net.ipv6.conf.lo.disable_ipv6 = 1',
+    path => '/etc/sysctl.conf',
+  }
+  ->
+  file_line { 'max_map_count':
+    line => 'vm.max_map_count = 262144',
+    path => '/etc/sysctl.conf',
+  }
+
 }
 
 ## Config only for main live server, not standby.
