@@ -116,17 +116,17 @@ node /isaac-[23]/ {
     path => '/etc/sysctl.conf',
   }
   ->
-  file_line { 'disable_ipv6_1':
+  file_line { 'disable_ipv6_2':
     line => 'net.ipv6.conf.default.disable_ipv6 = 1',
     path => '/etc/sysctl.conf',
   }
   ->
-  file_line { 'disable_ipv6_1':
+  file_line { 'disable_ipv6_3':
     line => 'net.ipv6.conf.lo.disable_ipv6 = 1',
     path => '/etc/sysctl.conf',
   }
   ->
-  file_line { 'disable_ipv6_1':
+  file_line { 'max_map_count':
     line => 'vm.max_map_count = 262144',
     path => '/etc/sysctl.conf',
   }
