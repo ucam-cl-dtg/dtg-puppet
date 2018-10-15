@@ -10,7 +10,8 @@ node 'nas04.dtg.cl.cam.ac.uk' {
                   'dac53.dtg.cl.cam.ac.uk',
                   'grapevine.cl.cam.ac.uk',
                   'earlybird.cl.cam.ac.uk',
-                  'sak70-math.dtg.cl.cam.ac.uk']
+                  'sak70-math.dtg.cl.cam.ac.uk',
+                  'acr31-misc.dtg.cl.cam.ac.uk']
 
   # bonded nics
   dtg::kernelmodule::add{'bonding': }
@@ -49,12 +50,9 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   class {'dtg::zfs': }
 
   class {'zfs_auto_snapshot':
-    fs_names => [ "${pool_name}/bayncore",
-                  "${pool_name}/deviceanalyzer-graphing",
-                  "${pool_name}/dwt27",
+    fs_names => [ "${pool_name}/deviceanalyzer-graphing",
                   "${pool_name}/rscfl",
-                  "${pool_name}/vms",
-                  "${pool_name}/rwandadataset",
+                  "${pool_name}/vms"
                   ]
   }
 
@@ -82,7 +80,9 @@ node 'nas04.dtg.cl.cam.ac.uk' {
                                     '131.111.39.84',
                                     '131.111.39.87',
                                     '131.111.39.103',
-                                    '131.111.61.37']),
+                                    '131.111.61.37',
+                                    '81.201.132.39',
+                                    '81.201.132.24']),
   }
 
   dtg::zfs::fs{'users':
@@ -272,6 +272,28 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     rquotad_port    => $rquotad_port,
     statd_port      => $statd_port,
   }
+  dtg::firewall::nfs {'nfs access from nakedscientists web main':
+    source          => '81.201.132.39',
+    source_name     => 'nakedscientists web main',
+    portmapper_port => $portmapper_port,
+    nfs_port        => $nfs_port,
+    lockd_tcpport   => $lockd_tcpport,
+    lockd_udpport   => $lockd_udpport,
+    mountd_port     => $mountd_port,
+    rquotad_port    => $rquotad_port,
+    statd_port      => $statd_port,
+  }
+  dtg::firewall::nfs {'nfs access from nakedscientists web reserve':
+    source          => '81.201.132.24',
+    source_name     => 'nakedscientists web reserve',
+    portmapper_port => $portmapper_port,
+    nfs_port        => $nfs_port,
+    lockd_tcpport   => $lockd_tcpport,
+    lockd_udpport   => $lockd_udpport,
+    mountd_port     => $mountd_port,
+    rquotad_port    => $rquotad_port,
+    statd_port      => $statd_port,
+  }
 
   augeas { 'default_grub':
     context => '/files/etc/default/grub',
@@ -315,12 +337,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
 
 if ( $::monitor ) {
   nagios::monitor { 'nas04':
-    parents    => 'se18-r8-sw1',
+    parents    => '',
     address    => 'nas04.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'nfs-servers' ],
   }
   nagios::monitor { 'nas04-bmc':
-    parents    => 'se18-r8-sw1',
+    parents    => '',
     address    => 'nas04-bmc.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers', 'bmcs' ],
   }

@@ -1,23 +1,27 @@
 node /isaac-[23]/ {
   class { 'dtg::minimal':
     managefirewall        => false,
+    send_rsyslog          => false,
     exim_local_interfaces => '0.0.0.0',
     exim_smarthost        => 'ppsw.cam.ac.uk',
     exim_relay_nets       => '10.0.0.0/9',
+    user_whitelist        => ['acr31','drt24','arb33','jps79','ipd21','sac92','af599','mlt47','du220','rjm49'],
   }
 
+  User<|title == jps79 |> { groups +>[ 'adm' ] }
+  User<|title == ipd21 |> { groups +>[ 'adm' ] }
+  
   class {'dtg::isaac':}
 
   class {'dtg::firewall':
-    ssh_source    => '0.0.0.0/0',
+    ssh_source    => $::local_subnet,
     interfacefile => '/etc/network/interfaces.d/eth0.cfg',
   }
   class {'dtg::firewall::publichttp':}
   class {'dtg::firewall::publichttps':}
   class {'dtg::firewall::isaacsmtp':}
   class {'dtg::firewall::vrrp':}
-  class {'dtg::firewall::zookeeper':}
-
+  
   # User to own DB Backups
   user {'isaac':
     ensure => present,
@@ -54,6 +58,13 @@ node /isaac-[23]/ {
       source => 'puppet:///modules/dtg/isaac/isaac-docker-database-backup.sh'
   }
   ->
+  file { '/local/data/isaac-backup.public.pem':
+      mode   => '0755',
+      owner  => isaac,
+      group  => isaac,
+      source => 'puppet:///modules/dtg/isaac/isaac-backup.public.pem'
+  }
+  ->
   file { '/local/data/database-backup/isaac-database-backup.log':
       ensure  => present,
       path    => '/local/data/database-backup/isaac-database-backup.log',
@@ -71,8 +82,7 @@ node /isaac-[23]/ {
     minute  => 0
   }
 
-  # Home directory of isaac user.
-
+  # Home directory of isaac user:
   file { ['/usr/share/isaac/', '/usr/share/isaac/.ssh']:
     ensure => 'directory',
     owner  => 'isaac',
@@ -93,11 +103,47 @@ node /isaac-[23]/ {
     user               => 'isaac',
     home               => '/usr/share/isaac/',
   }
+
+  # ssh-notify Script:
+  file { '/local/data/ssh-notify.sh':
+      mode   => '0755',
+      owner  => isaac,
+      group  => isaac,
+      source => 'puppet:///modules/dtg/isaac/ssh-notify.sh'
+  }
+  ->
+  file_line { 'ssh-notify-pam.d':
+    line => 'session optional pam_exec.so seteuid /local/data/ssh-notify.sh',
+    path => '/etc/pam.d/sshd',
+  }
+
+  # Update sysctl.conf to disable IPV6 and support ElasticSearch.
+  file_line { 'disable_ipv6_1':
+    line => 'net.ipv6.conf.all.disable_ipv6 = 1',
+    path => '/etc/sysctl.conf',
+  }
+  ->
+  file_line { 'disable_ipv6_2':
+    line => 'net.ipv6.conf.default.disable_ipv6 = 1',
+    path => '/etc/sysctl.conf',
+  }
+  ->
+  file_line { 'disable_ipv6_3':
+    line => 'net.ipv6.conf.lo.disable_ipv6 = 1',
+    path => '/etc/sysctl.conf',
+  }
+  ->
+  file_line { 'max_map_count':
+    line => 'vm.max_map_count = 262144',
+    path => '/etc/sysctl.conf',
+  }
+
 }
 
 ## Config only for main live server, not standby.
-
 if ( $::fqdn =~ /(\w+-)?isaac-3/ ) {
+
+  # Tickets database backup:
   file { '/local/data/isaac-osticket-database-backup.sh':
       mode   => '0755',
       owner  => isaac,
@@ -129,10 +175,35 @@ if ( $::fqdn =~ /(\w+-)?isaac-3/ ) {
     hour    => 0,
     minute  => 0
   }
+
+  # Postgres Vacuum log and cron job:
+  file { '/local/data/isaac-docker-database-vacuum.sh':
+      mode   => '0755',
+      owner  => isaac,
+      group  => isaac,
+      source => 'puppet:///modules/dtg/isaac/isaac-docker-database-vacuum.sh'
+  }
+  ->
+  file { '/var/log/isaac/isaac-vacuum.log':
+      ensure  => present,
+      path    => '/var/log/isaac/isaac-vacuum.log',
+      replace => false,
+      mode    => '0664',
+      owner   => isaac,
+      group   => isaac,
+      content => '# Postgres Vacuum Log'
+  }
+  ->
+  cron {'isaac-vacuum-db':
+    command => '/local/data/isaac-docker-database-vacuum.sh >> /var/log/isaac/isaac-vacuum.log',
+    user    => root,
+    hour    => 3,
+    minute  => 33,
+  }
+
 }
 
 # Configure backup server to pull things from the VIRTUAL Isaac IP.
-
 if ( $::is_backup_server ) {
   dtg::backup::hostsetup{'isaac_physics_live_db':
     user    => 'isaac',
@@ -143,9 +214,31 @@ if ( $::is_backup_server ) {
   }
 }
 
-# Configure munin to monitor main and standby servers:
-
+# Configure nagios and munin:
 if ( $::monitor ) {
+
+  # Configure munin for both machines:
   munin::gatherer::async_node { 'isaac-2': }
   munin::gatherer::async_node { 'isaac-3': }
+
+  # Configure nagios to monitor live site:
+  nagios::monitor { 'isaac-physics':
+    parents    => '',
+    address    => 'isaacphysics.org',
+    hostgroups => ['https-servers'],
+  }
+  # Configure nagios to monitor editor:
+  nagios::monitor { 'isaac-editor-external':
+    parents                     => '',
+    address                     => 'editor.isaacphysics.org',
+    hostgroups                  => [ 'http-servers', 'https-servers' ],
+    include_standard_hostgroups => false,
+  }
+  # Configure nagios to monitor tickets:
+  nagios::monitor { 'isaac-tickets-external':
+    parents                     =>  '',
+    address                     => 'tickets.isaacphysics.org',
+    hostgroups                  => [ 'http-servers', 'https-servers' ],
+    include_standard_hostgroups => false,
+  }
 }

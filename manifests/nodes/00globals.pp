@@ -51,6 +51,13 @@ class ms_id_certifiers { # lint:ignore:autoloader_layout config-class
 group { 'dtg-adm':
   ensure => present,
 }
+# Placeholder group to bump up the maximum used gid so that automatically
+# added gids are guaranteed to be above 50000
+# Allocated gids should be from 40000
+group { 'placeholder':
+  ensure => present,
+  gid    => 50000,
+}
 # Delegated administration of central services
 group { 'scm-adm':
   ensure => present,
@@ -78,11 +85,12 @@ group { 'rscfl':
 group { 'neat':
   ensure => present,
 }
+## All new groups should have a specified gid to avoid clashes
 
 class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
   dtg::add_user { 'drt24':
     real_name      => 'Daniel Thomas',
-    groups         => [ 'adm', 'deviceanalyzer', 'dtg-adm', 'cccc-data' ],
+    groups         => [ 'adm', 'deviceanalyzer', 'dtg-adm', 'cccc-data', 'weather-adm' ],
     keys           => [
       'Daniel Robert Thomas (Computer Lab Key) <drt24@cam.ac.uk>'],
     uid            => 2607,
@@ -302,6 +310,21 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     user_whitelist => $user_whitelist,
   }
 
+  dtg::add_user { 'jsp50':
+    real_name      => 'Jovan Powar',
+    groups         => [],
+    keys           => ['Jovan Powar (Generated on aria with perma email) <jsp50@cst.cam.ac.uk>'],
+    uid            => 3729,
+    user_whitelist => $user_whitelist,
+  }
+
+  dtg::add_user { 'xh303':
+    real_name      => 'Xueyuan Han',
+    groups         => [],
+    keys           => ['Xueyuan Han (xh303) <xh303@cam.ac.uk>'],
+    uid            => 4107,
+    user_whitelist => $user_whitelist,
+  }
 
   # System users which need to be present on all machines
   # This applies for example if the user needs to write data which
@@ -346,8 +369,21 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     uid      => 40003,
     home     => '/home/cccc-backup/',
   }
+  # user for miria database
+  group { 'cccc-mirai':
+    ensure => present,
+    gid    => 40005,
+  }
+  user { 'cccc-mirai':
+    ensure   => present,
+    comment  => 'CCCC mirai database user',
+    password => '*',
+    gid      => 40005,
+    uid      => 40005,
+    home     => '/home/cccc-mirai/',
+  }
 
-    
+
 }
 # Admin user ids to be given root on the nodes via monkeysphere
 $ms_admin_user_ids = [

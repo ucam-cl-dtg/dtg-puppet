@@ -119,12 +119,12 @@ ORIGIN = [
 
 PHYSICAL_MACHINES = [
     Machine('nas04', 'nas04' + DTG_DOM, PUPPET_BARE, False),
-    Machine('entropy', 'entropy' + DTG_DOM, PUPPET_BARE, False),
+#    Machine('entropy', 'entropy' + DTG_DOM, PUPPET_BARE, False),
     Machine('africa01', 'africa01' + DTG_DOM, PUPPET_BARE, False),
     Machine('deviceanalyzer-www', 'deviceanalyzer-www' + DTG_DOM, PUPPET_BARE, False),
 ]
 
-UPDATE_BLACKLIST = ['cdn', 'weather', 'nas04']
+UPDATE_BLACKLIST = ['weather', 'nas04']
 
 
 class RemoteHandler(RemoteProgress):

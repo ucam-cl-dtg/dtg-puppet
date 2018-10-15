@@ -35,8 +35,7 @@ node 'deviceanalyzer.dtg.cl.cam.ac.uk' {
     owner   => 'root',
     group   => 'root',
     mode    => 'a=r',
-    content => 'nas02   nas02.dtg.cl.cam.ac.uk:/volume1/deviceanalyzer
-nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer
+    content => 'nas04   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer
 nas04-index   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-datadivider
 nas04-snapshot   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-2016-03-14 ',
   } ->
@@ -45,10 +44,6 @@ nas04-snapshot   nas04.dtg.cl.cam.ac.uk:/dtg-pool0/deviceanalyzer-2016-03-14 ',
     path => '/etc/auto.master',
   }
 
-  file {'/nas2':
-    ensure => link,
-    target => '/mnt/nas02',
-  }
   file {'/nas4':
     ensure => link,
     target => '/mnt/nas04',
@@ -170,7 +165,7 @@ if ( $::monitor ) {
     hostgroups => [ 'ssh-servers' ],
   }
   nagios::monitor { 'deviceanalyzer':
-    parents    => ['nas04', 'nas02'],
+    parents    => '',
     address    => 'deviceanalyzer.cl.cam.ac.uk',
     hostgroups => [ 'http-servers', 'ssh-servers', 'https-servers' ],
   }

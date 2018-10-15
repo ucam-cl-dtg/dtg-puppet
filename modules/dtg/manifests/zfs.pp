@@ -39,35 +39,39 @@ class dtg::zfs(
   }
   
   file {'/usr/share/munin/plugins/zpool_status':
-    ensure => file,
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
-    source => 'puppet:///modules/dtg/zfs/zpool_status'
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    source  => 'puppet:///modules/dtg/zfs/zpool_status',
+    require => Class['Munin::Node'],
   }
 
   file {'/usr/share/munin/plugins/zlist':
-    ensure => file,
-    owner  =>  'root',
-    group  => 'root',
-    mode   => '0755',
-    source => 'puppet:///modules/dtg/zfs/zlist',
+    ensure  => file,
+    owner   =>  'root',
+    group   => 'root',
+    mode    => '0755',
+    source  => 'puppet:///modules/dtg/zfs/zlist',
+    require => Class['Munin::Node'],
   }
 
   file {'/usr/share/munin/plugins/zfs-filesystem-graph':
-    ensure => file,
-    owner  =>  'root',
-    group  => 'root',
-    mode   => '0755',
-    source => 'puppet:///modules/dtg/zfs/zfs-filesystem-graph',
+    ensure  => file,
+    owner   =>  'root',
+    group   => 'root',
+    mode    => '0755',
+    source  => 'puppet:///modules/dtg/zfs/zfs-filesystem-graph',
+    require => Class['Munin::Node'],
   }
 
   file {'/usr/share/munin/plugins/zpool_iostat':
-    ensure => file,
-    owner  =>  'root',
-    group  => 'root',
-    mode   => '0755',
-    source => 'puppet:///modules/dtg/zfs/zpool_iostat',
+    ensure  => file,
+    owner   =>  'root',
+    group   => 'root',
+    mode    => '0755',
+    source  => 'puppet:///modules/dtg/zfs/zpool_iostat',
+    require => Class['Munin::Node'],
   }
 
   file {'/etc/munin/plugins/zpool_status':
