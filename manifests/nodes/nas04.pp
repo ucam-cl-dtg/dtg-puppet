@@ -75,13 +75,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
   }
   
-  dtg::zfs::fs{'dwt27':
-    pool_name  => $pool_name,
-    fs_name    => 'dwt27',
-    share_opts => zfs_shareopts([],['monnow.cl.cam.ac.uk',
-                                    'dwt27-crunch.dtg.cl.cam.ac.uk']),
-  }
-
   dtg::zfs::fs{'nakedscientists':
     pool_name  => $pool_name,
     fs_name    => 'nakedscientists',
@@ -101,7 +94,7 @@ node 'nas04.dtg.cl.cam.ac.uk' {
   dtg::zfs::fs{'users/acr31':
     pool_name  => $pool_name,
     fs_name    => 'users/acr31',
-    share_opts => zfs_shareopts([],['acr31-queens.dtg.cl.cam.ac.uk']),
+    share_opts => zfs_shareopts([],['acr31-misc.dtg.cl.cam.ac.uk']),
   }
 
   dtg::zfs::fs{'archive':
@@ -134,15 +127,39 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     share_opts => zfs_shareopts($da_machines,[],"ro=@${dtg_subnet}"),
   }
 
-  dtg::zfs::fs{'rwandadataset':
+  dtg::zfs::fs{'datasets':
     pool_name  => $pool_name,
-    fs_name    => 'rwandadataset',
+    fs_name    => 'datasets',
+    share_opts => 'off',
+  }
+  ->
+  dtg::zfs::fs{'datasets/rwandadataset':
+    pool_name  => $pool_name,
+    fs_name    => 'datasets/rwandadataset',
     share_opts => zfs_shareopts(['grapevine.cl.cam.ac.uk'], []),
   }
-
-  dtg::zfs::fs{ 'caida-internet-traces-2014':
+  ->
+  dtg::zfs::fs{ 'datasets/caida-internet-traces-2014':
     pool_name  => $pool_name,
-    fs_name    => 'caida-internet-traces-2014',
+    fs_name    => 'datasets/caida-internet-traces-2014',
+    share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
+  }
+  ->
+  dtg::zfs::fs{ 'datasets/acis-busdata':
+    pool_name  => $pool_name,
+    fs_name    => 'datasets/acis-busdata',
+    share_opts => 'off',
+  }
+  ->
+  dtg::zfs::fs{ 'datasets/batlogs':
+    pool_name  => $pool_name,
+    fs_name    => 'datasets/batlogs',
+    share_opts => 'off',
+  }
+  ->
+  dtg::zfs::fs{ 'datasets/50k-c':
+    pool_name  => $pool_name,
+    fs_name    => 'datasets/50k-c',
     share_opts => zfs_shareopts([],[],"ro=@${dtg_subnet}"),
   }
 
@@ -150,6 +167,12 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     pool_name  => $pool_name,
     fs_name    => 'backups',
     share_opts => 'off'
+  }
+  ->
+  dtg::zfs::fs{'backups/deviceanalyzer':
+    pool_name  => $pool_name,
+    fs_name    => 'backups/deviceanalyzer',
+    share_opts => zfs_shareopts($da_machines, []),
   }
   ->
   class { 'dtg::backup::host':
@@ -184,13 +207,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     weekday     => '*',
   }
   
-  dtg::zfs::fs{'backups/deviceanalyzer':
-    pool_name  => $pool_name,
-    fs_name    => 'backups/deviceanalyzer',
-    share_opts => zfs_shareopts($da_machines, []),
-  }
-
-
   cron { 'zfs_weekly_scrub':
     command => "/sbin/zpool scrub ${pool_name}",
     user    => 'root',
