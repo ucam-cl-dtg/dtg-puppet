@@ -135,7 +135,7 @@ if ( $::monitor ) {
     hostgroups => [ 'http-servers' ],
   }
 
-  % TODO(acr31) this machine is currently not set up in puppeta
+  # TODO(acr31) this machine is currently not set up in puppeta
   nagios::monitor { 'teaching-pottery-1':
     parents    => 'nas04',
     address    => 'teaching-pottery-1.dtg.cl.cam.ac.uk',
