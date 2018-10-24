@@ -127,3 +127,18 @@ node /^teaching-chime/ {
     source => '0.0.0.0/0',
   }
 }
+
+if ( $::monitor ) {
+  nagios::monitor { 'chime':
+    parents    => 'nas04',
+    address    => 'teaching-chime.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'http-servers', 'ssh-servers' ],
+  }
+
+  # TODO(acr31) this machine is currently not set up in puppeta
+  nagios::monitor { 'teaching-pottery-1':
+    parents    => 'nas04',
+    address    => 'teaching-pottery-1.dtg.cl.cam.ac.uk',
+    hostgroups => [ 'ssh-servers' ],
+  }
+}
