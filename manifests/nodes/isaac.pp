@@ -1,4 +1,4 @@
-node /isaac-[23]/ {
+node /isaac-[23]|isaac-demo/ {
   class { 'dtg::minimal':
     managefirewall        => false,
     send_rsyslog          => false,
