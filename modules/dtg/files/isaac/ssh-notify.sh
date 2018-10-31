@@ -5,7 +5,7 @@
 # Ensure that the correct WebHook URL is on a single line in the file:
 #     /local/data/webhook-url
 
-if ( [ -e /local/data/webhook-url ] && [ "$PAM_USER" != "munin-async" ] && [ "$PAM_USER" != "isaac" ] ); then
+if ( [ -e /local/data/webhook-url ] && [ "$PAM_USER" != "munin-async" ] && [ "$PAM_USER" != "isaac" ] && [ "$PAM_USER" != "jenkins" ]); then
 
     # Slack configuration:
     url=$(cat /local/data/webhook-url)
