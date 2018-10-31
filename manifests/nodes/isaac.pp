@@ -29,6 +29,38 @@ node /isaac-[23]|isaac-demo/ {
     home   => '/usr/share/isaac'
   }
 
+  # Jenkins user
+  group {'jenkins':
+    ensure => present,
+  }
+  ->
+  user {'jenkins':
+    ensure   => present,
+    gid      => 'jenkins',
+    groups   => ['isaac'],
+    password => '*',
+  }
+  ->
+  file {'/home/jenkins':
+    ensure => directory,
+    owner  => 'jenkins',
+    group  => 'jenkins',
+    mode   => '0755',
+  }
+  ->
+  file {'/home/jenkins/.ssh/':
+    ensure => directory,
+    owner  => 'jenkins',
+    group  => 'jenkins',
+    mode   => '0755',
+  }
+  ->
+  file {'/home/jenkins/.ssh/authorized_keys':
+    ensure  => file,
+    mode    => '0644',
+    content => 'no-port-forwarding,no-agent-forwarding,no-X11-forwarding,command="cd /local/src/isaac-app && git pull && ./build-in-docker.sh master master && ./compose dev master up -d",from="128.232.21.0" ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAlQzIFjqes3XB09BAS9+lhZ9QuLRsFzLb3TwQJET/Q6tqotY41FgcquONrrEynTsJR8Rqko47OUH/49vzCuLMvOHBg336UQD954oIUBmyuPBlIaDH3QAGky8dVYnjf+qK6lOedvaUAmeTVgfBbPvHfSRYwlh1yYe+9DckJHsfky2OiDkych9E+XgQ4GipLf8Cw6127eiC3bQOXPYdZh7uKnW6vpnVPFPF5K1dSaUo3GxcpYt3OsT3IqB640m8mgekWtOmCuAP+9IEBFmCozwpqLz+EWv6wtova7tbVCkrU2iJwTbJzOUCvWv5JHYjAi/pWNIsKnWpFF9+m4th26GY4Q== jenkins@dtg-ci.cl.cam.ac.uk',
+  }
+
   # Directories to hold backups
   file { '/local/data/database-backup':
     ensure => 'directory',
