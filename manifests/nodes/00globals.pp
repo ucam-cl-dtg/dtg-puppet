@@ -285,6 +285,13 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
     uid            => 3541,
     user_whitelist => $user_whitelist,
   }
+  dtg::add_user { 'md403':
+    real_name      => 'Michael Dodson',
+    groups         => [],
+    keys           => ['Michael Dodson <md403@cam.ac.uk>'],
+    uid            => 4147,
+    user_whitelist => $user_whitelist,
+  }
 
   dtg::add_user { 'mk428':
     real_name      => 'Martin Kleppmann',
