@@ -34,5 +34,5 @@ chown isaac:isaac "$TICKETS_BACKUP_FILE"*
 rm /local/data/database-backup/latest/isaac-tickets-db-*
 cp "$TICKETS_BACKUP_FILE"* /local/data/database-backup/latest
 
-# Removes backups that are older than 10 days:
-find "/local/data/database-backup/backups" -type f -prune -mtime +10 -exec rm -f {} \;
+# Removes backups that are older than 2 days:
+find "/local/data/database-backup/backups" -type f -prune -mtime +2 -exec rm -f {} \;
