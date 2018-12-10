@@ -10,7 +10,7 @@ ISAAC_BACKUP_FILE="/local/data/database-backup/backups/isaac-live-db-$(date +%Y-
 /local/src/isaac-api/src/main/resources/db_scripts/dump-db.sh live | gzip > "$ISAAC_BACKUP_FILE"
 
 # Generate AES key
-openssl rand -base64 128 -out "$ISAAC_BACKUP_FILE".key
+openssl rand -hex 128 -out "$ISAAC_BACKUP_FILE".key
 # Encrypt backup with AES key
 openssl enc -aes-256-cbc -salt -in "$ISAAC_BACKUP_FILE" -out "$ISAAC_BACKUP_FILE".enc -pass file:"$ISAAC_BACKUP_FILE".key
 # Encrypt AES key with public key
