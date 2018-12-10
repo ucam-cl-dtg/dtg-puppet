@@ -19,7 +19,7 @@ docker exec isaac-tickets-db mysqldump -u osticket osticket | gzip > "$TICKETS_B
 
 
 # Generate AES key
-openssl rand -base64 128 -out "$TICKETS_BACKUP_FILE".key
+openssl rand -hex 128 -out "$TICKETS_BACKUP_FILE".key
 # Encrypt backup with AES key
 openssl enc -aes-256-cbc -salt -in "$TICKETS_BACKUP_FILE" -out "$TICKETS_BACKUP_FILE".enc -pass file:"$TICKETS_BACKUP_FILE".key
 # Encrypt AES key with public key
