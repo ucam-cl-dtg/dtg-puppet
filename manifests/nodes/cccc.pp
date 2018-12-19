@@ -21,7 +21,7 @@ if ( $::monitor ) {
   nagios::monitor { 'shalmaneser5':
     parents    => '',
     address    => 'shalmaneser5.sec.cl.cam.ac.uk',
-    hostgroups => ['ssh-servers', 'https-servers'],
+    hostgroups => ['ssh-servers',],
   } ->
   nagios::monitor { 'data.cambridgecybercrime.uk':
     parents    => 'shalmaneser5',
