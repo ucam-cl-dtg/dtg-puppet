@@ -120,6 +120,18 @@ node 'africa01.dtg.cl.cam.ac.uk' {
     key    => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQD0UfVs3Qwj2QTm0CKWlgiCS5EJcWFLtCrHXXr2U8kkpPA6RYpz2K/yv6b6j8W18qQKZj9MxmgZQeFEeoSKL0BfJs2vVLn8DY3z+23SiehvVQeWpzJnYOGcZAs7jjfAC9u3hE4VCGI23zik4A492EnybjRtifHfyhOExNXWmL+MmLGNaDihoSQhQI2pVnuOpAhOLp9n9xqBSluR0sDh0Y66osEKatyb3hcvK0vZOkh11BetDZXz3Bt31iSZVvuKwg4MeS+J++QZkol3Kd01dhnRJZ17XakqU6mdbS6S22kxwN57wjYmAUEwuCOe8NqyEjioNRd54b9fsxHlK9HhaneW0EurSCs2X88Da9je5cFGaIrbaJIskYW06clXosnmzzn4rs60dm/tO7TGO//J7Xlh8+Og+jurZXM2wEsnGMokXsuobw6jYRAumCBG9a6HakakSTcMPvF2QmilFYGUpttjXpOJPxhVwtNtrtbfvuIbDoYZ1C1NCyXwUzDvZLHlaMfBtf7HCZhz5W7bIF/Poqj7EfvtQBQrUblTqdegFQp20QxAta9FBiYhr8A87ZD1sfFea3kcMnnnlKglICVck5xkfhIiZwFkSNiBRLvmqRkW87hSF24hoWvws9O3GCD0ENc8lwarwd7beBnUnB2jaUUel1n8kLoCAqpESopTFJvluQ==',
     user   => 'cccc-backup',
     type   => 'ssh-rsa',
+  } ->
+  ssh_authorized_key {'cccc-backup key 5':
+    ensure => present,
+    key    => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDfaRzAiKPVAg7X35OWr50mSDGJMh75rCn51XynGLyEcUppcBsupWzU4rm44k/VFssVySi/P+uJOAF9YjB/9p4fZxqmRyoG65MiymA9SxbU4Q3nZ5Cp9jVPE1iLErcjqqo544dLDvJU94C0ymvxwgiEFLBRv+pwseTzcwS0QH4+rEfyKZIOxYoIc5Q7mf7H3xozfmzSXlGkR5cjvdNTT5+2p7/IyFudnBms08mGEMJKMYvJrl3iNTlBKa3tEeehlaeZIVRikl+7NO50c+Gd/5Cbq3LR0BQPF84pAg6qqqZEQvl85VugR/IqUfFzZal0dxrAAKmf0HzYuYVholWHp+4vVsty/mfJ/LAFU3kYlIZsAGr+ty/9hV75dTdjZ+QutT2pj5jd+T0ihUDNbN/b8YWh7woGYXVEAE8ep+wKckYNZvkG7ZVcguIDctoGj1OPF48LtCSGXFtSpVQSx0CrhYh8EUU7oKUSQD2RPx7OLsCokRtEuHJiUmCC84s+8//iG/DwFp3pquib+PtsYZDDM2ogdOGsngJZETR0yxbyy/9HFo6nfkvVIJGYuU+lNBPr9/OKjZLewhR7p0IiUYsaqnlgjUAwxBaqWjmpbJHqMsi1Kur+SrAf2x2SggYEt0Dc4NBvB2o1aZGYCf3bltuTYzCyda2MWW3OuyUSP/XojQGnew==',
+    user   => 'cccc-backup',
+    type   => 'ssh-rsa',
+  } ->
+  ssh_authorized_key {'cccc-backup key 6':
+    ensure => present,
+    key    => 'AAAAB3NzaC1yc2EAAAADAQABAAACAQC51kOxW4YH1fSSB3g4X8yaLXe3EuSDi0xU63dL1lXyLg6U98xAcqVC7MdwTsM60XJPmtOtt0Cs0B3vdIblgCSysbhl4f4odz4EhAC519onQDP8E7kHrCW3i4+311ey+1JwONmTYd2ZrVlX6ujBrUG2yNKSD5JgVZiO3wTTj4ggnhDdd+hW8IbsJDHvLYV2U6rYDYMkQVbmDOQMq2PhpYNF/Ei1p/xlcfjm9Ce4eDyAjs2+aP0bly4Ix10YSHSj05gDl7MI2Qbs59zpJk9DrHl0apo+IdIKL0rr6cCz9NsavSfaTMeprtL57liIE42dHVn/fuYGGFY3qpb8r45Uoez/cxEcjvMhg67WQQLBTfuz2PPS8rlw6qwBL883f39rzE0BZrU9Ve74fpYdTfZF9Xc2m/tu9pWmsVOFGwMx+U6ndCJANGUGzp/AiZ28CdLpuNDR8PR1eS/gwksqbJkxK3Hfb0YqQCEbUJhouVQS0OxSR05hLsKrN+Kt0GgyNDIj7d5Fg3IaHset4WeP3Kd1abpyHUE/8n2wf1l2BJ8w4Dv7GkLYXvZUTmvV6/P7XyZcMqXzt6ItITrImWNjFo1X/NLSwWe4U3dzmp21DnodWkjzyTESt9P2ckbh9ZeRxxVgEcxDtq+pXgvBiy26YY3sAmH/gS6Gi867AKMF2Oqe6G0ePw==',
+    user   => 'cccc-backup',
+    type   => 'ssh-rsa',
   }
 
   # CCCC Data
