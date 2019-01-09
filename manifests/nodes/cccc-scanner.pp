@@ -32,6 +32,7 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
     path => '/etc/security/limits.conf',
   }
 
+  User<|title == md403 |> { groups +>[ 'adm' ]}
 
   class {'dtg::spoofer::ppa': stage => 'repos' }
   package{'spoofer-prober':
