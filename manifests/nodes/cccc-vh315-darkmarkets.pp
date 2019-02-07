@@ -7,6 +7,7 @@ node 'cccc-vh315-darkmarkets.dtg.cl.cam.ac.uk' {
   apache::module {'headers':} ->
   apache::module {'rewrite':} ->
   apache::module {'expires':} ->
+  apache::module {'ssl':} ->
   apache::site {'cccc-vh315-darkmarkets':
     source => 'puppet:///modules/dtg/apache/cccc-vh315-darkmarkets.conf',
   }
