@@ -27,10 +27,10 @@ node 'cccc-vh315-darkmarkets.dtg.cl.cam.ac.uk' {
     require        => [Service['apache2'], Class['dtg::firewall::publichttp']],
   }
   letsencrypt::certonly { $::fqdn:
-    plugin          => 'webroot',
-    webroot_paths   => ['/var/www/'],
-    manage_cron     => true,
-    require         => Class['letsencrypt']
+    plugin        => 'webroot',
+    webroot_paths => ['/var/www/'],
+    manage_cron   => true,
+    require       => Class['letsencrypt']
   }
 
   class {'dtg::firewall::publichttp':}
