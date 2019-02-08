@@ -37,5 +37,18 @@ node 'cccc-vh315-darkmarkets.dtg.cl.cam.ac.uk' {
   class {'dtg::firewall::publichttp':}
 
   class {'dtg::firewall::publichttps':}
+
+  file { '/local/data/darkmarkets/':
+      ensure => directory,
+      mode   => 'u+rwx,go+rx',
+      owner  => 'drt24',
+      group  => 'drt24',
+  }
+
+  file {'/var/www/darkmarkets':
+      ensure => link,
+      target => '/local/data/darkmarkets/',
+  }
+
 }
 
