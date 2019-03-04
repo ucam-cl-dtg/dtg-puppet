@@ -1,6 +1,6 @@
-# vm for the British Olympiad in Informatics final
+# vm for the British Informatics Olympiad final
 
-node /teaching-boi/ {
+node /teaching-bio/ {
   include 'dtg::minimal'
 
   $packages = ['build-essential']
@@ -49,11 +49,11 @@ node /teaching-boi/ {
 
 if ( $::monitor ) {
   
-  nagios::monitor { 'teaching-boi':
+  nagios::monitor { 'teaching-bio':
     parents    => 'nas04',
-    address    => 'teaching-boi.dtg.cl.cam.ac.uk',
+    address    => 'teaching-bio.dtg.cl.cam.ac.uk',
     hostgroups => [ 'ssh-servers' ],
   }
   
-  munin::gatherer::async_node { 'teaching-boi': }
+  munin::gatherer::async_node { 'teaching-bio': }
 }
