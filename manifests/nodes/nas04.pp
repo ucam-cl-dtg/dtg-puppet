@@ -78,7 +78,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     fs_name    => 'nakedscientists',
     share_opts => zfs_shareopts([],['131.111.39.72',
                                     '131.111.39.84',
-                                    '131.111.39.87',
                                     '131.111.39.103',
                                     '131.111.61.37',
                                     '81.201.132.39',
