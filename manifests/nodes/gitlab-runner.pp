@@ -18,7 +18,7 @@ node /gitlab-runner(-\d+)?/ {
 
   docker::image { 'dtg/puppet':
     docker_file => '/etc/dtgpuppet-dockerfile',
-    image_tag   => '16.04',
+    image_tag   => '18.04',
     subscribe   => File['/etc/dtgpuppet-dockerfile'],
   }
 }
