@@ -3,6 +3,7 @@ image: dtg/puppet:16.04
 variables:
   LANG: "en_GB.UTF-8"
   LANGUAGE: "en_GB:en"
+  LC_ALL: "en_GB.UTF-8"
 
 stages:
   - check
@@ -13,7 +14,7 @@ stages:
 syntax:
   stage: check
   script:
-    - "find . -name '*.pp' | LANG=\"en_GB.UTF-8\" xargs puppet parser validate"
+    - "find . -name '*.pp' | LANG=\"en_GB.UTF-8\" LC_ALL=en_GB.UTF-8 xargs puppet parser validate"
   only:
     - branches
 
