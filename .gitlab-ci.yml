@@ -14,7 +14,7 @@ stages:
 syntax:
   stage: check
   script:
-    - "find . -name '*.pp' | LANG=\"en_GB.UTF-8\" LC_ALL=en_GB.UTF-8 xargs puppet parser validate"
+    - "find . -name '*.pp' | LANG=\"C.UTF-8\" LC_ALL=C.UTF-8 xargs puppet parser validate"
   only:
     - branches
 
