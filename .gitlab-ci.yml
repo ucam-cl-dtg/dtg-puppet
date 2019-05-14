@@ -13,7 +13,7 @@ stages:
 syntax:
   stage: check
   script:
-    - "find . -name '*.pp' | xargs LANG=\"en_GB.UTF-8\" puppet parser validate"
+    - "find . -name '*.pp' | LANG=\"en_GB.UTF-8\" xargs puppet parser validate"
   only:
     - branches
 
