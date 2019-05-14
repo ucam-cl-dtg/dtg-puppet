@@ -12,6 +12,7 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
     type   => 'ssh-rsa',
     user   => 'rnc1',
   }
+
   dtg::add_user { 'amv42':
     real_name => 'Alexander Michael Vetterl',
     groups    => 'adm',
@@ -29,6 +30,26 @@ node 'cccc-scanner.dtg.cl.cam.ac.uk' {
   } ->
   file_line{'amv42 hard nofile limit':
     line => 'amv42            hard    nofile          8192',
+    path => '/etc/security/limits.conf',
+  }
+
+  dtg::add_user { 'ip358':
+    real_name => 'Ildikó Pete',
+    groups    => 'adm',
+    uid       => '4233',
+  }
+  -> ssh_authorized_key {'ip358':
+    ensure => present,
+    key    => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDnmPEoGuaB4jX988L05tYGjAQduBnbSNZTcI9O97VFw3NGjtpf66gImLxGQAdfI5vSJw1sS9wWGsVEZczCSab6xzvv4GJhZF9ioDhMvRd58wowmRYvktT2/chUTawYCGXYF+8x9agXLV4KM0veIC7Qa5Fx64TeiaT9wXoPMzf19jkshGqDoge3VaKjNDDq7FQs87cEW9LqA//NZ2oiAT/4cD7sxUefhFSbd7lAEii94nfuPCIePbrllzJtn5rvAEzxq3tZn6nj4glXEzs17qdI/f0+1v1ga/eYdsN0yKjePOTrQzakXig+y+k2gmyWhVyD3VmuX+AUtO53OOFrpFAP',
+    type   => 'ssh-rsa',
+    user   => 'ip358',
+  }
+  -> file_line{'ip358 soft nofile limit':
+    line => 'ip358            soft    nofile          4096',
+    path => '/etc/security/limits.conf',
+  }
+  -> file_line{'ip358 hard nofile limit':
+    line => 'ip358            hard    nofile          8192',
     path => '/etc/security/limits.conf',
   }
 

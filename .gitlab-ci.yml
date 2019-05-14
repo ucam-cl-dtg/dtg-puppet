@@ -1,5 +1,10 @@
 image: dtg/puppet:16.04
 
+variables:
+  LANG: "C.UTF-8"
+  LANGUAGE: "en_GB:en"
+  LC_ALL: "C.UTF-8"
+
 stages:
   - check
   - test
