@@ -41,6 +41,18 @@ node 'cccc-maltego.dtg.cl.cam.ac.uk' {
     type   => 'ssh-rsa',
     user   => 'maltego',
   }
+  dtg::add_user { 'ip358':
+    real_name => 'Ildikó Pete',
+    groups    => ['adm', 'cccc-data'],
+    uid       => '4233',
+  }
+  -> ssh_authorized_key {'ip358':
+    ensure => present,
+    key    => 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDnmPEoGuaB4jX988L05tYGjAQduBnbSNZTcI9O97VFw3NGjtpf66gImLxGQAdfI5vSJw1sS9wWGsVEZczCSab6xzvv4GJhZF9ioDhMvRd58wowmRYvktT2/chUTawYCGXYF+8x9agXLV4KM0veIC7Qa5Fx64TeiaT9wXoPMzf19jkshGqDoge3VaKjNDDq7FQs87cEW9LqA//NZ2oiAT/4cD7sxUefhFSbd7lAEii94nfuPCIePbrllzJtn5rvAEzxq3tZn6nj4glXEzs17qdI/f0+1v1ga/eYdsN0yKjePOTrQzakXig+y+k2gmyWhVyD3VmuX+AUtO53OOFrpFAP',
+    type   => 'ssh-rsa',
+    user   => 'ip358',
+  }
+
   file{'/usr/local/bin/start-maltego.sh':
     ensure  => file,
     mode    => 'u+rwx,og+rx',
