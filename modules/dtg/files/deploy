@@ -288,6 +288,8 @@ def get_vms():
         # Look to see if we have a CNAME that is the same as the name in
         # XenCentaur
         hostname = "%s%s" % (name, DTG_DOM)
+        if hostname == 'teaching-chime.dtg.cl.cam.ac.uk':
+            continue
         try:
             socket.gethostbyname(hostname)
         except socket.error:
