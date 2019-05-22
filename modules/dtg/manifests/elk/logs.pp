@@ -1,6 +1,7 @@
 class dtg::elk::logs {
   class { 'dtg::apt_logstash': stage=> 'repos'}
-  class { 'logstash':
+  class { 'java': }
+  -> class { 'logstash':
     auto_upgrade => true,
     manage_repo  => false,
   }
