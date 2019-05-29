@@ -7,7 +7,7 @@ echo "Started isaac db backup at $(date "+%Y-%m-%d %l:%M")"
 ISAAC_BACKUP_FILE="/local/data/database-backup/backups/isaac-live-db-$(date +%Y-%m-%d).sql.gz"
 
 # Dump the Isaac DB:
-/local/src/isaac-api/src/main/resources/db_scripts/dump-db.sh live | gzip > "$ISAAC_BACKUP_FILE"
+/local/src/isaac-api/src/main/resources/db_scripts/dump-db.sh pg-live | gzip > "$ISAAC_BACKUP_FILE"
 
 # Generate AES key
 openssl rand -hex 128 -out "$ISAAC_BACKUP_FILE".key
