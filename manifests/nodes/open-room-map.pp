@@ -141,7 +141,8 @@ node /open-room-map(-\d+)?/ {
     source      => 'http://sysdata.cl.cam.ac.uk/www-conf/group-raven',
     destination => '/etc/apache2/conf/group-raven',
     redownload  => true,
-    schedule    => daily
+    schedule    => daily,
+    flags       => ['-4'],
   }
 
   group {'jenkins':
