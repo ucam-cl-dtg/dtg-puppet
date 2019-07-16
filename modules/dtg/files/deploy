@@ -113,8 +113,8 @@ class Machine(object):
 ORIGIN = [
     Machine('github', 'git@github.com',
             'ucam-cl-dtg/dtg-puppet.git', False),
-    Machine('gitlab-repo', 'git@gitlab.dtg.cl.cam.ac.uk',
-            'infrastructure/dtg-puppet.git', False),
+    Machine('gitlab-repo', 'git@gitlab.developers.cam.ac.uk',
+            'cst/dtg/infrastructure/dtg-puppet.git', False),
 ]
 
 PHYSICAL_MACHINES = [
