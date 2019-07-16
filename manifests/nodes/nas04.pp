@@ -186,26 +186,6 @@ node 'nas04.dtg.cl.cam.ac.uk' {
     require_password => false,
     comment          => 'Allow the backup user to use sudo for zfs',
   }
-  ->
-  cron {'backup deviceanalyzer/archive':
-    ensure      => present,
-    user        => 'backup',
-    environment => 'MAILTO=dtg-infra@cl.cam.ac.uk',
-    command     => "nice -n 19 /bin/bash -c 'ssh root@weimaraner.dtg.cl.cam.ac.uk -i /home/backup/.ssh/id_rsa -o UserKnownHostsFile=/home/backup/.ssh/known_hosts zones/deviceanalyzer/archive@`sudo zfs list -H -t snapshot -d 1 -o name -S creation dtg-pool0/backups/deviceanalyzer/archive | head -n1 | cut --delim=\"@\" -f 2` | sudo zfs recv dtg-pool0/backups/deviceanalyzer/archive'",
-    minute      => cron_minute('backup deviceanalyzer/archive'),
-    hour        => cron_hour('backup deviceanalyzer/archive'),
-    weekday     => '*',
-  }
-  ->
-  cron {'backup deviceanalyzer/analysis':
-    ensure      => present,
-    user        => 'backup',
-    environment => 'MAILTO=dtg-infra@cl.cam.ac.uk',
-    command     => "nice -n 19 /bin/bash -c 'ssh root@weimaraner.dtg.cl.cam.ac.uk -i /home/backup/.ssh/id_rsa -o UserKnownHostsFile=/home/backup/.ssh/known_hosts zones/deviceanalyzer/analysis@`sudo zfs list -H -t snapshot -d 1 -o name -S creation dtg-pool0/backups/deviceanalyzer/analysis | head -n1 | cut --delim=\"@\" -f 2` | sudo zfs recv dtg-pool0/backups/deviceanalyzer/analysis'",
-    minute      => cron_minute('backup deviceanalyzer/analysis'),
-    hour        => cron_hour('backup deviceanalyzer/analysis'),
-    weekday     => '*',
-  }
   
   cron { 'zfs_weekly_scrub':
     command => "/sbin/zpool scrub ${pool_name}",
