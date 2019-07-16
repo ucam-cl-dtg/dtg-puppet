@@ -100,9 +100,6 @@ class dtg::minimal ($manageapt = true,
   }
   class { 'dtg::git::config': }
 
-  if $send_rsyslog {
-    class { 'dtg::rsyslog': }
-  }
 
   class { 'etckeeper': require => Class['dtg::git::config'] }
   class { 'ntp':
