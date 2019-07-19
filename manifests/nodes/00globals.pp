@@ -251,7 +251,7 @@ class admin_users ($user_whitelist = undef) { #lint:ignore:autoloader_layout
   # }
   dtg::add_user { 'jps79':
     real_name      => 'James Sharkey',
-    groups         =>  ['isaac'],
+    groups         =>  ['adm', 'dtg-adm', 'isaac'],
     keys           => ['James Sharkey (CL) <jps79@cam.ac.uk>'],
     uid            => 3622,
     user_whitelist => $user_whitelist,
